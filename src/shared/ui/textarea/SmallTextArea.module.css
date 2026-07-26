@@ -1,26 +1,11 @@
 .textContainer {
   width: 100%;
-  padding: 10px;
+  padding: 16px;
   border: 1px solid var(--color-gray-250);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.subTitle {
-  text-align: left;
-  width: 100%;
-  font: var(--label-interface);
-  color: var(--color-gray-500)
-}
-
-.innerContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 6px 8px;
-  justify-content: flex-start;
+  gap: 12px;
 }
 
 .textContainer textarea{
@@ -32,7 +17,6 @@
   flex-grow: 1;
   overflow-y: auto;
   scrollbar-width: none;
-  padding-top: 2px;
 
   min-height: 120px;
 
@@ -47,10 +31,9 @@
   border-radius: 4px;
 }
 
-.textContainer p:nth-child(2){
+.textContainer p{
   font: var(--inter-12-400);
   text-align: end;
-  padding-right: 8px;
 }
 
 .error {

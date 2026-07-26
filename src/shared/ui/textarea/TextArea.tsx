@@ -1,5 +1,6 @@
 import styles from './TextArea.module.css';
 import type {ChangeEvent} from "react";
+import clsx from "clsx";
 
 type TextAreaProps = {
   value: string,
@@ -7,19 +8,27 @@ type TextAreaProps = {
   handleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void,
   isDisable: boolean,
   isValid: boolean,
-  isEditing?: boolean
+  isEditing?: boolean,
+  placeholder: string,
+  subtitle?: string
 };
 
-export function TextArea({ value, maxLength, handleChange, isDisable, isValid, isEditing = true }: TextAreaProps) {
+export function TextArea({ value, maxLength, handleChange, isDisable, isValid, isEditing = true, placeholder, subtitle }: TextAreaProps) {
   return (
     <div className={`${styles.textContainer} ${isValid ? (isEditing ? styles.edit : styles.validOutline) : styles.errorOutline} `}>
-      <textarea
-        value={value}
-        onChange={handleChange}
-        disabled={isDisable}
-        placeholder={'Компетентный опыт, софт-скиллы, ваш подход к работе...'}
-      >
-      </textarea>
+      <div className={styles.innerContainer}>
+        {
+          subtitle && <p className={clsx(styles.subTitle, isValid ? styles.valid : styles.error)}>
+            {subtitle}
+          </p>
+        }
+        <textarea
+          value={value}
+          onChange={handleChange}
+          disabled={isDisable}
+          placeholder={placeholder}
+        />
+      </div>
       <p className={isValid ? styles.valid : styles.error}>
         {value.length} / {maxLength}
       </p>

@@ -114,6 +114,7 @@ export function AboutMe({ bio, className }: AboutMeProps) {
           isDisable={!isEditing || isPending}
           isValid={isValidSymbol}
           isEditing={isEditing}
+          placeholder={'Компетентный опыт, софт-скиллы, ваш подход к работе...'}
         />
         {
           isEditing && (

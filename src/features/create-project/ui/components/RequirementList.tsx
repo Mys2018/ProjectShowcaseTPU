@@ -1,7 +1,8 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import { TextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import {SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
 import styles from './RequirementList.module.css';
 import PlusIcon from '@/shared/ui/icons/plus.svg?react'
+import TrashIcon from '@/shared/ui/icons/trash.svg?react'
 
 interface RequirementListProps {
   form: CreateProjectForm;
@@ -35,9 +36,9 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
             field.pushValue('');
           };
 
-          // const handleRemove = (index: number) => {
-          //   field.removeValue(index);
-          // };
+          const handleRemove = (index: number) => {
+            field.removeValue(index);
+          };
 
           return (
             <div className={styles.list}>
@@ -49,7 +50,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                     <div className={styles.inputWrapper}>
                       <form.Field name={prefix}>
                         {(subField) => (
-                          <TextFieldForm
+                          <SmallTextFieldForm
                             placeholder={placeholder}
                             value={subField.state.value as string}
                             onChange={(e) => subField.handleChange(e.target.value as any)}
@@ -59,16 +60,19 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                                 ? getErrorMessage(subField.state.meta.errors[0]) 
                                 : stepErrors[`${name}.${index}`]?.[0]
                             }
+                            children={
+                              items.length > 2 && (
+                                  <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
+                                    <TrashIcon/>
+                                  </button>
+                                )
+                            }
                           />
                         )}
                       </form.Field>
                     </div>
 
-                    {/*{items.length > 1 && (*/}
-                    {/*  <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>*/}
-                    {/*    -*/}
-                    {/*  </button>*/}
-                    {/*)}*/}
+
                   </div>
                 );
               })}

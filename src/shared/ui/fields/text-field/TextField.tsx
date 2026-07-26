@@ -2,7 +2,7 @@ import styles from './TextField.module.css'
 import type { ChangeEvent } from "react";
 import clsx from "clsx";
 
-type TextFieldProps = {
+type BigTextFieldProps = {
   value: string
   subtitle?: string
   placeholder?: string
@@ -11,30 +11,60 @@ type TextFieldProps = {
   validError?: string | undefined
 }
 
-export const TextField = ({value, placeholder, maxLength, onChange, subtitle, validError}: TextFieldProps)=>  {
+export const BigTextField = ({value, placeholder, maxLength, onChange, subtitle, validError}: BigTextFieldProps)=>  {
   return (
     <div className={clsx(styles.textContainer, (validError ? styles.error : ''))}>
+      <div className={styles.innerContainer}>
+        {subtitle && <p className={clsx(styles.subtitle, validError ? styles.error : '')}>
+          {subtitle}
+        </p>}
 
-      {subtitle && <p className={styles.subtitle}>
-        {subtitle}
-      </p>}
-
-      <textarea
-        name="text"
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-      />
-
-      <p className={styles.value}>
+        <textarea
+          name="text"
+          value={value}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
+      </div>
+      <p className={clsx(styles.value, validError ? styles.error : '')}>
         {value.length} / {maxLength}
       </p>
-
     </div>
   )
 }
 
-interface TextFieldFormProps {
+type SmallTextFieldProps = {
+  value: string
+  placeholder?: string
+  maxLength?: number
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
+  validError?: string | undefined
+  subtitle?: string
+}
+
+export const SmallTextField = ({value, placeholder, maxLength, onChange, validError, subtitle}: SmallTextFieldProps)=>  {
+  return (
+    <div className={clsx(styles.inputTextContainer, (validError ? styles.error : ''))}>
+      <div className={styles.smallInnerContainer}>
+        {subtitle && <p className={clsx(styles.subtitle, validError ? styles.error : '')}>
+          {subtitle}
+        </p>}
+
+        <input
+          name="text"
+          value={value}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
+      </div>
+      <p className={clsx(styles.inputValue, validError ? styles.error : '')}>
+        {value.length} / {maxLength}
+      </p>
+    </div>
+  )
+}
+
+interface BigTextFieldFormProps {
   value: string,
   placeholder?: string,
   maxLength?: number
@@ -44,7 +74,7 @@ interface TextFieldFormProps {
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void,
 }
 
-export const TextFieldForm  = ({value, placeholder, maxLength, validError, title, onChange, subtitle} : TextFieldFormProps) => {
+export const BigTextFieldForm  = ({value, placeholder, maxLength, validError, title, onChange, subtitle} : BigTextFieldFormProps) => {
   return (
     <div className={styles.body}>
       {
@@ -53,10 +83,46 @@ export const TextFieldForm  = ({value, placeholder, maxLength, validError, title
         </h5>
       }
 
-      <TextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} subtitle={subtitle} validError={validError}/>
-      {validError && <p className={styles.error}>
-        {validError || ''}
-      </p>}
+      <BigTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} subtitle={subtitle} validError={validError}/>
+      {validError &&
+        <p className={clsx(styles.errorText, styles.error,  styles.errorBlock)}>
+          {validError || ''}
+        </p>
+      }
+    </div>
+  )
+}
+
+interface SmallTextFieldFormProps {
+  value: string,
+  placeholder?: string,
+  maxLength?: number
+  subtitle?: string
+  title?: string
+  validError?: string | undefined,
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
+  children?: React.ReactNode
+}
+
+export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, title, onChange, children, subtitle} : SmallTextFieldFormProps) => {
+  return (
+    <div className={styles.body}>
+      {
+        title && <h5 className={styles.title}>
+          {title || ''}
+        </h5>
+      }
+
+
+      <div className={styles.iconBody}>
+        <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle}/>
+        {children}
+      </div>
+      {validError &&
+        <p className={clsx(styles.errorText, styles.error, styles.errorBlock)}>
+          {validError || ''}
+        </p>
+      }
     </div>
   )
 }

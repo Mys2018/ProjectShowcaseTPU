@@ -49,13 +49,13 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
 
   setInitialData: (data) => set({ originalData: data, draftData: data, hasChanges: false }),
   setOriginalData: (data) => set({ originalData: data }),
-  
+
   startEditing: () => { set({ isEditing: true, popoverOpenFor: null }) },
-  
+
   cancelEditing: () => { set((state) => ({ isEditing: false, draftData: [...state.originalData], hasChanges: false, popoverOpenFor: null })) },
-  
+
   saveChanges: () => set((state) => ({ originalData: state.draftData, hasChanges: false, isEditing: false, popoverOpenFor: null })),
-  
+
   resetHasChanges: () => set({ hasChanges: false }),
 
   removeSkill: (competenceId, skillId) => set((state) => {
@@ -65,9 +65,9 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
     let newCurrentFullSkills = state.currentFullSkills;
     if (state.popoverOpenFor === competenceId) {
       const addedSkillIds = new Set(newDraft.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.skillId) ?? []);
-      
+
       const mockAllowedIds = new Set(SKILLS_BY_COMPETENCE[competenceId]?.map(s => s.skillId) ?? []);
-      const filteredGlobals = mockAllowedIds.size > 0 
+      const filteredGlobals = mockAllowedIds.size > 0
         ? state.globalSkills.filter(s => mockAllowedIds.has(s.skillId))
         : state.globalSkills;
 
@@ -142,7 +142,7 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
     );
 
     const mockAllowedIds = new Set(SKILLS_BY_COMPETENCE[competenceId]?.map(s => s.skillId) ?? []);
-    const filteredGlobals = mockAllowedIds.size > 0 
+    const filteredGlobals = mockAllowedIds.size > 0
       ? state.globalSkills.filter(s => mockAllowedIds.has(s.skillId))
       : state.globalSkills;
 

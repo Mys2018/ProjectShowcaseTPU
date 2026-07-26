@@ -35,6 +35,17 @@
   }
 }
 
+.title {
+  font: var(--field-label-interface);
+  color: var(--color-brand-black);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px
+}
+
 
 .nav {
   display: flex;

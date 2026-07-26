@@ -1,5 +1,5 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import { TextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import {BigTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
 import { DropDownList } from '@/shared/ui/fields/dropdown-list/DropDownList';
 import { RadioChip } from '@/shared/ui/fields/radio-chip/RadioChip';
 import Cross from '@/shared/ui/icons/cross.svg?react';
@@ -47,32 +47,44 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       </div>
 
       {/* Название */}
-      <form.Field name="meta.title">
-        {(field) => (
-          <TextFieldForm
-            title={'Название проекта'}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={"Например: FinTrack — учёт финансов"}
-            maxLength={100}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
-          />
-        )}
-      </form.Field>
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Название проекта
+        </h4>
+        <form.Field name="meta.title">
+          {(field) => (
+            <BigTextFieldForm
+              title={''}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder={"Например: FinTrack — учёт финансов"}
+              maxLength={100}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
+
 
       {/* Описание */}
-      <form.Field name="meta.description">
-        {(field) => (
-          <TextFieldForm
-            title={'Описание'}
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e.target.value)}
-            placeholder={"Например: FinTrack — учёт финансов"}
-            maxLength={500}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
-          />
-        )}
-      </form.Field>
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Описание
+        </h4>
+        <form.Field name="meta.description">
+          {(field) => (
+            <BigTextFieldForm
+              title={''}
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              placeholder={"Например: FinTrack — учёт финансов"}
+              maxLength={500}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
+
 
       {/* Основной тег — RadioChip */}
       <form.Field name="primaryTag">
