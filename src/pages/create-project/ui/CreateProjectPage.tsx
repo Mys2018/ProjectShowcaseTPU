@@ -11,13 +11,7 @@ import {
 import { useCreateProject } from '@/entities/project/api/queries';
 import type { CreateProjectRequestType } from '@/entities/project/model/types';
 
-// TODO: заменить на useQuery когда появится API партнёров
-const MOCK_PARTNERS: { value: string; verbose: string }[] = [
-  { value: 'I3f8uNbO', verbose: 'ТПУ, публикационная активность' },
-  // { value: 'I3f87NbO', verbose: 'Т-банк, банкинг и финансы' },
-  // { value: 'I3f845NbO', verbose: 'Яндекс' },
-  // { value: 'I3f846NbO', verbose: 'Сбербанк' },
-];
+import { usePartners } from '@/entities/partner/api/queries';
 
 type PageStep = 'type-select' | 'fill';
 
@@ -26,9 +20,12 @@ export default function CreateProjectPage() {
   const [pageStep, setPageStep] = useState<PageStep>('type-select');
   const [selectedType, setSelectedType] = useState<CreateProjectRequestType>('Study');
 
+  const { data: partnersList = [] } = usePartners();
+  const mappedPartners = partnersList.map(p => ({ value: p.id, verbose: p.name }));
+
   const { mutate: createProject, isPending } = useCreateProject();
 
-  const { form, stepErrors } = useProjectWizard({
+  const { form, stepErrors, currentStep, nextStep, prevStep, setStep } = useProjectWizard({
     defaultValues: { type: selectedType } as Partial<CreateProjectFormValues>,
     onSubmit: (values) => {
       createProject(values, {
@@ -117,7 +114,11 @@ export default function CreateProjectPage() {
             isPending={isPending}
             onSubmit={handleSubmit}
             onDeleteDraft={handleDeleteDraft}
-            partners={MOCK_PARTNERS}
+            partners={mappedPartners}
+            currentStep={currentStep}
+            nextStep={nextStep}
+            prevStep={prevStep}
+            setStep={setStep}
           />
         </section>
       </main>

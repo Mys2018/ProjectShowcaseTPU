@@ -1,9 +1,5 @@
-import { useState } from 'react';
-import type { CreateProjectFormValues, StepErrors } from '@/features/create-project/model/useProjectWizard';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type CreateProjectForm = ReactFormExtendedApi<CreateProjectFormValues, any, any, any, any, any, any, any, any, any, any, any>;
+import type { CreateProjectForm, StepErrors } from '@/features/create-project/model/useProjectWizard';
+import BackIcon from '@/shared/ui/icons/back.svg?react';
 
 import styles from './ProjectInfoStep.module.css'
 import clsx from "clsx";
@@ -33,11 +29,18 @@ interface ProjectInfoStepProps {
   onDeleteDraft: () => void;
   /** { value: ID, verbose: отображаемое название } */
   partners: { value: string; verbose: string }[];
+  currentStep: number;
+  nextStep: () => void;
+  prevStep: () => void;
+  setStep: (step: number) => void;
 }
 
-export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDeleteDraft, partners }: ProjectInfoStepProps) {
-  const [activeTab, setActiveTab] = useState<InfoTab>('main');
+export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDeleteDraft, partners, currentStep, nextStep, prevStep, setStep }: ProjectInfoStepProps) {
   const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
+
+  const activeTab = TABS[currentStep - 1]?.key || 'main';
+  const isFirstStep = currentStep === 1;
+  const isLastStep = currentStep === TABS.length;
 
   const hasTabErrors = (tabKey: InfoTab): boolean => {
     // Собираем все ошибки: из stepErrors (пришедшие из локальной валидации)
@@ -85,7 +88,7 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
               )}
               key={tab.key}
               type="button"
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => setStep(TABS.findIndex((t) => t.key === tab.key) + 1)}
             >
               {tab.label}
               {hasError && <span className={styles.errorDot} />}
@@ -99,30 +102,45 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
         <div>
           {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} />}
           {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} />}
-          {/*{activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} />}*/}
-          {activeTab === 'roles' && <RolesTab/>}
-          {activeTab === 'dates' && <DatesTab/>}
-          {activeTab === 'all' && <AllTab/>}
+          {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} />}
+          {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} />}
+          {activeTab === 'all' && <AllTab form={form} stepErrors={stepErrors} />}
+        </div>
+      </div>
+
+      <div className={styles.buttonBlock}>
+        <div>
+          {!isFirstStep && (
+            <button type="button" onClick={prevStep} className={styles.prevButton}>
+              <BackIcon/>
+              К предыдущему шагу
+            </button>
+          )}
         </div>
 
-        {/* Нижние кнопки */}
-        <div className={styles.buttonBlock}>
+        <div className={styles.rightButtons}>
           <button
             type="button"
             onClick={onDeleteDraft}
             className={styles.cancelButton}
           >
-            Удалить черновик
+            Сохранить черновик
           </button>
 
-          <button
-            type="button"
-            onClick={onSubmit}
-            disabled={isPending}
-            className={clsx(styles.saveButton, isPending ? styles.disable : '')}
-          >
-            {isPending ? 'Отправка...' : 'Отправить проект'}
-          </button>
+          {!isLastStep ? (
+            <button type="button" onClick={nextStep} className={styles.nextButton}>
+              К следующему шагу
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onSubmit}
+              disabled={isPending}
+              className={clsx(styles.saveButton, isPending ? styles.disable : '')}
+            >
+              {isPending ? 'Отправка...' : 'Опубликовать проект'}
+            </button>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,7 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import {BigTextFieldForm, SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
+import { BigTextFieldForm, SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import Plus from '@/shared/ui/icons/plus.svg?react';
+import TrashIcon from '@/shared/ui/icons/trash.svg?react';
 import styles from './TargetAudienceList.module.css';
 
 interface TargetAudienceListProps {
@@ -30,16 +32,16 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
           });
         };
 
+        const handleRemove = (index: number) => {
+          field.removeValue(index);
+        }
+
 
         return (
           <div className={styles.container}>
             {segments.map((_, index) => {
               const prefix = `prdMeta.audience[${index}]` as any;
-              {/*{segments.length > 1 && (*/}
-              {/*  <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>*/}
-              {/*    Удалить*/}
-              {/*  </button>*/}
-              {/*)}*/}
+
               return (
                 <div className={styles.body}>
 
@@ -47,6 +49,12 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
                     <p className={styles.titleSegment}>
                       Сегмент {index}
                     </p>
+                    {segments.length > 1 && (
+                      <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
+                        <TrashIcon className={styles.trashIcon}/>
+                        Удалить
+                      </button>
+                    )}
                   </div>
 
                   <div key={index} className={styles.segment}>
@@ -130,14 +138,15 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
             })}
 
             <button type="button" className={styles.addButton} onClick={handleAdd}>
-              Добавить ЦА
+              <Plus />
+              Добавить сегмент
             </button>
-            
+
             {field.state.meta.errors.length > 0 && (
-               <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>
+              <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>
             )}
             {stepErrors['prdMeta.audience'] && (
-               <span className={styles.errorText}>{stepErrors['prdMeta.audience'][0]}</span>
+              <span className={styles.errorText}>{stepErrors['prdMeta.audience'][0]}</span>
             )}
           </div>
         );

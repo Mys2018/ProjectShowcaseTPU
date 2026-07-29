@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import type { Skill, Competence } from "@/features/my-competencies/model/types.ts";
-import { SKILLS_BY_COMPETENCE } from "@/features/my-competencies/model/store/mock.ts";
 
 interface SkillsStoreTypes {
   originalData: Competence[];
@@ -66,10 +65,7 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
     if (state.popoverOpenFor === competenceId) {
       const addedSkillIds = new Set(newDraft.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.skillId) ?? []);
 
-      const mockAllowedIds = new Set(SKILLS_BY_COMPETENCE[competenceId]?.map(s => s.skillId) ?? []);
-      const filteredGlobals = mockAllowedIds.size > 0
-        ? state.globalSkills.filter(s => mockAllowedIds.has(s.skillId))
-        : state.globalSkills;
+      const filteredGlobals = state.globalSkills;
 
       newCurrentFullSkills = filteredGlobals.filter(s => !addedSkillIds.has(s.skillId));
     }
@@ -141,10 +137,7 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
       state.draftData.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.skillId) ?? []
     );
 
-    const mockAllowedIds = new Set(SKILLS_BY_COMPETENCE[competenceId]?.map(s => s.skillId) ?? []);
-    const filteredGlobals = mockAllowedIds.size > 0
-      ? state.globalSkills.filter(s => mockAllowedIds.has(s.skillId))
-      : state.globalSkills;
+    const filteredGlobals = state.globalSkills;
 
     return {
       currentFullSkills: filteredGlobals.filter(s => !addedSkillIds.has(s.skillId)),

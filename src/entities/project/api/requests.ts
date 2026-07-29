@@ -26,4 +26,9 @@ export const projectApi = {
     const response = await api.post<any>('/projects', data);
     return mapProjectDtoToEntity(response.data);
   },
+
+  createCheckpoints: async (data: { name: string, checkpoints: { title: string, deadline: string }[] }): Promise<{ checkpointId: string }> => {
+    const response = await api.post<any>('/projects/checkpoints', data);
+    return response.data;
+  },
 };

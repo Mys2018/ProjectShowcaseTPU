@@ -6,18 +6,7 @@ import Cross from '@/shared/ui/icons/cross.svg?react';
 import clsx from 'clsx';
 import styles from '../ProjectInfoStep.module.css';
 
-// Константы тегов
-const PRIMARY_TAGS = [
-  { label: 'Инженерия', value: 'SnJ8BpqPnxvMbtjT' },
-  { label: 'Веб-Разработка', value: 'pv6nwbvtn83FuBJC' },
-  { label: 'E-commerce', value: 'WHGfS5KwgUp_CXNb' },
-];
-
-const EXTRA_TAGS = [
-  { label: 'Инженерия', value: 'SnJ8BpqPnxvMbtjT' },
-  { label: 'Веб-Разработка', value: 'pv6nwbvtn83FuBJC' },
-  { label: 'E-commerce', value: 'WHGfS5KwgUp_CXNb' },
-];
+import { useTags } from '@/entities/tag/api/queries';
 
 interface TabProps {
   form: CreateProjectForm;
@@ -26,6 +15,12 @@ interface TabProps {
 }
 
 export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
+  const { data: tagGroups = [] } = useTags();
+  
+  const allTags = tagGroups.flatMap(group => 
+    group.tags.map(t => ({ label: t.name, value: t.id }))
+  );
+
   // Вспомогательная функция для ошибок
   const getErrorMessage = (error: unknown): string | undefined => {
     if (typeof error === 'string') return error;
@@ -79,7 +74,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
               onChange={(e) => field.handleChange(e.target.value)}
               placeholder={"Например: FinTrack — учёт финансов"}
               maxLength={500}
-              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.description']?.[0]}
             />
           )}
         </form.Field>
@@ -92,14 +87,20 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
           <div className={styles.tagGroup}>
             <span className={styles.tagGroupLabel}>Основной тег</span>
             <div className={styles.chipRow}>
-              {PRIMARY_TAGS.map((tag) => (
+              {allTags.map((tag) => (
                 <RadioChip
                   key={tag.value}
                   label={tag.label}
                   name="primaryTag"
                   value={tag.value}
                   checked={field.state.value === tag.value}
-                  onChange={() => field.handleChange(tag.value)}
+                  onChange={() => {
+                    field.handleChange(tag.value);
+                    const currentTags = form.state.values.tags || [];
+                    if (currentTags.includes(tag.value)) {
+                      form.setFieldValue('tags', currentTags.filter(t => t !== tag.value));
+                    }
+                  }}
                 />
               ))}
             </div>
@@ -113,41 +114,50 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       </form.Field>
 
       {/* Дополнительные теги — мульти-выбор плашками */}
-      <form.Field name="tags">
-        {(field) => (
-          <div className={styles.tagGroup}>
-            <span className={styles.tagGroupLabel}>Дополнительные теги</span>
-            <div className={styles.tagBadgeRow}>
-              {EXTRA_TAGS.map((tag) => {
-                const isSelected = (field.state.value || []).includes(tag.value);
-                return (
-                  <button
-                    key={tag.value}
-                    type="button"
-                    className={clsx(styles.tagBadge, isSelected && styles.tagBadgeActive)}
-                    onClick={() => {
-                      const current = field.state.value || [];
-                      field.handleChange(
-                        isSelected
-                          ? current.filter((t) => t !== tag.value)
-                          : [...current, tag.value],
+      <form.Subscribe selector={(state) => state.values.primaryTag}>
+        {(primaryTag) => (
+          <form.Field name="tags">
+            {(field) => {
+              const availableExtraTags = allTags.filter(t => t.value !== primaryTag);
+              
+              return (
+                <div className={styles.tagGroup}>
+                  <span className={styles.tagGroupLabel}>Дополнительные теги</span>
+                  <div className={styles.tagBadgeRow}>
+                    {availableExtraTags.map((tag) => {
+                      const isSelected = (field.state.value || []).includes(tag.value);
+                      return (
+                        <button
+                          key={tag.value}
+                          type="button"
+                          className={clsx(styles.tagBadge, isSelected && styles.tagBadgeActive)}
+                          onClick={() => {
+                            const current = field.state.value || [];
+                            field.handleChange(
+                              isSelected
+                                ? current.filter((t) => t !== tag.value)
+                                : [...current, tag.value],
+                            );
+                          }}
+                        >
+                          {tag.label}
+                          {isSelected && <Cross className={styles.crossIcon} />}
+                        </button>
                       );
-                    }}
-                  >
-                    {tag.label}
-                    {isSelected && <Cross className={styles.crossIcon} />}
-                  </button>
-                );
-              })}
-            </div>
-            {(field.state.meta.errors.length > 0 || stepErrors['tags']) && (
-              <span className={styles.errorText}>
-                {getErrorMessage(field.state.meta.errors[0]) || stepErrors['tags']?.[0]}
-              </span>
-            )}
-          </div>
+                    })}
+                  </div>
+                  {(field.state.meta.errors.length > 0 || stepErrors['tags']) && (
+                    <span className={styles.errorText}>
+                      {getErrorMessage(field.state.meta.errors[0]) || stepErrors['tags']?.[0]}
+                    </span>
+                  )}
+                </div>
+              );
+            }}
+          </form.Field>
         )}
-      </form.Field>
+      </form.Subscribe>
+
 
       {/* Партнёр */}
       <form.Field name="partnerId">

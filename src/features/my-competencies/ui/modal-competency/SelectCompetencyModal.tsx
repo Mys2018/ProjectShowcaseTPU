@@ -4,34 +4,29 @@ import { useSkillsStore } from '@/features/my-competencies/model/store/useSkills
 import { useRoleTypes } from '@/entities/user/api/queries.ts';
 import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
 import { ModalFooter } from '@/shared/ui/modal-footer/ModalFooter.tsx';
-import { ALL_COMPETENCIES } from '@/features/my-competencies/model/store/mock.ts';
 import styles from './SelectCompetencyModal.module.css';
 
 interface SelectCompetencyModalProps {
   isOpen: boolean;
   onClose: () => void;
   maxCount?: number;
+  initialSelectedIds?: string[];
+  onSubmitCallback?: (roles: { id: string; name: string }[]) => void;
 }
 
-export const SelectCompetencyModal = ({ isOpen, onClose, maxCount }: SelectCompetencyModalProps) => {
+export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelectedIds, onSubmitCallback }: SelectCompetencyModalProps) => {
   const { draftData, setCompetencies } = useSkillsStore();
   const { data: roleTypesData = [], isLoading } = useRoleTypes();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedIds(draftData.map((c) => c.roleTypeId));
+      setSelectedIds(initialSelectedIds ?? draftData.map((c) => c.roleTypeId));
     }
-  }, [isOpen, draftData]);
+  }, [isOpen, draftData, initialSelectedIds]);
 
   const availableCompetencies = useMemo(() => {
-    if (roleTypesData.length > 0) {
-      return roleTypesData;
-    }
-    return ALL_COMPETENCIES.map((c) => ({
-      id: c.roleTypeId,
-      name: c.roleTypeName,
-    }));
+    return roleTypesData;
   }, [roleTypesData]);
 
   const limit = maxCount ?? 7;
@@ -53,7 +48,12 @@ export const SelectCompetencyModal = ({ isOpen, onClose, maxCount }: SelectCompe
     const selectedRoles = availableCompetencies
       .filter((c) => selectedIds.includes(c.id))
       .map((c) => ({ id: c.id, name: c.name ?? '' }));
-    setCompetencies(selectedRoles);
+    
+    if (onSubmitCallback) {
+      onSubmitCallback(selectedRoles);
+    } else {
+      setCompetencies(selectedRoles);
+    }
     onClose();
   };
 

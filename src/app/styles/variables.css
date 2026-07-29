@@ -61,14 +61,14 @@
   --font-open-sans: 'Open Sans Variable', sans-serif;
 
   --section-title-interface: 600 20px/1 var(--font-inter);
-  --field-label-interface: 400 18px/1 var(--font-ALS);
+  --field-label-interface: 400 12px/1 var(--font-ALS);
 
   /*Новые бля*/
-  --field-title-small-interface: 700 14.5px/1 var(--font-ALS);
-  --field-title-big-interface: 400 16px/1 var(--font-ALS);
+  --field-title-small-interface: 300 15px/1 var(--font-inter);
+  --field-title-big-interface: 400 18px/1 var(--font-ALS);
 
   --meta-title-interface: 700 15px/1.25 var(--font-ALS);
-  --subhead-interface: 300 15px/1 var(--font-inter);
+  --subhead-interface: 700 15px/1 var(--font-ALS);
   --label-interface: 300 12px/1 var(--font-inter);
 
   --hero-title-platform: 700 32px/1 var(--font-ALS);
@@ -121,8 +121,6 @@
   --OS-10-400: 400 10px/1 var(--font-open-sans);
   --OS-20-550: 550 20px/1 var(--font-open-sans);
 
-
-
   --ALS-9-400: 400 9px/1 var(--font-ALS);
   --ALS-16-400: 400 16px/1 var(--font-ALS);
   --ALS-13-700: 700 13px/1 var(--font-ALS);
@@ -154,7 +152,8 @@
     --body-text-platform: 400 14px/1.45 var(--font-open-sans);
 
     --body-small-platform: 400 11.5px/1.3 var(--font-open-sans);
-    
+
+    --field-title-small-interface: 300 13px/1 var(--font-inter);
   }
 }
 
@@ -163,5 +162,9 @@
     --hero-title-platform: 700 28px/1.15 var(--font-ALS);
     --card-title-platform: 680 18px/1.25 var(--font-open-sans);
     --body-text-platform: 400 15px/1.45 var(--font-open-sans);
+    --field-title-small-interface: 300 15px/1 var(--font-inter);
+    --field-title-big-interface: 400 16px/1 var(--font-ALS);
+
+    --subhead-interface: 300 14.5px/1 var(--font-inter);
   }
 }

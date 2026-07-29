@@ -2,6 +2,7 @@ import { useForm } from '@tanstack/react-form';
 // import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
+import { projectApi } from '@/entities/project/api/requests';
 import { useState } from 'react';
 
 export const createProjectRoleSchema = z.object({
@@ -12,7 +13,7 @@ export const createProjectRoleSchema = z.object({
     name: z.string(),
     description: z.string(),
   }),
-  skills: z.array(z.any()),
+  skills: z.array(z.object({ skillId: z.string(), skillName: z.string() })),
 }).refine((data) => data.minPlacesCount <= data.placesCount, {
   message: 'Минимум мест не может быть больше максимума мест',
   path: ['minPlacesCount'],
@@ -32,7 +33,7 @@ export const baseProjectSchema = z.object({
 });
 
 const audienceSegmentSchema = z.object({
-  title: z.string().max(70, 'Максимум 70 символов в названии аудитории'),
+  title: z.string().min(1, 'Укажите название').max(70, 'Максимум 70 символов в названии аудитории'),
   description: z.string().min(50, 'Минимум 50 символов').max(500, 'Максимум 500 символов'),
   minAge: z.number().min(1, 'Минимальный возраст должен быть не менее 1 года'),
   maxAge: z.number().max(100, 'Максимальный возраст должен быть не более 100 лет'),
@@ -70,7 +71,9 @@ const realPrdSchema = z.object({
   businessMetrics: z
     .array(z.string().min(50, 'Минимум 50 символов').max(200, 'Максимум 200 символов'))
     .min(1, 'Минимум одна бизнес-метрика обязательна'),
-  projectPlan: z.array(z.string()),
+  projectPlan: z
+    .array(z.string().min(50, 'Минимум 50 символов').max(600, 'Максимум 600 символов'))
+    .min(1, 'Добавьте минимум один пункт плана'),
 });
 
 export const createProjectSchema = z.discriminatedUnion('type', [
@@ -81,8 +84,7 @@ export const createProjectSchema = z.discriminatedUnion('type', [
 
 export type CreateProjectFormValues = z.infer<typeof createProjectSchema>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type CreateProjectForm = import('@tanstack/react-form').ReactFormExtendedApi<CreateProjectFormValues, any, any, any, any, any, any, any, any, any, any, any>;
+export type CreateProjectForm = ReturnType<typeof useProjectWizard>['form'];
 
 
 // ---------------------------------------------------------------------------
@@ -97,15 +99,15 @@ const step1Schema = z.object({
   partnerId: baseProjectSchema.shape.partnerId,
 });
 
-// Шаг 2: роли и чекпоинты
+// Шаг 2: PRD (зависит от type)
 const step2Schema = z.object({
-  roles: baseProjectSchema.shape.roles,
-  checkpoints: baseProjectSchema.shape.checkpoints,
+  prdMeta: z.union([studyPrdSchema, casePrdSchema, realPrdSchema]),
 });
 
-// Шаг 3: PRD (зависит от type)
+// Шаг 3: роли и чекпоинты
 const step3Schema = z.object({
-  prdMeta: z.union([studyPrdSchema, casePrdSchema, realPrdSchema]),
+  roles: baseProjectSchema.shape.roles,
+  checkpoints: baseProjectSchema.shape.checkpoints,
 });
 
 const STEP_SCHEMAS: Record<number, z.ZodTypeAny> = {
@@ -114,7 +116,7 @@ const STEP_SCHEMAS: Record<number, z.ZodTypeAny> = {
   3: step3Schema,
 };
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 /** Плоский словарь ошибок: путь поля -> список сообщений */
 export type StepErrors = Record<string, string[]>;
@@ -130,18 +132,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   partnerId: '',
   checkpoints: '',
   meta: { title: '', description: '' },
-  roles: [
-    {
-      roleTypeId: '',
-      placesCount: 1,
-      minPlacesCount: 1,
-      meta: {
-        name: '',
-        description: '',
-      },
-      skills: [],
-    },
-  ],
+  roles: [],
   primaryTag: '',
   tags: [],
   prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] },
@@ -175,10 +166,28 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         }
       ];
 
+      let checkpointId = value.checkpoints;
+      if (!checkpointId) {
+        try {
+          const mockCheckpoints = await projectApi.createCheckpoints({
+            name: 'Базовый план проекта',
+            checkpoints: [
+              { title: 'Старт проекта', deadline: new Date(Date.now() + 86400000).toISOString() },
+              { title: 'MVP', deadline: new Date(Date.now() + 86400000 * 14).toISOString() },
+              { title: 'Финал', deadline: new Date(Date.now() + 86400000 * 30).toISOString() },
+            ]
+          });
+          checkpointId = mockCheckpoints.checkpointId;
+        } catch (e) {
+          console.error('Failed to create mock checkpoints', e);
+          checkpointId = 'QPpvJg9aMyU5o2-q';
+        }
+      }
+
       const payload = {
         type: value.type,
         partnerId: value.partnerId || 'wn8s6ctv',
-        checkpoints: value.checkpoints || 'QPpvJg9aMyU5o2-q',
+        checkpoints: checkpointId,
         meta: value.meta,
         primaryTagId: value.primaryTag || 'SnJ8BpqPnxvMbtjT',
         tagIds: value.tags?.length ? value.tags : [],
@@ -229,5 +238,5 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     setCurrentStep((s) => Math.max(s - 1, 1));
   };
 
-  return { form, currentStep, stepErrors, nextStep, prevStep };
+  return { form, currentStep, stepErrors, nextStep, prevStep, setStep: setCurrentStep };
 };

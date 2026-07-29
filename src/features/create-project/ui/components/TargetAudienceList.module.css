@@ -72,3 +72,36 @@
   color: var(--color-brand-black);
 }
 
+.addButton {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-brand-green);
+  color: var(--color-brand-green);
+  width: fit-content;
+  align-items: center;
+  font: var(--inter-12-300);
+  fill: var(--color-brand-green);
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.removeButton {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  color: var(--color-gray-400);
+  font: var(--inter-12-300)
+}
+
+.trashIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-gray-400)
+}
+

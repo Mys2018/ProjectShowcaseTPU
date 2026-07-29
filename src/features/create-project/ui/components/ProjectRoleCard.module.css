@@ -1,0 +1,214 @@
+.cardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleContainer {
+  display: flex;
+  gap: 3px
+}
+
+.cardTitle {
+  font: var(--field-title-small-interface);
+  color: var(--color-gray-750);
+}
+
+.occurrenceIndex {
+  font: var(--subhead-interface);
+  color: var(--color-gray-750);
+}
+
+.inviteButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-brand-green);
+  font: var(--label-interface);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.inviteButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.relativeBody {
+  position: relative;
+  width: 100%;
+}
+
+
+.moreMenuButton {
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.moreMenuContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--tooltop-shadow);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+  z-index: 20;
+  padding: 16px;
+  gap: 12px;
+}
+
+.dropdownItem {
+  text-align: left;
+  display: flex;
+  gap: 5px;
+  font: var(--inter-12-500);
+  color: var(--color-gray-600);
+  cursor: pointer;
+}
+
+.editingBorder {
+  border-color: var(--color-brand-violet) !important;
+}
+
+.skillsLabel {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+.skillsLabelEditing {
+  color: var(--color-brand-violet);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: var(--label-interface);
+  color: var(--color-gray-500);
+}
+
+.body {
+  position: relative;
+
+  display: flex;
+  padding: 18px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  border-radius: 12px;
+  border: 1px solid var(--color-gray-250)
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.mainContainer h5 {
+  font: var(--label-interface);
+  color: var(--color-gray-500);
+  flex-grow: 1;
+}
+
+.competenciesContainer {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.competency {
+  display: flex;
+  padding: 8px 12px;
+  gap: 10px;
+  background-color: var(--color-gray-100);
+  border-radius: 8px;
+  align-items: center;
+  color: var(--color-gray-750);
+  font: var(--OS-14-500);
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.plusButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+
+  border: 1px solid var(--color-brand-green);
+}
+
+.plus {
+  width: 12px;
+  height: 12px;
+  color: var(--color-brand-green)
+}
+
+.addLabel {
+  font: var(--body-text-platform);
+  color: var(--color-brand-green);
+  align-content: center;
+}
+
+.editButton {
+  width: 16px;
+  height: 16px;
+  padding-right: 8px;
+}
+
+.editIcon {
+  color: var(--color-gray-400);
+  flex-shrink: 0;
+}
+
+.editing {
+  color: white;
+  background-color: var(--color-brand-violet);
+  border-color: var(--color-brand-violet);
+}
+
+.crossIcon {
+  color: var(--color-gray-200);
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  background-color: transparent;
+}
+

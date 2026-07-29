@@ -12,13 +12,14 @@ export const MyCompetenciesModal = ({ currentFullSkills, addSkill, setPopoverOpe
     <div className={styles.modalBody}>
       <div className={styles.skillsList}>
         {currentFullSkills.map((skill) => (
-          <button key={skill.skillId} className={styles.skill} onClick={() => addSkill(skill)}>
+          <button type="button" key={skill.skillId} className={styles.skill} onClick={() => addSkill(skill)}>
             {skill.skillName}
           </button>
         ))}
       </div>
 
       <button
+        type="button"
         className={styles.closeButton}
         onClick={() => setPopoverOpenFor(null)}
       >
