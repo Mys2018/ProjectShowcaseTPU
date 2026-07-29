@@ -172,9 +172,9 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           const mockCheckpoints = await projectApi.createCheckpoints({
             name: 'Базовый план проекта',
             checkpoints: [
-              { title: 'Старт проекта', deadline: new Date(Date.now() + 86400000).toISOString() },
-              { title: 'MVP', deadline: new Date(Date.now() + 86400000 * 14).toISOString() },
-              { title: 'Финал', deadline: new Date(Date.now() + 86400000 * 30).toISOString() },
+              { title: 'Старт проекта', deadline: new Date(Date.now() + 86400000).toISOString().split('T')[0] },
+              { title: 'MVP', deadline: new Date(Date.now() + 86400000 * 14).toISOString().split('T')[0] },
+              { title: 'Финал', deadline: new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0] },
             ]
           });
           checkpointId = mockCheckpoints.checkpointId;
@@ -196,7 +196,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           roleTypeId: role.roleTypeId || 'v-Y51E1S1Oyux8gX',
           placesCount: role.placesCount,
           minPlacesCount: role.minPlacesCount,
-          meta: { description: role.meta.description },
+          meta: { description: role.meta.description || 'Описание роли' },
           skillIds: role.skills?.map((s: any) => s?.skillId || s?.id || s) || [],
         })),
       } as unknown as CreateProjectDto;
