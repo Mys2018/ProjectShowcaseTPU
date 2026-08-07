@@ -1,5 +1,5 @@
 import styles from './ProjectProfile.module.css'
-import ava from "@/shared/assets/ava.webp";
+import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
 
 type ProjectProfileProps = {
   name?: string;
@@ -7,20 +7,16 @@ type ProjectProfileProps = {
   avatarSrc?: string;
 };
 
-export const ProjectProfile = ({ name, role}: ProjectProfileProps) => {
+export const ProjectProfile = ({ name, role, avatarSrc}: ProjectProfileProps) => {
 
   return (
     <div className={styles.container}>
       {
-        // TODO
-        // avatarSrc ? (
-        //   <img src={avatarSrc} alt={`${name}'s avatar`} className={styles.avatar} />
-        // ) : (
-        //   <div className={styles.avatarPlaceholder}>
-        //     <span>{name?.charAt(0)}</span>
-        //   </div>
-        // )
-        <img src={ava} alt="avatar" className={styles.avatar} />
+        avatarSrc ?
+          <img className={styles.avatar} src={avatarSrc} alt="Аватар студента" /> :
+          <div className={styles.avatar}>
+            <UserIcon className={styles.userIcon}/>
+          </div>
       }
       <div className={styles.info}>
         <h2 className={styles.name}>{name}</h2>

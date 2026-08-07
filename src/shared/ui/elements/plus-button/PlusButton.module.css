@@ -1,0 +1,35 @@
+.addButton {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--color-brand-green);
+  cursor: pointer;
+  font: var(--OS-14-500);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.addButton:hover {
+  opacity: 0.8;
+}
+
+.plus {
+  width: 12px;
+  height: 12px;
+}
+
+.plusIcon {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-brand-green);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+
+  background-color: white;
+}

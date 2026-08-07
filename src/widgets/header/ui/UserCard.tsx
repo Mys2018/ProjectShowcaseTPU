@@ -1,12 +1,15 @@
-// import { useMe, useAuthStore, placeholderUser } from "@/entities/user";
-import { useAuthStore } from "@/entities/user";
+import {useAuthStore} from "@/entities/user";
 import styles from './UserCard.module.css'
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared/index.ts";
 import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
-import ava from "@/shared/assets/ava.webp";
+import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
 
-export function UserCard() {
+interface UserCardProps {
+  profilePicture?: string
+}
+
+export function UserCard({ profilePicture } : UserCardProps) {
   const status = useAuthStore((s) => s.status);
   const navigate = useNavigate()
   // const { data: user = placeholderUser } = useMe(status === "authenticated");
@@ -18,12 +21,13 @@ export function UserCard() {
   return (
     <div className={styles.profileContainer}>
       <div className={styles.avatarContainer} onClick={() => navigate(ROUTES.MY_PROFILE)}>
-        {/* <p style={{ color: "white", fontSize: "16px" }} title={user.meta.name}>
-        {user.meta.name}
-      </p>
-      <p style={{ color: "white", fontSize: "12px" }}>{user.id}</p> */}
-        {/*{user.profilePicture ? <img className={styles.avatar} src={user.profilePicture} /> : <p className={styles.symbol}>{user.meta.name.slice(0, 1)}</p>}*/}
-        <img src={ava} alt="avatar" className={styles.avatar} />
+        {
+          profilePicture ?
+            <img className={styles.avatar} src={profilePicture} alt="Аватар студента" /> :
+            <div className={styles.avatar}>
+              <UserIcon className={styles.userIcon}/>
+            </div>
+        }
         <div className={styles.status}>
           mentor
         </div>

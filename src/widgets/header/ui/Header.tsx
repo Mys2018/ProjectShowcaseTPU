@@ -3,8 +3,12 @@ import { SwitchWorkSpace } from "@/features/switch-workspace";
 import styles from "./Header.module.css";
 
 import { UserCard } from "./UserCard.tsx";
+import {useMe} from "@/entities/user";
 
 export default function Header() {
+
+  const { data } = useMe()
+
   return (
     <div className={styles.header}>
       <header className={styles.wrap}>
@@ -13,7 +17,7 @@ export default function Header() {
           <SwitchWorkSpace />
         </div>
         {/*<EnterButton /> */}
-        <UserCard />
+        <UserCard profilePicture={data?.profilePicture}/>
       </header>
     </div>
   );

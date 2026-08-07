@@ -30,7 +30,7 @@
 }
 
 .title {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: var(--color-brand-black);
 }
 

@@ -143,8 +143,6 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
           )}
         </div>
       </div>
-
-
     </section>
   );
 }

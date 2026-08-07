@@ -47,7 +47,7 @@
 .body {
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 0 16px;
+  padding: 16px 16px 0px 16px;
   gap: 24px;
 
   grid-column: 2 / 6;
@@ -90,5 +90,16 @@
 @media (max-width: 1280px) {
   .mainContent {
     padding: 54px 24px 0;
+  }
+
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 16px 0 16px;
+    gap: 24px;
+
+    grid-column: 1 / 6;
+    grid-row: 2 / 6;
   }
 }

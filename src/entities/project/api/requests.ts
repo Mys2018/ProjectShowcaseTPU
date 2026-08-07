@@ -1,5 +1,11 @@
 import { api } from '@/shared';
-import type { ProjectCardData, ProjectsResponseDto, GetProjectsQueryParams, CreateProjectDto } from '../model/types';
+import type {
+  ProjectCardData,
+  ProjectsResponseDto,
+  GetProjectsQueryParams,
+  CreateProjectDto,
+  ProjectCheckpoints, ProjectResponseCheckpointDto
+} from '../model/types';
 import { mapProjectDtoToEntity } from '../lib/mapProject';
 
 export const projectApi = {
@@ -18,17 +24,27 @@ export const projectApi = {
   },
 
   getProjectById: async (id: string): Promise<ProjectCardData> => {
-    const response = await api.get<any>(`/projects/${id}`);
+    const response = await api.get(`/projects/${id}`);
     return mapProjectDtoToEntity(response.data);
   },
 
   createProject: async (data: CreateProjectDto): Promise<ProjectCardData> => {
-    const response = await api.post<any>('/projects', data);
+    const response = await api.post('/projects', data);
     return mapProjectDtoToEntity(response.data);
   },
 
-  createCheckpoints: async (data: { name: string, checkpoints: { title: string, deadline: string }[] }): Promise<{ checkpointId: string }> => {
-    const response = await api.post<any>('/projects/checkpoints', data);
+  getCheckpoints: async (offset = 1, limit = 1): Promise<ProjectResponseCheckpointDto> => {
+    const response = await api.get('/projects/checkpoints', {
+      params: {
+        offset,
+        limit
+      }
+    })
+    return response.data
+  },
+
+  createCheckpoints: async (data: ProjectCheckpoints): Promise<ProjectCheckpoints> => {
+    const response = await api.post('/projects/checkpoints', data);
     return response.data;
   },
 };

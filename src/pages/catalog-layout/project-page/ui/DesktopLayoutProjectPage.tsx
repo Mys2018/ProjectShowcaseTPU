@@ -97,7 +97,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
   return (
     <main className={styles.main}>
       <div className={styles.headerLeft} onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>
-        <BackIcon/>
+        <BackIcon className={styles.backIcon}/>
         <p className={styles.back}>Назад</p>
       </div>
 

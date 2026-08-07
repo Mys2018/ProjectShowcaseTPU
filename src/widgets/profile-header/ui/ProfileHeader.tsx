@@ -4,7 +4,7 @@ import EditIcon from '@/shared/ui/icons/edit.svg?react';
 import BigInfoIcon from '@/shared/ui/icons/big_info.svg?react';
 import { LinkBlock } from '@/shared/ui/link-block/LinkBlock';
 import styles from './ProfileHeader.module.css';
-import ava from '@/shared/assets/ava.webp';
+import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
 
 
 
@@ -18,13 +18,14 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
     <div className={styles.mainInfo}>
       <div className={styles.infoGrid}>
         <section className={styles.mainInfoContainer}>
-          <div className={styles.avatar}>
-            <img src={ava} alt="avatar" className={styles.avatarImg} />
-            {/*{data.profilePicture ? (*/}
-            {/*  <img className={styles.avatarImg} src={data.profilePicture} alt='Аватар' />*/}
-            {/*) : (*/}
-            {/*  <p className={styles.avatarName}>{data.meta.firstName.slice(0, 1)}</p>*/}
-            {/*)}*/}
+          <div className={styles.avatarContainer}>
+            {
+              data.profilePicture ?
+                <img className={styles.avatar} src={data.profilePicture} alt="Аватар студента" /> :
+                <div className={styles.avatar}>
+                  <UserIcon className={styles.userIcon}/>
+                </div>
+            }
             <button className={styles.editButton}>
               <EditIcon />
             </button>

@@ -10,21 +10,12 @@
   
 }
 
-.avatar, .avatarPlaceholder {
+.avatar, .userIcon {
   border-radius: 50%;
   width: 40px;
   height: 40px;
   min-width: 40px;
   min-height: 40px;
-}
-
-.avatarPlaceholder{
-  background-color: #7A7A7A;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: var(--body-small-platform);
-  color: var(--color-gray-50);
 }
 
 .info {

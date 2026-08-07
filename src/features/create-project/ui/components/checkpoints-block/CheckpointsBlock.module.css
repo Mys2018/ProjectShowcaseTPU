@@ -1,0 +1,83 @@
+.checkpointsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+
+  border-radius: 20px;
+  border: 1px solid var(--color-gray-200);
+}
+
+.checkpointsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+}
+
+.checkpoint {
+  /*TODO ПРИБЛИЗИТЕЛЬНАЯ ВЕРСТКА*/
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  position: relative;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray-650);
+  border-radius: 28px;
+
+  font: var(--inter-11-400);
+  color: white;
+
+  position: relative;
+}
+
+
+.checkpoint:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 47px;
+
+  width: 1px;
+  height: 78px;
+  background-color: var(--color-gray-150);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--color-gray-50);
+  border-radius: 16px;
+  padding: 10px;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 6px 8px 8px;
+}
+
+.card p:nth-child(1) {
+  font: var(--menu-title-platform);
+  color: var(--color-gray-650)
+}
+
+.card p:nth-child(2) {
+  font: var(--body-text-platform);
+  color: var(--color-gray-600)
+}
+
+.button {
+  padding-left: calc(20px + 20px);
+}
+

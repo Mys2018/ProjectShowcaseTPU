@@ -77,7 +77,7 @@
 }
 
 .subtitle {
-  font: var(--subhead-interface);
+  font: var(--field-title-small-interface);
   color: var(--color-gray-500)
 }
 

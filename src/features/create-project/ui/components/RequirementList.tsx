@@ -1,8 +1,8 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
 import {SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
 import styles from './RequirementList.module.css';
-import PlusIcon from '@/shared/ui/icons/plus.svg?react'
 import TrashIcon from '@/shared/ui/icons/trash.svg?react'
+import {PlusButton} from "@/shared/ui/elements/plus-button/PlusButton.tsx";
 
 interface RequirementListProps {
   form: CreateProjectForm;
@@ -77,10 +77,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                 );
               })}
 
-              <button type="button" className={styles.addButton} onClick={handleAdd}>
-                <span className={styles.plusIcon}><PlusIcon className={styles.plus}/></span>
-                Добавить пункт
-              </button>
+              <PlusButton text={'Добавить пункт'} onClick={handleAdd}/>
 
               {field.state.meta.errors.length > 0 && (
                  <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>

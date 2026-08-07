@@ -20,12 +20,12 @@
 }
 
 .mainInfo p {
-  font: var(--subhead-interface);
+  font: var(--field-title-small-interface);
   color: var(--color-gray-600)
 }
 
 .title {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: var(--color-brand-black);
 }
 
@@ -43,7 +43,6 @@
   background: var(--color-gray-50);
   border-radius: 20px;
   padding: 48px 24px;
-  margin-top: 36px;
   text-align: center;
 }
 
@@ -54,7 +53,7 @@
 }
 
 .emptyStateBlock h4 {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: var(--color-gray-900);
 }
 
@@ -75,5 +74,11 @@
   cursor: pointer;
   width: fit-content;
   background-color: white;
+}
+
+.competencyList {
+  display: flex;
+  flex-direction: column;
+  gap: 36px
 }
 

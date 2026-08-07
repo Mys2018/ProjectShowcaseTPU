@@ -1,9 +1,8 @@
 import { useForm } from '@tanstack/react-form';
-// import { zodValidator } from '@tanstack/zod-form-adapter';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
 import { projectApi } from '@/entities/project/api/requests';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 
 export const createProjectRoleSchema = z.object({
   roleTypeId: z.string(),
@@ -22,14 +21,21 @@ export const createProjectRoleSchema = z.object({
 export const baseProjectSchema = z.object({
   ownerId: z.number().min(1, 'ID владельца обязателен'),
   partnerId: z.string().min(1, 'Выберите партнера'),
-  checkpoints: z.string(),
+  checkpoints: z.array(
+    z.object({
+      title: z.string().min(1, 'Укажите название'),
+      deadline: z.string().min(1, 'Укажите дату'),
+    })
+  ),
   meta: z.object({
     title: z.string().min(35, 'Минимум 35 символов').max(100, 'Максимум 100 символов'),
     description: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
   }),
   roles: z.array(createProjectRoleSchema),
   primaryTag: z.string().min(1, 'Выберите основной тег'),
-  tags: z.array(z.string()).min(1, 'Выберите хотя бы один тег'),
+  tags: z.array(
+    z.string()).min(1, 'Выберите хотя бы один тег'
+  ),
 });
 
 const audienceSegmentSchema = z.object({
@@ -130,7 +136,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
-  checkpoints: '',
+  checkpoints: [{ title: '', deadline: '' }],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -153,62 +159,45 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     } as CreateProjectFormValues,
 
     onSubmit: async ({ value }) => {
-      // Подставляем дефолтные значения, если данные о таймингах и ролях не заполнены
-      const mappedRoles = value.roles?.length && value.roles[0]?.roleTypeId !== '' ? value.roles : [
-        {
-          roleTypeId: 'v-Y51E1S1Oyux8gX',
-          placesCount: 2,
-          minPlacesCount: 1,
-          meta: {
-            description: 'Роль'
-          },
-          skills: [],
-        }
-      ];
 
-      let checkpointId = value.checkpoints;
-      if (!checkpointId) {
-        try {
-          const mockCheckpoints = await projectApi.createCheckpoints({
-            name: 'Базовый план проекта',
-            checkpoints: [
-              { title: 'Старт проекта', deadline: new Date(Date.now() + 86400000).toISOString().split('T')[0] },
-              { title: 'MVP', deadline: new Date(Date.now() + 86400000 * 14).toISOString().split('T')[0] },
-              { title: 'Финал', deadline: new Date(Date.now() + 86400000 * 30).toISOString().split('T')[0] },
-            ]
-          });
-          checkpointId = mockCheckpoints.checkpointId;
-        } catch (e) {
-          console.error('Failed to create mock checkpoints', e);
-          checkpointId = 'QPpvJg9aMyU5o2-q';
-        }
-      }
+      const checkpointId = projectApi.createCheckpoints({
+        id: crypto.randomUUID(),
+        name: "checkpoint",
+        checkpoints: value.checkpoints
+      })
 
       const payload = {
         type: value.type,
-        partnerId: value.partnerId || 'wn8s6ctv',
+        partnerId: value.partnerId,
         checkpoints: checkpointId,
         meta: value.meta,
-        primaryTagId: value.primaryTag || 'SnJ8BpqPnxvMbtjT',
+        primaryTagId: value.primaryTag,
         tagIds: value.tags?.length ? value.tags : [],
         prdMeta: value.prdMeta,
-        roles: mappedRoles.map(role => ({
-          roleTypeId: role.roleTypeId || 'v-Y51E1S1Oyux8gX',
-          placesCount: role.placesCount,
-          minPlacesCount: role.minPlacesCount,
-          meta: { description: role.meta.description || 'Описание роли' },
-          skillIds: role.skills?.map((s: any) => s?.skillId || s?.id || s) || [],
-        })),
+        roles: value.roles,
       } as unknown as CreateProjectDto;
 
-      console.log('🚀 ~ useProjectWizard ~ payload:', payload)
+      console.log('payload:', payload)
       await onSubmit(payload);
     },
   });
 
+  useEffect(() => {
+    const fetchDefaultCheckpoints = async () => {
+      const backCheckpoints = await projectApi.getCheckpoints()
+      const firstCheckpoints = backCheckpoints.checkpoints[0]?.checkpoints;
+
+      if (firstCheckpoints && firstCheckpoints.length > 0) {
+        form.setFieldValue('checkpoints', firstCheckpoints);
+      }
+    }
+
+    fetchDefaultCheckpoints()
+  }, [form]);
+
   const validateCurrentStep = (): boolean => {
     const schema = STEP_SCHEMAS[currentStep];
-    if (!schema) return true; // шаг без схемы — пропускаем
+    if (!schema) return true;
 
     const result = schema.safeParse(form.state.values);
 

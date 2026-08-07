@@ -7,10 +7,10 @@ import styles from "./Tabs.module.css";
 
 interface TabProps {
   form: CreateProjectForm;
-  stepErrors: StepErrors;
+  stepErrors?: StepErrors;
 }
 
-export function RolesTab({ form, stepErrors: _stepErrors }: TabProps) {
+export function RolesTab({ form }: TabProps) {
   const { openModal } = useModalStore();
   const { data: globalSkills = [] } = useSkills(); // Fetch all skills to pass to the role cards
 
@@ -38,7 +38,7 @@ export function RolesTab({ form, stepErrors: _stepErrors }: TabProps) {
   };
 
   return (
-    <div>
+    <div className={styles.mainFieldContainer}>
       <div className={styles.mainInfo}>
         <h3>Компетенции проекта</h3>
         <p>
@@ -70,7 +70,7 @@ export function RolesTab({ form, stepErrors: _stepErrors }: TabProps) {
           }
 
           return (
-            <div style={{ marginTop: '24px' }}>
+            <div className={styles.competencyList}>
               {roles.map((_, index) => (
                 <ProjectRoleCard 
                   key={index} 

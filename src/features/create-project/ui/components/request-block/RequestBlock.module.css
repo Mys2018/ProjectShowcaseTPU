@@ -1,0 +1,177 @@
+.body {
+  display: flex;
+  padding: 10px;
+  border: 1px solid var(--color-gray-250);
+  border-radius: 16px;
+  background-color: white;
+}
+
+.closed {
+  height: 0;
+  min-height: 100%;
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.open {
+  height: 100%;
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+.header button {
+  transition: transform 0.2s ease-in-out;
+}
+
+.mainBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.innerBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 6px 6px 8px 8px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
+}
+
+.header p{
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+/*Карточка*/
+
+.cardBody {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.leftHalf {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.userIcon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: start;
+  min-width: 0;
+}
+
+.name {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moreInfo {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.moreInfo p {
+  font: var(--field-label-interface);
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+
+.moreInfo p:first-child {
+  flex-shrink: 0;
+}
+
+.moreInfo p:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.verticalSeparator {
+  width: 1px;
+  height: 100%;
+  background-color: var(--color-gray-100);
+  flex-shrink: 0;
+}
+
+.rightHalf {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.smallHeader {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 10px;
+}
+
+.smallHeader p {
+  font: var(--inter-9-5-400);
+  color: var(--color-gray-650);
+  text-align: right;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.rejectButton, .approveButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px;
+}
+
+.rejectButton {
+  color: var(--color-red)
+}
+
+.approveButton {
+  color: white;
+  background-color: var(--color-brand-green);
+  border-radius: 6px;
+}
+
+.checkIcon {
+  width: 12px;
+  height: 8px;
+}
+

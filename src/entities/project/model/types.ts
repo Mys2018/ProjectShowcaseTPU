@@ -54,6 +54,13 @@ export interface ProjectCardData {
   brandColor?: string;
 }
 
+export interface ProjectResponseCheckpointDto {
+  limit: number;
+  offset: number;
+  total: number;
+  checkpoints: ProjectCheckpoints[];
+}
+
 export interface ProjectCheckpoint {
   title: string;
   deadline: string;

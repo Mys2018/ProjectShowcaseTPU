@@ -16,7 +16,7 @@
 }
 
 .mainInfo p {
-  font: var(--subhead-interface);
+  font: var(--field-title-small-interface);
   color: var(--color-gray-600)
 }
 
@@ -24,6 +24,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  padding-bottom: 24px;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -35,7 +36,7 @@
 }
 
 .title {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: var(--color-brand-black);
 }
 

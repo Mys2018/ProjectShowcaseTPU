@@ -2,7 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 24px;
+}
+
+.cardBody {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
 }
 
 .cardHeader {
@@ -13,17 +18,23 @@
 
 .titleContainer {
   display: flex;
+  align-items: center;
   gap: 3px
 }
 
 .cardTitle {
-  font: var(--field-title-small-interface);
+  font: var(--subhead-interface);
   color: var(--color-gray-750);
 }
 
 .occurrenceIndex {
-  font: var(--subhead-interface);
+  font: var(--field-title-small-interface);
   color: var(--color-gray-750);
+}
+
+.required {
+  font: var(--subhead-interface);
+  color: var(--color-red);
 }
 
 .inviteButton {
@@ -47,7 +58,6 @@
   position: relative;
   width: 100%;
 }
-
 
 .moreMenuButton {
   cursor: pointer;
@@ -110,8 +120,12 @@
 .body {
   position: relative;
 
+  height: fit-content;
+
+  grid-column: 1 / 8;
   display: flex;
-  padding: 18px;
+
+  padding: 10px;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -120,9 +134,16 @@
   border: 1px solid var(--color-gray-250)
 }
 
+.requestBlock {
+  grid-column: 8 / 13;
+  display: flex;
+  flex-direction: column;
+}
+
 .mainContainer {
   display: flex;
   flex-direction: column;
+  padding: 6px 6px 8px 8px;
   gap: 12px
 }
 
@@ -149,6 +170,20 @@
   align-items: center;
   color: var(--color-gray-750);
   font: var(--OS-14-500);
+}
+
+.featContainer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 2px;
+}
+
+
+.featButton {
+  display: flex;
+  align-items: center;
+  padding-top: 1px;
 }
 
 .addButton {
@@ -182,12 +217,12 @@
 }
 
 .editButton {
-  width: 16px;
-  height: 16px;
   padding-right: 8px;
 }
 
 .editIcon {
+  width: 16px;
+  height: 16px;
   color: var(--color-gray-400);
   flex-shrink: 0;
 }

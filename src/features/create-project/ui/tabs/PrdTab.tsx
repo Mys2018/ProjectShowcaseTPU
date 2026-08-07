@@ -95,18 +95,23 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
 function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
-      <form.Field name="prdMeta.prerequisites">
-        {(field) => (
-          <BigTextFieldForm
-            title="Актуальность"
-            placeholder="Опишите основные причины..."
-            value={field.state.value as string}
-            onChange={(e) => field.handleChange(e.target.value)}
-            maxLength={1500}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
-          />
-        )}
-      </form.Field>
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Актуальность
+        </h4>
+        <form.Field name="prdMeta.prerequisites">
+          {(field) => (
+            <BigTextFieldForm
+              placeholder="Опишите основные причины..."
+              value={field.state.value as string}
+              onChange={(e) => field.handleChange(e.target.value)}
+              maxLength={1500}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
+
 
       <div className={styles.block}>
         <h4 className={styles.title}>
@@ -115,20 +120,24 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
         <TargetAudienceList form={form} stepErrors={stepErrors} />
       </div>
 
-      <form.Field name="prdMeta.projectGoal">
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Цели
+        </h4>
+        <form.Field name="prdMeta.projectGoal">
+          {(field) => (
+            <BigTextFieldForm
+              placeholder="Что да как кратенько..."
+              value={field.state.value as string}
+              onChange={(e) => field.handleChange(e.target.value)}
+              maxLength={500}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
 
-        {(field) => (
-          <BigTextFieldForm
-            title="Цели"
-            subtitle={"Цель проекта..."}
-            placeholder="Что да как кратенько..."
-            value={field.state.value as string}
-            onChange={(e) => field.handleChange(e.target.value)}
-            maxLength={500}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
-          />
-        )}
-      </form.Field>
+
 
       <div className={styles.block}>
         <h4 className={styles.title}>
@@ -143,19 +152,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
         />
       </div>
 
-      <form.Field name="prdMeta.problemStatement">
-        {(field) => (
-          <BigTextFieldForm
-            title="Реализация"
-            subtitle={"Постановка задачи..."}
-            placeholder="Что да как кратенько..."
-            value={field.state.value as string}
-            onChange={(e) => field.handleChange(e.target.value)}
-            maxLength={1500}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.problemStatement']?.[0]}
-          />
-        )}
-      </form.Field>
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Реализация
+        </h4>
+        <form.Field name="prdMeta.problemStatement">
+          {(field) => (
+            <BigTextFieldForm
+              subtitle={"Постановка задачи..."}
+              placeholder="Что да как кратенько..."
+              value={field.state.value as string}
+              onChange={(e) => field.handleChange(e.target.value)}
+              maxLength={1500}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.problemStatement']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
+
+
     </div>
   );
 }
@@ -163,18 +178,22 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
 function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
-      <form.Field name="prdMeta.productVision">
-        {(field) => (
-          <BigTextFieldForm
-            title="Product vision"
-            placeholder="Расскажите стратегическое описание продукта..."
-            value={field.state.value as string}
-            onChange={(e) => field.handleChange(e.target.value)}
-            maxLength={500}
-            validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.productVision']?.[0]}
-          />
-        )}
-      </form.Field>
+      <div className={styles.block}>
+        <h4 className={styles.title}>
+          Product vision
+        </h4>
+        <form.Field name="prdMeta.productVision">
+          {(field) => (
+            <BigTextFieldForm
+              placeholder="Расскажите стратегическое описание продукта..."
+              value={field.state.value as string}
+              onChange={(e) => field.handleChange(e.target.value)}
+              maxLength={500}
+              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.productVision']?.[0]}
+            />
+          )}
+        </form.Field>
+      </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>

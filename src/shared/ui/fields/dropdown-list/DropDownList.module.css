@@ -7,7 +7,7 @@
 }
 
 .label {
-  font: var(--body-text-platform);
+  font: var(--field-title-big-interface);
   color: var(--color-gray-900);
 }
 
