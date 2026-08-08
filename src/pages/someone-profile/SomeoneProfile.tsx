@@ -13,12 +13,10 @@ export function SomeoneProfile() {
   const params = useParams<{ id: string }>()
   const uid = params.id  || ''
   const { data: user } = useUserById(uid)
-  console.log(user)
 
   const links: { type?: 'tg' | 'vk' | 'element'; link?: string; anotherType?: string }[] = [
     { type: 'element', link: 'Mys2018' },
     { type: 'tg', link: 'Mys2018' },
-    // { anotherType: 'Max', link: '@mys2018' },
   ];
 
   if (!user) {

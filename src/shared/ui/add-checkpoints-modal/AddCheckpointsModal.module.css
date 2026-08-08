@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.dateContainer {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  border-radius: 16px;
+  border: 1px solid var(--color-gray-250);
+  padding: 10px;
+
+  min-width: 250px;
+
+  align-items: center;
+
+}
+
+.labelWrapper {
+  padding: 6px 6px 8px 8px;
+}
+
+.label {
+  font: var(--body-text-platform);
+  color: var(--color-gray-500)
+}
+
+.inputButton {
+  display: flex;
+  position: relative;
+
+  align-items: center;
+  justify-content: center;
+
+
+}
+
+.input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}

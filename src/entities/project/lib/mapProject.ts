@@ -1,9 +1,6 @@
 import type {ProjectDto, ProjectCardData} from '../model/types';
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
-  const checkpointsSummary = dto.checkpoints?.checkpoints
-    ?.map(cp => `${cp.title} (${cp.deadline})`)
-    .join(', ') || 'Нет чекпоинтов';
 
   return {
     id: dto.id,
@@ -11,24 +8,16 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     tags: dto.tags ?? [],
     primaryTag: dto.primaryTag,
-    
-    // tags: (dto.tags || []).map((t) => ({
-    //   key: t.tagId as ProjectDirection,
-    //   label: t.tagName,
-    // })),
-    
+
     ownerId: dto.ownerId,
-    partnerId: {
-      value: dto.partnerId?.value || '',
-      verbose: dto.partnerId?.verbose || 'Не указан',
-    },
+    partnerId: dto.partnerId,
     status: dto.status,
     meta: {
       title: dto.meta?.title || '',
       description: dto.meta?.description || '',
     },
     
-    checkpoints: checkpointsSummary,
+    checkpoints: dto.checkpoints?.checkpoints || [],
 
     roles: (dto.roles || []).map((r) => ({
       roleId: r.roleId,
@@ -44,14 +33,6 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
         skillName: s.skillName,
       })),
     })),
-    
-    // prdMeta: {
-    //   problem: dto.prdMeta?.problemStatement || '',
-    //   context: dto.prdMeta?.prerequisites || '',
-    //   audience: dto.prdMeta?.audience?.map(a => a.title).join(', ') || '',
-    //   requirements: dto.prdMeta?.functional || [],
-    //   mvp: [],
-    // },
 
     prdMeta: dto.prdMeta,
     

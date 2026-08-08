@@ -43,7 +43,7 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
               const prefix = `prdMeta.audience[${index}]` as any;
 
               return (
-                <div className={styles.body}>
+                <div  className={styles.body} key={prefix}>
 
                   <div className={styles.titleContainer}>
                     <p className={styles.titleSegment}>

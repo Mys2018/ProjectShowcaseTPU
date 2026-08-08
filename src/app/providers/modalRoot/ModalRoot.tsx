@@ -4,12 +4,14 @@ import type {ModalType} from "@/shared/model/useModalStore.ts";
 import React from "react";
 import {LinkModal} from "@/features/link-modal/LinkModal.tsx";
 import { ConfirmModal } from "@/shared/ui";
+import {AddCheckpointsModal} from "@/shared/ui/add-checkpoints-modal/AddCheckpointsModal.tsx";
 
 const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   COMPETENCY_CHOICE: SelectCompetencyModal,
   LINK_UPDATE: LinkModal,
   CONFIRM_SAVE: ConfirmModal,
   CONFIRM_CANCEL: ConfirmModal,
+  ADD_CHECKPOINT: AddCheckpointsModal
 }
 
 export function ModalRoot() {

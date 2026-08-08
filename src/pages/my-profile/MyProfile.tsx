@@ -58,9 +58,6 @@ export const MyProfile = () => {
     return null;
   }
 
-  console.log(user.meta.messengers)
-  console.log(user)
-
   return (
     <div className={styles.mainContent}>
       <section className={styles.headerLeft} onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>

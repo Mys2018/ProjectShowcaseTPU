@@ -1,11 +1,11 @@
 import {create} from "zustand";
 
-export type ModalType = 'COMPETENCY_CHOICE' | 'LINK_UPDATE' | 'CONFIRM_SAVE' | 'CONFIRM_CANCEL' | null
+export type ModalType = 'COMPETENCY_CHOICE' | 'LINK_UPDATE' | 'CONFIRM_SAVE' | 'CONFIRM_CANCEL' | 'ADD_CHECKPOINT' | null
 
 interface ModalStore {
   activeModal: ModalType,
-  modalProps: any,
-  openModal: (type: ModalType, props?: any) => void,
+  modalProps: unknown,
+  openModal: (type: ModalType, props?: unknown) => void,
   closeModal: () => void,
 }
 

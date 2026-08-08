@@ -1,31 +1,57 @@
 import styles from './CheckpointsBlock.module.css'
 import type {ProjectCheckpoint} from "@/entities/project";
 import {PlusButton} from "@/shared/ui/elements/plus-button/PlusButton.tsx";
+import EditIcon from '@/shared/ui/icons/pencil.svg?react';
+import TrashIcon from '@/shared/ui/icons/trash.svg?react';
+import clsx from "clsx";
 
-interface CheckpointsBlockProps {
-  checkpoints: ProjectCheckpoint[]
+export interface ExtendedProjectCheckpoint extends ProjectCheckpoint {
+  isImmutable?: boolean;
 }
 
-export const CheckpointsBlock = ({checkpoints}: CheckpointsBlockProps) => {
+interface CheckpointsBlockProps {
+  checkpoints: ExtendedProjectCheckpoint[]
+  addCheckpoint: () => void
+  onEditCheckpoint?: (index: number) => void
+  onDeleteCheckpoint?: (index: number) => void
+}
+
+export const CheckpointsBlock = ({checkpoints, addCheckpoint, onEditCheckpoint, onDeleteCheckpoint}: CheckpointsBlockProps) => {
   return (
     <div className={styles.checkpointsBlock}>
       <div className={styles.checkpointsList}>
         {
           checkpoints.map((checkpoint, index) => (
-            <div className={styles.checkpoint}>
+            <div key={index} className={styles.checkpoint}>
 
               <div className={styles.circle}>
                 {index + 1}
               </div>
 
-              <div className={styles.content}>
+              <div className={clsx(styles.content, !checkpoint.isImmutable ? styles.mutable: '')}>
                 <div className={styles.card}>
-                  <p>
-                    {checkpoint.title}
-                  </p>
-                  <p>
-                    {checkpoint.deadline}
-                  </p>
+                  <div className={styles.textContainer}>
+                    <p>
+                      {checkpoint.title}
+                    </p>
+                    <p>
+                      {checkpoint.deadline}
+                    </p>
+                  </div>
+                  {!checkpoint.isImmutable && (
+                    <div className={styles.actions}>
+                      {onEditCheckpoint && (
+                        <button type="button" className={styles.actionBtn} onClick={() => onEditCheckpoint(index)}>
+                          <EditIcon className={styles.icon}/>
+                        </button>
+                      )}
+                      {onDeleteCheckpoint && (
+                        <button type="button" className={styles.actionBtn} onClick={() => onDeleteCheckpoint(index)}>
+                          <TrashIcon className={styles.icon}/>
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -33,7 +59,7 @@ export const CheckpointsBlock = ({checkpoints}: CheckpointsBlockProps) => {
         }
       </div>
 
-      <PlusButton className={styles.button} onClick={() => {}} text={'Добавить ключевую точку'}/>
+      <PlusButton className={styles.button} onClick={addCheckpoint} text={'Добавить ключевую точку'}/>
     </div>
   )
 }

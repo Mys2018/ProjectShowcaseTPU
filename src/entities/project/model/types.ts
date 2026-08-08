@@ -24,16 +24,13 @@ export interface ProjectCardData {
   tags: TagItem[];
   primaryTag: TagItem;
   ownerId: number;
-  partnerId: {
-    value: string;
-    verbose: string;
-  };
+  partnerId: string;
   status: string;
   meta: {
     title: string;
     description: string;
   };
-  checkpoints: string;
+  checkpoints: ProjectCheckpoint[];
   roles: {
     roleId: string;
     placesCount: number;
@@ -67,9 +64,13 @@ export interface ProjectCheckpoint {
 }
 
 export interface ProjectCheckpoints {
-  id: string;
+  id?: string;
   name: string;
   checkpoints: ProjectCheckpoint[];
+}
+
+export interface GetProjectResponseCheckpoint {
+  checkpointId: string
 }
 
 export interface ProjectRole {
@@ -121,10 +122,7 @@ export interface ProjectDto {
   ownerId: number;
   tags: TagItem[];
   primaryTag: TagItem;
-  partnerId: {
-    value: string;
-    verbose: string;
-  };
+  partnerId: string;
   status: 'Active' | 'Completed' | string;
   meta: {
     title: string;

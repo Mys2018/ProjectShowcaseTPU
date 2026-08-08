@@ -2,7 +2,10 @@ import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
 import { projectApi } from '@/entities/project/api/requests';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
+
+const { prd, lists, audience } = PROJECT_LIMITS;
 
 export const createProjectRoleSchema = z.object({
   roleTypeId: z.string(),
@@ -28,58 +31,73 @@ export const baseProjectSchema = z.object({
     })
   ),
   meta: z.object({
-    title: z.string().min(35, 'Минимум 35 символов').max(100, 'Максимум 100 символов'),
-    description: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
+    title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),
+    description: z.string().min(PROJECT_LIMITS.meta.description.min, `Минимум ${PROJECT_LIMITS.meta.description.min} символов`).max(PROJECT_LIMITS.meta.description.max, `Максимум ${PROJECT_LIMITS.meta.description.max} символов`),
   }),
   roles: z.array(createProjectRoleSchema),
   primaryTag: z.string().min(1, 'Выберите основной тег'),
   tags: z.array(
-    z.string()).min(1, 'Выберите хотя бы один тег'
-  ),
+    z.string()).min(1, 'Выберите хотя бы один тег'),
 });
 
 const audienceSegmentSchema = z.object({
-  title: z.string().min(1, 'Укажите название').max(70, 'Максимум 70 символов в названии аудитории'),
-  description: z.string().min(50, 'Минимум 50 символов').max(500, 'Максимум 500 символов'),
-  minAge: z.number().min(1, 'Минимальный возраст должен быть не менее 1 года'),
-  maxAge: z.number().max(100, 'Максимальный возраст должен быть не более 100 лет'),
+  title: z.string().min(audience.title.min, 'Укажите название').max(audience.title.max, `Максимум ${audience.title.max} символов в названии аудитории`),
+  // Исправлено: макс 200 символов согласно таблице
+  description: z.string().min(audience.description.min, `Минимум ${audience.description.min} символов`).max(audience.description.max, `Максимум ${audience.description.max} символов`),
+  minAge: z.number().min(audience.age.min, `Минимальный возраст должен быть не менее ${audience.age.min} года`),
+  maxAge: z.number().max(audience.age.max, `Максимальный возраст должен быть не более ${audience.age.max} лет`),
 });
 
 const studyPrdSchema = z.object({
-  prerequisites: z.string().min(200, 'Минимум 200 символов'),
-  projectGoal: z.string().min(100, 'Минимум 100 символов'),
+  prerequisites: z.string().min(prd.prerequisites.min, `Минимум ${prd.prerequisites.min} символов`).max(prd.prerequisites.max, `Максимум ${prd.prerequisites.max} символов`),
+  projectGoal: z.string().min(prd.projectGoal.min, `Минимум ${prd.projectGoal.min} символов`).max(prd.projectGoal.max, `Максимум ${prd.projectGoal.max} символов`),
   keyFunctionality: z
-    .array(z.string().min(30, 'Минимум 30 символов').max(300, 'Максимум 300 символов'))
-    .min(1, 'Добавьте минимум одну функцию'),
+    // Исправлено: текст 50-200 символов, массив 2-12 пунктов
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Добавьте минимум ${lists.count.min} функции`)
+    .max(lists.count.max, `Максимум ${lists.count.max} функций`),
 });
 
 const casePrdSchema = z.object({
-  prerequisites: z.string().min(1, 'Укажите актуальность'),
-  audience: z.array(audienceSegmentSchema).min(1, 'Укажите хотя бы один сегмент аудитории'),
-  projectGoal: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
+  // Исправлено: добавлены лимиты 200-600 символов для предпосылок
+  prerequisites: z.string().min(prd.prerequisites.min, `Минимум ${prd.prerequisites.min} символов`).max(prd.prerequisites.max, `Максимум ${prd.prerequisites.max} символов`),
+  // Ограничиваем массив аудитории до 3 сегментов
+  audience: z.array(audienceSegmentSchema).min(audience.count.min, `Укажите хотя бы ${audience.count.min} сегмент аудитории`).max(audience.count.max, `Максимум ${audience.count.max} сегмента`),
+  projectGoal: z.string().min(prd.projectGoal.min, `Минимум ${prd.projectGoal.min} символов`).max(prd.projectGoal.max, `Максимум ${prd.projectGoal.max} символов`),
   functional: z
-    .array(z.string().min(50, 'Минимум 50 символов').max(600, 'Максимум 600 символов'))
-    .min(1, 'Функциональные требования обязательны'),
-  problemStatement: z.string().min(100, 'Минимум 100 символов').max(1500, 'Максимум 1500 символов'),
+    // Исправлено: текст 50-200 символов, массив 2-12 пунктов
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Функциональные требования обязательны (минимум ${lists.count.min})`)
+    .max(lists.count.max, `Максимум ${lists.count.max} требований`),
+  problemStatement: z.string().min(prd.problemStatement.min, `Минимум ${prd.problemStatement.min} символов`).max(prd.problemStatement.max, `Максимум ${prd.problemStatement.max} символов`),
 });
 
 const realPrdSchema = z.object({
-  productVision: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
-  audience: z.array(audienceSegmentSchema).min(1, 'Укажите хотя бы один сегмент аудитории'),
-  projectGoal: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
-  businessGoal: z.string().min(100, 'Минимум 100 символов').max(500, 'Максимум 500 символов'),
+  productVision: z.string().min(prd.productVision.min, `Минимум ${prd.productVision.min} символов`).max(prd.productVision.max, `Максимум ${prd.productVision.max} символов`),
+  // Ограничиваем массив аудитории до 3 сегментов
+  audience: z.array(audienceSegmentSchema).min(audience.count.min, `Укажите хотя бы ${audience.count.min} сегмент аудитории`).max(audience.count.max, `Максимум ${audience.count.max} сегмента`),
+  projectGoal: z.string().min(prd.projectGoal.min, `Минимум ${prd.projectGoal.min} символов`).max(prd.projectGoal.max, `Максимум ${prd.projectGoal.max} символов`),
+  businessGoal: z.string().min(prd.businessGoal.min, `Минимум ${prd.businessGoal.min} символов`).max(prd.businessGoal.max, `Максимум ${prd.businessGoal.max} символов`),
   functional: z
-    .array(z.string().min(50, 'Минимум 50 символов').max(600, 'Максимум 600 символов'))
-    .min(1, 'Функциональные требования обязательны'),
+    // Исправлено: текст 50-200 символов, массив 2-12 пунктов
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Функциональные требования обязательны (минимум ${lists.count.min})`)
+    .max(lists.count.max, `Максимум ${lists.count.max} требований`),
   nonFunctional: z
-    .array(z.string().min(50, 'Минимум 50 символов').max(600, 'Максимум 600 символов'))
-    .min(1, 'Нефункциональные требования обязательны'),
+    // Исправлено: текст 50-200 символов, массив 2-12 пунктов
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Нефункциональные требования обязательны (минимум ${lists.count.min})`)
+    .max(lists.count.max, `Максимум ${lists.count.max} требований`),
   businessMetrics: z
-    .array(z.string().min(50, 'Минимум 50 символов').max(200, 'Максимум 200 символов'))
-    .min(1, 'Минимум одна бизнес-метрика обязательна'),
+    // Исправлено: массив 2-12 пунктов
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Минимум ${lists.count.min} бизнес-метрики`)
+    .max(lists.count.max, `Максимум ${lists.count.max} метрик`),
   projectPlan: z
-    .array(z.string().min(50, 'Минимум 50 символов').max(600, 'Максимум 600 символов'))
-    .min(1, 'Добавьте минимум один пункт плана'),
+    // Исправлено: текст 100-400 символов
+    .array(z.string().min(PROJECT_LIMITS.projectPlan.itemLength.min, `Минимум ${PROJECT_LIMITS.projectPlan.itemLength.min} символов`).max(PROJECT_LIMITS.projectPlan.itemLength.max, `Максимум ${PROJECT_LIMITS.projectPlan.itemLength.max} символов`))
+    .min(PROJECT_LIMITS.projectPlan.count.min, `Добавьте минимум ${PROJECT_LIMITS.projectPlan.count.min} пункт плана`)
+    .max(PROJECT_LIMITS.projectPlan.count.max, `Максимум ${PROJECT_LIMITS.projectPlan.count.max} пунктов`),
 });
 
 export const createProjectSchema = z.discriminatedUnion('type', [
@@ -91,11 +109,6 @@ export const createProjectSchema = z.discriminatedUnion('type', [
 export type CreateProjectFormValues = z.infer<typeof createProjectSchema>;
 
 export type CreateProjectForm = ReturnType<typeof useProjectWizard>['form'];
-
-
-// ---------------------------------------------------------------------------
-// Схемы валидации по шагам — только поля текущего шага
-// ---------------------------------------------------------------------------
 
 // Шаг 1: основная инфо (название, описание, теги, партнёр)
 const step1Schema = z.object({
@@ -160,11 +173,16 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
 
     onSubmit: async ({ value }) => {
 
-      const checkpointId = projectApi.createCheckpoints({
-        id: crypto.randomUUID(),
+      // Убираем вспомогательный флаг isImmutable перед отправкой на сервер
+      const cleanCheckpoints = value.checkpoints.map((cp) => {
+        const { isImmutable, ...rest } = cp as { isImmutable?: boolean; title: string; deadline: string };
+        return rest;
+      });
+
+      const { checkpointId } = await projectApi.createCheckpoints({
         name: "checkpoint",
-        checkpoints: value.checkpoints
-      })
+        checkpoints: cleanCheckpoints
+      } as Omit<Parameters<typeof projectApi.createCheckpoints>[0], 'id'> & { id?: string })
 
       const payload = {
         type: value.type,
@@ -174,7 +192,15 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         primaryTagId: value.primaryTag,
         tagIds: value.tags?.length ? value.tags : [],
         prdMeta: value.prdMeta,
-        roles: value.roles,
+        roles: value.roles.map(role => ({
+          roleTypeId: role.roleTypeId,
+          placesCount: role.placesCount,
+          minPlacesCount: role.minPlacesCount,
+          meta: {
+            description: "Бла бла"
+          },
+          skillIds: role.skills.map(skill => skill.skillId)
+        })),
       } as unknown as CreateProjectDto;
 
       console.log('payload:', payload)
@@ -188,7 +214,8 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
       const firstCheckpoints = backCheckpoints.checkpoints[0]?.checkpoints;
 
       if (firstCheckpoints && firstCheckpoints.length > 0) {
-        form.setFieldValue('checkpoints', firstCheckpoints);
+        const immutableCheckpoints = firstCheckpoints.map((cp: { title: string; deadline: string }) => ({ ...cp, isImmutable: true }));
+        form.setFieldValue('checkpoints', immutableCheckpoints);
       }
     }
 
