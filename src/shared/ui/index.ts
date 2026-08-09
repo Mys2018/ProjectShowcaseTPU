@@ -15,3 +15,5 @@ export { Checkbox } from './fields/checkbox'
 
 
 export { ConfirmModal } from './confirm-modal/ConfirmModal.tsx';
+export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx';
+export { AddOutlineButton } from './elements/add-outline-button/AddOutlineButton.tsx';

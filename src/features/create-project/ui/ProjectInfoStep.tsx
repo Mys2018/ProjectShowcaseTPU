@@ -18,7 +18,7 @@ const TABS: { key: InfoTab; label: string }[] = [
   { key: 'prd', label: 'Требования к продукту' },
   { key: 'roles', label: 'Команда и компетенции' },
   { key: 'dates', label: 'Дата и ресурсы' },
-  { key: 'all', label: 'Разделы сплошным списком' },
+  { key: 'all', label: 'Проверка информации' },
 ];
 
 interface ProjectInfoStepProps {
@@ -104,7 +104,7 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
           {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} />}
           {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} />}
           {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} />}
-          {activeTab === 'all' && <AllTab form={form} stepErrors={stepErrors} />}
+          {activeTab === 'all' && <AllTab form={form}/>}
         </div>
       </div>
 

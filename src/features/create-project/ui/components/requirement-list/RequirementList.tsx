@@ -1,8 +1,9 @@
-import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
+import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
 import {SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
 import styles from './RequirementList.module.css';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react'
 import {PlusButton} from "@/shared/ui/elements/plus-button/PlusButton.tsx";
+import {EmptyStateBlock} from "@/shared/ui/empty-state-block/EmptyStateBlock.tsx";
 
 interface RequirementListProps {
   form: CreateProjectForm;
@@ -11,6 +12,13 @@ interface RequirementListProps {
   title?: string;
   placeholder?: string;
   maxLength?: number;
+  addBtnText?: string;
+  onAddClick?: () => void;
+  valueKey?: string;
+  subtitleKey?: string;
+  minItems?: number;
+  emptyStateTitle?: string | React.ReactNode;
+  emptyStateDescription?: string | React.ReactNode;
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
@@ -21,29 +29,45 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength = 600 }: RequirementListProps) {
+export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 3, emptyStateTitle, emptyStateDescription }: RequirementListProps) {
   return (
     <div className={styles.container}>
       {title && <span className={styles.title}>{title}</span>}
       
       <form.Field name={name} mode="array">
         {(field) => {
-          // Initialize with 3 items if empty
-          const items = (field.state.value as string[]) || [];
+          // Initialize with empty array
+          const items = (field.state.value as any[]) || [];
 
           const handleAdd = () => {
-            // @ts-ignore
-            field.pushValue('');
+            if (onAddClick) {
+              onAddClick();
+            } else {
+              // @ts-ignore
+              field.pushValue(valueKey ? { [valueKey]: '', [subtitleKey || 'name']: '' } : '');
+            }
           };
 
           const handleRemove = (index: number) => {
             field.removeValue(index);
           };
 
+          if (items.length === 0 && (emptyStateTitle || emptyStateDescription)) {
+            return (
+              <EmptyStateBlock
+                title={emptyStateTitle}
+                description={emptyStateDescription}
+                buttonText={addBtnText}
+                onAddClick={handleAdd}
+              />
+            );
+          }
+
           return (
             <div className={styles.list}>
-              {items.map((_, index) => {
-                const prefix = `${name}[${index}]` as any;
+              {items.map((item, index) => {
+                const prefix = valueKey ? `${name}[${index}].${valueKey}` as any : `${name}[${index}]` as any;
+                const subtitle = subtitleKey && item ? item[subtitleKey] : undefined;
                 
                 return (
                   <div key={index} className={styles.item}>
@@ -52,7 +76,8 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                         {(subField) => (
                           <SmallTextFieldForm
                             placeholder={placeholder}
-                            value={subField.state.value as string}
+                            subtitle={subtitle}
+                            value={(subField.state.value as string) || ''}
                             onChange={(e) => subField.handleChange(e.target.value as any)}
                             maxLength={maxLength}
                             validError={
@@ -61,7 +86,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                                 : stepErrors[`${name}.${index}`]?.[0]
                             }
                             children={
-                              items.length > 2 && (
+                              items.length > minItems && (
                                   <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
                                     <TrashIcon/>
                                   </button>
@@ -71,13 +96,11 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                         )}
                       </form.Field>
                     </div>
-
-
                   </div>
                 );
               })}
 
-              <PlusButton text={'Добавить пункт'} onClick={handleAdd}/>
+              <PlusButton text={addBtnText} onClick={handleAdd}/>
 
               {field.state.meta.errors.length > 0 && (
                  <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>

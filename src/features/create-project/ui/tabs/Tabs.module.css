@@ -27,6 +27,9 @@
 .title {
   font: var(--field-title-big-interface);
   color: var(--color-brand-black);
+
+  display: flex;
+  gap: 8px
 }
 
 .block {
@@ -62,23 +65,71 @@
   color: var(--color-gray-900);
 }
 
-.addRoleButtonEmpty {
+.competencyList {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font: var(--inter-12-300);
-  color: var(--color-brand-green);
-  border-radius: 8px;
-  border: 1px solid var(--color-brand-green);
-  padding: 12px 16px;
-  cursor: pointer;
-  width: fit-content;
-  background-color: white;
+  flex-direction: column;
+  gap: 36px
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.tags {
+  padding-top: 8px;
+  display: flex;
+  gap: 54px
+}
+
+.tagColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tagColumn p {
+  font: var(--widget-title-platform);
+  color: var(--color-gray-650);
+}
+
+.tagList {
+  display: flex;
+  gap: 4px;
 }
 
 .competencyList {
   display: flex;
   flex-direction: column;
-  gap: 36px
+  gap: 16px;
+}
+
+.competency {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.competencyName {
+  font: var(--OS-14-400);
+  color: var(--color-gray-750);
+}
+
+.skillList {
+  display: flex;
+  gap: 8px;
+}
+
+.skill {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: var(--color-gray-100);
+  font: var(--OS-14-500);
+  color: var(--color-gray-750);
+}
+
+.invite {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
 }
 

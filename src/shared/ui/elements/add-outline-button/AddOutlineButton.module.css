@@ -1,0 +1,18 @@
+.addOutlineButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--inter-12-300, 300 12px / 16px "Inter", sans-serif);
+  color: var(--color-brand-green, #28a745);
+  border-radius: 8px;
+  border: 1px solid var(--color-brand-green, #28a745);
+  padding: 12px 16px;
+  cursor: pointer;
+  width: fit-content;
+  background-color: white;
+  transition: opacity 0.2s;
+}
+
+.addOutlineButton:hover {
+  opacity: 0.8;
+}

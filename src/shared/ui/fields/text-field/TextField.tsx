@@ -116,7 +116,6 @@ export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, 
         </h5>
       }
 
-
       <div className={styles.iconBody}>
         <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle}/>
         {children}

@@ -30,6 +30,12 @@ export const baseProjectSchema = z.object({
       deadline: z.string().min(1, 'Укажите дату'),
     })
   ),
+  links: z.array(
+    z.object({
+      name: z.string(),
+      link: z.string()
+    })
+  ),
   meta: z.object({
     title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),
     description: z.string().min(PROJECT_LIMITS.meta.description.min, `Минимум ${PROJECT_LIMITS.meta.description.min} символов`).max(PROJECT_LIMITS.meta.description.max, `Максимум ${PROJECT_LIMITS.meta.description.max} символов`),
@@ -38,6 +44,14 @@ export const baseProjectSchema = z.object({
   primaryTag: z.string().min(1, 'Выберите основной тег'),
   tags: z.array(
     z.string()).min(1, 'Выберите хотя бы один тег'),
+
+  extraFieldsForAll:
+    z.object({
+      partnerName: z.string(),
+      primaryTagName: z.string(),
+      tags: z.array(z.string()),
+    })
+
 });
 
 const audienceSegmentSchema = z.object({
@@ -98,6 +112,7 @@ const realPrdSchema = z.object({
     .array(z.string().min(PROJECT_LIMITS.projectPlan.itemLength.min, `Минимум ${PROJECT_LIMITS.projectPlan.itemLength.min} символов`).max(PROJECT_LIMITS.projectPlan.itemLength.max, `Максимум ${PROJECT_LIMITS.projectPlan.itemLength.max} символов`))
     .min(PROJECT_LIMITS.projectPlan.count.min, `Добавьте минимум ${PROJECT_LIMITS.projectPlan.count.min} пункт плана`)
     .max(PROJECT_LIMITS.projectPlan.count.max, `Максимум ${PROJECT_LIMITS.projectPlan.count.max} пунктов`),
+
 });
 
 export const createProjectSchema = z.discriminatedUnion('type', [
@@ -154,7 +169,9 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   roles: [],
   primaryTag: '',
   tags: [],
+  links: [],
   prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] },
+  extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
 };
 
 export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardProps) => {

@@ -1,8 +1,8 @@
-import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
+import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
 import { BigTextFieldForm, SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
-import Plus from '@/shared/ui/icons/plus.svg?react';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
 import styles from './TargetAudienceList.module.css';
+import {AddOutlineButton} from "@/shared";
 
 interface TargetAudienceListProps {
   form: CreateProjectForm;
@@ -47,7 +47,7 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
 
                   <div className={styles.titleContainer}>
                     <p className={styles.titleSegment}>
-                      Сегмент {index}
+                      Сегмент {index + 1}
                     </p>
                     {segments.length > 1 && (
                       <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
@@ -132,15 +132,10 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
                     </form.Field>
                   </div>
                 </div>
-
-
               );
             })}
 
-            <button type="button" className={styles.addButton} onClick={handleAdd}>
-              <Plus />
-              Добавить сегмент
-            </button>
+            <AddOutlineButton onClick={handleAdd} text="Добавить сегмент"/>
 
             {field.state.meta.errors.length > 0 && (
               <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>

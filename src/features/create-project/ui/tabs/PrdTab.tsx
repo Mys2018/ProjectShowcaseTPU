@@ -1,9 +1,10 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
 import { BigTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
-import { TargetAudienceList } from '../components/TargetAudienceList';
-import { RequirementList } from '../components/RequirementList';
+import { TargetAudienceList } from '../components/target-audience/TargetAudienceList.tsx';
+import { RequirementList } from '../components/requirement-list/RequirementList.tsx';
 import styles from './Tabs.module.css'
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
+import {InfoTooltip} from "@/shared";
 
 interface PrdFieldProps {
   form: CreateProjectForm;
@@ -46,6 +47,25 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           1. Актуальность
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.prerequisites">
           {(field) => (
@@ -63,6 +83,25 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           2. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.projectGoal">
           {(field) => (
@@ -80,6 +119,25 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           3. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <RequirementList
           form={form}
@@ -100,6 +158,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           1. Актуальность
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.prerequisites">
           {(field) => (
@@ -118,6 +195,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           2. Целевая аудитория
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <TargetAudienceList form={form} stepErrors={stepErrors} />
       </div>
@@ -125,6 +221,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           3. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.projectGoal">
           {(field) => (
@@ -144,6 +259,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           4. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <RequirementList
           form={form}
@@ -158,6 +292,25 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           5. Реализация
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.problemStatement">
           {(field) => (
@@ -184,6 +337,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           1. Product vision
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.productVision">
           {(field) => (
@@ -201,6 +373,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           2. Целевая аудитория
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <TargetAudienceList form={form} stepErrors={stepErrors} />
       </div>
@@ -208,6 +399,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           3. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <form.Field name="prdMeta.projectGoal">
@@ -240,6 +450,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           4. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           <RequirementList
@@ -264,6 +493,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           5. Бизнес метрики
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <RequirementList
           form={form}
@@ -277,6 +525,25 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           6. План проекта
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <RequirementList
           form={form}

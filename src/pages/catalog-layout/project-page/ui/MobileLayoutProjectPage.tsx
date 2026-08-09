@@ -106,7 +106,7 @@ export const MobileLayoutProjectPage = ({project} : ProjectPageProps ) => {
                   openFreeCompetency={() => setDrawerOpen(true)}
                 />
                 <KeyPoints
-                  keyPoints={checkpointsMock}
+                  checkpoints={checkpointsMock}
                 />
                 <LinkContainer links={linksMock} />
               </>

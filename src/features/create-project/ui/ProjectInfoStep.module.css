@@ -38,6 +38,9 @@
 .title {
   font: var(--field-title-big-interface);
   color: var(--color-brand-black);
+
+  display: flex;
+  gap: 8px
 }
 
 .block {
