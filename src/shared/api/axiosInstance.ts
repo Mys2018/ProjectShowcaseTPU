@@ -3,9 +3,8 @@ import axios, { AxiosError } from "axios";
 import { ENDPOINTS } from "..";
 
 export const axiosInstance = axios.create({
-  // TODO - вынести в .env и добавить
   baseURL:
-    import.meta.env.VITE_API_BASE_URL || "https://project.tpu.ru/dev/api",
+    import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
