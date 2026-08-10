@@ -2,6 +2,7 @@ import styles from './InfoTooltip.module.css'
 import QuestionIcon from '@/shared/ui/icons/question.svg?react';
 import HelpIcon from '@/shared/ui/icons/help_icons.svg?react';
 import ImportantIcon from '@/shared/ui/icons/important.svg?react';
+import BulbIcon from '@/shared/ui/icons/bulb.svg?react';
 import React from "react";
 import clsx from "clsx";
 
@@ -20,7 +21,7 @@ interface InfoTooltipProps {
   size: SizeTooltip;
   importantText: string;
   link?: string;
-  type?: 'question' | 'help';
+  type?: 'question' | 'help' | 'bulb';
   pointer: Pointer;
 }
 
@@ -56,6 +57,8 @@ const getIconByType = (type: string, classNames: string) => {
       return <QuestionIcon className={classNames} />;
     case 'help':
       return <HelpIcon className={classNames} />;
+    case 'bulb':
+      return <BulbIcon className={classNames} />
   }
 }
 

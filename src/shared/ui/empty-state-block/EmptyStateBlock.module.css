@@ -1,0 +1,31 @@
+.emptyStateBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: var(--color-gray-50, #f8f9fa);
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.emptyStateBlock h4 {
+  font: var(--field-title-big-interface, 500 18px / 22px "Inter", sans-serif);
+  color: var(--color-gray-900, #212529);
+  margin: 0;
+}
+
+.emptyStateBlock p {
+  font: var(--body-text-platform, 400 16px / 20px "Inter", sans-serif);
+  color: var(--color-gray-900, #212529);
+  margin: 0;
+}
+
+

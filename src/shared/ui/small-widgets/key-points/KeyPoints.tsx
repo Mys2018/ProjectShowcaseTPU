@@ -1,4 +1,4 @@
-import { formatDeadline, getDaysUntil } from '@/shared/lib/date';
+import { parseDeadline, formatDeadline, getDaysUntil } from '@/shared/lib/date';
 import CalendarIcon from '@/shared/ui/icons/calendar.svg?react';
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import ClockIcon from '@/shared/ui/icons/clock.svg?react'
@@ -7,33 +7,45 @@ import styles from './KeyPoints.module.css'
 interface KeyPoint {
   title: string;
   deadline: string; // DD-MM-YYYY
-  status: boolean;
 }
 
 interface KeyPointsProps {
-  keyPoints: KeyPoint[];
+  checkpoints: KeyPoint[];
 }
 
-export const KeyPoints = ({ keyPoints }: KeyPointsProps) => {
-  const lastCompletedIndex = keyPoints.reduce((acc, kp, i) => kp.status ? i : acc, -1)
-  const activeIndex = lastCompletedIndex + 1 < keyPoints.length ? lastCompletedIndex + 1 : -1
+export const KeyPoints = ({ checkpoints }: KeyPointsProps) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const now = today.getTime();
+
+  // Find the first checkpoint that is NOT completed (i.e. deadline is in the future or today)
+  const activeIndex = checkpoints.findIndex(kp => {
+    const kpDate = parseDeadline(kp.deadline);
+    if (!kpDate) return false;
+    return kpDate.getTime() >= now;
+  });
+
+  // If all are completed, activeIndex will be -1
+  const actualActiveIndex = activeIndex === -1 ? checkpoints.length : activeIndex;
 
   return (
     <div className={styles.keyPoints}>
       <div className={styles.header}>
         <p className={styles.title}>Ключевые точки</p>
         <div className={styles.leftTimeBlock}>
-          <CalendarIcon/>
+          <CalendarIcon />
           <p className={styles.leftTime}>{'4 месяца'}</p>
         </div>
       </div>
 
       <div className={styles.listKeyPoints}>
-        {keyPoints.map((keyPoint, index) => {
+        {checkpoints.map((keyPoint, index) => {
           const isFirst = index === 0
-          const isLast = index === keyPoints.length - 1
-          const isActive = index === activeIndex
-          const isCompleted = keyPoint.status
+          const isLast = index === checkpoints.length - 1
+
+          // It is completed if it's before the actualActiveIndex
+          const isCompleted = index < actualActiveIndex;
+          const isActive = index === actualActiveIndex;
 
           const daysUntil = isActive ? getDaysUntil(keyPoint.deadline) : null
           const showCountdown = daysUntil !== null && daysUntil >= 0 && daysUntil <= 10
@@ -50,18 +62,18 @@ export const KeyPoints = ({ keyPoints }: KeyPointsProps) => {
             <div key={index} className={`${styles.keyPoint} ${isActive ? styles.keyBodyActive : ''} ${isCompleted ? styles.completed : ''}`}>
               <div className={indexClass}>
 
-                  {isActive ? (
-                    <div className={styles.clockIcon}>
-                      <ClockIcon color={'var(--color-blue)'}/>
-                    </div>
-                  ) : (
+                {isActive ? (
+                  <div className={styles.clockIcon}>
+                    <ClockIcon color={'var(--color-blue)'} />
+                  </div>
+                ) : (
                   <p className={styles.indexNumber}>
                     {index + 1}
                   </p>)
-                  }
-                  
-                </div>
-              
+                }
+
+              </div>
+
 
               <div className={styles.keyInfo}>
                 <p className={`${styles.keyTitle} ${isActive ? styles.keyTitleActive : ''}`}>
@@ -69,7 +81,7 @@ export const KeyPoints = ({ keyPoints }: KeyPointsProps) => {
                 </p>
                 <p className={styles.keyDeadline}>
                   {isCompleted ? (
-                    <span className={styles.completedText}>Завершено  <CheckIcon className={styles.checkIcon}/></span>
+                    <span className={styles.completedText}>Завершено  <CheckIcon className={styles.checkIcon} /></span>
                   ) : (
                     <>
                       {formatDeadline(keyPoint.deadline)}

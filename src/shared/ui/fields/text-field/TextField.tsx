@@ -57,9 +57,12 @@ export const SmallTextField = ({value, placeholder, maxLength, onChange, validEr
           onChange={onChange}
         />
       </div>
-      <p className={clsx(styles.inputValue, validError ? styles.error : '')}>
-        {value.length} / {maxLength}
-      </p>
+      {
+        maxLength && <p className={clsx(styles.inputValue, validError ? styles.error : '')}>
+          {value.length} / {maxLength}
+        </p>
+      }
+
     </div>
   )
 }
@@ -112,7 +115,6 @@ export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, 
           {title || ''}
         </h5>
       }
-
 
       <div className={styles.iconBody}>
         <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle}/>

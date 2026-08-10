@@ -64,7 +64,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className={styles.org}>
           <div className={styles.orgAvatar}>Т</div>
           <div className={styles.orgInfo}>
-            <span className={styles.orgName}>{partnerId.verbose}</span>
+            <span className={styles.orgName}>{(partnerId as any)?.verbose || partnerId}</span>
             <span className={styles.orgSub}>публикационная активность</span>
           </div>
         </div>

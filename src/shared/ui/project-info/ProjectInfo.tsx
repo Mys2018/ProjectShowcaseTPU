@@ -2,12 +2,28 @@ import type { ProjectCardData } from '@/entities/project/model/types';
 import styles from './ProjectInfo.module.css'
 import { typeProjectsLabel, getProjectTagBackground } from '@/entities/project';
 import {InfoTooltip, LikeButton} from "@/shared";
+import {getPartnerById} from "@/entities/partner/api/requests.ts";
+import {useEffect, useState} from "react";
+import type {PartnerDto} from "@/entities/partner/api/types.ts";
 
 type ProjectInfoProps = {
   data: ProjectCardData
 };
 
+
+
 export const ProjectInfo = ({ data }: ProjectInfoProps) => {
+
+  const [partner, setPartner] = useState<PartnerDto>();
+
+  useEffect(() => {
+    const fetchPartner = async () => {
+      const partner = await getPartnerById(data.partnerId);
+      setPartner(partner)
+    }
+    fetchPartner();
+  }, [data.partnerId]);
+
   return (
     <div className={styles.projectMain} style={{ background: getProjectTagBackground(data.primaryTag.tagName) }}>
       <div className={styles.topLabel}>
@@ -53,9 +69,14 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
 
       <div className={styles.mainBlock}>
         <div className={styles.orgBlock}>
-          <div className={styles.orgAvatar}>Т</div>
+          <div className={styles.orgAvatarContainer}>
+            {
+              partner &&
+              <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name}/>
+            }
+          </div>
           <div className={styles.orgInfo}>
-            <span className={styles.orgName}>{data.partnerId.verbose}</span>
+            <span className={styles.orgName}>{partner?.name}</span>
             <span className={styles.orgSub}>публикационная активность</span>
           </div>
         </div>

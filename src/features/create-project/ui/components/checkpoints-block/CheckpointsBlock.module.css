@@ -60,19 +60,56 @@
   width: 100%;
 }
 
+.mutable {
+  background-color: white;
+  border: 1px solid var(--color-gray-250);
+}
+
 .card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   gap: 4px;
   padding: 6px 6px 8px 8px;
 }
 
-.card p:nth-child(1) {
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-500);
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+.textContainer p:nth-child(1) {
   font: var(--menu-title-platform);
   color: var(--color-gray-650)
 }
 
-.card p:nth-child(2) {
+.textContainer p:nth-child(2) {
   font: var(--body-text-platform);
   color: var(--color-gray-600)
 }

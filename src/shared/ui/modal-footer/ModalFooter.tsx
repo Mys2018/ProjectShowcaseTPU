@@ -6,9 +6,12 @@ interface ModalFooterProps {
   selectedValue?: string | null | boolean;
   disabled?: boolean;
   error?: string | null;
+
+  customCloseText?: string,
+  customSubmitText?: string
 }
 
-export function ModalFooter({ onClose, handleSubmit, selectedValue, disabled, error }: ModalFooterProps) {
+export function ModalFooter({ onClose, handleSubmit, selectedValue, disabled, error, customCloseText = 'Отмена', customSubmitText = 'Выбрать и продолжить' }: ModalFooterProps) {
   const isSubmitDisabled = disabled ?? (selectedValue === null || selectedValue === false);
 
   return (
@@ -24,7 +27,7 @@ export function ModalFooter({ onClose, handleSubmit, selectedValue, disabled, er
           onClick={onClose}
           type="button"
         >
-          Отмена
+          {customCloseText}
         </button>
         <button
           className={styles.agree}
@@ -32,7 +35,7 @@ export function ModalFooter({ onClose, handleSubmit, selectedValue, disabled, er
           disabled={isSubmitDisabled}
           type="button"
         >
-          Выбрать и продолжить
+          {customSubmitText}
         </button>
       </div>
     </div>

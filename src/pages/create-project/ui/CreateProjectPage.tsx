@@ -12,6 +12,7 @@ import { useCreateProject } from '@/entities/project/api/queries';
 import type { CreateProjectRequestType } from '@/entities/project/model/types';
 
 import { usePartners } from '@/entities/partner/api/queries';
+import {CreateProjectProgressWidget} from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
 
 type PageStep = 'type-select' | 'fill';
 
@@ -30,7 +31,7 @@ export default function CreateProjectPage() {
     onSubmit: (values) => {
       createProject(values, {
         onSuccess: () => {
-          alert('Проект успешно создан!');
+          // alert('Проект успешно создан!');
           navigate(-1);
         },
       });
@@ -60,7 +61,6 @@ export default function CreateProjectPage() {
 
   const handleSubmit = () => {
     form.handleSubmit();
-    // console.log('Form validation errors (if any):', form.state.errors, form.state.fieldMeta);
   };
 
   if (pageStep === 'type-select') {
@@ -106,6 +106,13 @@ export default function CreateProjectPage() {
         </div>
 
         <h1 className={styles.title}>Новый проект — «{typeLabel}»</h1>
+
+
+        <section className={styles.progressBlock}>
+          <CreateProjectProgressWidget
+            form={form}
+          />
+        </section>
 
         <section className={styles.body}>
           <ProjectInfoStep
