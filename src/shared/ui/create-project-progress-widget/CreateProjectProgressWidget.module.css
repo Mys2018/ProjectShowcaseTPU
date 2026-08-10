@@ -1,0 +1,81 @@
+.progressBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 32px
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px
+}
+
+.title {
+  font: var(--subhead-interface);
+  color: var(--color-gray-750);
+}
+
+.subtitle {
+  font: var(--body-small-platform);
+  color: var(--color-gray-650);
+}
+
+.progressRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.badgeBase {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepBadge {
+  background-color: var(--color-gray-100);
+  color: var(--color-gray-350);
+  font: var(--ALS-14-700);
+}
+
+.completeBadge {
+  background-color: var(--color-gray-650);
+  color: white;
+}
+
+.progressBadge {
+  background-color: var(--color-brand-violet);
+}
+
+.svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(126deg);
+}
+
+.track, .progress {
+  fill: none;
+  stroke-width: 3px;
+  stroke-linecap: round;
+}
+
+.track {
+  stroke: var(--color-gray-150);
+}
+
+.progress {
+  stroke: white;
+  transition: stroke-dashoffset 0.5s ease-in-out;
+}
+
+.text {
+  font: var(--ALS-10-700);
+  color: white;
+}

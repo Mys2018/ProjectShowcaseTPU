@@ -11,7 +11,7 @@ interface TabProps {
   stepErrors?: StepErrors;
 }
 
-export function RolesTab({ form }: TabProps) {
+export function RolesTab({ form, stepErrors }: TabProps) {
   const { openModal } = useModalStore();
   const { data: globalSkills = [] } = useSkills();
 
@@ -40,12 +40,21 @@ export function RolesTab({ form }: TabProps) {
 
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.mainInfo}>
-        <h3>Компетенции проекта</h3>
-        <p>
-          Открытые компетенции с входящими заявками от участников
-        </p>
+      <div className={styles.errorWrapper}>
+        <div className={styles.mainInfo}>
+          <h3>Компетенции проекта</h3>
+          <p>
+            Открытые компетенции с входящими заявками от участников
+          </p>
+        </div>
+
+        {stepErrors?.['roles'] && (
+          <p className={styles.errorText}>
+            {stepErrors['roles'][0]}
+          </p>
+        )}
       </div>
+
 
       <form.Field name="roles" mode="array">
         {(field) => {
@@ -53,12 +62,12 @@ export function RolesTab({ form }: TabProps) {
           
           if (roles.length === 0) {
             return (
-              <EmptyStateBlock
-                title="Какие специалисты нужны проекту?"
-                description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
-                buttonText="Добавить компетенцию"
-                onAddClick={handleAddRoleClick}
-              />
+                <EmptyStateBlock
+                  title="Какие специалисты нужны проекту?"
+                  description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
+                  buttonText="Добавить компетенцию"
+                  onAddClick={handleAddRoleClick}
+                />
             );
           }
 
@@ -73,7 +82,7 @@ export function RolesTab({ form }: TabProps) {
                 />
               ))}
 
-              <AddOutlineButton 
+              <AddOutlineButton
                 text="Добавить компетенцию"
                 onClick={handleAddRoleClick}
               />

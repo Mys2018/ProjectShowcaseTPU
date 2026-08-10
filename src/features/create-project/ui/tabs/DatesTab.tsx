@@ -1,9 +1,9 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
 import styles from "./Tabs.module.css";
-import {useModalStore} from "@/shared/model";
-import {CheckpointsBlock} from "@/features/create-project/ui/components/checkpoints-block/CheckpointsBlock.tsx";
-import {RequirementList} from "@/features/create-project/ui/components/requirement-list/RequirementList.tsx";
-import {InfoTooltip} from "@/shared";
+import { useModalStore } from "@/shared/model";
+import { CheckpointsBlock } from "@/features/create-project/ui/components/checkpoints-block/CheckpointsBlock.tsx";
+import { RequirementList } from "@/features/create-project/ui/components/requirement-list/RequirementList.tsx";
+import { InfoTooltip } from "@/shared";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -16,12 +16,21 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
 
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.mainInfo}>
-        <h3>Таймлайн проекта</h3>
-        <p>
-          Открытые компетенции с входящими заявками от участников
-        </p>
+      <div className={styles.errorWrapper}>
+        <div className={styles.mainInfo}>
+          <h3>Таймлайн проекта</h3>
+          <p>
+            Открытые компетенции с входящими заявками от участников
+          </p>
+        </div>
+
+        {stepErrors?.['checkpoints'] && (
+          <span className={styles.errorText}>
+            {stepErrors['checkpoints'][0]}
+          </span>
+        )}
       </div>
+
 
       <div className={styles.block}>
         <h4 className={styles.title}>
@@ -59,7 +68,7 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
                 });
               };
 
-              const addDays = (dateString : string, days: number) => {
+              const addDays = (dateString: string, days: number) => {
                 if (!dateString) return '';
                 const date = new Date(dateString);
                 date.setUTCDate(date.getUTCDate() + days);
@@ -103,23 +112,41 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
               }
 
               return (
-                <CheckpointsBlock
-                  checkpoints={checkpoints}
-                  addCheckpoint={handleAdd}
-                  onEditCheckpoint={handleEdit}
-                  onDeleteCheckpoint={handleDelete}
-                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <CheckpointsBlock
+                    checkpoints={checkpoints}
+                    addCheckpoint={handleAdd}
+                    onEditCheckpoint={handleEdit}
+                    onDeleteCheckpoint={handleDelete}
+                  />
+
+                  {checkpoints.map((_, idx) => {
+                    const titleErr = stepErrors?.[`checkpoints.${idx}.title`]?.[0];
+                    const deadlineErr = stepErrors?.[`checkpoints.${idx}.deadline`]?.[0];
+                    const msg = titleErr || deadlineErr;
+                    if (!msg) return null;
+                    return (
+                      <span key={idx} style={{ color: '#F14C4C', fontSize: '14px', textAlign: 'center' }}>
+                        Точка {idx + 1}: {msg}
+                      </span>
+                    )
+                  })}
+                </div>
               )
             }
           }
         </form.Field>
       </div>
 
-      <div className={styles.mainInfo}>
-        <h3>Ресурсы</h3>
-        <p>
-          Ссылки с необходимыми для работы пространствами
-        </p>
+
+
+      <div className={styles.errorWrapper}>
+        <div className={styles.mainInfo}>
+          <h3>Ресурсы</h3>
+          <p>
+            Ссылки с необходимыми для работы пространствами
+          </p>
+        </div>
       </div>
 
       <div className={styles.block}>

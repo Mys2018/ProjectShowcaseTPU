@@ -104,7 +104,7 @@
   --inter-9-5-400: 400 9.5px/1 var(--font-inter);
 
   --OS-14-550: 550 14px/1 var(--font-open-sans);
-  --OS-14-400: 400 14px/1 var(--font-open-sans);
+  --OS-14-400: 400 14px/1.4 var(--font-open-sans);
   --OS-14-500: 500 14px/1 var(--font-open-sans);
   --OS-13-400: 400 13px/1 var(--font-open-sans);
   --OS-15-700: 700 15px/1 var(--font-open-sans);
@@ -127,6 +127,7 @@
   --ALS-13-700: 700 13px/1 var(--font-ALS);
   --ALS-10-400: 400 10px/1 var(--font-ALS);
   --ALS-10-700: 700 10px/1 var(--font-ALS);
+  --ALS-14-700: 700 14px/1 var(--font-ALS);
 
   --small-11-light: 300 11px/1.1 var(--font-inter);
 

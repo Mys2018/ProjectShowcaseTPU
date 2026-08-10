@@ -10,7 +10,6 @@ import { DatesTab } from './tabs/DatesTab';
 import { AllTab } from './tabs/AllTab';
 import { useStore } from '@tanstack/react-form';
 
-// Три таба второй страницы
 type InfoTab = 'main' | 'prd' | 'roles' | 'dates' | 'all';
 
 const TABS: { key: InfoTab; label: string }[] = [
@@ -69,13 +68,16 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
       return errorKeys.some((k) => k.startsWith('prdMeta'));
     }
     if (tabKey === 'roles') {
-      return errorKeys.some((k) => k.startsWith('roles') || k === 'checkpoints');
+      return errorKeys.some((k) => k.startsWith('roles'));
+    }
+    if (tabKey === 'dates') {
+      return errorKeys.some((k) => k.startsWith('checkpoints') || k.startsWith('links'));
     }
     return false;
   };
 
   return (
-    <section className={clsx(styles.root)}>
+    <main className={clsx(styles.root)}>
       <nav className={styles.nav}>
         {TABS.map((tab) => {
           const hasError = hasTabErrors(tab.key);
@@ -91,7 +93,6 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
               onClick={() => setStep(TABS.findIndex((t) => t.key === tab.key) + 1)}
             >
               {tab.label}
-              {hasError && <span className={styles.errorDot} />}
             </button>
           );
         })}
@@ -143,7 +144,7 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
           )}
         </div>
       </div>
-    </section>
+    </main>
   );
 }
 

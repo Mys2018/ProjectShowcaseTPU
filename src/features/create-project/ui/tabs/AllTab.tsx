@@ -63,7 +63,7 @@ export function AllTab({ form }: TabProps) {
               <div className={styles.tagList}>
                 {
                   form.state.values.extraFieldsForAll?.tags?.map(tag => (
-                    <Tag title={tag}/>
+                    <Tag key={tag} title={tag}/>
                   ))
                 }
               </div>
@@ -194,7 +194,7 @@ export function AllTab({ form }: TabProps) {
                       <div className={styles.skillList}>
                         {
                           role.skills.map((skill) => (
-                            <div className={styles.skill}>
+                            <div key={skill.skillId} className={styles.skill}>
                               {skill.skillName}
                             </div>
                           ))
@@ -212,6 +212,57 @@ export function AllTab({ form }: TabProps) {
           </div>
 
         </SmallBlock>
+      </BigBlock>
+
+      {/*Даты и ресурсы*/}
+      <BigBlock bigTitle={'Даты и ресурсы'}>
+        <div className={styles.grid}>
+          <SmallBlock title={'Таймлайн'}>
+            <div className={styles.timelineList}>
+              {
+                form.state.values.checkpoints.map((checkpoint, index: number) => (
+                  <div key={index} className={styles.checkpoint}>
+                    <p className={styles.checkpointIndex}>
+                      {index + 1}
+                    </p>
+                    <div className={styles.checkpointInfo}>
+                      <p>
+                        {checkpoint.title}
+                      </p>
+                      <p>
+                        {checkpoint.deadline}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              }
+            </div>
+          </SmallBlock>
+
+          <SmallBlock title={'Ресурсы'}>
+              <div className={styles.linkList}>
+                {
+                  form.state.values.links.map((link, index) => (
+                    <div key={index} className={styles.linkContainer}>
+                      <div className={styles.innerContainer}>
+                        <p>
+                          {
+                            link.name
+                          }
+                        </p>
+                        <p>
+                          {
+                            link.link
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                }
+              </div>
+          </SmallBlock>
+        </div>
+
       </BigBlock>
     </div>
 

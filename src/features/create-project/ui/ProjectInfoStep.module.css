@@ -4,6 +4,8 @@
   height: 100%;
 }
 
+
+
 .mainInfo {
   display: flex;
   flex-direction: column;
@@ -69,14 +71,11 @@
 }
 
 .navItemError {
-  color: var(--color-red, #e53e3e);
+  color: var(--color-red, #F14C4C) !important;
 }
 
-.errorDot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--color-red, #e53e3e);
-  border-radius: 50%;
+.navItem.active.navItemError {
+  border-bottom-color: var(--color-red, #F14C4C) !important;
 }
 
 .active {

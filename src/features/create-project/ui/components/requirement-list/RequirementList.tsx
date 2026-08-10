@@ -54,12 +54,19 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
 
           if (items.length === 0 && (emptyStateTitle || emptyStateDescription)) {
             return (
-              <EmptyStateBlock
-                title={emptyStateTitle}
-                description={emptyStateDescription}
-                buttonText={addBtnText}
-                onAddClick={handleAdd}
-              />
+              <div className={styles.errorWrapper}>
+                <EmptyStateBlock
+                  title={emptyStateTitle}
+                  description={emptyStateDescription}
+                  buttonText={addBtnText}
+                  onAddClick={handleAdd}
+                />
+                {stepErrors[name] && (
+                  <span className={styles.errorText}>
+                    {stepErrors[name]?.[0]}
+                  </span>
+                )}
+              </div>
             );
           }
 
@@ -83,7 +90,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                             validError={
                               subField.state.meta.errors.length > 0 
                                 ? getErrorMessage(subField.state.meta.errors[0]) 
-                                : stepErrors[`${name}.${index}`]?.[0]
+                                : stepErrors[valueKey ? `${name}.${index}.${valueKey}` : `${name}.${index}`]?.[0]
                             }
                             children={
                               items.length > minItems && (

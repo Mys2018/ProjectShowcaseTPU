@@ -133,3 +133,85 @@
   color: var(--color-gray-500);
 }
 
+.timelineList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkpoint {
+  display: flex;
+  gap: 12px
+}
+
+.checkpointIndex {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: var(--color-gray-100);
+
+  font: var(--section-title-interface);
+  color: var(--color-gray-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkpointInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.checkpointInfo p:nth-child(1) {
+  font: var(--menu-title-platform);
+  color: var(--color-gray-600);
+}
+
+.checkpointInfo p:nth-child(2) {
+  font: var(--OS-14-400);
+  color: var(--color-gray-750);
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.linkContainer {
+  display: flex;
+  border-radius: 16px;
+  border: 1px solid var(--color-gray-250);
+  padding: 10px;
+}
+
+.innerContainer {
+  display: flex;
+  padding: 6px 6px 8px 8px;
+  flex-direction: column;
+  gap: 4px
+}
+
+.innerContainer p:nth-child(1) {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500)
+}
+
+.innerContainer p:nth-child(2) {
+  font: var(--OS-14-400);
+  color: var(--color-gray-600)
+}
+
+.errorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.errorText {
+  padding-top: 8px;
+  font: var(--inter-12-400);
+  color: var(--color-red, #e53e3e);
+}
+
