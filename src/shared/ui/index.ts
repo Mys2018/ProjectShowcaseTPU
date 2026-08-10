@@ -1,8 +1,8 @@
-export { Pagination } from './Pagination/Pagination';
-export { default as SearchField } from './SearchField/SearchField';
+export { Pagination } from './Pagination/Pagination'
+export { default as SearchField } from './SearchField/SearchField'
 export { LikeButton } from './like-button/LikeButton.tsx'
 export { InfoTooltip } from './info-tooltip/InfoTooltip.tsx'
-export { RouterTabs, type TabItem } from './router-tabs/RouterTabs.tsx';
+export { RouterTabs, type TabItem } from './router-tabs/RouterTabs.tsx'
 export { StagesWidget } from './stages-widget/StagesWidget.tsx'
 
 export { YourTasksWidget } from './small-widgets/your-tasks/YourTasksWidget.tsx'
@@ -13,5 +13,9 @@ export { TextArea } from './textarea/TextArea.tsx'
 export { FooterBlockFields } from './footer-block-fields/FooterBlockFields.tsx'
 export { Checkbox } from './fields/checkbox'
 
+export { ConfirmModal } from './confirm-modal/ConfirmModal.tsx'
+export * from './skeleton'
+export { FloatingTabs } from './floating-tabs/FloatingTabs.tsx'
 
-export { ConfirmModal } from './confirm-modal/ConfirmModal.tsx';
+import userIconUrl from './icons/fallback_personal.svg'
+export { userIconUrl }

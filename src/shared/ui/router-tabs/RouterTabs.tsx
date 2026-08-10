@@ -1,30 +1,24 @@
-import { NavLink } from 'react-router-dom';
-import styles from './RouterTabs.module.css';
+import { useLocation, useNavigate } from 'react-router-dom'
+import { FloatingTabs } from '../floating-tabs/FloatingTabs'
 
-export interface TabItem {
-  label: string;
-  to: string;
+export type TabItem = {
+  label: string
+  to: string
 }
 
 interface RouterTabsProps {
-  items: TabItem[];
+  items: TabItem[]
 }
 
 export function RouterTabs({ items }: RouterTabsProps) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
   return (
-    <nav className={styles.navMenu}>
-      {items.map((item) => (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          className={({ isActive }) =>
-            `${styles.button} ${isActive ? styles.active : ''}`
-          }
-          end
-        >
-          {item.label}
-        </NavLink>
-      ))}
-    </nav>
-  );
+    <FloatingTabs
+      items={items.map(item => ({ label: item.label, value: item.to }))}
+      onChange={to => void navigate(to)}
+      value={location.pathname}
+    />
+  )
 }
