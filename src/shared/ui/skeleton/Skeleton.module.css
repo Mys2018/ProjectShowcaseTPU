@@ -1,0 +1,27 @@
+.skeleton {
+  opacity: 0.7;
+  background-color: var(--text-color);
+  animation:
+    blinking 1s cubic-bezier(0.8, 0.3, 0.3, 0.8) infinite alternate,
+    fade-in 0.4s;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes blinking {
+  0% {
+    background-color: color-mix(in srgb, var(--text-color) 50%, transparent);
+  }
+
+  100% {
+    background-color: color-mix(in srgb, var(--text-color) 30%, transparent);
+  }
+}
