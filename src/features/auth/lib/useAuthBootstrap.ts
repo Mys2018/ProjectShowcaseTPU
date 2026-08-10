@@ -29,7 +29,7 @@ export const useAuthBootstrap = () => {
   useEffect(() => {
     if (userData?.roles) {
       for (const role of userData.roles) {
-        if (role.type !== 'Default') {
+        if (role.type === 'Student' || role.type === 'Curator' || role.type === 'Moderator') {
           setPreferredRoleType(role.type)
           break
         }
