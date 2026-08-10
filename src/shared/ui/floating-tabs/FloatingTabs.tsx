@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
 import styles from './FloatingTabs.module.css'
 
-interface FloatingTabsProps {
-  items: { label: ReactNode; value: string }[]
-  value: string
-  onChange: (value: string) => void
+interface FloatingTabsProps<T extends string> {
+  items: { label: ReactNode; value: T }[]
+  value: T
+  onChange: (value: T) => void
   className?: string
 }
 
-export function FloatingTabs({ items, value, onChange, className = '' }: FloatingTabsProps) {
+export function FloatingTabs<T extends string>({ items, value, onChange, className = '' }: FloatingTabsProps<T>) {
   return (
     <div className={`${styles.list} ${className}`}>
       {items.map(item => (
