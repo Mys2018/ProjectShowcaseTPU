@@ -1,12 +1,11 @@
 .mainContent {
   display: grid;
+  gap: 8px 32px;
   width: 100%;
   flex: 1;
   min-height: 0;
   grid-template-columns: 300px 1fr;
   grid-template-rows: auto 1fr;
-  margin-top: 26px;
-  padding: 0 180px;
   overflow: hidden;
   position: relative;
   max-width: calc(1560px + 180px*2);
@@ -73,18 +72,10 @@
   }
 }
 
-
-@media (max-width: 1280px) {
-  .mainContent {
-    padding: 0 20px;
-  }
-}
-
 @media (max-width: 768px) {
   .mainContent {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto 1fr;
-    padding: 0 16px;
   }
 
   .filterPart {

@@ -3,7 +3,7 @@
   flex-direction: column;
   width: 100%;
   flex: 1;
-  /*TODO*/
+  gap: 8px;
 
   min-height: 0;
   background-color: var(--color-gray-50);
