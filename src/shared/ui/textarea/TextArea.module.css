@@ -29,6 +29,7 @@
   resize: none;
   width: 100%;
   background-color: transparent;
+  font: var(--body-text-platform);
   flex-grow: 1;
   overflow-y: auto;
   scrollbar-width: none;

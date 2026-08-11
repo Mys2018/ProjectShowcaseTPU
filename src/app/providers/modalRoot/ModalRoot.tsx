@@ -6,6 +6,7 @@ import {LinkModal} from "@/features/link-modal/LinkModal.tsx";
 import { ConfirmModal } from "@/shared/ui";
 import {AddCheckpointsModal} from "@/shared/ui/add-checkpoints-modal/AddCheckpointsModal.tsx";
 import {SelectProjectLinksModal} from "@/features/create-project/ui/components/select-project-links-modal/SelectProjectLinksModal.tsx";
+import {AvatarUploadModal} from "@/widgets/profile-header/ui/AvatarUploadModal.tsx";
 
 const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   COMPETENCY_CHOICE: SelectCompetencyModal,
@@ -15,6 +16,7 @@ const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   ADD_CHECKPOINT: AddCheckpointsModal,
   ADD_LINK: LinkModal,
   SELECT_PROJECT_LINKS: SelectProjectLinksModal,
+  AVATAR_UPLOAD: AvatarUploadModal,
 }
 
 export function ModalRoot() {

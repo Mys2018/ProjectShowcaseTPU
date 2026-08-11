@@ -19,15 +19,16 @@ export type User = UserBase & {
     bio: string
     skills: CompetenceDto[]
     experience: string,
-    messengers: Messengers
+    messengers: Messengers,
+    portfolioLink: string
   }
   capabilities: string[]
 }
 
 export type Messengers = {
+  element: string
   telegram: string,
   vk: string,
-  element: string
 }
 
 export type MessengerType = keyof Messengers;

@@ -7,9 +7,9 @@ import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
 import {ProjectPrd} from "@/shared/ui/project-prd/ProjectPrd.tsx";
 import {FreeCompetencies} from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
 import {ProjectTeam} from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
-import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import BackIcon from '@/shared/ui/icons/back.svg?react';
+import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import {useEffect, useRef, useState} from "react";
 import type {ProjectCardData} from "@/entities/project";
 // TODO
@@ -46,7 +46,8 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
     if (!label || !text) return;
 
     const checkOverflow = () => {
-      const hasOverflow = text.offsetWidth > label.offsetWidth;
+      const availableWidth = label.clientWidth - 32;
+      const hasOverflow = text.offsetWidth > availableWidth;
       setIsScrolling(hasOverflow);
     }
 
@@ -90,7 +91,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.headerLeft} onClick={() => navigate(-1)} style={{ cursor: 'pointer' }}>
+      <div className={styles.headerLeft} onClick={() => navigate(-1)}>
         <BackIcon className={styles.backIcon}/>
         <p className={styles.back}>Назад</p>
       </div>
@@ -151,7 +152,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
           <ShareIcon />
           Поделиться проектом
         </a>
-        <IdIcon />
+        <MoreLogo className={styles.modeButton}/>
       </aside>
 
       <aside className={styles.rightWidgets} ref={rightWidgetsRef} onScroll={handleScroll}>

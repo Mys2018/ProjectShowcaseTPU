@@ -62,7 +62,7 @@ const getIconByType = (type: string, classNames: string) => {
   }
 }
 
-export const InfoTooltip = ({ children, className, iconClassName, title, body, size, importantText, link, pointer, type }: InfoTooltipProps) => {
+export const InfoTooltip = ({ children, className, iconClassName, title, body, size, importantText, pointer, type }: InfoTooltipProps) => {
 
   const s = THEME_MAP[size];
 
@@ -107,14 +107,12 @@ export const InfoTooltip = ({ children, className, iconClassName, title, body, s
           </div>
         }
 
-        {
-          link &&
-          <a className={clsx(styles.link, s.link)} href={link}>
-            Ссылка на FAQ
-          </a>
-        }
-
-
+        {/*{*/}
+        {/*  link &&*/}
+        {/*  <a className={clsx(styles.link, s.link)} href={link}>*/}
+        {/*    Ссылка на FAQ*/}
+        {/*  </a>*/}
+        {/*}*/}
       </div>
     </div>
   )

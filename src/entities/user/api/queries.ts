@@ -43,7 +43,7 @@ export const useUpdateProfileMeta = () => {
   return useMutation<void, AxiosError, UpdateProfileMetaRequest>({
     mutationFn: updateProfileMeta,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.me() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.me(), exact: true })
     }
   })
 }

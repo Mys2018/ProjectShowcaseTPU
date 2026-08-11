@@ -84,25 +84,29 @@ export const FreeCompetencies = ({roles}: FreeCompetenciesProps) => {
                         <p className={styles.role}>
                           {role.meta.name}
                         </p>
-                        <InfoTooltip
-                          className={styles.tooltip}
-                          iconClassName={styles.tooltipIcon}
-                          title="Заголовок тултипа"
-                          body={
-                            [
-                              {
-                                text: [
-                                  'Бла бла',
+                        {!isDimmed && (
+                          <div className={styles.tooltipWrapper} onClick={(e) => e.stopPropagation()}>
+                            <InfoTooltip
+                              className={styles.tooltip}
+                              iconClassName={styles.tooltipIcon}
+                              title="Заголовок тултипа"
+                              body={
+                                [
+                                  {
+                                    text: [
+                                      'Бла бла',
+                                    ]
+                                  },
                                 ]
-                              },
-                            ]
-                          }
-                          size={'small'}
-                          pointer={'topLeft'}
-                          importantText={'Важно тут!'}
-                          link={'sdfsdsdsds'}
-                          type={'help'}
-                        />
+                              }
+                              size={'small'}
+                              pointer={'topLeft'}
+                              importantText={'Важно тут!'}
+                              link={'sdfsdsdsds'}
+                              type={'help'}
+                            />
+                          </div>
+                        )}
                       </div>
 
                       {

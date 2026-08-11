@@ -14,11 +14,6 @@ export function SomeoneProfile() {
   const uid = params.id  || ''
   const { data: user } = useUserById(uid)
 
-  const links: { type?: 'tg' | 'vk' | 'element'; link?: string; anotherType?: string }[] = [
-    { type: 'element', link: 'Mys2018' },
-    { type: 'tg', link: 'Mys2018' },
-  ];
-
   if (!user) {
     return null;
   }
@@ -39,10 +34,13 @@ export function SomeoneProfile() {
       </section>
 
       <section className={styles.profile}>
-        <SomeoneProfileHeader user={user} links={links} onClickSee={() => navigate(`/profile/${user.id}`)}/>
+        <SomeoneProfileHeader user={user} links={user.meta.messengers} onClickSee={() => navigate(`/profile/${user.id}`)}/>
         <div className={styles.body}>
           <MyCompetenciesList savedSkills={user.meta.skills} readonly={true} />
-          <Portfolio firsValue={"I don't wonna let go. I don't wonna let go"} readonly={true}/>
+          {
+            user.meta.portfolioLink ? <Portfolio firsValue={user.meta.portfolioLink} readonly={true}/> : ''
+          }
+
         </div>
       </section>
     </div>

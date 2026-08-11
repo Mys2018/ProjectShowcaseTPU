@@ -92,9 +92,9 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
         links.map((link, index) => (
           <div key={index} className={clsx(styles.container, (link.link ? styles.active : ''),  (link.type === 'element' && styles.special))}>
             {
-              link.link ?
+              link.link && link.type !== 'element' ?
                 <button className={styles.editButton} onClick={() => handleOpenModal(link.type, link.link)}>
-                  <EditIcon className={link.type === 'element' ? styles.specialEditIcon : styles.editIcon}/>
+                  <EditIcon className={styles.editIcon}/>
                 </button> : ''
             }
             {

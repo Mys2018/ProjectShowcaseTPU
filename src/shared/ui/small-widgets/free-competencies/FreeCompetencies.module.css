@@ -226,6 +226,11 @@
   color: var(--color-gray-750)
 }
 
+.tooltipWrapper {
+  width: 12px;
+  height: 13px;
+}
+
 .competencyHeader {
   display: flex;
   gap: 4px;
