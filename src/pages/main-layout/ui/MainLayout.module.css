@@ -6,16 +6,40 @@
   overflow: hidden;
   align-items: center;
 
-  background-color: white;
-
   & > *:not(:first-child) {
     flex: 1;
     min-height: 0;
+    padding: 26px 180px 0px;
+    max-width: calc(1560px + 180px*2);
+  }
+}
+
+@media (max-width: 1600px) {
+  .mainLayout > *:not(:first-child) {
+    padding-inline: 120px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .mainLayout > *:not(:first-child) {
+    padding-inline: 96px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .mainLayout > *:not(:first-child) {
+    padding-inline: 84px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mainLayout > *:not(:first-child) {
+    padding-inline: 60px;
   }
 }
 
 @media (max-width: 768px) {
-  .main {
-    padding-top: 0;
+  .mainLayout > *:not(:first-child) {
+    padding-inline: 24px;
   }
 }
