@@ -9,7 +9,7 @@
   & > *:not(:first-child) {
     flex: 1;
     min-height: 0;
-    padding: 26px 180px 0px;
+    padding: 26px 180px 10px;
     max-width: calc(1560px + 180px*2);
   }
 }

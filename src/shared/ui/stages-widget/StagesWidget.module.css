@@ -12,6 +12,7 @@
   background-color: white;
   box-shadow: var(--card-drop-shadow);
   width: 100%;
+  gap: 35px;
 }
 
 .cardHeader {
