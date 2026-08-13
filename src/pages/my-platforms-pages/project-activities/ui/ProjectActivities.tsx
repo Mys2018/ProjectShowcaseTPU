@@ -1,108 +1,96 @@
-import { ProjectProfile } from '@/shared/ui/small-widgets/project-profile/ProjectProfile';
-import styles from './ProjectActivities.module.css';
-import { YourTasksWidget } from '@/shared/ui/small-widgets/your-tasks/YourTasksWidget';
-import { StagesWidget, YourPointsWidget } from '@/shared/ui';
-import type { Activity } from '@/shared/ui';
-import type { ClosingDiscipline } from '@/shared/ui';
-import { ProjectsGrid } from '@/widgets/projects-grid';
-import banner from '../../assets/banner.png'
-import { useRef } from 'react';
-import {useMe} from "@/entities/user";
+import { useEffect, useRef } from 'react'
+import styles from './ProjectActivities.module.css'
+import { ProjectsGrid } from '@/widgets/projects-grid'
+import { getSwitchableRolesAmount, ROLES_TRANSLATIONS, useMe, usePreferencesStore, UserRow, UserRowSkeleton } from '@/entities/user'
+import { FloatingTabs, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
 
 export const ProjectActivities = () => {
+  const { data: user } = useMe()
+  const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-    const { data: user } = useMe();
+  const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
+    activities: [
+      {
+        type: 'currentStage',
+        title: 'Подготовка презентации',
+        deadline: '5-06-2026',
+        progressSteps: 5,
+        progressCurrentStep: 5,
+        unitType: 'points'
+      },
+      {
+        type: 'upcomingStage',
+        title: 'Подготовка презентации',
+        progressSteps: 1,
+        progressCurrentStep: 0,
+        unitType: 'points'
+      },
+      {
+        type: 'keyPoint',
+        title: 'Постерная сессия 1',
+        deadline: '29-05-2026',
+        status: 'completed',
+        number: 1,
+        extra: 'tooltip'
+      }
+    ],
+    closingDisciplines: [
+      {
+        title: 'УИРС-1',
+        currentProgress: 18,
+        maxProgress: 36
+      },
+      {
+        title: 'УИРС-2',
+        currentProgress: 0,
+        maxProgress: 36
+      }
+    ]
+  } // TODO заменить на реальные данные
 
-    const data: {
-        name?: string;
-        role?: string;
-        avatarSrc?: string;
-        activities?: Activity[];
-        closingDisciplines?: ClosingDiscipline[]
-    } = {
-        name: 'Paven',
-        role: 'Разработчик',
-        avatarSrc: '',
+  const switchableRoles = user ? getSwitchableRolesAmount(user.roles) : []
+  const tabItems = switchableRoles.map(role => ({ label: ROLES_TRANSLATIONS[role.type], value: role.type }))
 
-        activities: [
-            {
-                type: 'currentStage',
-                title: 'Подготовка презентации',
-                deadline: '5-06-2026',
-                progressSteps: 5,
-                progressCurrentStep: 5,
-                unitType: 'points'
-            },
-            {
-                type: 'upcomingStage',
-                title: 'Подготовка презентации',
-                progressSteps: 1,
-                progressCurrentStep: 0,
-                unitType: 'points'
-            },
-            {
-                type: 'keyPoint',
-                title: 'Постерная сессия 1',
-                deadline: '29-05-2026',
-                status: 'completed',
-                number: 1,
-                extra: 'tooltip'
-            }
-
-        ],
-        closingDisciplines: [
-            {
-                title: 'УИРС-1',
-                currentProgress: 18,
-                maxProgress: 36
-            },
-            {
-                title: 'УИРС-2',
-                currentProgress: 0,
-                maxProgress: 36
-            }
-        ]
-    };
-
-    const widgetRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-
-    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        const target = e.currentTarget;
-        const scrollTop = target.scrollTop;
-
-        if (widgetRef.current) {
-            widgetRef.current.scrollTop = scrollTop;
-        }
-
-        if (contentRef.current) {
-            contentRef.current.scrollTop = scrollTop;
-        }
+  const activitiesRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const activitiesElement = activitiesRef.current
+    const contentElement = contentRef.current
+    if (activitiesElement) {
+      const scrollHeight = activitiesElement.scrollHeight
+      activitiesElement.style.top = `calc(100% - ${scrollHeight}px)`
     }
+    if (contentElement) {
+      const scrollHeight = contentElement.scrollHeight
+      contentElement.style.top = `calc(100% - ${scrollHeight}px)`
+    }
+  }, [])
 
-    return (
-        <main className={styles.mainContent}>
-            <aside className={styles.profile}>
-                <ProjectProfile name={user?.meta.name} role={data.role} avatarSrc={user?.profilePicture} />
-            </aside>
-            <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>
-            <aside className={styles.activities} ref={widgetRef} onScroll={handleScroll}>
-                <YourTasksWidget data={data.activities} />
-                <YourPointsWidget disciplines={data.closingDisciplines} tpuPoints={307} />
-            </aside>
-            <div className={styles.contentWrapper} ref={contentRef} onScroll={handleScroll}>
-                <section className={styles.banner}>
-                    <img src={banner} alt="Activities Banner" className={styles.bannerImage} />
-                </section>
-                <section className={styles.stagesWidget}>
-                    <StagesWidget />
-                </section>
-                <section className={styles.projects}>
-                    <h3 className={styles.projectstitle}>Проекты для вас</h3>
-                    <ProjectsGrid />
-                </section>
-            </div>
-
-        </main>
-    );
+  return (
+    <div className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`}>
+      <div className={styles.header}>
+        {user ? <UserRow className={styles.userRow} user={user} /> : <UserRowSkeleton />}
+        <div className={styles.start}>
+          <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>
+          {switchableRoles.length > 1 && <FloatingTabs items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />}
+        </div>
+      </div>
+      <div className={styles.body}>
+        <div className={styles.activities} ref={activitiesRef}>
+          <YourTasksWidget data={mockedData.activities} />
+          <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
+        </div>
+        <div className={styles.content} ref={contentRef}>
+          <div className={styles.overview}>
+            <span className={styles.banner} />
+            <StagesWidget />
+          </div>
+          <div className={styles.projects}>
+            <h3 className={styles.title}>Проекты для вас</h3>
+            <ProjectsGrid />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
