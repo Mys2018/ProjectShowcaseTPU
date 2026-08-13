@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import styles from './ProjectActivities.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
 import { getSwitchableRolesAmount, ROLES_TRANSLATIONS, useMe, usePreferencesStore, UserRow, UserRowSkeleton } from '@/entities/user'
@@ -53,44 +53,48 @@ export const ProjectActivities = () => {
 
   const activitiesRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
+  const bgRef = useRef<HTMLSpanElement>(null)
+  const shapeRef = useRef<HTMLSpanElement>(null)
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop
+
     const activitiesElement = activitiesRef.current
     const contentElement = contentRef.current
-    if (activitiesElement) {
-      const scrollHeight = activitiesElement.scrollHeight
-      activitiesElement.style.top = `calc(100% - ${scrollHeight}px)`
-    }
-    if (contentElement) {
-      const scrollHeight = contentElement.scrollHeight
-      contentElement.style.top = `calc(100% - ${scrollHeight}px)`
-    }
-  }, [])
+    const bgElement = bgRef.current
+    const shapeElement = shapeRef.current
+
+    if (activitiesElement) activitiesElement.scrollTop = scrollTop
+    if (contentElement) contentElement.scrollTop = scrollTop
+    if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
+    if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
+  }
 
   return (
-    <div className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`}>
-      <div className={styles.header}>
-        {user ? <UserRow className={styles.userRow} user={user} /> : <UserRowSkeleton />}
-        <div className={styles.start}>
-          <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>
-          {switchableRoles.length > 1 && <FloatingTabs items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />}
-        </div>
+    <main className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`}>
+      <span className={`${styles.background} ${styles.fixed}`} />
+      <span className={styles.background} ref={bgRef} />
+      <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
+      
+      <aside className={styles.userRow}>{user ? <UserRow className={styles.userRow} user={user} /> : <UserRowSkeleton />}</aside>
+      {user && <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>}
+      {switchableRoles.length > 1 && (
+        <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
+      )}
+      <aside className={styles.activities} ref={activitiesRef} onScroll={handleScroll}>
+        <YourTasksWidget data={mockedData.activities} />
+        <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
+      </aside>
+      <div className={styles.content} ref={contentRef} onScroll={handleScroll}>
+        <span className={styles.banner} />
+        <section className={styles.stagesWidget}>
+          <StagesWidget />
+        </section>
+        <section className={styles.projects}>
+          <h3 className={styles.title}>Проекты для вас</h3>
+          <ProjectsGrid />
+        </section>
       </div>
-      <div className={styles.body}>
-        <div className={styles.activities} ref={activitiesRef}>
-          <YourTasksWidget data={mockedData.activities} />
-          <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
-        </div>
-        <div className={styles.content} ref={contentRef}>
-          <div className={styles.overview}>
-            <span className={styles.banner} />
-            <StagesWidget />
-          </div>
-          <div className={styles.projects}>
-            <h3 className={styles.title}>Проекты для вас</h3>
-            <ProjectsGrid />
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
   )
 }
