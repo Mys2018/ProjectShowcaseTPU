@@ -1,9 +1,10 @@
 .wrap {
   display: flex;
   flex-direction: column;
+  height: 100%;
   width: 100%;
   flex: 1;
-  /*TODO*/
+  gap: 8px;
 
   min-height: 0;
   background-color: var(--color-gray-50);

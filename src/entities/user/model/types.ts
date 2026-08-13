@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export type SkillDto = {
   skillId: string
   skillName: string
@@ -36,6 +37,7 @@ export type UserBase = {
   id: string
   email: string
   roles: UserRole[]
+  profilePicture: string
   meta: {
     name: string
   }
@@ -44,7 +46,8 @@ export type UserBase = {
 export type UserBaseDto = {
   userId: number
   email: string
-  roles: string[]
+  roles?: string[]
+  profilePicture?: string
   meta: {
     firstName: string
     lastName: string
@@ -54,7 +57,8 @@ export type UserBaseDto = {
 export type UserDto = {
   userId: number
   email: string
-  profilePicture: string | null
+  profilePicture?: string
+  capabilities?: string[]
   meta: {
     firstName: string
     lastName: string
@@ -62,6 +66,7 @@ export type UserDto = {
     skills: CompetenceDto[]
     experience: string,
     messengers: Messengers
+    portfolioLink: string
   }
   group?: string
   grade?: string
@@ -81,7 +86,6 @@ export type UserDto = {
     ROOP?: {}
     Teacher?: {}
   }
-  capabilities: string[] | null
 }
 
 type Role<T> = {

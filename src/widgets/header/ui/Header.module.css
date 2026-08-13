@@ -4,8 +4,8 @@
   flex-direction: column;
   width: 100%;
   background-color: var(--color-brand-black);
+  z-index: 2;
 }
-
 
 .wrap {
   position: relative;
@@ -18,13 +18,37 @@
   align-items: center;
   width: 100%;
   background-color: var(--color-brand-black);
-  max-width: calc(1560px + 180px*2);
+  max-width: calc(1560px + 180px * 2);
 }
 
 .center {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+
+@media (max-width: 1600px) {
+  .wrap {
+    padding-inline: 120px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .wrap {
+    padding-inline: 96px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .wrap {
+    padding-inline: 84px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .wrap {
+    padding: 0 60px;
+  }
 }
 
 @media (max-width: 768px) {

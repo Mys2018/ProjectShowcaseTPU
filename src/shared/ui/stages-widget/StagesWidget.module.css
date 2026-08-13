@@ -1,9 +1,6 @@
 .mainContainer {
-  width: 100%;
-  padding: calc(4px + 8px) 16px 0 16px;
   display: flex;
   gap: 12px;
-  height: 100%;
 }
 
 .cardBody {
@@ -15,6 +12,7 @@
   background-color: white;
   box-shadow: var(--card-drop-shadow);
   width: 100%;
+  gap: 35px;
 }
 
 .cardHeader {

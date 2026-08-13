@@ -7,9 +7,6 @@
   border: 1px solid var(--color-gray-350);
   border-radius: 14px;
   gap: 12px;
-  margin-bottom: 8px;
-  margin-left: 16px;
-  margin-right: 16px;
 }
 
 .input {

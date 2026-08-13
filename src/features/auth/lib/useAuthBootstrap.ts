@@ -5,6 +5,8 @@ import { pkceService } from "./pkce";
 import {
   useAuthStatus,
   useAuthStore,
+  useMe,
+  usePreferencesStore,
   type OAuthExchangeParams,
 } from "@/entities/user";
 import { ROUTES } from "@/shared";
@@ -14,6 +16,8 @@ export const useAuthBootstrap = () => {
   const status = useAuthStore((state) => state.status);
   const isLoggedOut = useAuthStore((state) => state.isLoggedOut);
   const setStatus = useAuthStore((state) => state.setStatus);
+  const {data: userData} = useMe(status === 'authenticated')
+  const setPreferredRoleType = usePreferencesStore((state) => state.setPreferredRoleType);
   const loginMutation = useLogin();
   const callbackHandledRef = useRef(false);
   const [callbackParams, setCallbackParams] =
@@ -21,6 +25,17 @@ export const useAuthBootstrap = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const hasOAuthCallback =
     searchParams.has("code") && searchParams.has("state");
+
+  useEffect(() => {
+    if (userData?.roles) {
+      for (const role of userData.roles) {
+        if (role.type === 'Student' || role.type === 'Curator' || role.type === 'Moderator') {
+          setPreferredRoleType(role.type)
+          break
+        }
+      }
+    }
+  }, [userData, setPreferredRoleType])
 
   useEffect(() => {
     if (!hasOAuthCallback) {
