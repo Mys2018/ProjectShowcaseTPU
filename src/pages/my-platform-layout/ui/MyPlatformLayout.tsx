@@ -1,11 +1,11 @@
 import styles from './MyPlatformLayout.module.css';
-// import { SwitchMyPlatform } from '@/features/switch-my-platform';
 import { Outlet } from "react-router-dom";
+import { SwitchMyPlatform } from '@/features/switch-my-platform';
 
 export const MyPlatformLayout = () => {
     return (
         <div className={styles.wrap}>
-            {/*<SwitchMyPlatform />*/}
+            <SwitchMyPlatform />
             <Outlet />
         </div>
     );

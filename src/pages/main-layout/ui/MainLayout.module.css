@@ -6,16 +6,10 @@
   overflow: hidden;
   align-items: center;
 
-  background-color: white;
-
   & > *:not(:first-child) {
     flex: 1;
     min-height: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  .main {
-    padding-top: 0;
+    padding: 26px var(--padding-inline) 10px;
+    max-width: var(--max-container-width);
   }
 }

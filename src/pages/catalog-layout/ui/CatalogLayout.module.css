@@ -1,19 +1,11 @@
 .wrap {
   display: flex;
   flex-direction: column;
+  gap: 8px;
   width: 100%;
   flex: 1;
   min-height: 0;
   background-color: var(--color-gray-50);
   align-items: center;
   overflow: hidden;
-
-  /*TODO*/
-  padding-top: calc(54px - 26px);
-}
-
-@media (max-width: 768px) {
-  .wrap {
-    padding-top: 0;
-  }
 }

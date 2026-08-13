@@ -1,6 +1,6 @@
-import { Header } from '@/widgets/header'
-import styles from './MainLayout.module.css'
 import { Outlet } from 'react-router-dom'
+import styles from './MainLayout.module.css'
+import { Header } from '@/widgets/header'
 
 export const MainLayout = () => {
   return (

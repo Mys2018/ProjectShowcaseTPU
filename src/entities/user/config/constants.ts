@@ -14,12 +14,12 @@ export const ROLES_TRANSLATIONS: Record<keyof UserDto['roles'], string> = {
 export const ROLE_WEIGHTS: Record<keyof UserDto['roles'], number> = {
   Default: 1,
   Student: 2,
-  Admin: 3,
-  Curator: 1,
-  Mentor: 1,
-  Moderator: 1,
-  ROOP: 1,
-  Teacher: 1,
+  Admin: 6,
+  Curator: 3,
+  Mentor: 3,
+  Moderator: 4,
+  ROOP: 5,
+  Teacher: 3,
 }
 
 export const placeholderUser: User = {
