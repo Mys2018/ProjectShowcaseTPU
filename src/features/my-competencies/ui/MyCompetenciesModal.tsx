@@ -16,6 +16,14 @@ export const MyCompetenciesModal = ({ currentFullSkills, addSkill, setPopoverOpe
             {skill.skillName}
           </button>
         ))}
+
+        {
+          currentFullSkills.length === 0 && (
+            <p className={styles.allSelected}>
+              Все навыки выбраны
+            </p>
+          )
+        }
       </div>
 
       <button

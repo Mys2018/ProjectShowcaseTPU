@@ -116,7 +116,7 @@
 }
 
 .headerLink p {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: white;
 }
 
@@ -125,7 +125,8 @@
   gap: 8px;
   align-items: center;
   color: white;
-  font: var(--OS-14-550)
+  font: var(--OS-14-550);
+  cursor: pointer;
 }
 
 .whiteShareLogo {

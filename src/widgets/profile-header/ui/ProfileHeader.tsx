@@ -57,12 +57,16 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
         </section>
 
         <section className={styles.editBody}>
-          <p className={styles.appearance}>
-            Внешний вид профиля
+          <BigInfoIcon className={styles.bigInfoIcon} />
+          <p>
+            Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.
           </p>
-          <button className={styles.outEditButton}>
-            Настроить
-          </button>
+          {/*<p className={styles.appearance}>*/}
+          {/*  Внешний вид профиля*/}
+          {/*</p>*/}
+          {/*<button className={styles.outEditButton}>*/}
+          {/*  Настроить*/}
+          {/*</button>*/}
         </section>
 
         <section className={styles.secontInfoContainer}>
@@ -83,12 +87,12 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
           />
         </section>
       </div>
-      <div className={styles.infoLabel}>
-        <BigInfoIcon className={styles.bigInfoIcon} />
-        <p>
-          Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.
-        </p>
-      </div>
+      {/*<div className={styles.infoLabel}>*/}
+      {/*  <BigInfoIcon className={styles.bigInfoIcon} />*/}
+      {/*  <p>*/}
+      {/*    Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.*/}
+      {/*  </p>*/}
+      {/*</div>*/}
     </div>
   );
 };

@@ -37,6 +37,10 @@ export const AddCheckpointsModal = ({isOpen, onClose, initialTitle, initialDeadl
       setError('Введите название ключевой точки');
       return;
     }
+    if (value.length > 500) {
+      setError('Максимум 500 символов');
+      return;
+    }
     if (!date || date === 'Дата') {
       setError('Выберите дату');
       return;
@@ -51,7 +55,21 @@ export const AddCheckpointsModal = ({isOpen, onClose, initialTitle, initialDeadl
       <Modal.Header title={initialTitle ? "Редактирование ключевой точки" : "Новая ключевая точка"}/>
       <Modal.Body>
         <div className={styles.container}>
-          <SmallTextFieldForm value={value} onChange={(e) => setValue(e.target.value)}/>
+          <SmallTextFieldForm 
+            value={value} 
+            maxLength={500}
+            validError={error === 'Введите название ключевой точки' || error === 'Максимум 500 символов' ? error : undefined}
+            hideErrorText={true}
+            onChange={(e) => {
+              const val = e.target.value;
+              setValue(val);
+              if (error === 'Введите название ключевой точки' && val.trim()) {
+                setError(undefined);
+              } else if (error === 'Максимум 500 символов' && val.length <= 500) {
+                setError(undefined);
+              }
+            }}
+          />
           <div className={styles.dateContainer}>
             <div className={styles.labelWrapper}>
               <label className={styles.label}>{date}</label>

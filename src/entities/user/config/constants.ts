@@ -33,6 +33,7 @@ export const placeholderUser: User = {
     bio: '',
     skills: [],
     experience: '',
+    portfolioLink: '',
     messengers: {
       telegram: '',
       vk: '',

@@ -4,7 +4,8 @@
   align-items: center;
   justify-content: center;
   gap: 24px;
-  background: var(--color-gray-50, #f8f9fa);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-50);
   border-radius: 20px;
   padding: 48px 24px;
   text-align: center;
@@ -17,15 +18,18 @@
 }
 
 .emptyStateBlock h4 {
-  font: var(--field-title-big-interface, 500 18px / 22px "Inter", sans-serif);
-  color: var(--color-gray-900, #212529);
-  margin: 0;
+  font: var(--field-title-big-interface);
+  color: var(--color-gray-900);
 }
 
 .emptyStateBlock p {
-  font: var(--body-text-platform, 400 16px / 20px "Inter", sans-serif);
-  color: var(--color-gray-900, #212529);
-  margin: 0;
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+}
+
+.errorState {
+  border: 1px solid var(--color-red);
+  background-color: var(--color-red-error-bg);
 }
 
 

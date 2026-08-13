@@ -62,7 +62,8 @@ export type UserDto = {
     bio: string
     skills: CompetenceDto[]
     experience: string,
-    messengers: Messengers
+    messengers: Messengers,
+    portfolioLink?: string
   }
   group?: string
   grade?: string

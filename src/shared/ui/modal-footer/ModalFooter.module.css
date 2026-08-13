@@ -7,7 +7,7 @@
 }
 
 .errorText {
-  font: var(--body-text-platform);
+  font: var(--inter-12-300);
   color: var(--color-red);
 }
 

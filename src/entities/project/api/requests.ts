@@ -8,7 +8,25 @@ import type {
 } from '../model/types';
 import { mapProjectDtoToEntity } from '../lib/mapProject';
 
+export interface ProjectDraftResponse {
+  data: Record<string, unknown>;
+  updatedAt: string;
+}
+
 export const projectApi = {
+  getDraft: async (): Promise<ProjectDraftResponse> => {
+    const response = await api.get<ProjectDraftResponse>('/me/projects/draft');
+    return response.data;
+  },
+
+  saveDraft: async (data: Record<string, unknown>): Promise<void> => {
+    await api.put('/me/projects/draft', data);
+  },
+
+  deleteDraft: async (): Promise<void> => {
+    await api.delete('/me/projects/draft');
+  },
+
   getProjects: async (params?: GetProjectsQueryParams): Promise<{ projects: ProjectCardData[]; total: number }> => {
     const response = await api.get<ProjectsResponseDto>('/projects', { 
       params,

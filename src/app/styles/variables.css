@@ -5,6 +5,7 @@
 
   --color-white: #FFFFFF;
   --color-red: #FF3344;
+  --color-red-error-bg: rgba(255, 51, 68, 0.03);
   --color-yellow: #FFB600;
 
   --black: 29, 29, 31;
@@ -102,6 +103,7 @@
   --inter-15-700: 700 15px/1.1 var(--font-inter);
   --inter-13-700: 700 13px/1.1 var(--font-inter);
   --inter-9-5-400: 400 9.5px/1 var(--font-inter);
+  --inter-11-700: 700 11px/1 var(--font-inter);
 
   --OS-14-550: 550 14px/1 var(--font-open-sans);
   --OS-14-400: 400 14px/1.4 var(--font-open-sans);

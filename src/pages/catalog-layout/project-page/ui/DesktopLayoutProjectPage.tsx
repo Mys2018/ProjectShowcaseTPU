@@ -15,7 +15,7 @@ import type {ProjectCardData} from "@/entities/project";
 // TODO
 import {useUserById} from "@/entities/user";
 import {useNavigate} from "react-router-dom";
-import {ProjectStatusLabel} from "@/shared/ui/project-status-label/ProjectStatusLabel.tsx";
+import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 
 interface ProjectPageProps {
   project: ProjectCardData

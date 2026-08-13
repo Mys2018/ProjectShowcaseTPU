@@ -57,7 +57,8 @@
   background-color: var(--color-gray-50);
   border-radius: 16px;
   padding: 10px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .mutable {
@@ -78,12 +79,15 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .actions {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .actionBtn {
@@ -106,7 +110,10 @@
 
 .textContainer p:nth-child(1) {
   font: var(--menu-title-platform);
-  color: var(--color-gray-650)
+  color: var(--color-gray-650);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .textContainer p:nth-child(2) {

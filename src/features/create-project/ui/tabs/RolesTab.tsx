@@ -17,7 +17,7 @@ export function RolesTab({ form, stepErrors }: TabProps) {
 
   const handleAddRoleClick = () => {
     const currentRoles = form.state.values.roles || [];
-    
+
     openModal('COMPETENCY_CHOICE', {
       initialSelectedIds: currentRoles.map(r => r.roleTypeId),
       onSubmitCallback: (selectedRoles: { id: string, name: string }[]) => {
@@ -40,13 +40,48 @@ export function RolesTab({ form, stepErrors }: TabProps) {
 
   return (
     <div className={styles.mainFieldContainer}>
+      <div className={styles.mainInfo}>
+        <h3>Компетенции проекта</h3>
+        <p>
+          Открытые компетенции с входящими заявками от участников
+        </p>
+      </div>
       <div className={styles.errorWrapper}>
-        <div className={styles.mainInfo}>
-          <h3>Компетенции проекта</h3>
-          <p>
-            Открытые компетенции с входящими заявками от участников
-          </p>
-        </div>
+        <form.Field name="roles" mode="array">
+          {(field) => {
+            const roles = field.state.value || [];
+
+            if (roles.length === 0) {
+              return (
+                <EmptyStateBlock
+                  title="Какие специалисты нужны проекту?"
+                  description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
+                  buttonText="Добавить компетенцию"
+                  onAddClick={handleAddRoleClick}
+                  errorState={!!stepErrors?.['roles']}
+                />
+              );
+            }
+
+            return (
+              <div className={styles.competencyList}>
+                {roles.map((_, index) => (
+                  <ProjectRoleCard
+                    key={index}
+                    index={index}
+                    form={form}
+                    globalSkills={globalSkills}
+                  />
+                ))}
+
+                <AddOutlineButton
+                  text="Добавить компетенцию"
+                  onClick={handleAddRoleClick}
+                />
+              </div>
+            );
+          }}
+        </form.Field>
 
         {stepErrors?.['roles'] && (
           <p className={styles.errorText}>
@@ -54,42 +89,6 @@ export function RolesTab({ form, stepErrors }: TabProps) {
           </p>
         )}
       </div>
-
-
-      <form.Field name="roles" mode="array">
-        {(field) => {
-          const roles = field.state.value || [];
-          
-          if (roles.length === 0) {
-            return (
-                <EmptyStateBlock
-                  title="Какие специалисты нужны проекту?"
-                  description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
-                  buttonText="Добавить компетенцию"
-                  onAddClick={handleAddRoleClick}
-                />
-            );
-          }
-
-          return (
-            <div className={styles.competencyList}>
-              {roles.map((_, index) => (
-                <ProjectRoleCard 
-                  key={index} 
-                  index={index} 
-                  form={form} 
-                  globalSkills={globalSkills} 
-                />
-              ))}
-
-              <AddOutlineButton
-                text="Добавить компетенцию"
-                onClick={handleAddRoleClick}
-              />
-            </div>
-          );
-        }}
-      </form.Field>
     </div>
   );
 }

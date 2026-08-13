@@ -1,6 +1,6 @@
 import styles from './CreateProjectCard.module.css'
 import {ProjectCardData} from './data.ts'
-import {typeProjectsLabel} from "@/shared/ui/type-project-label/typeProjectsLabel.tsx";
+import {typeProjectsLabel} from "@/shared/constants/type-project-label/typeProjectsLabel.tsx";
 import ImageIcon from '@/shared/ui/icons/image.svg?react'
 import clsx from "clsx";
 

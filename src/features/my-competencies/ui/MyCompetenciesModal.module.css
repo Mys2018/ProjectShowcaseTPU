@@ -46,3 +46,8 @@
 
   cursor: pointer;
 }
+
+.allSelected {
+  font: var(--body-text-platform);
+  color: var(--color-gray-500)
+}

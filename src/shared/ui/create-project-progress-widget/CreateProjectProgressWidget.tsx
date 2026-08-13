@@ -6,10 +6,11 @@ import {useStore} from "@tanstack/react-form";
 import {calculateProgress} from "@/shared/utils/progress/calculateProgress.ts";
 
 interface CreateProjectProgressWidgetProps {
-  form: CreateProjectForm
+  form: CreateProjectForm;
+  onStepClick?: (index: number) => void;
 }
 
-export const CreateProjectProgressWidget = ({form}: CreateProjectProgressWidgetProps) => {
+export const CreateProjectProgressWidget = ({form, onStepClick}: CreateProjectProgressWidgetProps) => {
   const formValues = useStore(form.store, (state) => state.values)
 
   const step1Progress = calculateProgress([
@@ -56,10 +57,18 @@ export const CreateProjectProgressWidget = ({form}: CreateProjectProgressWidgetP
   ])
 
   const step5Progress = calculateProgress([
-    formValues.checkpoints,
     formValues.links
   ])
 
+  const progresses = [step1Progress, step2Progress, step3Progress, step4Progress, step5Progress];
+  const currentStepIndex = progresses.findIndex(p => p < 100);
+  const isDataFillActive = currentStepIndex >= 2 || currentStepIndex === -1;
+
+  const getSubtitleClass = (index: number) => {
+    if (progresses[index] === 100) return styles.subtitlePassed;
+    if (index === currentStepIndex) return styles.subtitleCurrent;
+    return styles.subtitleInactive;
+  };
 
   return (
     <aside className={styles.progressBlock}>
@@ -68,57 +77,57 @@ export const CreateProjectProgressWidget = ({form}: CreateProjectProgressWidgetP
         <p className={styles.title}>
           Создание проекта
         </p>
-        <div className={styles.progressRow}>
+        <div className={styles.progressRow} onClick={() => onStepClick?.(0)}>
           <ProgressBlock
             progress={step1Progress}
             step={1}
           />
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, getSubtitleClass(0))}>
             Выбор типа
           </p>
         </div>
 
-        <div className={styles.progressRow}>
+        <div className={styles.progressRow} onClick={() => onStepClick?.(1)}>
           <ProgressBlock
             progress={step2Progress}
             step={2}
           />
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, getSubtitleClass(1))}>
             Основная информация
           </p>
         </div>
       </div>
 
       <div className={styles.block}>
-        <p className={styles.title}>
+        <p className={clsx(styles.title, !isDataFillActive && styles.titleInactive)}>
           Заполнение данных
         </p>
-        <div className={styles.progressRow}>
+        <div className={styles.progressRow} onClick={() => onStepClick?.(2)}>
           <ProgressBlock
             progress={step3Progress}
             step={3}
           />
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, getSubtitleClass(2))}>
             Требования к продукту
           </p>
         </div>
 
-        <div className={styles.progressRow}>
+        <div className={styles.progressRow} onClick={() => onStepClick?.(3)}>
           <ProgressBlock
             progress={step4Progress}
             step={4}
           />
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, getSubtitleClass(3))}>
             Компетенции
           </p>
         </div>
 
-        <div className={styles.progressRow}>
+        <div className={styles.progressRow} onClick={() => onStepClick?.(4)}>
           <ProgressBlock
             progress={step5Progress}
             step={5}
           />
-          <p className={styles.subtitle}>
+          <p className={clsx(styles.subtitle, getSubtitleClass(4))}>
             Даты и ресурсы
           </p>
         </div>
@@ -134,7 +143,7 @@ interface ProgressBadgeProps {
 }
 
 export const ProgressBlock = ({step, progress} : ProgressBadgeProps) => {
-  const radius = 11;
+  const radius = 14;
   const circumference = 2 * Math.PI * radius;
 
   const visiblePercent = 0.8;

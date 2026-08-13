@@ -101,7 +101,6 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
             <div 
               className={styles.email} 
               onClick={() => window.location.href = `mailto:${user.email}`}
-              style={{ cursor: 'pointer' }}
             >
               <MailLogo className={styles.mailLogo}/>
               {user.email}
@@ -122,7 +121,7 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
                         navigator.clipboard.writeText(link);
                       } else {
                         const url = `https://${type === 'telegram' ? 't.me' : 'vk.ru'}/${link.slice(1, link.length)}`;
-                        window.open(url, '_blank', 'noopener,noreferrer');
+                        window.open(url, '_blank', 'noopener, noreferrer');
                       }
                     }}
                   >
@@ -156,7 +155,6 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
               Приветик! Я первый раз на этом сайтике и еще не успел заполнить свой профиль. Надеюсь ничего страшного 👉👈
             </p>
         }
-
       </div>
     </div>
   )

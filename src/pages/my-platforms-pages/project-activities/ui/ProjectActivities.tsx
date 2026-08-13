@@ -8,10 +8,17 @@ import { ProjectsGrid } from '@/widgets/projects-grid';
 import banner from '../../assets/banner.png'
 import { useRef } from 'react';
 import {useMe} from "@/entities/user";
+import { useProjectDraft } from '@/entities/project/api/queries';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/shared';
 
 export const ProjectActivities = () => {
 
     const { data: user } = useMe();
+    const { data: draft } = useProjectDraft();
+    const navigate = useNavigate();
+
+    const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
 
     const data: {
         name?: string;
@@ -80,29 +87,45 @@ export const ProjectActivities = () => {
         }
     }
 
-    return (
-        <main className={styles.mainContent}>
-            <aside className={styles.profile}>
-                <ProjectProfile name={user?.meta.name} role={data.role} avatarSrc={user?.profilePicture} />
-            </aside>
-            <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>
-            <aside className={styles.activities} ref={widgetRef} onScroll={handleScroll}>
-                <YourTasksWidget data={data.activities} />
-                <YourPointsWidget disciplines={data.closingDisciplines} tpuPoints={307} />
-            </aside>
-            <div className={styles.contentWrapper} ref={contentRef} onScroll={handleScroll}>
-                <section className={styles.banner}>
-                    <img src={banner} alt="Activities Banner" className={styles.bannerImage} />
-                </section>
-                <section className={styles.stagesWidget}>
-                    <StagesWidget />
-                </section>
-                <section className={styles.projects}>
-                    <h3 className={styles.projectstitle}>Проекты для вас</h3>
-                    <ProjectsGrid />
-                </section>
-            </div>
+    const handleContinueDraft = () => {
+        navigate(`${ROUTES.MY_PLATFORM}/${ROUTES.MY_PLATFORM_CREATE}?draft=true`);
+    };
 
-        </main>
+    return (
+      <main className={styles.mainContent}>
+          <aside className={styles.profile}>
+              <ProjectProfile name={user?.meta.name} role={data.role} avatarSrc={user?.profilePicture} />
+
+              </aside>
+              <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>
+              <aside className={styles.activities} ref={widgetRef} onScroll={handleScroll}>
+                  <YourTasksWidget data={data.activities} />
+                  <YourPointsWidget disciplines={data.closingDisciplines} tpuPoints={307} />
+              </aside>
+              <div className={styles.contentWrapper} ref={contentRef} onScroll={handleScroll}>
+                  {draft && (
+                    <section className={styles.draftBanner}>
+                        <div>
+                            <p>Черновик проекта: <strong>{draftTitle}</strong></p>
+                        </div>
+                        <button type="button" onClick={handleContinueDraft}>
+                            Продолжить заполнение
+                        </button>
+                    </section>
+                  )}
+                  <section className={styles.banner}>
+                      <img src={banner} alt="Activities Banner" className={styles.bannerImage} />
+                  </section>
+                  <section className={styles.stagesWidget}>
+
+                      <StagesWidget />
+                  </section>
+                  <section className={styles.projects}>
+                      <h3 className={styles.projectstitle}>Проекты для вас</h3>
+                      <ProjectsGrid />
+                  </section>
+
+              </div>
+          </main>
     );
 }

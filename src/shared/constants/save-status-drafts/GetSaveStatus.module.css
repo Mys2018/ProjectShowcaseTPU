@@ -1,0 +1,30 @@
+.statusContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  color: inherit; 
+}
+
+.label {
+  font: var(--OS-11-400);
+}
+
+.save {
+  color: var(--color-gray-400);
+}
+
+.saving {
+  color: var(--color-brand-green);
+}
+
+.failed {
+  color: var(--color-yellow);
+}
+
+.errorNetwork {
+  color: var(--color-red);
+}

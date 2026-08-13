@@ -36,10 +36,8 @@ export function SomeoneProfile() {
       <section className={styles.profile}>
         <SomeoneProfileHeader user={user} links={user.meta.messengers} onClickSee={() => navigate(`/profile/${user.id}`)}/>
         <div className={styles.body}>
-          <MyCompetenciesList savedSkills={user.meta.skills} readonly={true} />
-          {
-            user.meta.portfolioLink ? <Portfolio firsValue={user.meta.portfolioLink} readonly={true}/> : ''
-          }
+          { user.meta.skills && <MyCompetenciesList savedSkills={user.meta.skills} readonly={true}/> }
+          { user.meta.portfolioLink && <Portfolio firstValue={user.meta.portfolioLink} readonly={true}/> }
 
         </div>
       </section>

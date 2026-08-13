@@ -1,5 +1,5 @@
 import styles from './TextField.module.css'
-import type { ChangeEvent } from "react";
+import {type ChangeEvent, useState} from "react";
 import clsx from "clsx";
 
 type BigTextFieldProps = {
@@ -12,6 +12,9 @@ type BigTextFieldProps = {
 }
 
 export const BigTextField = ({value, placeholder, maxLength, onChange, subtitle, validError}: BigTextFieldProps)=>  {
+
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div className={clsx(styles.textContainer, (validError ? styles.error : ''))}>
       <div className={styles.innerContainer}>
@@ -24,11 +27,13 @@ export const BigTextField = ({value, placeholder, maxLength, onChange, subtitle,
           value={value}
           placeholder={placeholder}
           onChange={onChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
       </div>
-      <p className={clsx(styles.value, validError ? styles.error : '')}>
+      {isFocused && <p className={clsx(styles.value, validError ? styles.error : '')}>
         {value.length} / {maxLength}
-      </p>
+      </p>}
     </div>
   )
 }
@@ -43,6 +48,8 @@ type SmallTextFieldProps = {
 }
 
 export const SmallTextField = ({value, placeholder, maxLength, onChange, validError, subtitle}: SmallTextFieldProps)=>  {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div className={clsx(styles.inputTextContainer, (validError ? styles.error : ''))}>
       <div className={styles.smallInnerContainer}>
@@ -55,10 +62,12 @@ export const SmallTextField = ({value, placeholder, maxLength, onChange, validEr
           value={value}
           placeholder={placeholder}
           onChange={onChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
       </div>
       {
-        maxLength && <p className={clsx(styles.inputValue, validError ? styles.error : '')}>
+        maxLength && isFocused && <p className={clsx(styles.inputValue, validError ? styles.error : '')}>
           {value.length} / {maxLength}
         </p>
       }
@@ -103,11 +112,12 @@ interface SmallTextFieldFormProps {
   subtitle?: string
   title?: string
   validError?: string | undefined,
+  hideErrorText?: boolean,
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
   children?: React.ReactNode
 }
 
-export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, title, onChange, children, subtitle} : SmallTextFieldFormProps) => {
+export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, hideErrorText, title, onChange, children, subtitle} : SmallTextFieldFormProps) => {
   return (
     <div className={styles.body}>
       {
@@ -120,7 +130,7 @@ export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, 
         <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle}/>
         {children}
       </div>
-      {validError &&
+      {validError && !hideErrorText &&
         <p className={clsx(styles.errorText, styles.error, styles.errorBlock)}>
           {validError || ''}
         </p>
