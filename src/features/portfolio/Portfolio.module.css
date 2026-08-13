@@ -17,7 +17,7 @@
   gap: 12px;
 }
 
-.body p {
+.body > p {
   width: 100%;
   font: var(--body-small-platform);
   color: var(--color-gray-500);
@@ -33,21 +33,44 @@
   border: 1px solid white;
   border-radius: 16px;
   height: fit-content;
-  max-width: 50%;
+}
+
+.validContainer{
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .input {
-  width: 100%;
   font: var(--body-small-platform);
   color: var(--color-gray-500);
 
   outline: none;
+
+  width: 100%;
   border: none;
 
   background-color: white;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 16px;
 }
 
-.input ~ button {
+.buttonContainer {
+  display: flex;
+  gap: 12px
+}
+
+.cancelButton {
+  color: var(--color-gray-500);
+  font: var(--inter-11-600);
+}
+
+.saveButton {
   padding: 8px 12px 9px 12px;
   background-color: var(--color-brand-green);
   border-radius: 8px;
@@ -59,10 +82,23 @@
   align-items: center;
 }
 
+.saveButton p {
+  text-decoration: none ;
+}
+
 .backIcon {
   fill: white;
   transform: rotateY(180deg);
   height: 9px;
+}
+
+.errorText {
+  color: var(--color-red);
+  font: var(--inter-12-400);
+}
+
+.errorState {
+  border-color: var(--color-red) !important;
 }
 
 @media (max-width: 768px) {

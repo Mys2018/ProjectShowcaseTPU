@@ -4,7 +4,7 @@
 }
 
 .header h3 {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: var(--color-brand-black);
 }
 
@@ -13,7 +13,7 @@
   align-items: center;
   gap: 4px;
   font: var(--inter-12-300);
-  color: var(--color-red)
+  color: var(--color-gray-400)
 }
 
 .input {

@@ -14,11 +14,10 @@
   min-height: 80px;
   flex-shrink: 0;
   justify-content: space-between;
-  padding: 0 180px;
   align-items: center;
   width: 100%;
   background-color: var(--color-brand-black);
-  max-width: calc(1560px + 180px * 2);
+  max-width: calc(1480px);
 }
 
 .center {

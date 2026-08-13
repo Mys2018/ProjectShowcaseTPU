@@ -28,3 +28,33 @@ export const useCreateProject = () => {
     },
   });
 };
+
+export const useProjectDraft = () => {
+  return useQuery({
+    queryKey: projectKeys.draft(),
+    queryFn: () => projectApi.getDraft(),
+    retry: false,
+  });
+};
+
+export const useSaveDraft = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Record<string, unknown>) => projectApi.saveDraft(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.draft() });
+    },
+  });
+};
+
+export const useDeleteDraft = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => projectApi.deleteDraft(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.draft() });
+    },
+  });
+};

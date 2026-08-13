@@ -10,15 +10,15 @@ export default function Header() {
   const { data } = useMe()
 
   return (
-    <div className={styles.header}>
-      <header className={styles.wrap}>
+    <header className={styles.header}>
+      <div className={styles.wrap}>
         <img src={LogoTPU}  alt={'Лого'}/>
         <div className={styles.center}>
           <SwitchWorkSpace />
         </div>
         {/*<EnterButton /> */}
         <UserCard profilePicture={data?.profilePicture}/>
-      </header>
-    </div>
+      </div>
+    </header>
   );
 }

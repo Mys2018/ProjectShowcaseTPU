@@ -4,7 +4,6 @@ import type { AuthStatusResponse, UpdateProfileMetaRequest, RoleTypeDto } from '
 import type { AxiosError } from 'axios'
 import { queryKeys } from './queryKeys'
 import { getAuthStatus, getMe, getUserById, updateProfileMeta, getSkills, getRoleTypes } from './requests'
-import { placeholderUser } from '../config/constants'
 
 export const useAuthStatus = (enabled = true): UseQueryResult<AuthStatusResponse, AxiosError> => {
   return useQuery({
@@ -23,7 +22,6 @@ export const useMe = (enabled = true): UseQueryResult<User, AxiosError> => {
     retry: false,
     enabled,
     staleTime: Infinity,
-    placeholderData: placeholderUser
   })
 }
 
@@ -43,7 +41,7 @@ export const useUpdateProfileMeta = () => {
   return useMutation<void, AxiosError, UpdateProfileMetaRequest>({
     mutationFn: updateProfileMeta,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.me() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.me(), exact: true })
     }
   })
 }

@@ -7,6 +7,13 @@
 
   grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 48px 168px 132px 1fr;
+  padding: 0 20px;
+  max-width: 1560px;
+  /*margin-top: 26px;*/
+  margin-top: calc(26px + 28px);
+
+  overflow: auto;
+  overflow-y: hidden;
 
   column-gap: 32px;
   row-gap: 8px;

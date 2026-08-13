@@ -10,13 +10,15 @@ export const LoginPage = () => {
     }
   };
 
+  handleLogin()
+
   return (
     <div className={styles.mainContainer}>
-      Страница входа
-      {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-      <button className={styles.loginButton} onClick={handleLogin}>
-        Войти
-      </button>
+      {/*Страница входа*/}
+      {/*/!* eslint-disable-next-line @typescript-eslint/no-misused-promises *!/*/}
+      {/*<button className={styles.loginButton} onClick={handleLogin}>*/}
+      {/*  Войти*/}
+      {/*</button>*/}
     </div>
   );
 };

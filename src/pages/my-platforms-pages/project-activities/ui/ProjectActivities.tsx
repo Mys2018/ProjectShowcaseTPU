@@ -8,6 +8,11 @@ export const ProjectActivities = () => {
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
+    const { data: user } = useMe();
+    const { data: draft } = useProjectDraft();
+    const navigate = useNavigate();
+
+    const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
       {

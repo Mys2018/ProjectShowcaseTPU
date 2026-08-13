@@ -9,18 +9,14 @@ import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import clsx from "clsx";
-import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
+// import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
+import type {Messengers} from "@/entities/user/model/types.ts";
 
-type linkType = 'tg' | 'vk' | 'element'
-
-interface ProfileLink {
-  type?: linkType;
-  link?: string;
-  anotherType?: string;
-}
+type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 
 const getLogo = (type: linkType | undefined) => {
   switch (type) {
+    case 'telegram':
     case 'tg':
       return <TgLogo className={`${styles.logo}`}/>
     case 'vk':
@@ -35,7 +31,7 @@ const getLogo = (type: linkType | undefined) => {
 type SomeoneProfileHeaderProps = {
   onClickSee?: () => void,
   user: User;
-  links: ProfileLink[];
+  links: Messengers;
 }
 
 export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileHeaderProps) {
@@ -68,10 +64,10 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
             {'mentor'}
           </div>
 
-          <div className={styles.statuses}>
-            {getStatuses({ type: 'aha' })}
-            {getStatuses({ type: 'toughGuy' })}
-          </div>
+          {/*<div className={styles.statuses}>*/}
+          {/*  {getStatuses({ type: 'aha' })}*/}
+          {/*  {getStatuses({ type: 'toughGuy' })}*/}
+          {/*</div>*/}
 
           <div className={styles.infoBlock}>
             <div className={styles.nameBlock}>
@@ -102,7 +98,10 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
             <p>
               Контакты
             </p>
-            <div className={styles.email}>
+            <div 
+              className={styles.email} 
+              onClick={() => window.location.href = `mailto:${user.email}`}
+            >
               <MailLogo className={styles.mailLogo}/>
               {user.email}
               <OpenLogo className={styles.whiteShareLogo}/>
@@ -110,21 +109,34 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
           </div>
           <div className={styles.linkList}>
             {
-              links.map(link => (
-                <div key={link.type} className={clsx(styles.linkBody, link.type === 'element' && styles.special)}>
-                  <div className={styles.body}>
-                    {getLogo(link.type)}
-                    <p className={link.type === 'element' ? styles.tpu : ''}>
-                      {
-                        link.link
+              links && ['element', 'telegram', 'vk'].map((type) => {
+                const link = links[type as keyof Messengers];
+                if (!link) return null;
+                return (
+                  <div 
+                    key={type} 
+                    className={clsx(styles.linkBody, type === 'element' && styles.special)}
+                    onClick={() => {
+                      if (type === 'element') {
+                        navigator.clipboard.writeText(link);
+                      } else {
+                        const url = `https://${type === 'telegram' ? 't.me' : 'vk.ru'}/${link.slice(1, link.length)}`;
+                        window.open(url, '_blank', 'noopener, noreferrer');
                       }
-                    </p>
+                    }}
+                  >
+                    <div className={styles.body}>
+                      {getLogo(type as linkType)}
+                      <p className={type === 'element' ? styles.tpu : ''}>
+                        {link}
+                      </p>
+                    </div>
+                    {
+                      type === 'element' ? <CopyLogo className={styles.shareLogo}/> : <OpenLogo className={styles.shareLogo}/>
+                    }
                   </div>
-                  {
-                    link.type === 'element' ? <CopyLogo className={styles.shareLogo}/> : <OpenLogo className={styles.shareLogo}/>
-                  }
-                </div>
-              ))
+                );
+              })
             }
           </div>
         </div>
@@ -143,7 +155,6 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
               Приветик! Я первый раз на этом сайтике и еще не успел заполнить свой профиль. Надеюсь ничего страшного 👉👈
             </p>
         }
-
       </div>
     </div>
   )

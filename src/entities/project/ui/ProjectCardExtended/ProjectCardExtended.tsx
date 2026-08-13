@@ -1,6 +1,6 @@
 import styles from './ProjectCardExtended.module.css';
 import type { ProjectCardData } from '../../model/types';
-import { typeProjectsLabel } from '@/shared/ui/type-project-label/typeProjectsLabel';
+import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel';
 import Pattern from '@/assets/svg/Pattern.svg'
 import { useState } from "react";
 import { LikeButton } from "@/shared/ui";

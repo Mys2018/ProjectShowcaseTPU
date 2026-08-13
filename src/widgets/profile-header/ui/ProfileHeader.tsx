@@ -4,9 +4,11 @@ import EditIcon from '@/shared/ui/icons/edit.svg?react';
 import BigInfoIcon from '@/shared/ui/icons/big_info.svg?react';
 import { LinkBlock } from '@/shared/ui/link-block/LinkBlock';
 import styles from './ProfileHeader.module.css';
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
+import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react';
 
 
+
+import { useModalStore } from '@/shared/model';
 
 interface ProfileHeaderProps {
   data: User;
@@ -14,6 +16,8 @@ interface ProfileHeaderProps {
 }
 
 export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
+  const openModal = useModalStore((state) => state.openModal);
+
   return (
     <div className={styles.mainInfo}>
       <div className={styles.infoGrid}>
@@ -26,7 +30,7 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
                   <UserIcon className={styles.userIcon}/>
                 </div>
             }
-            <button className={styles.editButton}>
+            <button className={styles.editButton} onClick={() => openModal('AVATAR_UPLOAD')}>
               <EditIcon />
             </button>
             <div className={styles.status}>
@@ -40,7 +44,7 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
             </div>
             <p className={styles.group}>
               {/*{data.group}, {data.grade} курс*/}
-              8К33, 3 курс
+              8К67, 3 курс
             </p>
             {/*// TODO*/}
             {/*{data.group && data.grade && (*/}
@@ -53,12 +57,16 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
         </section>
 
         <section className={styles.editBody}>
-          <p className={styles.appearance}>
-            Внешний вид профиля
+          <BigInfoIcon className={styles.bigInfoIcon} />
+          <p>
+            Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.
           </p>
-          <button className={styles.outEditButton}>
-            Настроить
-          </button>
+          {/*<p className={styles.appearance}>*/}
+          {/*  Внешний вид профиля*/}
+          {/*</p>*/}
+          {/*<button className={styles.outEditButton}>*/}
+          {/*  Настроить*/}
+          {/*</button>*/}
         </section>
 
         <section className={styles.secontInfoContainer}>
@@ -79,12 +87,12 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
           />
         </section>
       </div>
-      <div className={styles.infoLabel}>
-        <BigInfoIcon className={styles.bigInfoIcon} />
-        <p>
-          Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.
-        </p>
-      </div>
+      {/*<div className={styles.infoLabel}>*/}
+      {/*  <BigInfoIcon className={styles.bigInfoIcon} />*/}
+      {/*  <p>*/}
+      {/*    Данные, которые не имеют при себе значка редактирования, заполняются автоматически и недоступны для ручного изменения. Если вы нашли в них ошибку, пожалуйста, свяжитесь со своим куратором.*/}
+      {/*  </p>*/}
+      {/*</div>*/}
     </div>
   );
 };

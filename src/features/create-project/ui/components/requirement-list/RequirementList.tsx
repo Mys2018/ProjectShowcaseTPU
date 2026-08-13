@@ -60,6 +60,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                   description={emptyStateDescription}
                   buttonText={addBtnText}
                   onAddClick={handleAdd}
+                  errorState={false}
                 />
                 {stepErrors[name] && (
                   <span className={styles.errorText}>

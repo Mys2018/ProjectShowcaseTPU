@@ -229,6 +229,51 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     fetchDefaultCheckpoints()
   }, [form]);
 
+  useEffect(() => {
+    const subscription = form.store.subscribe(() => {
+      setStepErrors((prevErrors) => {
+        if (Object.keys(prevErrors).length === 0) return prevErrors;
+
+        const schema = STEP_SCHEMAS[currentStep];
+        if (!schema) return prevErrors;
+
+        const result = schema.safeParse(form.state.values);
+        const newErrors: StepErrors = {};
+
+        if (!result.success) {
+          for (const issue of result.error.issues) {
+            const key = issue.path.join('.');
+            if (!newErrors[key]) newErrors[key] = [];
+            newErrors[key].push(issue.message);
+          }
+        }
+
+        let hasChanges = false;
+        const nextErrors = { ...prevErrors };
+
+        for (const key of Object.keys(prevErrors)) {
+          if (!newErrors[key]) {
+            delete nextErrors[key];
+            hasChanges = true;
+          } else if (JSON.stringify(prevErrors[key]) !== JSON.stringify(newErrors[key])) {
+            nextErrors[key] = newErrors[key];
+            hasChanges = true;
+          }
+        }
+
+        return hasChanges ? nextErrors : prevErrors;
+      });
+    });
+
+    return () => {
+      if (typeof subscription === 'function') {
+        (subscription as any)();
+      } else if (subscription && typeof (subscription as any).unsubscribe === 'function') {
+        (subscription as any).unsubscribe();
+      }
+    };
+  }, [form.store, currentStep]);
+
   const validateCurrentStep = (): boolean => {
     const schema = STEP_SCHEMAS[currentStep];
     if (!schema) return true;
@@ -265,14 +310,14 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
 
   const setStep = (step: number) => {
     if (step > highestStep) return;
-    
+
     // Validate current step if moving forward
     if (step > currentStep) {
       if (!validateCurrentStep()) return;
     }
-    
+
     setCurrentStep(step);
   };
 
-  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep};
+  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep };
 };

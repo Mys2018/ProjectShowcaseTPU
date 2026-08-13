@@ -18,6 +18,7 @@ export interface UpdateProfileMetaRequest {
   bio?: string;
   experience?: string;
   messengers?: Messengers;
+  portfolioLink?: string;
   skills?: {
     roleTypeId: string;
     skillIds: string[];

@@ -1,6 +1,6 @@
 import styles from './MobileLayoutProjectPage.module.css'
 import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
-import {ProjectStatusLabel} from "@/shared/ui/project-status-label/ProjectStatusLabel.tsx";
+import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';

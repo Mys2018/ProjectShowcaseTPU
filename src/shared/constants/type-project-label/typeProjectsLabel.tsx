@@ -2,7 +2,7 @@ import styles from './typeProjectsLabel.module.css';
 import FolderIcon from '@/shared/ui/icons/folder.svg?react';
 import CodeIcon from '@/shared/ui/icons/code.svg?react';
 import StudyIcon from '@/shared/ui/icons/studyIcon.svg?react'
-import type { ProjectFormat } from '../../../entities/project/model/types';
+import type { ProjectFormat } from '../../../entities/project/model/types.ts';
 
 export const typeProjectsLabel = (type: ProjectFormat) => {
   switch (type) {

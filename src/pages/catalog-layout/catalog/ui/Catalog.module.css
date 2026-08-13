@@ -6,9 +6,11 @@
   min-height: 0;
   grid-template-columns: 300px 1fr;
   grid-template-rows: auto 1fr;
+  margin-top: 26px;
+  max-width: 1560px;
+  padding: 0 20px;
   overflow: hidden;
   position: relative;
-  max-width: calc(1560px + 180px*2);
 }
 
 .searchPart {

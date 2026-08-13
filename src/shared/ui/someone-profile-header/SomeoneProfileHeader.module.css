@@ -116,7 +116,7 @@
 }
 
 .headerLink p {
-  font: var(--field-label-interface);
+  font: var(--field-title-big-interface);
   color: white;
 }
 
@@ -125,7 +125,8 @@
   gap: 8px;
   align-items: center;
   color: white;
-  font: var(--OS-14-550)
+  font: var(--OS-14-550);
+  cursor: pointer;
 }
 
 .whiteShareLogo {
@@ -143,19 +144,34 @@
   border-radius: 12px;
   padding: 8px 12px 8px 8px;
   width: 100%;
+  flex: 1;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
+
+  cursor: pointer;
 }
 
 .body {
   display: flex;
   align-items: center;
-  gap: 8px
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .body p {
   font: var(--OS-14-550);
-  color: var(--color-brand-black)
+  color: var(--color-brand-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shareLogo {
+  flex-shrink: 0;
+  color: var(--color-gray-400)
 }
 
 .special {
@@ -170,6 +186,7 @@
 .logo {
   width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
 
 .footer {
