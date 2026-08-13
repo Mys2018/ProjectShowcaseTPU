@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import type { CreateProjectForm } from '../../model/useProjectWizard';
-import type { Skill } from '@/features/my-competencies/model/types';
+import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
+import type { Skill } from '@/features/my-competencies/model/types.ts';
 import Cross from '@/shared/ui/icons/cross.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react';
@@ -8,7 +8,7 @@ import CopyIcon from '@/shared/ui/icons/copyCompetency.svg?react';
 import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
 import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
 // import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
-import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal';
+import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
 import styles from './ProjectRoleCard.module.css';
 import {RequestBlock} from "@/features/create-project/ui/components/request-block/RequestBlock.tsx";
 // import compStyles from '@/features/my-competencies/ui/MyCompetencies.module.css';

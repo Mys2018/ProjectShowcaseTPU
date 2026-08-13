@@ -63,7 +63,6 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
   ]
 
   const handleOpenModal = (type: MessengerType, value: string | undefined) => {
-    console.log("OPEN MODAL")
     openModal('LINK_UPDATE', {
       firstValue: value,
       typeLink: getLabel(type),

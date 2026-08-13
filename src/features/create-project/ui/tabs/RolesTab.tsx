@@ -1,8 +1,9 @@
 import { useModalStore } from '@/shared/model';
 import { useSkills } from '@/entities/user/api/queries';
-import { ProjectRoleCard } from '../components/ProjectRoleCard';
+import { ProjectRoleCard } from '../components/project-role-card/ProjectRoleCard.tsx';
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import Plus from '@/shared/ui/icons/plus.svg?react';
+import { EmptyStateBlock } from '@/shared/ui/empty-state-block/EmptyStateBlock.tsx';
+import { AddOutlineButton } from '@/shared/ui';
 import styles from "./Tabs.module.css";
 
 interface TabProps {
@@ -10,9 +11,9 @@ interface TabProps {
   stepErrors?: StepErrors;
 }
 
-export function RolesTab({ form }: TabProps) {
+export function RolesTab({ form, stepErrors }: TabProps) {
   const { openModal } = useModalStore();
-  const { data: globalSkills = [] } = useSkills(); // Fetch all skills to pass to the role cards
+  const { data: globalSkills = [] } = useSkills();
 
   const handleAddRoleClick = () => {
     const currentRoles = form.state.values.roles || [];
@@ -39,12 +40,21 @@ export function RolesTab({ form }: TabProps) {
 
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.mainInfo}>
-        <h3>Компетенции проекта</h3>
-        <p>
-          Открытые компетенции с входящими заявками от участников
-        </p>
+      <div className={styles.errorWrapper}>
+        <div className={styles.mainInfo}>
+          <h3>Компетенции проекта</h3>
+          <p>
+            Открытые компетенции с входящими заявками от участников
+          </p>
+        </div>
+
+        {stepErrors?.['roles'] && (
+          <p className={styles.errorText}>
+            {stepErrors['roles'][0]}
+          </p>
+        )}
       </div>
+
 
       <form.Field name="roles" mode="array">
         {(field) => {
@@ -52,20 +62,12 @@ export function RolesTab({ form }: TabProps) {
           
           if (roles.length === 0) {
             return (
-              <div className={styles.emptyStateBlock}>
-                <div className={styles.textBlock}>
-                  <h4>Какие специалисты нужны проекту?</h4>
-                  <p>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAddRoleClick}
-                  className={styles.addRoleButtonEmpty}
-                >
-                  <Plus/>
-                  Добавить компетенцию
-                </button>
-              </div>
+                <EmptyStateBlock
+                  title="Какие специалисты нужны проекту?"
+                  description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
+                  buttonText="Добавить компетенцию"
+                  onAddClick={handleAddRoleClick}
+                />
             );
           }
 
@@ -80,14 +82,10 @@ export function RolesTab({ form }: TabProps) {
                 />
               ))}
 
-              <button 
-                type="button" 
+              <AddOutlineButton
+                text="Добавить компетенцию"
                 onClick={handleAddRoleClick}
-                className={styles.addRoleButtonEmpty}
-              >
-                <Plus/>
-                Добавить компетенцию
-              </button>
+              />
             </div>
           );
         }}

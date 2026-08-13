@@ -29,6 +29,12 @@
   flex: 1;
 }
 
+.errorWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .removeButton {
   height: 100%;
   padding-right: 8px;
@@ -45,6 +51,7 @@
 }
 
 .errorText {
-  font: var(--OS-14-500);
+  padding-top: 8px;
+  font: var(--inter-12-400);
   color: var(--color-red, #e53e3e);
 }

@@ -43,7 +43,7 @@ export default function Filter() {
           {tagGroups
             .filter(g => g.tags.length)
             .map(group => (
-              <div className={styles.tagBlock}>
+              <div className={styles.tagBlock} key={group.id}>
                 <p className={styles.field}>{group.name}</p>
                 <div className={styles.tagsList}>
                   {group.tags.map(tag => (

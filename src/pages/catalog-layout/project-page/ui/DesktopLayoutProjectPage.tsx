@@ -68,12 +68,6 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
   ];
 
 
-  const checkpointsMock = [
-    { title: 'Старт работ', deadline: '25-05-2026', status: true },
-    { title: 'Постерная сессия', deadline: '29-05-2026', status: false }
-  ];
-
-
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
     const scrollTop = target.scrollTop;
@@ -111,7 +105,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
         />
 
         <KeyPoints
-          keyPoints={checkpointsMock}
+          checkpoints={project.checkpoints}
         />
 
         <LinkContainer links={linksMock} />

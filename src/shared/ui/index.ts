@@ -17,5 +17,8 @@ export { ConfirmModal } from './confirm-modal/ConfirmModal.tsx'
 export * from './skeleton'
 export { FloatingTabs } from './floating-tabs/FloatingTabs.tsx'
 
+export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx';
+export { AddOutlineButton } from './elements/add-outline-button/AddOutlineButton.tsx';
+
 import userIconUrl from './icons/fallback_personal.svg'
 export { userIconUrl }

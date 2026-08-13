@@ -1,0 +1,48 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 16px;
+}
+
+.list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: var(--color-gray-200, #ccc);
+  border-radius: 4px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-350, #999);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.groupTitle {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+  margin: 0;
+}
+
+.required {
+  color: var(--color-red);
+  margin-left: 4px;
+}
+
+.groupLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

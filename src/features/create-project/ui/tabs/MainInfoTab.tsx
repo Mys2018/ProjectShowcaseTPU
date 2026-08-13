@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import styles from '../ProjectInfoStep.module.css';
 
 import { useTags } from '@/entities/tag/api/queries';
+import {InfoTooltip} from "@/shared";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -45,6 +46,25 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           Название проекта
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="meta.title">
           {(field) => (
@@ -65,7 +85,27 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       <div className={styles.block}>
         <h4 className={styles.title}>
           Описание
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
+
         <form.Field name="meta.description">
           {(field) => (
             <BigTextFieldForm
@@ -96,9 +136,12 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
                   checked={field.state.value === tag.value}
                   onChange={() => {
                     field.handleChange(tag.value);
+                    form.setFieldValue('extraFieldsForAll.primaryTagName', tag.label);
                     const currentTags = form.state.values.tags || [];
                     if (currentTags.includes(tag.value)) {
                       form.setFieldValue('tags', currentTags.filter(t => t !== tag.value));
+                      const currentExtraTags = form.state.values.extraFieldsForAll?.tags || [];
+                      form.setFieldValue('extraFieldsForAll.tags', currentExtraTags.filter(t => t !== tag.label));
                     }
                   }}
                 />
@@ -138,6 +181,12 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
                                 ? current.filter((t) => t !== tag.value)
                                 : [...current, tag.value],
                             );
+                            
+                            const currentExtraTags = form.state.values.extraFieldsForAll?.tags || [];
+                            const newExtraTags = isSelected 
+                              ? currentExtraTags.filter(t => t !== tag.label)
+                              : [...currentExtraTags, tag.label];
+                            form.setFieldValue('extraFieldsForAll.tags', newExtraTags);
                           }}
                         >
                           {tag.label}
@@ -172,6 +221,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
               onChange={(verbose) => {
                 const partner = partners.find((p) => p.verbose === verbose);
                 field.handleChange(partner?.value ?? '');
+                form.setFieldValue('extraFieldsForAll.partnerName', partner?.verbose ?? '');
               }}
               placeholder="Выберите заказчика"
               error={

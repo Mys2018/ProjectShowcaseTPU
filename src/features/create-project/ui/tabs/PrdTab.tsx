@@ -1,8 +1,10 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import {BigTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
-import { TargetAudienceList } from '../components/TargetAudienceList';
-import { RequirementList } from '../components/RequirementList';
+import { BigTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import { TargetAudienceList } from '../components/target-audience/TargetAudienceList.tsx';
+import { RequirementList } from '../components/requirement-list/RequirementList.tsx';
 import styles from './Tabs.module.css'
+import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
+import {InfoTooltip} from "@/shared";
 
 interface PrdFieldProps {
   form: CreateProjectForm;
@@ -44,7 +46,26 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
     <div className={styles.mainFieldContainer}>
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Актуальность
+          1. Актуальность
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.prerequisites">
           {(field) => (
@@ -52,7 +73,7 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
               placeholder="Опишите основные причины..."
               value={field.state.value as string}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={600}
+              maxLength={PROJECT_LIMITS.prd.prerequisites.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
             />
           )}
@@ -61,15 +82,34 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Цели
+          2. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.projectGoal">
           {(field) => (
             <BigTextFieldForm
               placeholder={"Что да как кратенько..."}
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={500}
+              maxLength={PROJECT_LIMITS.prd.projectGoal.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
             />
           )}
@@ -78,7 +118,26 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Требования
+          3. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <RequirementList
           form={form}
@@ -86,6 +145,7 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
           name="prdMeta.keyFunctionality"
           title="Ключевой функционал"
           placeholder="Что да как кратенько..."
+          maxLength={PROJECT_LIMITS.lists.itemLength.max}
         />
       </div>
     </div>
@@ -97,7 +157,26 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
     <div className={styles.mainFieldContainer}>
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Актуальность
+          1. Актуальность
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.prerequisites">
           {(field) => (
@@ -105,7 +184,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
               placeholder="Опишите основные причины..."
               value={field.state.value as string}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={1500}
+              maxLength={PROJECT_LIMITS.prd.prerequisites.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
             />
           )}
@@ -115,14 +194,52 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Целевая аудитория
+          2. Целевая аудитория
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <TargetAudienceList form={form} stepErrors={stepErrors} />
       </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Цели
+          3. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.projectGoal">
           {(field) => (
@@ -130,7 +247,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
               placeholder="Что да как кратенько..."
               value={field.state.value as string}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={500}
+              maxLength={PROJECT_LIMITS.prd.projectGoal.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
             />
           )}
@@ -141,20 +258,59 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Требования
+          4. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
-        <RequirementList 
-          form={form} 
-          stepErrors={stepErrors} 
-          name="prdMeta.functional" 
-          title="Функциональные требования" 
-          placeholder="Что да как кратенько..." 
+        <RequirementList
+          form={form}
+          stepErrors={stepErrors}
+          name="prdMeta.functional"
+          title="Функциональные требования"
+          placeholder="Что да как кратенько..."
+          maxLength={PROJECT_LIMITS.lists.itemLength.max}
         />
       </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Реализация
+          5. Реализация
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.problemStatement">
           {(field) => (
@@ -163,7 +319,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
               placeholder="Что да как кратенько..."
               value={field.state.value as string}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={1500}
+              maxLength={PROJECT_LIMITS.prd.problemStatement.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.problemStatement']?.[0]}
             />
           )}
@@ -180,7 +336,26 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
     <div className={styles.mainFieldContainer}>
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Product vision
+          1. Product vision
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <form.Field name="prdMeta.productVision">
           {(field) => (
@@ -188,7 +363,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
               placeholder="Расскажите стратегическое описание продукта..."
               value={field.state.value as string}
               onChange={(e) => field.handleChange(e.target.value)}
-              maxLength={500}
+              maxLength={PROJECT_LIMITS.prd.productVision.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.productVision']?.[0]}
             />
           )}
@@ -197,14 +372,52 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Целевая аудитория
+          2. Целевая аудитория
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <TargetAudienceList form={form} stepErrors={stepErrors} />
       </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Цели
+          3. Цели
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <form.Field name="prdMeta.projectGoal">
@@ -214,7 +427,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
                 placeholder={"Что да как кратенько..."}
                 value={field.state.value as string}
                 onChange={(e) => field.handleChange(e.target.value)}
-                maxLength={500}
+                maxLength={PROJECT_LIMITS.prd.projectGoal.max}
                 validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
               />
             )}
@@ -226,7 +439,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
                 placeholder={"Что да как кратенько..."}
                 value={field.state.value as string}
                 onChange={(e) => field.handleChange(e.target.value)}
-                maxLength={500}
+                maxLength={PROJECT_LIMITS.prd.businessGoal.max}
                 validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.businessGoal']?.[0]}
               />
             )}
@@ -236,48 +449,108 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Требования
+          4. Требования
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-          <RequirementList 
-            form={form} 
-            stepErrors={stepErrors} 
-            name="prdMeta.functional" 
-            title="Функциональные требования" 
-            placeholder="Что да как кратенько..." 
+          <RequirementList
+            form={form}
+            stepErrors={stepErrors}
+            name="prdMeta.functional"
+            title="Функциональные требования"
+            placeholder="Что да как кратенько..."
+            maxLength={PROJECT_LIMITS.lists.itemLength.max}
           />
-          <RequirementList 
-            form={form} 
-            stepErrors={stepErrors} 
-            name="prdMeta.nonFunctional" 
-            title="Нефункциональные требования" 
-            placeholder="Что да как кратенько..." 
+          <RequirementList
+            form={form}
+            stepErrors={stepErrors}
+            name="prdMeta.nonFunctional"
+            title="Нефункциональные требования"
+            placeholder="Что да как кратенько..."
+            maxLength={PROJECT_LIMITS.lists.itemLength.max}
           />
         </div>
       </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          Бизнес метрики
+          5. Бизнес метрики
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
-        <RequirementList 
-          form={form} 
-          stepErrors={stepErrors} 
-          name="prdMeta.businessMetrics" 
-          placeholder="Что да как кратенько..." 
-          maxLength={200}
+        <RequirementList
+          form={form}
+          stepErrors={stepErrors}
+          name="prdMeta.businessMetrics"
+          placeholder="Что да как кратенько..."
+          maxLength={PROJECT_LIMITS.lists.itemLength.max}
         />
       </div>
 
       <div className={styles.block}>
         <h4 className={styles.title}>
-          План проекта
+          6. План проекта
+          <InfoTooltip
+            className={styles.tooltip}
+            iconClassName={styles.tooltipIcon}
+            title="Заголовок тултипа"
+            body={
+              [
+                {
+                  text: [
+                    'Бла бла',
+                  ]
+                },
+              ]
+            }
+            size={'small'}
+            pointer={'topLeft'}
+            importantText={'Важно тут!'}
+            link={'sdfsdsdsds'}
+            type={'bulb'}
+          />
         </h4>
-        <RequirementList 
-          form={form} 
-          stepErrors={stepErrors} 
-          name="prdMeta.projectPlan" 
-          placeholder="Что да как кратенько..." 
+        <RequirementList
+          form={form}
+          stepErrors={stepErrors}
+          name="prdMeta.projectPlan"
+          placeholder="Что да как кратенько..."
+          maxLength={PROJECT_LIMITS.projectPlan.itemLength.max}
         />
       </div>
     </div>

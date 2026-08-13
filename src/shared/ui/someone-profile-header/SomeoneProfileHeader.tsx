@@ -111,7 +111,7 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
           <div className={styles.linkList}>
             {
               links.map(link => (
-                <div className={clsx(styles.linkBody, link.type === 'element' && styles.special)}>
+                <div key={link.type} className={clsx(styles.linkBody, link.type === 'element' && styles.special)}>
                   <div className={styles.body}>
                     {getLogo(link.type)}
                     <p className={link.type === 'element' ? styles.tpu : ''}>
