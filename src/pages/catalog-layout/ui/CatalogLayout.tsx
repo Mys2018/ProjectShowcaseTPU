@@ -6,7 +6,6 @@ export function CatalogLayout() {
 
   return (
     <div className={styles.wrap}>
-      {/*<SwitchProjectMenu />*/}
       <Outlet/>
     </div>
   );

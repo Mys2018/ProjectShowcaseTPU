@@ -4,8 +4,10 @@
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
 
+  flex-grow: 1;
+
   padding-top: 24px;
-  padding-bottom: 24px;
+  padding-bottom: 81px;
   gap: 16px;
 
   overflow: auto;
@@ -71,7 +73,7 @@
   font: var(--inter-13-600);
   color: var(--color-brand-black);
 
-  margin: 0 20px calc(56px );
+  margin: 0 20px;
   height: 50px;
   display: flex;
   gap: 16px;
@@ -79,10 +81,7 @@
   justify-content: center;
   border-radius: 59px;
   background-color: white;
-
   text-decoration: none;
-
-
 }
 
 .choiceComp {
@@ -91,7 +90,6 @@
   left: 50%;
   transform:  translateX(-50%);
   padding: 8px 24px;
-
 
   font: var(--inter-13-600);
   color: var(--color-brand-green);

@@ -1,14 +1,12 @@
 .mainContent {
   display: grid;
-  gap: 8px 32px;
   width: 100%;
   flex: 1;
   min-height: 0;
   grid-template-columns: 300px 1fr;
   grid-template-rows: auto 1fr;
-  margin-top: 26px;
   max-width: 1560px;
-  padding: 0 20px;
+  padding: 76px 20px 0;
   overflow: hidden;
   position: relative;
 }
@@ -17,12 +15,16 @@
   grid-column: 1;
   grid-row: 1;
   flex-shrink: 0;
+
+  padding: 0 16px 8px;
 }
 
 .projectHeader {
   grid-column: 2;
   grid-row: 1;
   flex-shrink: 0;
+
+  padding: 0 16px;
 }
 
 .filterPart {
@@ -39,7 +41,7 @@
     display: none;
   }
 
-  padding: 6px 16px 18px 16px;
+  padding: 6px 16px 18px;
 }
 
 .projectsPart {
@@ -51,6 +53,8 @@
   flex-direction: column;
   grid-column: 2;
   grid-row: 2;
+
+  padding: 4px 16px 0;
 
   overflow-y: auto;
   scrollbar-width: none;

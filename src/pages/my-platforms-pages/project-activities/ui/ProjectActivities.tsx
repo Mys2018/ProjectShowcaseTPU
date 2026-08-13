@@ -3,16 +3,17 @@ import styles from './ProjectActivities.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
 import { getSwitchableRolesAmount, ROLES_TRANSLATIONS, useMe, usePreferencesStore, UserRow, UserRowSkeleton } from '@/entities/user'
 import { FloatingTabs, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
+// import {useProjectDraft} from "@/entities/project";
+// import {useNavigate} from "react-router-dom";
 
 export const ProjectActivities = () => {
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-    const { data: user } = useMe();
-    const { data: draft } = useProjectDraft();
-    const navigate = useNavigate();
-
-    const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
+  // const { data: draft } = useProjectDraft();
+  // const navigate = useNavigate();
+  //
+  // const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
       {
@@ -81,17 +82,29 @@ export const ProjectActivities = () => {
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
       
-      <aside className={styles.userRow}>{user ? <UserRow className={styles.userRow} user={user} /> : <UserRowSkeleton />}</aside>
-      {user && <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>}
-      {switchableRoles.length > 1 && (
-        <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
-      )}
+      <aside className={styles.userRow}>
+        {user ? <UserRow user={user} /> : <UserRowSkeleton />}
+      </aside>
+
+      <div className={styles.titleContainer}>
+        {user && <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>}
+      </div>
+
+      <aside className={styles.switchContainer}>
+        {switchableRoles.length > 1 && (
+          <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
+        )}
+      </aside>
+
+
       <aside className={styles.activities} ref={activitiesRef} onScroll={handleScroll}>
         <YourTasksWidget data={mockedData.activities} />
         <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
       </aside>
       <div className={styles.content} ref={contentRef} onScroll={handleScroll}>
-        <span className={styles.banner} />
+        <div className={styles.bannerContainer}>
+          <span className={styles.banner} />
+        </div>
         <section className={styles.stagesWidget}>
           <StagesWidget />
         </section>

@@ -201,7 +201,6 @@ export default function CreateProjectPage() {
         <div
           className={styles.headerLeft}
           onClick={() => setPageStep('type-select')}
-          style={{ cursor: 'pointer' }}
         >
           <BackIcon />
           <p>Назад к выбору типа проекта</p>

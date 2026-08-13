@@ -4,8 +4,6 @@
   height: 100%;
 }
 
-
-
 .mainInfo {
   display: flex;
   flex-direction: column;
@@ -25,10 +23,10 @@
 .main {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding-bottom: 24px;
   flex: 1;
   min-height: 0;
+  gap: 32px;
+  padding-bottom: 24px;
   overflow-y: auto;
   scrollbar-width: none;
 
@@ -95,10 +93,7 @@
 
 .buttonBlock {
   display: flex;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding: 24px 16px;
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid var(--color-gray-200, #E1E3E6);
@@ -196,7 +191,6 @@
   color: white;
 }
 
-/* Ошибки */
 .errorText {
   font: var(--OS-14-500);
   color: var(--color-red, #e53e3e);

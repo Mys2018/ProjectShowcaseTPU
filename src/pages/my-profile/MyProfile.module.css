@@ -4,14 +4,24 @@
   display: grid;
   grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 48px 168px 132px 1fr;
-  padding: 0 20px;
+  padding: 76px 20px 0;
   max-width: 1560px;
-  margin-top: calc(26px + 28px);
 
-  background-color: white;
+  position: relative;
 
   overflow: auto;
   overflow-y: hidden;
+}
+
+.mainContent::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+  z-index: -1;
 }
 
 .headerLeft {

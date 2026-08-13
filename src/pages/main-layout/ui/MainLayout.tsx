@@ -6,7 +6,9 @@ export const MainLayout = () => {
   return (
     <main className={styles.mainLayout}>
       <Header/>
-      <Outlet/>
+      <div className={styles.pageContainer}>
+        <Outlet/>
+      </div>
     </main>
   )
 }
