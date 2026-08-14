@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
+import styles from './ProjectRoleCard.module.css';
 import type { Skill } from '@/features/my-competencies/model/types.ts';
+// import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
+import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
 import Cross from '@/shared/ui/icons/cross.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react';
 import CopyIcon from '@/shared/ui/icons/copyCompetency.svg?react';
 import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
 import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
-// import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
-import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
-import styles from './ProjectRoleCard.module.css';
-import {RequestBlock} from "@/features/create-project/ui/components/request-block/RequestBlock.tsx";
-// import compStyles from '@/features/my-competencies/ui/MyCompetencies.module.css';
+import { useModalStore } from '@/shared/model';
+import AddUserIcon from '@/shared/ui/icons/addUser.svg?react';
 
 interface ProjectRoleCardProps {
   form: CreateProjectForm;
@@ -26,6 +26,10 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
   const isEditing = popoverOpen;
   
   const menuRef = useRef<HTMLDivElement>(null);
+  const { openModal } = useModalStore();
+
+  const [mockIsPublished, setMockIsPublished] = useState(false);
+  const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null);
 
   // TODO Мок откликов
 
@@ -72,8 +76,6 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
     limit: 1
   }
 
-
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -83,6 +85,15 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
     if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
+
+  const inviteUser = (roleName: string) => {
+    openModal('INVITE_USER', {
+      roleName: roleName,
+      onInvite: (user: { id: number; name: string }) => setInvitedUser(user),
+    });
+  }
+
+
 
   return (
     <form.Field name={`roles[${index}]`} mode="value">
@@ -148,13 +159,12 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
             </div>
 
             {popoverOpen && (
-              <div className={styles.backdrop} onClick={() => setPopoverOpen(false)} style={{ zIndex: 10 }} />
+              <div className={styles.backdrop} onClick={() => setPopoverOpen(false)}/>
             )}
 
             <div className={styles.cardBody}>
               <div
                 className={`${styles.body} ${styles.relativeBody} ${isEditing ? styles.editingBorder : ''}`}
-                style={{ zIndex: isEditing ? 11 : 1 }}
               >
                 <div className={styles.mainContainer}>
                 <span className={`${styles.skillsLabel} ${isEditing ? styles.skillsLabelEditing : ''}`}>
@@ -228,7 +238,67 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
               </div>
 
               <div className={styles.requestBlock}>
-                <RequestBlock requests={requests}/>
+                <div className={styles.innerContainer}>
+                  {!mockIsPublished && (
+                      <div className={styles.unpublishContainer}>
+                        <p className={styles.fieldText}>Ожидает публикации проекта</p>
+                        {
+                          !invitedUser && <button
+                            className={styles.inviteUserBtn}
+                            onClick={() => inviteUser(roleName)}
+                          >
+                            <AddUserIcon className={styles.inviteIcon} />
+                            Пригласить пользователя
+                          </button>
+                        }
+                        {
+                          invitedUser &&
+                          <div className={styles.invitedInfo}>
+                            <p className={styles.invitedName}>
+                              <div>
+                                Приглашен:
+                                <span>{invitedUser?.name}</span>
+                              </div>
+                            </p>
+                            <button className={styles.cancelInviteBtn} onClick={() => setInvitedUser(null)}>Отменить</button>
+                          </div>
+                        }
+
+                      </div>
+                    )
+                  }
+                  {
+                    mockIsPublished &&
+                    <div className={styles.publishedBlock}>
+                      {
+                        !invitedUser &&
+                        <div className={styles.publishedHeader}>
+                          <p className={styles.fieldText}>Компетенция свободна</p>
+                          <button className={styles.iconBtn} onClick={() => inviteUser(roleName)}>
+                            <AddUserIcon className={styles.inviteIconOnly} />
+                          </button>
+                        </div>
+                      }
+                      {
+                        invitedUser &&
+                        <div className={styles.invitedInfo}>
+                          <p className={styles.invitedName}>
+                            <div>
+                              Приглашен:
+                              <span>{invitedUser?.name}</span>
+                            </div>
+                          </p>
+                          <button className={styles.cancelInviteBtn} onClick={() => setInvitedUser(null)}>Отменить</button>
+                        </div>
+                      }
+                      <button className={styles.allFeedback}>
+                        {
+                          'Откликов: 5'
+                        }
+                      </button>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>

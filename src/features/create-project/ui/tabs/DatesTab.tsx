@@ -68,8 +68,8 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
                   return date.toISOString().split('T')[0];
                 };
 
-                const minDate = addDays(checkpoints[1].deadline, 1);
-                const maxDate = addDays(checkpoints[checkpoints.length - 1].deadline, -1);
+                const minDate = addDays(checkpoints[1]?.deadline || checkpoints[0]?.deadline || '', 1);
+                const maxDate = addDays(checkpoints[checkpoints.length - 1]?.deadline || '', -1);
 
                 const handleAdd = () => {
                   openModal('ADD_CHECKPOINT', {

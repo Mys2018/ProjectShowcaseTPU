@@ -26,7 +26,6 @@ interface ProjectInfoStepProps {
   isPending: boolean;
   onSubmit: () => void;
   onDeleteDraft: () => void;
-  /** { value: ID, verbose: отображаемое название } */
   partners: { value: string; verbose: string }[];
   currentStep: number;
   nextStep: () => void;
@@ -46,7 +45,6 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
     // и из текущих нативных ошибок полей TanStack Form
     const allErrors: Record<string, unknown[]> = { ...stepErrors };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     Object.keys(fieldMeta).forEach((key) => {
       const meta = fieldMeta[key as keyof typeof fieldMeta];
       if (meta?.errors?.length) {
@@ -79,23 +77,39 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
   return (
     <main className={clsx(styles.root)}>
       <nav className={styles.nav}>
-        {TABS.map((tab) => {
-          const hasError = hasTabErrors(tab.key);
-          return (
-            <button
-              className={clsx(
-                styles.navItem,
-                activeTab === tab.key && styles.active,
-                hasError && styles.navItemError
-              )}
-              key={tab.key}
-              type="button"
-              onClick={() => setStep(TABS.findIndex((t) => t.key === tab.key) + 1)}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+        <div className={styles.leftBlock}>
+          {TABS.map((tab, index)  => {
+            if (index === 4) return null;
+            const hasError = hasTabErrors(tab.key);
+            return (
+              <button
+                className={clsx(
+                  styles.navItem,
+                  activeTab === tab.key && styles.active,
+                  hasError && styles.navItemError
+                )}
+                key={tab.key}
+                type="button"
+                onClick={() => setStep(TABS.findIndex((t) => t.key === tab.key) + 1)}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          className={clsx(
+            styles.navItem,
+            activeTab === TABS[4].key && styles.active,
+            hasTabErrors(TABS[4].key) && styles.navItemError
+          )}
+          key={TABS[4].key}
+          type="button"
+          onClick={() => setStep(TABS.findIndex((t) => t.key === TABS[4].key) + 1)}
+        >
+          {TABS[4].label}
+        </button>
       </nav>
 
 

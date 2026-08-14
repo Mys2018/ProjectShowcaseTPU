@@ -154,7 +154,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' }],
+  checkpoints: [{ title: '', deadline: '' },{ title: '', deadline: '' },{ title: '', deadline: '' }],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -311,7 +311,6 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   const setStep = (step: number) => {
     if (step > highestStep) return;
 
-    // Validate current step if moving forward
     if (step > currentStep) {
       if (!validateCurrentStep()) return;
     }

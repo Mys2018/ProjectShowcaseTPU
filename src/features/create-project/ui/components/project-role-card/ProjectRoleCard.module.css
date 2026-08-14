@@ -119,10 +119,9 @@
 
 .body {
   position: relative;
-
   height: fit-content;
 
-  grid-column: 1 / 8;
+  grid-column: 1 / 10;
   display: flex;
 
   padding: 10px;
@@ -130,15 +129,11 @@
   justify-content: space-between;
   gap: 16px;
 
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid var(--color-gray-250)
 }
 
-.requestBlock {
-  grid-column: 8 / 13;
-  display: flex;
-  flex-direction: column;
-}
+
 
 .mainContainer {
   display: flex;
@@ -245,5 +240,100 @@
   bottom: 0;
   z-index: 2;
   background-color: transparent;
+}
+
+
+
+.requestBlock {
+  grid-column: 10 / 13;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  gap: 16px;
+  padding: 10px;
+  border: 1px solid var(--color-gray-250);
+  border-radius: 16px;
+  background-color: white;
+}
+
+.innerContainer {
+  padding: 6px 6px 8px 8px;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.fieldText {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+.unpublishContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.inviteUserBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-brand-green);
+  font: var(--inter-12-300);
+}
+
+.invitedInfo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invitedName {
+  font: var(--inter-12-400);
+  color: var(--color-gray-750);
+}
+
+.invitedName div {
+  display: flex;
+  gap: 2px
+}
+
+.invitedName span {
+  color: var(--color-gray-500);
+}
+
+.cancelInviteBtn{
+  font: var(--inter-12-300);
+  color: var(--color-red);
+}
+
+.publishedBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.publishedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inviteIconOnly {
+  color: var(--color-brand-green);
+}
+
+.allFeedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  width: 100%;
+  background-color: #0096FF;
+  border-radius: 8px;
+  color: white;
+  font: var(--inter-12-400);
 }
 

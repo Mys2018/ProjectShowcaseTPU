@@ -1,0 +1,142 @@
+.topBlock {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--tooltop-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bottomBlock {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--tooltop-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeIcon {
+  width: 11px;
+  height: 11px;
+  color: var(--color-gray-250);
+}
+
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px 16px 18px 16px;
+  background-color: var(--color-gray-50);
+  border-radius: 16px;
+}
+
+.searchIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.searchInput {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+}
+
+.searchInput::placeholder {
+  color: var(--color-gray-500);
+}
+
+.userCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.declinedBtn {
+  font: var(--body-text-platform);
+  color: var(--color-brand-violet);
+  background: white;
+  border: 1px solid var(--color-brand-violet);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: default;
+}
+
+.inviteBtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--color-brand-green);
+  color: white;
+  font: var(--inter-12-300);
+}
+
+.inviteRejectedBtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-brand-violet);
+  background: white;
+  color: var(--color-brand-violet);
+  font: var(--inter-12-300);
+  cursor: initial;
+}
+
+.alreadyInCommandBtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-brand-green);
+  background: white;
+  color: var(--color-brand-green);
+  font: var(--inter-12-300);
+  cursor: initial;
+}
+
+.feedbackResponseBtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-gray-400);
+  background: white;
+  color: var(--color-gray-400);
+  font: var(--inter-12-300);
+  cursor: initial;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-gray-200);
+  margin-top: 22px;
+}
+
+.emptyState {
+  padding: 16px 0;
+  text-align: center;
+  color: var(--color-gray-500);
+  font: var(--body-text-platform);
+}
