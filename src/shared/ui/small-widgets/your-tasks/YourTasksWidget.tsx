@@ -28,8 +28,10 @@ const getActivityName = (type: Activity['type']) => {
 export const YourTasksWidget = ({ data }: YourTasksWidgetProps) => {
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Ваши задачи</h2>
-      <p className={styles.description}>{'Создать единую и надёжную систему уведомлений, которая станет'}</p>
+      <div className={styles.header}>
+        <h2 className={styles.title}>Ваши задачи</h2>
+        <p className={styles.description}>{'Создать единую и надёжную систему уведомлений, которая станет'}</p>
+      </div>
       <ul className={styles.taskList}>
         {
           data?.map((activity: Activity, index) => {
@@ -76,7 +78,7 @@ export const YourTasksWidget = ({ data }: YourTasksWidgetProps) => {
                     {
                       completedStage && (
                         <div className={styles.completedStage}>
-                          Выполнено
+                          Выполнен
                         </div>
                       )
                     }
@@ -111,7 +113,7 @@ export const YourTasksWidget = ({ data }: YourTasksWidgetProps) => {
                     }
                     {activity.status === 'completed' && (
                       <div className={styles.completedLabel}>
-                        Пройдено
+                        Завершено
                         <CheckIcon className={styles.checkIcon}/>
                       </div>
                     )}

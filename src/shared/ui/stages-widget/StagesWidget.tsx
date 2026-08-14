@@ -1,9 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react'
-import FolderIcon from '@/shared/ui/icons/folder.svg?react'
-import LikeIcon from '@/shared/ui/icons/like.svg?react'
 import styles from './StagesWidget.module.css'
-import { assertNever } from '@/shared/lib'
+import { FeedbackIcon, FolderIcon, LikeIcon } from '..'
+import { assertNever } from '../../lib'
 import { usePreferencesStore, type UserRole } from '@/entities/user'
 
 interface StagesData {
@@ -87,24 +85,24 @@ const getName = (type: StagesData['type']) => {
 const getIcon = (type: StagesData['type']) => {
   switch (type) {
     case 'projects':
-      return <FolderIcon className={styles.folderIcon} />
+      return <FolderIcon className={styles.icon} />
     case 'feedback':
-      return <FeedBackIcon className={styles.feedbackIcon} />
+      return <FeedbackIcon className={styles.icon} />
     case 'likes':
-      return <LikeIcon className={styles.likeIcon} />
+      return <LikeIcon className={styles.icon} />
     case 'moderator-projects':
-      return <FolderIcon className={styles.folderIcon} />
+      return <FolderIcon className={styles.icon} />
     case 'moderator-requests':
-      return <FolderIcon className={styles.folderIcon} />
+      return <FolderIcon className={styles.icon} />
     case 'curator-projects':
-      return <FolderIcon className={styles.folderIcon} />
+      return <FolderIcon className={styles.icon} />
     case 'curator-requests':
-      return <FolderIcon className={styles.folderIcon} /> // todo заменить
+      return <FolderIcon className={styles.icon} /> 
     default:
       assertNever(type)
       return null
-  }
-}
+  } 
+} // TODO заменить иконки
 
 export const StagesWidget = () => {
   const navigate = useNavigate()
@@ -115,7 +113,7 @@ export const StagesWidget = () => {
   return (
     <div className={styles.mainContainer}>
       {stagesData.map(card => (
-        <div key={card.type} className={styles.cardBody} onClick={() => navigate('/my-platform/create')}>
+        <div key={card.type} className={styles.cardBody} onClick={() => void navigate('/my-platform/create')}>
           <header className={styles.cardHeader}>
             <span className={styles.count}>{card.count}</span>
             {getIcon(card.type)}

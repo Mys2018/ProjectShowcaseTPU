@@ -77,25 +77,22 @@ export const ProjectActivities = () => {
   }
 
   return (
-    <main className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`}>
+    <main className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`} onScroll={handleScroll}>
       <span className={`${styles.background} ${styles.fixed}`} />
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
-      
-      <aside className={styles.userRow}>
-        {user ? <UserRow user={user} /> : <UserRowSkeleton />}
-      </aside>
+
+      <aside className={styles.userRow}>{user ? <UserRow user={user} /> : <UserRowSkeleton />}</aside>
 
       <div className={styles.titleContainer}>
-        {user && <h1 className={styles.welcomeMessage}>C возвращением, {user?.meta.firstName}!</h1>}
+        {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}
       </div>
 
-      <aside className={styles.switchContainer}>
-        {switchableRoles.length > 1 && (
+      {switchableRoles.length > 1 && (
+        <aside className={styles.switchContainer}>
           <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
-        )}
-      </aside>
-
+        </aside>
+      )}
 
       <aside className={styles.activities} ref={activitiesRef} onScroll={handleScroll}>
         <YourTasksWidget data={mockedData.activities} />

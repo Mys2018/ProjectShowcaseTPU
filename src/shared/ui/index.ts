@@ -21,4 +21,7 @@ export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx';
 export { AddOutlineButton } from './elements/add-outline-button/AddOutlineButton.tsx';
 
 import userIconUrl from './icons/fallback_personal.svg'
-export { userIconUrl }
+import FeedbackIcon from './icons/feedback.svg?react'
+import FolderIcon from './icons/folder.svg?react'
+import LikeIcon from './icons/like.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon }

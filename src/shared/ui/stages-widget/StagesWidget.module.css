@@ -42,20 +42,50 @@
   color: var(--color-gray-350);
 }
 
-.feedbackIcon {
+.icon {
   width: 18px;
   height: 18px;
-  color: var(--color-gray-600)
+  color: var(--color-gray-600);
 }
 
-.folderIcon {
-  width: 18px;
-  height: 18px;
-  color: var(--color-gray-600)
+@media (max-width: 1280px) {
+  .cardBody {
+    padding: 16px;
+  }
 }
 
-.likeIcon {
-  width: 18px;
-  height: 18px;
-  color: var(--color-gray-600)
+@media (max-width: 1024px) {
+  .cardBody {
+    padding: 12px;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContainer {
+    gap: 6px;
+  }
+
+  .cardBody {
+    padding: 14px;
+    gap: 16px;
+  }
+
+  .icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .count {
+    font-size: 17px;
+  }
+
+  .label {
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .snippet {
+    font-size: 9px;
+  }
 }
