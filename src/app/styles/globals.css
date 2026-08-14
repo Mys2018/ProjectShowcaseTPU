@@ -93,3 +93,18 @@ input {
   font-family: inherit;
   font-size: inherit;
 }
+
+.ellipsis {
+  min-width: 0;
+  
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+@media (max-width: 768px) {
+  .hidden-mobile {
+    display: none;
+  }
+}
