@@ -6,6 +6,6 @@ export const getHighestRole = (roles: UserRole[]): UserRole => {
   return roles.reduce((highest, current) => (current.weight > highest.weight ? current : highest))
 }
 
-export const getSwitchableRolesAmount = (roles: UserRole[]): UserRole[] => {
+export const getSwitchableRoles = (roles: UserRole[]): UserRole[] => {
   return roles.filter(r => r.type === 'Student' || r.type === 'Curator' || r.type === 'Moderator')
 }
