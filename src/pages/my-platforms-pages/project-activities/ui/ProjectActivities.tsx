@@ -1,8 +1,25 @@
+import clsx from 'clsx'
 import { useRef } from 'react'
 import styles from './ProjectActivities.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
-import { getSwitchableRolesAmount, ROLES_TRANSLATIONS, useMe, usePreferencesStore, UserRow, UserRowSkeleton } from '@/entities/user'
-import { FloatingTabs, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
+import {
+  getSwitchableRoles,
+  ROLES_TRANSLATIONS,
+  useMe,
+  usePreferencesStore,
+  UserRow,
+  UserRowSkeleton,
+  type UserRole
+} from '@/entities/user'
+import {
+  FloatingTabs,
+  StagesWidget,
+  YourPointsWidget,
+  YourTasksWidget,
+  type Activity,
+  type ClosingDiscipline,
+  type FloatingTabItem
+} from '@/shared'
 // import {useProjectDraft} from "@/entities/project";
 // import {useNavigate} from "react-router-dom";
 
@@ -54,8 +71,11 @@ export const ProjectActivities = () => {
     ]
   } // TODO заменить на реальные данные
 
-  const switchableRoles = user ? getSwitchableRolesAmount(user.roles) : []
-  const tabItems = switchableRoles.map(role => ({ label: ROLES_TRANSLATIONS[role.type], value: role.type }))
+  const switchableRoles = user ? getSwitchableRoles(user.roles) : []
+  const tabItems: FloatingTabItem<UserRole['type']>[] = switchableRoles
+    .sort((a, b) => a.weight - b.weight)
+    .map(role => ({ label: ROLES_TRANSLATIONS[role.type], value: role.type }))
+  const isHeroWrapperVisible = switchableRoles.some(role => role.type !== 'Student')
 
   const activitiesRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -99,12 +119,14 @@ export const ProjectActivities = () => {
         <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
       </aside>
       <div className={styles.content} ref={contentRef} onScroll={handleScroll}>
-        <div className={styles.bannerContainer}>
-          <span className={styles.banner} />
+        <div className={clsx(styles.heroWrapper, isHeroWrapperVisible && styles.visible)}>
+          <div className={styles.bannerContainer}>
+            <span className={styles.banner} />
+          </div>
+          <section className={styles.stagesWidget}>
+            <StagesWidget />
+          </section>
         </div>
-        <section className={styles.stagesWidget}>
-          <StagesWidget />
-        </section>
         <section className={styles.projects}>
           <h3 className={styles.title}>Проекты для вас</h3>
           <ProjectsGrid />
