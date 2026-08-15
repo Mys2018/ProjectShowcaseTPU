@@ -1,8 +1,9 @@
-import type { ReactNode } from 'react'
 import styles from './FloatingTabs.module.css'
+import clsx from 'clsx'
+import type { FloatingTabItem } from '../types'
 
 interface FloatingTabsProps<T extends string> {
-  items: { label: ReactNode; value: T }[]
+  items: FloatingTabItem<T>[]
   value: T
   onChange: (value: T) => void
   className?: string
@@ -15,10 +16,10 @@ export function FloatingTabs<T extends string>({ items, value, onChange, classNa
         <button
           key={item.value}
           type='button'
-          className={`${styles.item} ${item.value === value ? styles.active : ''}`}
+          className={clsx(styles.item, item.value === value && styles.active, item.notification && styles.notification)}
           onClick={() => onChange(item.value)}
         >
-          {item.label}
+          <p>{item.label}</p>
         </button>
       ))}
     </div>
