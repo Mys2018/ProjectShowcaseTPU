@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './RouterTabs.module.css'
-import { FloatingTabs } from '../floating-tabs/FloatingTabs'
+import { FloatingTabs } from '../floating-tabs/ui/FloatingTabs'
 
 export type TabItem = {
   label: string
