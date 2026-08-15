@@ -3,11 +3,13 @@ import styles from './StagesWidget.module.css'
 import { FeedbackIcon, FolderIcon, LikeIcon } from '..'
 import { assertNever } from '../../lib'
 import { usePreferencesStore, type UserRole } from '@/entities/user'
+import clsx from 'clsx'
 
 interface StagesData {
   type: 'projects' | 'feedback' | 'likes' | 'moderator-projects' | 'moderator-requests' | 'curator-projects' | 'curator-requests'
   count: number
   snippet?: string
+  notification?: boolean
 }
 
 const getStagesData = (roleType: UserRole['type']): StagesData[] => {
@@ -97,11 +99,11 @@ const getIcon = (type: StagesData['type']) => {
     case 'curator-projects':
       return <FolderIcon className={styles.icon} />
     case 'curator-requests':
-      return <FolderIcon className={styles.icon} /> 
+      return <FolderIcon className={styles.icon} />
     default:
       assertNever(type)
       return null
-  } 
+  }
 } // TODO заменить иконки
 
 export const StagesWidget = () => {
@@ -119,7 +121,7 @@ export const StagesWidget = () => {
             {getIcon(card.type)}
           </header>
           <footer className={styles.cardFooter}>
-            <h4 className={styles.label}>{getName(card.type)}</h4>
+            <h4 className={clsx(styles.label, card.notification && styles.notification)}>{getName(card.type)}</h4>
             <p className={styles.snippet}>{card.snippet}</p>
           </footer>
         </div>
