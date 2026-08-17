@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './CreateProjectPage.module.css';
-import BackIcon from '@/shared/ui/icons/back.svg?react';
+import { BackArrowIcon } from '@/shared';
 import { CreateProjectCard } from '@/shared/ui/create-project-card/CreateProjectCard.tsx';
 import { ProjectInfoStep } from '@/features/create-project/ui/ProjectInfoStep';
 import {
@@ -21,7 +21,7 @@ type PageStep = 'type-select' | 'fill';
 
 const AUTOSAVE_DELAY_MS = 3000;
 
-export default function CreateProjectPage() {
+export function CreateProjectPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
@@ -149,7 +149,7 @@ export default function CreateProjectPage() {
     // Save current state as draft and navigate back
     const currentValues = form.state.values;
     saveDraft(currentValues as unknown as Record<string, unknown>, {
-      onSuccess: () => navigate(-1),
+      onSuccess: () => void navigate(-1),
     });
   };
 
@@ -168,8 +168,8 @@ export default function CreateProjectPage() {
   if (pageStep === 'type-select') {
     return (
       <main className={styles.mainContent}>
-        <div className={styles.headerLeft} onClick={() => navigate(-1)}>
-          <BackIcon />
+        <div className={styles.headerLeft} onClick={() => void navigate(-1)}>
+          <BackArrowIcon />
           <p>Назад к списку проектов</p>
         </div>
 
@@ -202,7 +202,7 @@ export default function CreateProjectPage() {
           className={styles.headerLeft}
           onClick={() => setPageStep('type-select')}
         >
-          <BackIcon />
+          <BackArrowIcon />
           <p>Назад к выбору типа проекта</p>
         </div>
 
