@@ -19,6 +19,7 @@ export * from './floating-tabs'
 
 export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx'
 export { AddOutlineButton } from './elements/add-outline-button/AddOutlineButton.tsx'
+export * from './horizontal-tabs'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
