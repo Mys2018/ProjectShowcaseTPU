@@ -81,6 +81,10 @@
 }
 
 @media (max-width: 1024px) {
+  .mainContainer {
+    gap: 8px;
+  }
+
   .cardBody {
     padding: 12px;
     gap: 30px;
