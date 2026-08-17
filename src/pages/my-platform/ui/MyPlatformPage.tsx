@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useRef } from 'react'
-import styles from './ProjectActivities.module.css'
+import styles from './MyPlatformPage.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
 import {
   getSwitchableRoles,
@@ -23,7 +23,7 @@ import {
 // import {useProjectDraft} from "@/entities/project";
 // import {useNavigate} from "react-router-dom";
 
-export const ProjectActivities = () => {
+export const MyPlatformPage = () => {
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 

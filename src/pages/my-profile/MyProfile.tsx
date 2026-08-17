@@ -1,15 +1,16 @@
+import { useEffect } from 'react';
 import { useNavigate, useBlocker } from 'react-router-dom';
 import styles from './MyProfile.module.css';
-import { useMe } from '@/entities/user/api/queries';
 import { ProfileHeader } from '@/widgets/profile-header';
-import { AboutMe } from "@/features/about-me/ui/AboutMe.tsx";
+import { AboutMe } from "@/features/about-me";
 import { MyCompetenciesList } from "@/features/my-competencies";
-import BackIcon from '@/shared/ui/icons/back.svg?react';
+import { Portfolio } from "@/features/portfolio";
+import { useSkillsStore } from '@/features/my-competencies';
+import { useMe } from '@/entities/user';
 import EyeIcon from '@/shared/ui/icons/eye.svg?react';
-import { Portfolio } from "@/features/portfolio/Portfolio.tsx";
+import BackIcon from '@/shared/ui/icons/back.svg?react';
 import { useProfileEditStore, useModalStore } from '@/shared/model';
-import { useSkillsStore } from '@/features/my-competencies/model/store/useSkillsStore.ts';
-import { useEffect } from 'react';
+import { ROUTES } from '@/shared';
 
 export const MyProfile = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export const MyProfile = () => {
 
   return (
     <div className={styles.mainContent}>
-      <section className={styles.headerLeft} onClick={() => navigate(-1)}>
+      <section className={styles.headerLeft} onClick={() => void navigate(-1)}>
         <BackIcon className={styles.backIcon}/>
         <p className={styles.back}>Назад к списку проектов</p>
       </section>
@@ -69,7 +70,7 @@ export const MyProfile = () => {
         <h2>Мой профиль</h2>
       </section>
 
-      <section className={styles.see} onClick={() => navigate(`/profile/${user.id}`)}>
+      <section className={styles.see} onClick={() => void navigate(`${ROUTES.PROFILE.BASE}/${user.id}`)}>
         <EyeIcon/>
         <p>
           Посмотреть опубликованный вид

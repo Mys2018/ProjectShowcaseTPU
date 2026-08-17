@@ -1,16 +1,16 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import { LoginPage } from "@/pages/login-page/ui/LoginPage";
-import { MainLayout } from "@/pages/main-layout/ui/MainLayout";
-import { CatalogLayout, Catalog, ProjectPage } from "@/pages/catalog-layout";
-import { MyPlatformLayout } from "@/pages/my-platform-layout/ui/MyPlatformLayout";
-import { ProjectsGrid } from "@/widgets/projects-grid";
-import { ProjectActivities } from "@/pages/my-platforms-pages/project-activities/ui/ProjectActivities";
-import { ProtectedRoute } from "./ProtectedRoute";
-import { ROUTES } from "@/shared";
-import { RootRoute } from "./RootRoute";
-import { MyProfile } from "@/pages/my-profile";
-import CreateProjectPage from "@/pages/create-project/ui/CreateProjectPage";
-import {SomeoneProfile} from "@/pages/someone-profile/SomeoneProfile.tsx";
+import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { RootRoute } from './RootRoute'
+import { ProtectedRoute } from './ProtectedRoute'
+import { LoginPage } from '@/pages/login-page/ui/LoginPage'
+import { MainLayout } from '@/pages/main-layout/ui/MainLayout'
+import { MyPlatformLayout } from '@/pages/my-platform-layout'
+import { CatalogLayout, Catalog, ProjectPage } from '@/pages/catalog-layout'
+import { MyPlatformPage } from '@/pages/my-platform'
+import { MyProfile } from '@/pages/my-profile'
+import { CreateProjectPage } from '@/pages/create-project'
+import { SomeoneProfile } from '@/pages/someone-profile'
+import { ProjectsGrid } from '@/widgets/projects-grid'
+import { ROUTES } from '@/shared'
 
 export const router = createBrowserRouter([
   {
@@ -18,7 +18,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: ROUTES.LOGIN,
-        element: <LoginPage />,
+        element: <LoginPage />
       },
       {
         path: ROUTES.MAIN,
@@ -26,83 +26,77 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Navigate to={ROUTES.CATALOG} replace />,
+            element: <Navigate to={ROUTES.CATALOG.BASE} replace />
           },
 
           {
-            path: ROUTES.CATALOG,
+            path: ROUTES.CATALOG.BASE,
             element: <CatalogLayout />,
             children: [
               {
                 index: true,
-                element: <Navigate to={ROUTES.CATALOG_ALL_PROJECTS} replace />,
+                element: <Navigate to={ROUTES.CATALOG.ALL_PROJECTS} replace />
               },
               {
                 element: <Catalog />,
                 children: [
                   {
-                    path: ROUTES.CATALOG_ALL_PROJECTS,
-                    element: <ProjectsGrid />,
+                    path: ROUTES.CATALOG.ALL_PROJECTS,
+                    element: <ProjectsGrid />
                   },
                   {
-                    path: ROUTES.CATALOG_RECRUITING,
-                    element: <ProjectsGrid />,
+                    path: ROUTES.CATALOG.RECRUITING,
+                    element: <ProjectsGrid />
                   },
                   {
-                    path: ROUTES.CATALOG_IN_WORK,
-                    element: <ProjectsGrid />,
-                  },
-                ],
+                    path: ROUTES.CATALOG.IN_WORK,
+                    element: <ProjectsGrid />
+                  }
+                ]
               },
               {
-                path: ROUTES.CATALOG_PROJECT,
-                element: <ProjectPage />,
-              },
-            ],
+                path: ROUTES.CATALOG.PROJECT,
+                element: <ProjectPage />
+              }
+            ]
           },
 
           {
             element: <ProtectedRoute />,
             children: [
               {
-                path: ROUTES.MY_PLATFORM,
+                path: ROUTES.MY_PLATFORM.BASE,
                 element: <MyPlatformLayout />,
                 children: [
                   {
                     index: true,
-                    element: (
-                      <Navigate to={ROUTES.MY_PLATFORM_ACTIVITIES} replace />
-                    ),
+                    element: <MyPlatformPage />
                   },
                   {
-                    path: ROUTES.MY_PLATFORM_ACTIVITIES,
-                    element: <ProjectActivities />,
-                  },
-                  {
-                    path: ROUTES.MY_PLATFORM_CREATE,
-                    element: <CreateProjectPage/>
-                  },
-                ],
-              },
-            ],
+                    path: ROUTES.MY_PLATFORM.CREATE,
+                    element: <CreateProjectPage />
+                  }
+                ]
+              }
+            ]
           },
 
           {
-            path: ROUTES.MY_PROFILE,
+            path: ROUTES.PROFILE.BASE,
             element: <MyProfile />
           },
 
           {
-            path: ROUTES.SOMEONE_PROFILE,
+            path: ROUTES.PROFILE.BY_ID,
             element: <SomeoneProfile />
           }
-        ],
+        ]
       },
       {
-        path: "*",
+        path: '*',
         // TODO - сделать NotFoundPage
-        element: <Navigate to={ROUTES.LOGIN} replace />,
-      },
-    ],
-  },
-]);
+        element: <Navigate to={ROUTES.LOGIN} replace />
+      }
+    ]
+  }
+])
