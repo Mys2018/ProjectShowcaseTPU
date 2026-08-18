@@ -1,4 +1,5 @@
 const MY_PLATFORM_BASE = '/my-platform'
+const PROJECT_ACTIVITIES_BASE = `${MY_PLATFORM_BASE}/project-activities`
 const CATALOG_BASE = '/catalog'
 const PROFILE_BASE = '/profile'
 
@@ -18,10 +19,22 @@ export const ROUTES = {
   },
   MY_PLATFORM: {
     BASE: MY_PLATFORM_BASE,
-    ACTIVITIES: `${MY_PLATFORM_BASE}/project-activities`,
-    MY_APPLICATIONS: `${MY_PLATFORM_BASE}/my-applications`,
-    MY_PROJECTS: `${MY_PLATFORM_BASE}/my-projects`,
-    LIKES: `${MY_PLATFORM_BASE}/likes`,
+    ACTIVITIES: {
+      BASE: PROJECT_ACTIVITIES_BASE,
+      STUDENT: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/my-projects`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/my-applications`,
+        LIKES: `${PROJECT_ACTIVITIES_BASE}/likes`
+      },
+      CURATOR: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-management`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/incoming-applications`
+      },
+      MODERATOR: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-moderation`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/moderation-applications`
+      }
+    },
     CREATE: `${MY_PLATFORM_BASE}/create`
   }
 } as const

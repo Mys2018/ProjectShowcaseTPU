@@ -1,9 +1,10 @@
+import clsx from 'clsx'
 import { useNavigate } from 'react-router-dom'
 import styles from './StagesWidget.module.css'
 import { FeedbackIcon, FolderIcon, LikeIcon } from '..'
 import { assertNever } from '../../lib'
+import { ROUTES } from '../../config'
 import { usePreferencesStore, type UserRole } from '@/entities/user'
-import clsx from 'clsx'
 
 interface StagesData {
   type: 'projects' | 'feedback' | 'likes' | 'moderator-projects' | 'moderator-requests' | 'curator-projects' | 'curator-requests'
@@ -106,6 +107,28 @@ const getIcon = (type: StagesData['type']) => {
   }
 } // TODO заменить иконки
 
+const getLink = (type: StagesData['type']) => {
+  switch (type) {
+    case 'projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.PROJECTS
+    case 'feedback':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.APPLICATIONS
+    case 'likes':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.LIKES
+    case 'moderator-projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS
+    case 'moderator-requests':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS
+    case 'curator-projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.PROJECTS
+    case 'curator-requests':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.APPLICATIONS
+    default:
+      assertNever(type)
+      return ROUTES.MY_PLATFORM.BASE
+  }
+}
+
 export const StagesWidget = () => {
   const navigate = useNavigate()
   const { preferredRoleType: roleType } = usePreferencesStore()
@@ -115,7 +138,7 @@ export const StagesWidget = () => {
   return (
     <div className={styles.mainContainer}>
       {stagesData.map(card => (
-        <div key={card.type} className={styles.cardBody} onClick={() => void navigate('/my-platform/create')}>
+        <div key={card.type} className={styles.cardBody} onClick={() => void navigate(getLink(card.type))}>
           <header className={styles.cardHeader}>
             <span className={styles.count}>{card.count}</span>
             {getIcon(card.type)}
