@@ -119,7 +119,7 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
           {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} />}
           {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} />}
           {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} />}
-          {activeTab === 'all' && <AllTab form={form}/>}
+          {activeTab === 'all' && <AllTab form={form} setStep={setStep} />}
         </div>
       </div>
 
@@ -153,7 +153,7 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
               disabled={isPending}
               className={clsx(styles.saveButton, isPending ? styles.disable : '')}
             >
-              {isPending ? 'Отправка...' : 'Опубликовать проект'}
+              {isPending ? 'Отправка...' : 'Отправить на модерацию'}
             </button>
           )}
         </div>

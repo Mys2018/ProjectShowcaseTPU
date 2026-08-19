@@ -1,19 +1,56 @@
 import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './ProjectActivities.module.css'
-import { ProjectsGrid } from '@/widgets/projects-grid'
+import type { CreateProjectFormValues } from '@/features/create-project/model/useProjectWizard'
 import { getSwitchableRolesAmount, ROLES_TRANSLATIONS, useMe, usePreferencesStore, UserRow, UserRowSkeleton } from '@/entities/user'
-import { FloatingTabs, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
-// import {useProjectDraft} from "@/entities/project";
-// import {useNavigate} from "react-router-dom";
+import { useProjectDraft, useDeleteDraft } from '@/entities/project'
+import { FloatingTabs, ROUTES, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
+import Pencil from '@/shared/ui/icons/pencil.svg?react'
+import Trash from '@/shared/ui/icons/trash.svg?react'
+
+const TYPE_LABELS: Record<string, string> = {
+  Study: 'Учебный',
+  Case: 'Кейс',
+  Real: 'Реальный',
+}
+
+function formatDraftDate(dateStr: string): string {
+  try {
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  } catch {
+    return dateStr
+  }
+}
 
 export const ProjectActivities = () => {
+  const navigate = useNavigate()
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-  // const { data: draft } = useProjectDraft();
-  // const navigate = useNavigate();
-  //
-  // const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
+  const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
+  const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
+
+  const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
+  const draftTitle = draftValues?.meta?.title || 'Без названия'
+  const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
+  const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
+  const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
+
+  const handleContinueDraft = () => {
+    navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
+  }
+
+  const handleDeleteDraft = () => {
+    deleteDraft()
+  }
+
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
       {
@@ -107,7 +144,44 @@ export const ProjectActivities = () => {
         </section>
         <section className={styles.projects}>
           <h3 className={styles.title}>Проекты для вас</h3>
-          <ProjectsGrid />
+          {/*<ProjectsGrid />*/}
+
+          {isDraftLoading && (
+            <div className={styles.templateDraftCard}>
+              <p className={styles.draftCardTitle}>Загрузка черновиков...</p>
+            </div>
+          )}
+
+          {hasDraft && (
+            <div className={styles.draftsList}>
+              <h4 className={styles.draftsTitle}>Черновики</h4>
+              <div className={styles.templateDraftCard}>
+                <div className={styles.draftCardInfo}>
+                  <p className={styles.draftCardTitle}>{draftTitle}</p>
+                  <div className={styles.draftCardMeta}>
+                    {draftType && <span className={styles.draftCardType}>{draftType}</span>}
+                    {draftUpdatedAt && <span className={styles.draftCardDate}>Изменён: {draftUpdatedAt}</span>}
+                  </div>
+                </div>
+                <div className={styles.draftCardActions}>
+                  <button
+                    className={styles.draftContinueBtn}
+                    onClick={handleContinueDraft}
+                  >
+                    <Pencil />
+                    Продолжить
+                  </button>
+                  <button
+                    className={styles.draftDeleteBtn}
+                    onClick={handleDeleteDraft}
+                    disabled={isDeleting}
+                  >
+                    <Trash />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </main>

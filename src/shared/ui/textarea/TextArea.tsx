@@ -13,9 +13,9 @@ type TextAreaProps = {
   subtitle?: string
 };
 
-export function TextArea({ value, maxLength, handleChange, isDisable, isValid, isEditing = true, placeholder, subtitle }: TextAreaProps) {
+export function TextArea({ value, maxLength, handleChange, isDisable, isValid, isEditing, placeholder, subtitle }: TextAreaProps) {
   return (
-    <div className={`${styles.textContainer} ${isValid ? (isEditing ? styles.edit : styles.validOutline) : styles.errorOutline} `}>
+    <div className={`${styles.textContainer} ${!value && styles.yellowBlinking} ${!isEditing ? (isEditing ? styles.edit : styles.validOutline) : styles.errorOutline} `}>
       <div className={styles.innerContainer}>
         {
           subtitle && <p className={clsx(styles.subTitle, isValid ? styles.valid : styles.error)}>
@@ -29,9 +29,9 @@ export function TextArea({ value, maxLength, handleChange, isDisable, isValid, i
           placeholder={placeholder}
         />
       </div>
-      <p className={isValid ? styles.valid : styles.error}>
+      {isEditing && <p className={isValid ? styles.valid : styles.error}>
         {value.length} / {maxLength}
-      </p>
+      </p>}
     </div>
   )
 }

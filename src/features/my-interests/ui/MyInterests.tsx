@@ -1,21 +1,21 @@
-import styles from './AboutMe.module.css';
+import styles from './MyInterests.module.css';
 import { type ChangeEvent, useState, useEffect } from "react";
 import { useUpdateProfileMeta } from '@/entities/user/api/queries';
 import Pencil from '@/shared/ui/icons/pencil.svg?react'
 import { FooterBlockFields, TextArea } from "@/shared";
 import { useModalStore, useProfileEditStore } from '@/shared/model';
 
-type AboutMeProps = {
-  bio: string,
+type MyInterestsProps = {
+  interests: string,
   className: string
 };
 
-export function AboutMe({ bio, className }: AboutMeProps) {
+export function MyInterests({ interests, className }: MyInterestsProps) {
   const MAX_LENGTH = 500
   const MIN_LENGTH = 100
 
-  const [value, setValue] = useState<string>(bio || '')
-  const [prevValue, setPrevValue] = useState<string>(bio || '')
+  const [value, setValue] = useState<string>(interests || '')
+  const [prevValue, setPrevValue] = useState<string>(interests || '')
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
   const { setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore()
@@ -24,15 +24,15 @@ export function AboutMe({ bio, className }: AboutMeProps) {
   const { mutate: updateProfileMeta, isPending } = useUpdateProfileMeta()
 
   useEffect(() => {
-    setValue(bio || '');
-    setPrevValue(bio || '');
-  }, [bio]);
+    setValue(interests || '');
+    setPrevValue(interests || '');
+  }, [interests]);
 
   const isValidSymbol = value.length >= MIN_LENGTH && value.length <= MAX_LENGTH
   const isValidAnother = true
   const isValid = isValidSymbol && isValidAnother
 
-  const hasUpdate = value.trim() !== (bio || '').trim()
+  const hasUpdate = value.trim() !== (interests || '').trim()
   const disabled = !hasUpdate || !isValid || isPending
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export function AboutMe({ bio, className }: AboutMeProps) {
     if (disabled) return;
 
     updateProfileMeta(
-      { bio: value },
+      { interests: value },
       {
         onSuccess: () => {
           setIsEditing(false);
@@ -90,15 +90,15 @@ export function AboutMe({ bio, className }: AboutMeProps) {
   return (
     <section className={`${styles.body} ${className}`}>
       <div className={styles.mainContainer}>
-        <div className={styles.bioContainer}>
+        <div className={styles.interestsContainer}>
           <h3>
-            Обо мне
+            Мои интересы
           </h3>
           <button
             className={styles.editButton}
             onClick={() => {
               setIsEditing(true)
-              setActiveEditBlock('aboutMe')
+              setActiveEditBlock('interests')
               setPrevValue(value)
             }}
             disabled={isPending}
@@ -114,7 +114,7 @@ export function AboutMe({ bio, className }: AboutMeProps) {
           isDisable={!isEditing || isPending}
           isValid={isValidSymbol}
           isEditing={isEditing}
-          placeholder={'Компетентный опыт, софт-скиллы, ваш подход к работе...'}
+          placeholder={'Битуби саас ЭЙЯЙ стартапы, фримиум модели, подписки'}
         />
         {
           isEditing && (

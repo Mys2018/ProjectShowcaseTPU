@@ -1,36 +1,47 @@
-import { Modal } from '@/shared/ui/modal/Modal.tsx';
 import { useState } from 'react';
 import SearchIcon from '@/assets/svg/SearchIcon.svg?react';
-import CrossIcon from '@/shared/ui/icons/cross.svg?react';
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react';
 import styles from './InviteUserModal.module.css';
+import { Modal } from '@/shared/ui/modal/Modal.tsx';
+import SadIcon from '@/shared/ui/icons/sad_face.svg?react';
+import CrossIcon from '@/shared/ui/icons/cross.svg?react';
 import {TeamUserCard} from "@/shared/ui/team_user_card/TeamUserCard.tsx";
 
 interface InviteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   roleName: string;
-  onInvite: (user: { id: number; name: string, status: string }) => void;
+  onInvite?: (user: { id: number; name: string}) => void;
 }
 
 const MOCK_USERS = [
-  { id: 1, name: 'Константинопольский Константин Константинович', status: 'Approved' },
-  { id: 2, name: 'Константинопольский Константин Константинович', status: 'Closed' },
-  { id: 3, name: 'Андрей Парашют', status: 'Pending' },
-  { id: 4, name: 'Иван Иванов', status: 'Rejected' },
+  { id: 1, name: 'Константинопольский Константин Константинович'},
+  { id: 2, name: 'Константинопольский Константин Константинович'},
+  { id: 3, name: 'Андрей Парашют'},
+  { id: 4, name: 'Иван Иванов'},
+  { id: 5, name: 'Иван Иванов'},
+  { id: 6, name: 'Иван Иванов'},
+  { id: 7, name: 'Иван Иванов'},
+  { id: 8, name: 'Иван Иванов'},
+  { id: 9, name: 'Иван Иванов'},
+  { id: 10, name: 'Иван Иванов'},
+
 ];
 
-export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteUserModalProps) => {
+export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalProps) => {
   const [query, setQuery] = useState('');
 
   const filteredUsers = query
     ? MOCK_USERS.filter(u => u.name.toLowerCase().includes(query.toLowerCase()) || u.id.toString().includes(query))
     : [];
 
-  const handleSelect = (user: { id: number; name: string; status: string }) => {
-    onInvite(user);
-    onClose();
-  };
+  // const handleSelect = (user: { id: number; name: string}) => {
+  //   onInvite(user);
+  //   onClose();
+  // };
+
+  const clearQuery = () => {
+    setQuery('');
+  }
 
   const renderActionButton = (type: string) => {
     switch (type) {
@@ -69,27 +80,37 @@ export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteU
 
       {(query && filteredUsers.length > 0) ? (
         <div className={styles.bottomBlock}>
-          {filteredUsers.map((user, index) => (
-            <div key={user.id}>
-              <div className={styles.userCard}>
-                <TeamUserCard
-                  avatar_size='40px'
-                  name={user.name}
-                  course={"3"}
-                  roles={['Backend', 'Frontend']}
-                />
-                {renderActionButton('Invite')}
-                {/*{renderActionButton('InviteRejected')}*/}
-                {/*{renderActionButton('AlreadyInCommand')}*/}
-                {/*{renderActionButton('FeedbackResponse')}*/}
+          <div className={styles.scrollContainer}>
+            {filteredUsers.map((user, index) => (
+              <div key={user.id}>
+                <div className={styles.userCard}>
+                  <TeamUserCard
+                    avatar_size='40px'
+                    name={user.name}
+                    course={"3"}
+                    roles={['Backend', 'Frontend']}
+                  />
+                  {renderActionButton('Invite')}
+                  {/*{renderActionButton('InviteRejected')}*/}
+                  {/*{renderActionButton('AlreadyInCommand')}*/}
+                  {/*{renderActionButton('FeedbackResponse')}*/}
+                </div>
+                {index < filteredUsers.length - 1 && <div className={styles.divider} />}
               </div>
-              {index < filteredUsers.length - 1 && <div className={styles.divider} />}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       ) : query ? (
         <div className={styles.bottomBlock}>
-          <p className={styles.emptyState}>Пользователь не найден</p>
+          <SadIcon/>
+          <div className={styles.emptyBlock} onClick={clearQuery}>
+            <p className={styles.emptyState}>Пользователей с таким именем не найдено</p>
+            <button>
+              Очистить поиск
+            </button>
+          </div>
+
+
         </div>
       ) : null}
     </Modal>

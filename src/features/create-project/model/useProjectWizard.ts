@@ -35,7 +35,7 @@ export const baseProjectSchema = z.object({
       name: z.string(),
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
     })
-  ).min(1, 'Минимум 1 ссылка'),
+  ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
     title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),
     description: z.string().min(PROJECT_LIMITS.meta.description.min, `Минимум ${PROJECT_LIMITS.meta.description.min} символов`).max(PROJECT_LIMITS.meta.description.max, `Максимум ${PROJECT_LIMITS.meta.description.max} символов`),

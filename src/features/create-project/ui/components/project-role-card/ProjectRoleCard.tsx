@@ -12,6 +12,8 @@ import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
 import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
 import { useModalStore } from '@/shared/model';
 import AddUserIcon from '@/shared/ui/icons/addUser.svg?react';
+import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import {Checkbox} from "@/shared";
 
 interface ProjectRoleCardProps {
   form: CreateProjectForm;
@@ -24,67 +26,11 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
   const [menuOpen, setMenuOpen] = useState(false);
   
   const isEditing = popoverOpen;
-  
-  const menuRef = useRef<HTMLDivElement>(null);
+
   const { openModal } = useModalStore();
 
   const [mockIsPublished, setMockIsPublished] = useState(false);
   const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null);
-
-  // TODO Мок откликов
-
-  const requests = {
-    applications: [
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '1',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Closed'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '1',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Pending'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '2',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Pending'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '3',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Approved'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '3',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Rejected'
-      },
-    ],
-    total: 1,
-    offset: 1,
-    limit: 1
-  }
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false);
-      }
-    }
-    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [menuOpen]);
 
   const inviteUser = (roleName: string) => {
     openModal('INVITE_USER', {
@@ -92,8 +38,6 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
       onInvite: (user: { id: number; name: string }) => setInvitedUser(user),
     });
   }
-
-
 
   return (
     <form.Field name={`roles[${index}]`} mode="value">
@@ -131,30 +75,34 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
                   {occurrenceIndex !== 1 && `(${occurrenceIndex})`}
                 </p>
               </div>
-              <div className={styles.moreMenuContainer} ref={menuRef}>
-                {/*<label className={styles.checkboxLabel}>*/}
-                {/*  Обязательная компетенция*/}
-                {/*  <input type="checkbox" disabled />*/}
-                {/*</label>*/}
-                <button 
-                  type="button" 
-                  className={styles.moreMenuButton}
-                  onClick={() => setMenuOpen(!menuOpen)}
+              <div className={styles.moreMenuContainer}>
+                <label className={styles.checkboxLabel}>
+                  Обязательная компетенция
+                  <Checkbox/>
+                </label>
+                <PopupMenu
+                  trigger={<button
+                    type="button"
+                    className={styles.moreMenuButton}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                  >
+                    <MoreIcon/>
+                  </button>}
                 >
-                  <MoreIcon/>
-                </button>
-                {menuOpen && (
-                  <div className={styles.dropdownMenu}>
-                    <button type="button" className={styles.dropdownItem} onClick={handleDuplicateRole}>
-                      <CopyIcon/>
-                      Дублировать компетенцию
-                    </button>
-                    <button type="button" className={styles.dropdownItem} onClick={handleRemoveRole}>
-                      <DeleteIcon/>
-                      Удалить компетенцию
-                    </button>
-                  </div>
-                )}
+                  <PopupMenu.Row onClick={handleDuplicateRole} title={'Дублировать компетенцию'}>
+                    <CopyIcon/>
+                  </PopupMenu.Row>
+
+                  <PopupMenu.Row onClick={handleRemoveRole} title={'Удалить компетенцию'}>
+                    <DeleteIcon/>
+                  </PopupMenu.Row>
+                  {
+                    !invitedUser &&
+                    <PopupMenu.Row onClick={() => inviteUser(roleName)} title={'Пригласить пользователя'}>
+                      <AddUserIcon/>
+                    </PopupMenu.Row>
+                  }
+                </PopupMenu>
               </div>
             </div>
 

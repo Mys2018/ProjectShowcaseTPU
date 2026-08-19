@@ -3,6 +3,7 @@ import styles from './MyProfile.module.css';
 import { useMe } from '@/entities/user/api/queries';
 import { ProfileHeader } from '@/widgets/profile-header';
 import { AboutMe } from "@/features/about-me/ui/AboutMe.tsx";
+import { MyInterests } from "@/features/my-interests";
 import { MyCompetenciesList } from "@/features/my-competencies";
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import EyeIcon from '@/shared/ui/icons/eye.svg?react';
@@ -81,13 +82,19 @@ export const MyProfile = () => {
           <ProfileHeader data={user} links={user.meta.messengers} />
         </div>
         <div className={styles.body}>
-          <div style={{ opacity: activeEditBlock === 'competencies' ? 0.5 : 1, pointerEvents: activeEditBlock === 'competencies' ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <AboutMe
               bio={user.meta.bio}
               className={styles.wid}
             />
           </div>
-          <div style={{ opacity: activeEditBlock === 'aboutMe' ? 0.5 : 1, pointerEvents: activeEditBlock === 'aboutMe' ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'interests') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'interests') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+            <MyInterests
+              interests={user.meta.interests}
+              className={styles.wid}
+            />
+          </div>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'competencies') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'competencies') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <MyCompetenciesList savedSkills={user.meta.skills} />
           </div>
           <div style={{ opacity: activeEditBlock ? 0.5 : 1, pointerEvents: activeEditBlock ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>

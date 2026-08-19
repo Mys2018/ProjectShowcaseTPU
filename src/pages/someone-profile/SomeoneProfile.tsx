@@ -3,9 +3,11 @@ import {MyCompetenciesList} from "@/features/my-competencies";
 import {useNavigate, useParams} from "react-router-dom";
 import {useUserById} from "@/entities/user";
 import BackIcon from '@/shared/ui/icons/back.svg?react';
+import FlagIcon from '@/shared/ui/icons/flag.svg?react';
 import {SomeoneProfileHeader} from "@/shared/ui/someone-profile-header/SomeoneProfileHeader.tsx";
-import MoreLogo from '@/shared/ui/icons/more.svg?react'
+import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import {Portfolio} from "@/features/portfolio/Portfolio.tsx";
+import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
 
 
 export function SomeoneProfile() {
@@ -29,15 +31,26 @@ export function SomeoneProfile() {
         Профиль студентика
       </section>
 
-      <section className={styles.see} onClick={() => navigate(`/profile/${user.id}`)}>
-        <MoreLogo/>
+      <section className={styles.see}>
+        <PopupMenu
+          trigger={<button
+            type="button"
+            className={styles.moreMenuButton}
+          >
+            <MoreIcon/>
+          </button>}
+        >
+          <PopupMenu.Row onClick={() => {}} title={'Сообщить о нарушении'}>
+            <FlagIcon/>
+          </PopupMenu.Row>
+        </PopupMenu>
       </section>
 
       <section className={styles.profile}>
         <SomeoneProfileHeader user={user} links={user.meta.messengers} onClickSee={() => navigate(`/profile/${user.id}`)}/>
         <div className={styles.body}>
           { user.meta.skills && <MyCompetenciesList savedSkills={user.meta.skills} readonly={true}/> }
-          { user.meta.portfolioLink && <Portfolio firstValue={user.meta.portfolioLink} readonly={true}/> }
+          <Portfolio firstValue={user.meta.portfolioLink || ''} readonly={true}/>
 
         </div>
       </section>
