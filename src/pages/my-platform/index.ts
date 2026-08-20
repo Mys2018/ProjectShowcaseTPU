@@ -1,1 +1,2 @@
-export { MyPlatformPage } from './ui/MyPlatformPage'
+export { MyPlatformPage } from './main/MyPlatformPage'
+
