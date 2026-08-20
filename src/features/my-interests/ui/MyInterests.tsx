@@ -6,13 +6,13 @@ import { FooterBlockFields, TextArea } from "@/shared";
 import { useModalStore, useProfileEditStore } from '@/shared/model';
 
 type MyInterestsProps = {
+  MAX_LENGTH: number;
+  MIN_LENGTH: number;
   interests: string,
   className: string
 };
 
-export function MyInterests({ interests, className }: MyInterestsProps) {
-  const MAX_LENGTH = 500
-  const MIN_LENGTH = 100
+export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyInterestsProps) {
 
   const [value, setValue] = useState<string>(interests || '')
   const [prevValue, setPrevValue] = useState<string>(interests || '')

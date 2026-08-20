@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import SearchIcon from '@/assets/svg/SearchIcon.svg?react';
+
 import styles from './InviteUserModal.module.css';
 import { Modal } from '@/shared/ui/modal/Modal.tsx';
 import SadIcon from '@/shared/ui/icons/sad_face.svg?react';
 import CrossIcon from '@/shared/ui/icons/cross.svg?react';
 import {TeamUserCard} from "@/shared/ui/team_user_card/TeamUserCard.tsx";
+import {InviteActionButton} from "@/shared/ui/invite-action-button";
+import {SmallSearchField} from "@/shared/ui/small-search-field";
 
 interface InviteUserModalProps {
   isOpen: boolean;
@@ -43,19 +45,6 @@ export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalPr
     setQuery('');
   }
 
-  const renderActionButton = (type: string) => {
-    switch (type) {
-      case 'Invite':
-        return <button className={styles.inviteBtn}>Пригласить</button>;
-      case 'InviteRejected':
-        return <button className={styles.inviteRejectedBtn}>Приглашение отклонено</button>;
-      case 'AlreadyInCommand':
-        return <button className={styles.alreadyInCommandBtn}>Уже в команде</button>;
-      case 'FeedbackResponse':
-        return <button className={styles.feedbackResponseBtn}>Уже откликнулся</button>;
-    }
-  };
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} variant="transparent">
       <div className={styles.topBlock}>
@@ -66,16 +55,7 @@ export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalPr
           </button>
         </div>
 
-        <div className={styles.searchWrapper}>
-          <SearchIcon className={styles.searchIcon} />
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Константинопольский Константин Константинович"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
+        <SmallSearchField placeholder={"Константинопольский Константин Константинович"} value={query} onChange={(e) => setQuery(e.target.value)}/>
       </div>
 
       {(query && filteredUsers.length > 0) ? (
@@ -90,10 +70,7 @@ export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalPr
                     course={"3"}
                     roles={['Backend', 'Frontend']}
                   />
-                  {renderActionButton('Invite')}
-                  {/*{renderActionButton('InviteRejected')}*/}
-                  {/*{renderActionButton('AlreadyInCommand')}*/}
-                  {/*{renderActionButton('FeedbackResponse')}*/}
+                  <InviteActionButton type={'Invite'}/>
                 </div>
                 {index < filteredUsers.length - 1 && <div className={styles.divider} />}
               </div>
@@ -109,8 +86,6 @@ export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalPr
               Очистить поиск
             </button>
           </div>
-
-
         </div>
       ) : null}
     </Modal>

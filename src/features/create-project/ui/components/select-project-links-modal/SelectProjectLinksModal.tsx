@@ -113,7 +113,7 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
                   const isDisabled = !isChecked && selectedNames.length >= limit;
                   return (
                     <Checkbox
-                      paddings={'12px'}
+                      className={styles.checkbox}
                       key={link.name}
                       label={link.name}
                       checked={isChecked}

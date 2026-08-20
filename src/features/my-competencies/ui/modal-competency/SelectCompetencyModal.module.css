@@ -6,7 +6,6 @@
   overflow-y: auto;
 }
 
-
 .list::-webkit-scrollbar {
   width: 4px;
 }
@@ -22,4 +21,8 @@
 
 .list::-webkit-scrollbar-thumb:hover {
   background: var(--color-gray-350);
+}
+
+.checkbox {
+  padding: 12px;
 }

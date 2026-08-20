@@ -75,75 +75,10 @@
   color: var(--color-gray-250);
 }
 
-.searchWrapper {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 16px 16px 18px 16px;
-  background-color: var(--color-gray-50);
-  border-radius: 16px;
-}
-
-.searchIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.searchInput {
-  flex-grow: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  font: var(--body-text-platform);
-  color: var(--color-gray-900);
-}
-
-.searchInput::placeholder {
-  color: var(--color-gray-500);
-}
-
 .userCard {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.declinedBtn {
-  font: var(--body-text-platform);
-  color: var(--color-brand-violet);
-  background: white;
-  border: 1px solid var(--color-brand-violet);
-  border-radius: 8px;
-  padding: 8px 16px;
-  cursor: default;
-}
-
-.inviteBtn {
-  padding: 8px 10px;
-  border-radius: 6px;
-  background: var(--color-brand-green);
-  color: white;
-  font: var(--inter-12-300);
-}
-
-.inviteRejectedBtn {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--color-brand-violet);
-  background: white;
-  color: var(--color-brand-violet);
-  font: var(--inter-12-300);
-  cursor: initial;
-}
-
-.alreadyInCommandBtn {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--color-brand-green);
-  background: white;
-  color: var(--color-brand-green);
-  font: var(--inter-12-300);
-  cursor: initial;
 }
 
 .feedbackResponseBtn {

@@ -34,6 +34,7 @@ export const placeholderUser: User = {
     skills: [],
     experience: '',
     portfolioLink: '',
+    interests: '',
     messengers: {
       telegram: '',
       vk: '',

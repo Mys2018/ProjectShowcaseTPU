@@ -84,12 +84,16 @@ export const MyProfile = () => {
         <div className={styles.body}>
           <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <AboutMe
+              MAX_LENGTH={500}
+              MIN_LENGTH={100}
               bio={user.meta.bio}
               className={styles.wid}
             />
           </div>
           <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'interests') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'interests') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <MyInterests
+              MAX_LENGTH={500}
+              MIN_LENGTH={100}
               interests={user.meta.interests}
               className={styles.wid}
             />

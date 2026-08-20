@@ -1,9 +1,9 @@
 import styles from './EmptyStateBlock.module.css';
-import { AddOutlineButton } from '@/shared/ui';
 import clsx from "clsx";
+import { AddOutlineButton } from '@/shared/ui';
 
 interface EmptyStateBlockProps {
-  title?: string ;
+  title?: string;
   description?: string;
   buttonText?: string;
   onAddClick: () => void;

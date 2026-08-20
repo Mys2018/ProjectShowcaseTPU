@@ -17,8 +17,8 @@ interface RequirementListProps {
   valueKey?: string;
   subtitleKey?: string;
   minItems?: number;
-  emptyStateTitle?: string | React.ReactNode;
-  emptyStateDescription?: string | React.ReactNode;
+  emptyStateTitle?: string;
+  emptyStateDescription?: string;
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
@@ -52,7 +52,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
             field.removeValue(index);
           };
 
-          if (items.length === 0 && (emptyStateTitle || emptyStateDescription)) {
+          if (items.length === 0 && (emptyStateTitle && emptyStateDescription)) {
             return (
               <div className={styles.errorWrapper}>
                 <EmptyStateBlock

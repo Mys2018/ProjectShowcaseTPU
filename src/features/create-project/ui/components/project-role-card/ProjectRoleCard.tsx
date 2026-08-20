@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
 import styles from './ProjectRoleCard.module.css';
 import type { Skill } from '@/features/my-competencies/model/types.ts';
@@ -29,7 +29,9 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
 
   const { openModal } = useModalStore();
 
-  const [mockIsPublished, setMockIsPublished] = useState(false);
+  // const [mockIsPublished, setMockIsPublished] = useState(false);
+
+  const mockIsPublished = false
   const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null);
 
   const inviteUser = (roleName: string) => {
