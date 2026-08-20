@@ -3,9 +3,8 @@ import { RootRoute } from './RootRoute'
 import { ProtectedRoute } from './ProtectedRoute'
 import { LoginPage } from '@/pages/login-page/ui/LoginPage'
 import { MainLayout } from '@/pages/main-layout/ui/MainLayout'
-import { MyPlatformLayout } from '@/pages/my-platform-layout'
 import { CatalogLayout, Catalog, ProjectPage } from '@/pages/catalog-layout'
-import { MyPlatformPage } from '@/pages/my-platform'
+import { MyPlatformPage, ProjectActivitiesLayout } from '@/pages/my-platform'
 import { MyProfile } from '@/pages/my-profile'
 import { CreateProjectPage } from '@/pages/create-project'
 import { SomeoneProfile } from '@/pages/someone-profile'
@@ -66,17 +65,16 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: ROUTES.MY_PLATFORM.BASE,
-                element: <MyPlatformLayout />,
-                children: [
-                  {
-                    index: true,
-                    element: <MyPlatformPage />
-                  },
-                  {
-                    path: ROUTES.MY_PLATFORM.CREATE,
-                    element: <CreateProjectPage />
-                  }
-                ]
+                element: <MyPlatformPage />
+              },
+              {
+                path: ROUTES.MY_PLATFORM.ACTIVITIES.BASE,
+                element: <ProjectActivitiesLayout />,
+                children: []
+              },
+              {
+                path: ROUTES.MY_PLATFORM.CREATE,
+                element: <CreateProjectPage />
               }
             ]
           },
