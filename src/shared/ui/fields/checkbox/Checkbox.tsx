@@ -1,7 +1,7 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
-import CheckIcon from '@/shared/ui/icons/check.svg?react'
 import clsx from 'clsx';
 import styles from './Checkbox.module.css';
+import CheckIcon from '@/shared/ui/icons/check.svg?react'
 
 export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode;

@@ -5,6 +5,8 @@
   padding: 24px;
   background-color: var(--color-gray-900);
   border-radius: 20px;
+
+  position: relative;
 }
 
 .container h3 {
@@ -13,8 +15,11 @@
 }
 
 .body {
-  display: flex;
+  display: grid;
   gap: 12px;
+  grid-template-columns: 1fr 1fr;
+
+
 }
 
 .body > p {
@@ -99,6 +104,21 @@
 
 .errorState {
   border-color: var(--color-red) !important;
+}
+
+.image {
+  width: 410px;
+  height: calc(100% - 11px * 2);
+
+  position: absolute;
+  top: 11px;
+  right: 11px;
+
+  border-radius: 16px;
+
+  object-fit: cover;
+  object-position: center;
+
 }
 
 @media (max-width: 768px) {

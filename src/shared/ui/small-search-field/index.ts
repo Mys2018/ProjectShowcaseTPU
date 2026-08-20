@@ -1,0 +1,1 @@
+export { SmallSearchField } from './SmallSearchField.tsx'

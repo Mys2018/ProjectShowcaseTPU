@@ -5,6 +5,19 @@
   background-color: var(--color-gray-150);
   padding: 54px;
   border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.backgroundPicture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  object-fit: cover;
+  object-position: center;
 }
 
 .mobileHeader {
@@ -12,6 +25,7 @@
   background-color: var(--color-gray-150);
   align-items: center;
   padding-bottom: 12px;
+  z-index: 1;
 }
 
 .header {
@@ -108,6 +122,8 @@
   padding: 24px;
 
   justify-content: space-between;
+
+  z-index: 1;
 }
 
 .headerLink {
@@ -196,16 +212,18 @@
   padding: 24px;
   background-color: white;
   border-radius: 16px;
+  z-index: 1;
 }
 
-.footer p:nth-child(1) {
+.footerTitle {
   font: var(--field-title-big-interface);
   color: var(--color-brand-black);
 }
 
-.footer p:nth-child(2) {
+.footerText {
   font: var(--body-text-platform);
   color: var(--color-brand-black);
+  word-break: break-all;
 }
 
 .titleMobile {

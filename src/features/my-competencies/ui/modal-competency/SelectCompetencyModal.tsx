@@ -77,6 +77,7 @@ export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelect
               const isDisabled = !isChecked && selectedIds.length >= limit;
               return (
                 <Checkbox
+                  className={styles.checkbox}
                   key={competency.id}
                   label={competency.name}
                   checked={isChecked}

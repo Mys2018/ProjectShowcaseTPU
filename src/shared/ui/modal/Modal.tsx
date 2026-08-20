@@ -4,15 +4,18 @@ import type {ReactNode} from "react";
 type ModalProps = {
   isOpen: boolean,
   onClose: () => void,
-  children: ReactNode
+  children: ReactNode,
+  variant?: 'default' | 'transparent'
 }
 
-export function Modal({ isOpen, onClose, children }: ModalProps) {
+export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalProps) {
   if (!isOpen) return null;
+
+  const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''}`
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.content} onClick={e => e.stopPropagation()}>
+      <div className={contentClass} onClick={e => e.stopPropagation()}>
         {children}
       </div>
     </div>

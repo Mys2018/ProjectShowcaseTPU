@@ -79,6 +79,11 @@
   color: var(--color-gray-400);
   text-align: end;
   padding-right: 8px;
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
 }
 
 .subtitle {
@@ -117,8 +122,17 @@
   overflow-x: initial;
 }
 
+.inputValue {
+  opacity: 0;
+}
+
 .inputValue .textContainer.error  {
+
   color: var(--color-red)
+}
+
+.visible {
+  opacity: 1;
 }
 
 .inputValue {

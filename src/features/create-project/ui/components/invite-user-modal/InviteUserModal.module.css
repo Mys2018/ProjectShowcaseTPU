@@ -1,0 +1,120 @@
+.topBlock {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--tooltop-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bottomBlock {
+  background: var(--color-white);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: var(--tooltop-shadow);
+  display: flex;
+  gap: 24px;
+  flex-direction: column;
+  max-height: 428px;
+  align-items: center;
+}
+
+.scrollContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 22px;
+  padding-right: 8px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-150) transparent;
+
+  &::-webkit-scrollbar {
+    display: block;
+    width: 14px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-gray-150);
+    border-radius: 10px;
+    border: 4px solid transparent;
+    background-clip: padding-box;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeIcon {
+  width: 11px;
+  height: 11px;
+  color: var(--color-gray-250);
+}
+
+.userCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedbackResponseBtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-gray-400);
+  background: white;
+  color: var(--color-gray-400);
+  font: var(--inter-12-300);
+  cursor: initial;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-gray-200);
+  margin-top: 22px;
+}
+
+.emptyStateBlock {
+  display: flex;
+}
+
+.emptyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.emptyState {
+  color: var(--color-gray-900);
+  font: var(--body-text-platform);
+}
+
+.emptyBlock button {
+  color: var(--color-gray-400);
+  font: var(--inter-12-300);
+}

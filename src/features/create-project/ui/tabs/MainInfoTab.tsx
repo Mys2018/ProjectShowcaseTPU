@@ -1,5 +1,5 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import {BigTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
+import {BigTextFieldForm, SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
 import { DropDownList } from '@/shared/ui/fields/dropdown-list/DropDownList';
 import { RadioChip } from '@/shared/ui/fields/radio-chip/RadioChip';
 import Cross from '@/shared/ui/icons/cross.svg?react';
@@ -43,7 +43,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       </div>
 
       {/* Название */}
-      <div className={styles.block}>
+      <div className={styles.block} id="field-meta-title">
         <h4 className={styles.title}>
           Название проекта
           <InfoTooltip
@@ -68,7 +68,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
         </h4>
         <form.Field name="meta.title">
           {(field) => (
-            <BigTextFieldForm
+            <SmallTextFieldForm
               title={''}
               value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
@@ -82,7 +82,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
 
 
       {/* Описание */}
-      <div className={styles.block}>
+      <div className={styles.block} id="field-meta-description">
         <h4 className={styles.title}>
           Описание
           <InfoTooltip
@@ -124,7 +124,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
       {/* Основной тег — RadioChip */}
       <form.Field name="primaryTag">
         {(field) => (
-          <div className={styles.tagGroup}>
+          <div className={styles.tagGroup} id="field-primary-tag">
             <span className={styles.tagGroupLabel}>Основной тег</span>
             <div className={styles.chipRow}>
               {allTags.map((tag) => (
@@ -164,7 +164,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
               const availableExtraTags = allTags.filter(t => t.value !== primaryTag);
               
               return (
-                <div className={styles.tagGroup}>
+                <div className={styles.tagGroup} id="field-tags">
                   <span className={styles.tagGroupLabel}>Дополнительные теги</span>
                   <div className={styles.tagBadgeRow}>
                     {availableExtraTags.map((tag) => {
@@ -209,6 +209,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
 
 
       {/* Партнёр */}
+      <div id="field-partner">
       <form.Field name="partnerId">
         {(field) => {
           // DropDownList работает со строками; внутренне храним ID
@@ -232,6 +233,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
           );
         }}
       </form.Field>
+      </div>
     </div>
   );
 }

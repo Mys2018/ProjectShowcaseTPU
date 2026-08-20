@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type EditBlockType = 'aboutMe' | 'competencies' | null;
+export type EditBlockType = 'aboutMe' | 'interests' | 'competencies' | null;
 
 interface ProfileEditStore {
   activeEditBlock: EditBlockType;

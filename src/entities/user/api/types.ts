@@ -16,7 +16,7 @@ export interface RoleTypeDto {
 
 export interface UpdateProfileMetaRequest {
   bio?: string;
-  experience?: string;
+  interests?: string;
   messengers?: Messengers;
   portfolioLink?: string;
   skills?: {

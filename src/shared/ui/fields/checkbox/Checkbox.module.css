@@ -1,6 +1,5 @@
 .wrapper {
   display: flex;
-  padding: 12px;
   gap: 8px;
   align-items: center;
   border: 1px solid transparent;

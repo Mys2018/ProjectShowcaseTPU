@@ -11,6 +11,7 @@ import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import clsx from "clsx";
 // import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
 import type {Messengers} from "@/entities/user/model/types.ts";
+import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 
@@ -37,6 +38,8 @@ type SomeoneProfileHeaderProps = {
 export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileHeaderProps) {
   return (
     <div className={styles.container}>
+
+      <img className={styles.backgroundPicture} src={blankPictureSrc} alt={'Фон карточки пользователя'}/>
 
       <div className={styles.mobileHeader}>
         <p className={styles.titleMobile}>
@@ -143,18 +146,21 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
       </div>
 
       <div className={styles.footer}>
-        <p>
-          О себе
-        </p>
-        {
-          user.meta.bio ?
-            <p>
-              {user.meta.bio}
-            </p> :
-            <p>
-              Приветик! Я первый раз на этом сайтике и еще не успел заполнить свой профиль. Надеюсь ничего страшного 👉👈
-            </p>
-        }
+        <p className={styles.footerTitle}>О себе</p>
+        {user.meta.bio ? (
+          <p className={styles.footerText}>{user.meta.bio}</p>
+        ) : (
+          <p className={styles.footerText}>
+            Приветик! Я первый раз на этом сайтике и еще не успел заполнить свой профиль. Надеюсь ничего страшного 👉👈
+          </p>
+        )}
+
+        {user.meta.interests && (
+          <>
+            <p className={styles.footerTitle}>Мои интересы</p>
+            <p className={styles.footerText}>{user.meta.interests}</p>
+          </>
+        )}
       </div>
     </div>
   )

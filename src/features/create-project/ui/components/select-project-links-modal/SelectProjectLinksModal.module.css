@@ -46,3 +46,12 @@
   flex-direction: column;
   gap: 4px;
 }
+
+.checkbox {
+  padding: 12px;
+}
+
+.groupErrorText {
+  font: var(--inter-11-400);
+  color: var(--color-red);
+}

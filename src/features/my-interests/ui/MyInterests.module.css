@@ -1,0 +1,24 @@
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px
+}
+
+.interestsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.interestsContainer h3 {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+}
+
+.editButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--inter-12-300);
+  color: var(--color-brand-green)
+}

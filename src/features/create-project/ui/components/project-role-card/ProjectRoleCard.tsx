@@ -1,17 +1,19 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
+import styles from './ProjectRoleCard.module.css';
 import type { Skill } from '@/features/my-competencies/model/types.ts';
+// import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
+import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
 import Cross from '@/shared/ui/icons/cross.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react';
 import CopyIcon from '@/shared/ui/icons/copyCompetency.svg?react';
 import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
 import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
-// import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
-import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
-import styles from './ProjectRoleCard.module.css';
-import {RequestBlock} from "@/features/create-project/ui/components/request-block/RequestBlock.tsx";
-// import compStyles from '@/features/my-competencies/ui/MyCompetencies.module.css';
+import { useModalStore } from '@/shared/model';
+import AddUserIcon from '@/shared/ui/icons/addUser.svg?react';
+import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import {Checkbox} from "@/shared";
 
 interface ProjectRoleCardProps {
   form: CreateProjectForm;
@@ -24,65 +26,20 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
   const [menuOpen, setMenuOpen] = useState(false);
   
   const isEditing = popoverOpen;
-  
-  const menuRef = useRef<HTMLDivElement>(null);
 
-  // TODO Мок откликов
+  const { openModal } = useModalStore();
 
-  const requests = {
-    applications: [
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '1',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Closed'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '1',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Pending'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '2',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Pending'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '3',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Approved'
-      },
-      {
-        applicationID: '123',
-        studentID: '1234',
-        roleID: '3',
-        createdAt: "2026-08-06T10:52:00.281Z",
-        status: 'Rejected'
-      },
-    ],
-    total: 1,
-    offset: 1,
-    limit: 1
+  // const [mockIsPublished, setMockIsPublished] = useState(false);
+
+  const mockIsPublished = false
+  const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null);
+
+  const inviteUser = (roleName: string) => {
+    openModal('INVITE_USER', {
+      roleName: roleName,
+      onInvite: (user: { id: number; name: string }) => setInvitedUser(user),
+    });
   }
-
-
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false);
-      }
-    }
-    if (menuOpen) document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [menuOpen]);
 
   return (
     <form.Field name={`roles[${index}]`} mode="value">
@@ -120,41 +77,44 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
                   {occurrenceIndex !== 1 && `(${occurrenceIndex})`}
                 </p>
               </div>
-              <div className={styles.moreMenuContainer} ref={menuRef}>
-                {/*<label className={styles.checkboxLabel}>*/}
-                {/*  Обязательная компетенция*/}
-                {/*  <input type="checkbox" disabled />*/}
-                {/*</label>*/}
-                <button 
-                  type="button" 
-                  className={styles.moreMenuButton}
-                  onClick={() => setMenuOpen(!menuOpen)}
+              <div className={styles.moreMenuContainer}>
+                <label className={styles.checkboxLabel}>
+                  Обязательная компетенция
+                  <Checkbox/>
+                </label>
+                <PopupMenu
+                  trigger={<button
+                    type="button"
+                    className={styles.moreMenuButton}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                  >
+                    <MoreIcon/>
+                  </button>}
                 >
-                  <MoreIcon/>
-                </button>
-                {menuOpen && (
-                  <div className={styles.dropdownMenu}>
-                    <button type="button" className={styles.dropdownItem} onClick={handleDuplicateRole}>
-                      <CopyIcon/>
-                      Дублировать компетенцию
-                    </button>
-                    <button type="button" className={styles.dropdownItem} onClick={handleRemoveRole}>
-                      <DeleteIcon/>
-                      Удалить компетенцию
-                    </button>
-                  </div>
-                )}
+                  <PopupMenu.Row onClick={handleDuplicateRole} title={'Дублировать компетенцию'}>
+                    <CopyIcon/>
+                  </PopupMenu.Row>
+
+                  <PopupMenu.Row onClick={handleRemoveRole} title={'Удалить компетенцию'}>
+                    <DeleteIcon/>
+                  </PopupMenu.Row>
+                  {
+                    !invitedUser &&
+                    <PopupMenu.Row onClick={() => inviteUser(roleName)} title={'Пригласить пользователя'}>
+                      <AddUserIcon/>
+                    </PopupMenu.Row>
+                  }
+                </PopupMenu>
               </div>
             </div>
 
             {popoverOpen && (
-              <div className={styles.backdrop} onClick={() => setPopoverOpen(false)} style={{ zIndex: 10 }} />
+              <div className={styles.backdrop} onClick={() => setPopoverOpen(false)}/>
             )}
 
             <div className={styles.cardBody}>
               <div
                 className={`${styles.body} ${styles.relativeBody} ${isEditing ? styles.editingBorder : ''}`}
-                style={{ zIndex: isEditing ? 11 : 1 }}
               >
                 <div className={styles.mainContainer}>
                 <span className={`${styles.skillsLabel} ${isEditing ? styles.skillsLabelEditing : ''}`}>
@@ -228,7 +188,67 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
               </div>
 
               <div className={styles.requestBlock}>
-                <RequestBlock requests={requests}/>
+                <div className={styles.innerContainer}>
+                  {!mockIsPublished && (
+                      <div className={styles.unpublishContainer}>
+                        <p className={styles.fieldText}>Ожидает публикации проекта</p>
+                        {
+                          !invitedUser && <button
+                            className={styles.inviteUserBtn}
+                            onClick={() => inviteUser(roleName)}
+                          >
+                            <AddUserIcon className={styles.inviteIcon} />
+                            Пригласить пользователя
+                          </button>
+                        }
+                        {
+                          invitedUser &&
+                          <div className={styles.invitedInfo}>
+                            <p className={styles.invitedName}>
+                              <div>
+                                Приглашен:
+                                <span>{invitedUser?.name}</span>
+                              </div>
+                            </p>
+                            <button className={styles.cancelInviteBtn} onClick={() => setInvitedUser(null)}>Отменить</button>
+                          </div>
+                        }
+
+                      </div>
+                    )
+                  }
+                  {
+                    mockIsPublished &&
+                    <div className={styles.publishedBlock}>
+                      {
+                        !invitedUser &&
+                        <div className={styles.publishedHeader}>
+                          <p className={styles.fieldText}>Компетенция свободна</p>
+                          <button className={styles.iconBtn} onClick={() => inviteUser(roleName)}>
+                            <AddUserIcon className={styles.inviteIconOnly} />
+                          </button>
+                        </div>
+                      }
+                      {
+                        invitedUser &&
+                        <div className={styles.invitedInfo}>
+                          <p className={styles.invitedName}>
+                            <div>
+                              Приглашен:
+                              <span>{invitedUser?.name}</span>
+                            </div>
+                          </p>
+                          <button className={styles.cancelInviteBtn} onClick={() => setInvitedUser(null)}>Отменить</button>
+                        </div>
+                      }
+                      <button className={styles.allFeedback}>
+                        {
+                          'Откликов: 5'
+                        }
+                      </button>
+                    </div>
+                  }
+                </div>
               </div>
             </div>
           </div>

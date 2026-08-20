@@ -25,6 +25,7 @@ export const mapUserDto = (dto: UserDto): User => {
       firstName: dto.meta.firstName,
       lastName: dto.meta.lastName,
       bio: dto.meta.bio,
+      interests: dto.meta.interests || '',
       skills: dto.meta.skills || [],
       experience: dto.meta.experience,
       messengers: dto.meta.messengers,

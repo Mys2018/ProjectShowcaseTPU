@@ -44,7 +44,7 @@ export function PrdTab({ form, stepErrors }: PrdFieldProps) {
 function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.block}>
+      <div className={styles.block} id="field-prd-prerequisites">
         <h4 className={styles.title}>
           1. Актуальность
           <InfoTooltip
@@ -155,7 +155,7 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
 function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.block}>
+      <div className={styles.block} id="field-prd-case-prerequisites">
         <h4 className={styles.title}>
           1. Актуальность
           <InfoTooltip
@@ -192,7 +192,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
       </div>
 
 
-      <div className={styles.block}>
+      <div className={styles.block} id="field-prd-case-audience">
         <h4 className={styles.title}>
           2. Целевая аудитория
           <InfoTooltip
@@ -256,7 +256,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
 
 
 
-      <div className={styles.block}>
+      <div className={styles.block} id="field-prd-case-functional">
         <h4 className={styles.title}>
           4. Требования
           <InfoTooltip
@@ -334,7 +334,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
 function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
-      <div className={styles.block}>
+      <div className={styles.block} id="field-prd-real-productVision">
         <h4 className={styles.title}>
           1. Product vision
           <InfoTooltip

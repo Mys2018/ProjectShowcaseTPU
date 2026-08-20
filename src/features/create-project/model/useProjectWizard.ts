@@ -35,7 +35,7 @@ export const baseProjectSchema = z.object({
       name: z.string(),
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
     })
-  ).min(1, 'Минимум 1 ссылка'),
+  ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
     title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),
     description: z.string().min(PROJECT_LIMITS.meta.description.min, `Минимум ${PROJECT_LIMITS.meta.description.min} символов`).max(PROJECT_LIMITS.meta.description.max, `Максимум ${PROJECT_LIMITS.meta.description.max} символов`),
@@ -154,7 +154,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' }],
+  checkpoints: [{ title: '', deadline: '' },{ title: '', deadline: '' },{ title: '', deadline: '' }],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -311,7 +311,6 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   const setStep = (step: number) => {
     if (step > highestStep) return;
 
-    // Validate current step if moving forward
     if (step > currentStep) {
       if (!validateCurrentStep()) return;
     }
