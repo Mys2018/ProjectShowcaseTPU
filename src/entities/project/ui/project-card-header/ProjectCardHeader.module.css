@@ -1,0 +1,59 @@
+.header {
+  position: relative;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: attr(data-bg) '   ' attr(data-bg) '   ' attr(data-bg);
+
+    position: absolute;
+    left: -20px;
+    right: -20px;
+    transform: rotate(-15deg);
+
+    font-size: 80px;
+    font-weight: 900;
+    white-space: nowrap;
+
+		line-height: 1;
+    letter-spacing: -1px;
+
+		color: rgba(255, 255, 255, 0.22);
+
+    transform-origin: center;
+		pointer-events: none;
+    user-select: none;
+  }
+
+  &::before {
+    bottom: -40px;
+  }
+
+  &::after {
+    top: -40px;
+  }
+
+  &.rotated {
+    &::before,
+    &::after {
+      top: auto;
+      transform: rotate(-99deg);
+    }
+    
+    &::before {
+      font-size: 90px;
+
+      bottom: -10px;
+      left: -30px;
+      right: 30px;
+    }
+    
+    &::after {
+      font-size: 70px;
+
+      bottom: 0px;
+      left: 40px;
+      right: -40px;
+    }
+  }
+}
