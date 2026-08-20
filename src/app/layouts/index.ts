@@ -1,1 +1,0 @@
-export { ProjectActivitiesLayout } from './project-activities/ProjectActivitiesLayout'
