@@ -1,7 +1,6 @@
-import { useProjects } from '@/entities/project/api/queries';
-import { ProjectCardFactory } from '@/entities/project/ui/ProjectCardFactory/ProjectCardFactory';
 import styles from './ProjectsGrid.module.css';
-import { useFilterStore } from '@/features/filter/model/useFilterStore';
+import { useFilterStore } from '@/features/filter';
+import { useProjects, ProjectCardFactory } from '@/entities/project';
 
 export default function ProjectsGrid() {
   const {tags, competencies, projectTypes, sort, isRelevanceSort, query, limit, page} = useFilterStore()

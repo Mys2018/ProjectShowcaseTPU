@@ -1,10 +1,10 @@
-import styles from './ProjectCard.module.css';
-import type { ProjectCardData } from '../../model/types';
-import { useNavigate } from 'react-router-dom';
-import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel.tsx';
 import { useState } from 'react';
-import { LikeButton } from '@/shared/ui';
+import styles from './ProjectCard.module.css';
+import { useNavigate } from 'react-router-dom';
+import type { ProjectCardData } from '../../model/types';
 import { getProjectTagBackground } from '../../lib/getProjectTagBackground';
+import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel.tsx';
+import { LikeButton } from '@/shared/ui';
 
 interface ProjectCardProps {
   project: ProjectCardData;

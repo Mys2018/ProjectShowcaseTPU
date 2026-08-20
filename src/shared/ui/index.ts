@@ -23,4 +23,6 @@ import FeedbackIcon from './icons/feedback.svg?react'
 import FolderIcon from './icons/folder.svg?react'
 import LikeIcon from './icons/like.svg?react'
 import BackArrowIcon from './icons/back-arrow.svg?react'
-export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon }
+import CodeIcon from './icons/code.svg?react'
+import StudyIcon from './icons/studyIcon.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon }
