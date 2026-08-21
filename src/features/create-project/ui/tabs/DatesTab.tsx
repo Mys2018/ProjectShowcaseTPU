@@ -8,9 +8,10 @@ import { InfoTooltip } from "@/shared";
 interface TabProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
+  blinkFields: string[];
 }
 
-export const DatesTab = ({ form, stepErrors }: TabProps) => {
+export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
 
   const { openModal, closeModal } = useModalStore();
 
@@ -111,6 +112,7 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
                     addCheckpoint={handleAdd}
                     onEditCheckpoint={handleEdit}
                     onDeleteCheckpoint={handleDelete}
+                    isBlink={blinkFields.includes('Ключевые точки')}
                   />
                 )
               }
@@ -119,8 +121,8 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
 
           {stepErrors?.['checkpoints'] && (
             <span className={styles.errorText}>
-            {stepErrors['checkpoints'][0]}
-          </span>
+              {stepErrors['checkpoints'][0]}
+            </span>
           )}
         </div>
       </div>
@@ -185,6 +187,7 @@ export const DatesTab = ({ form, stepErrors }: TabProps) => {
           subtitleKey="name"
           minItems={0}
           emptyStateTitle="Добавьте ссылки на необходимые сервисы"
+          isBlink={blinkFields.includes('Ресурсы')}
         />
       </div>
     </div>

@@ -9,9 +9,10 @@ import { AddOutlineButton } from '@/shared/ui';
 interface TabProps {
   form: CreateProjectForm;
   stepErrors?: StepErrors;
+  blinkFields: string[];
 }
 
-export function RolesTab({ form, stepErrors }: TabProps) {
+export function RolesTab({ form, stepErrors, blinkFields }: TabProps) {
   const { openModal } = useModalStore();
   const { data: globalSkills = [] } = useSkills();
 
@@ -77,6 +78,7 @@ export function RolesTab({ form, stepErrors }: TabProps) {
                     index={index}
                     form={form}
                     globalSkills={globalSkills}
+                    isBlink={blinkFields.includes('Компетенции')}
                   />
                 ))}
 

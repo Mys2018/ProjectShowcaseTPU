@@ -1,5 +1,6 @@
 import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
 import { BigTextFieldForm, SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import clsx from 'clsx';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
 import styles from './TargetAudienceList.module.css';
 import {AddOutlineButton} from "@/shared";
@@ -7,6 +8,7 @@ import {AddOutlineButton} from "@/shared";
 interface TargetAudienceListProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
+  blinkFields?: string[];
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
@@ -17,7 +19,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps) {
+export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudienceListProps) {
   return (
     <form.Field name="prdMeta.audience" mode="array">
       {(field) => {
@@ -38,12 +40,12 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
 
 
         return (
-          <div className={styles.container}>
+          <div className={clsx(styles.container)}>
             {segments.map((_, index) => {
               const prefix = `prdMeta.audience[${index}]` as any;
 
               return (
-                <div  className={styles.body} key={prefix}>
+                <div  className={clsx(styles.body)} key={prefix}>
 
                   <div className={styles.titleContainer}>
                     <p className={styles.titleSegment}>
@@ -57,7 +59,7 @@ export function TargetAudienceList({ form, stepErrors }: TargetAudienceListProps
                     )}
                   </div>
 
-                  <div key={index} className={styles.segment}>
+                  <div key={index} className={clsx(styles.segment, blinkFields?.includes(`Сегмент ${index + 1}`) && 'blink-1')}>
                     <div className={styles.headerRow}>
                       <form.Field name={`${prefix}.title` as any}>
                         {(subField) => (

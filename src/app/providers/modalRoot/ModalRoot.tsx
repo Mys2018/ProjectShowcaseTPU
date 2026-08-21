@@ -2,9 +2,9 @@ import {useModalStore} from "@/shared/model";
 import { SelectCompetencyModal } from '@/features/my-competencies/ui/modal-competency/SelectCompetencyModal.tsx'
 import type {ModalType} from "@/shared/model/useModalStore.ts";
 import React from "react";
-import {LinkModal} from "@/features/link-modal/LinkModal.tsx";
+import {LinkModal} from "@/shared/ui/modals/link-modal/LinkModal.tsx";
 import { ConfirmModal } from "@/shared/ui";
-import {AddCheckpointsModal} from "@/shared/ui/add-checkpoints-modal/AddCheckpointsModal.tsx";
+import {AddCheckpointsModal} from "@/shared/ui/modals/add-checkpoints-modal/AddCheckpointsModal.tsx";
 import {SelectProjectLinksModal} from "@/features/create-project/ui/components/select-project-links-modal/SelectProjectLinksModal.tsx";
 import {AvatarUploadModal} from "@/widgets/profile-header/ui/AvatarUploadModal.tsx";
 import {InviteUserModal} from "@/features/create-project/ui/components/invite-user-modal/InviteUserModal.tsx";

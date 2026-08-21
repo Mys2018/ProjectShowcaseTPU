@@ -1,5 +1,5 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import {BigTextFieldForm, SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
+import { BigTextFieldForm, SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
 import { DropDownList } from '@/shared/ui/fields/dropdown-list/DropDownList';
 import { RadioChip } from '@/shared/ui/fields/radio-chip/RadioChip';
 import Cross from '@/shared/ui/icons/cross.svg?react';
@@ -7,18 +7,19 @@ import clsx from 'clsx';
 import styles from '../ProjectInfoStep.module.css';
 
 import { useTags } from '@/entities/tag/api/queries';
-import {InfoTooltip} from "@/shared";
+import { InfoTooltip } from "@/shared";
 
 interface TabProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
   partners: { value: string; verbose: string }[];
+  blinkFields: string[];
 }
 
-export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
+export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProps) {
   const { data: tagGroups = [] } = useTags();
-  
-  const allTags = tagGroups.flatMap(group => 
+
+  const allTags = tagGroups.flatMap(group =>
     group.tags.map(t => ({ label: t.name, value: t.id }))
   );
 
@@ -75,6 +76,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
               placeholder={"Например: FinTrack — учёт финансов"}
               maxLength={100}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.title']?.[0]}
+              isBlink={blinkFields.includes('Название проекта')}
             />
           )}
         </form.Field>
@@ -115,6 +117,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
               placeholder={"Например: FinTrack — учёт финансов"}
               maxLength={500}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['meta.description']?.[0]}
+              isBlink={blinkFields.includes('Описание')}
             />
           )}
         </form.Field>
@@ -134,6 +137,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
                   name="primaryTag"
                   value={tag.value}
                   checked={field.state.value === tag.value}
+                  isBlink={blinkFields.includes('Основной тег')}
                   onChange={() => {
                     field.handleChange(tag.value);
                     form.setFieldValue('extraFieldsForAll.primaryTagName', tag.label);
@@ -162,7 +166,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
           <form.Field name="tags">
             {(field) => {
               const availableExtraTags = allTags.filter(t => t.value !== primaryTag);
-              
+
               return (
                 <div className={styles.tagGroup} id="field-tags">
                   <span className={styles.tagGroupLabel}>Дополнительные теги</span>
@@ -173,7 +177,7 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
                         <button
                           key={tag.value}
                           type="button"
-                          className={clsx(styles.tagBadge, isSelected && styles.tagBadgeActive)}
+                          className={clsx(styles.tagBadge, isSelected && styles.tagBadgeActive, blinkFields.includes('Основной тег') && 'blink-1')}
                           onClick={() => {
                             const current = field.state.value || [];
                             field.handleChange(
@@ -181,9 +185,9 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
                                 ? current.filter((t) => t !== tag.value)
                                 : [...current, tag.value],
                             );
-                            
+
                             const currentExtraTags = form.state.values.extraFieldsForAll?.tags || [];
-                            const newExtraTags = isSelected 
+                            const newExtraTags = isSelected
                               ? currentExtraTags.filter(t => t !== tag.label)
                               : [...currentExtraTags, tag.label];
                             form.setFieldValue('extraFieldsForAll.tags', newExtraTags);
@@ -210,29 +214,30 @@ export function MainInfoTab({ form, stepErrors, partners }: TabProps) {
 
       {/* Партнёр */}
       <div id="field-partner">
-      <form.Field name="partnerId">
-        {(field) => {
-          // DropDownList работает со строками; внутренне храним ID
-          const selectedVerbose = partners.find((p) => p.value === field.state.value)?.verbose;
-          return (
-            <DropDownList
-              label="Заказчик"
-              options={partners.map((p) => p.verbose)}
-              value={selectedVerbose}
-              onChange={(verbose) => {
-                const partner = partners.find((p) => p.verbose === verbose);
-                field.handleChange(partner?.value ?? '');
-                form.setFieldValue('extraFieldsForAll.partnerName', partner?.verbose ?? '');
-              }}
-              placeholder="Выберите заказчика"
-              error={
-                getErrorMessage(field.state.meta.errors[0]) ||
-                stepErrors['partnerId']?.[0]
-              }
-            />
-          );
-        }}
-      </form.Field>
+        <form.Field name="partnerId">
+          {(field) => {
+            // DropDownList работает со строками; внутренне храним ID
+            const selectedVerbose = partners.find((p) => p.value === field.state.value)?.verbose;
+            return (
+              <DropDownList
+                label="Заказчик"
+                options={partners.map((p) => p.verbose)}
+                value={selectedVerbose}
+                onChange={(verbose) => {
+                  const partner = partners.find((p) => p.verbose === verbose);
+                  field.handleChange(partner?.value ?? '');
+                  form.setFieldValue('extraFieldsForAll.partnerName', partner?.verbose ?? '');
+                }}
+                placeholder="Выберите заказчика"
+                error={
+                  getErrorMessage(field.state.meta.errors[0]) ||
+                  stepErrors['partnerId']?.[0]
+                }
+                isBlink={blinkFields.includes('Заказчик')}
+              />
+            );
+          }}
+        </form.Field>
       </div>
     </div>
   );

@@ -39,14 +39,13 @@ export default function CreateProjectPage() {
 
   const { mutate: createProject, isPending } = useCreateProject();
 
-  // Determine default values from draft if available
   const draftDefaultValues = isDraftMode && draftData?.data
     ? (draftData.data as Partial<CreateProjectFormValues>)
     : undefined;
 
   const initialType = draftDefaultValues?.type || selectedType;
 
-  const { form, stepErrors, currentStep, nextStep, prevStep, setStep } = useProjectWizard({
+  const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
     defaultValues: {
       type: initialType,
       ...draftDefaultValues,
@@ -75,7 +74,8 @@ export default function CreateProjectPage() {
 
   const performAutoSave = useCallback(() => {
     const currentValues = form.state.values;
-    const serialized = JSON.stringify(currentValues);
+    const draftPayload = { ...currentValues, currentStep, highestStep };
+    const serialized = JSON.stringify(draftPayload);
 
     // Skip save if nothing changed
     if (serialized === previousValuesRef.current) return;
@@ -83,7 +83,7 @@ export default function CreateProjectPage() {
 
     setSaveStatus('save');
 
-    saveDraft(currentValues as unknown as Record<string, unknown>, {
+    saveDraft(draftPayload as unknown as Record<string, unknown>, {
       onSuccess: () => {
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
@@ -237,6 +237,8 @@ export default function CreateProjectPage() {
             nextStep={nextStep}
             prevStep={prevStep}
             setStep={setStep}
+            blinkFields={blinkFields}
+            setBlinkFields={setBlinkFields}
           />
         </section>
       </main>

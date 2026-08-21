@@ -5,6 +5,7 @@ import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import {useState} from "react";
 import {InfoTooltip} from "@/shared";
+import {FeedBackButton} from "@/shared/ui/elements/buttons";
 
 interface FreeCompetenciesProps {
   roles: {
@@ -164,13 +165,11 @@ export const FreeCompetencies = ({roles}: FreeCompetenciesProps) => {
         </div>
 
         <div className={styles.footer}>
-          <button
-              className={`${styles.button} ${isActiveFeedBack ? styles.activeButton : ''}`}
-              onClick={toggleFeedBack}
-              disabled={selectedCometencies.length === 0}
-          >
-            {isActiveFeedBack ? 'Отменить отклик' : 'Откликнуться'}
-          </button>
+          <FeedBackButton
+            isActiveFeedBack={isActiveFeedBack}
+            toggleFeedBack={toggleFeedBack}
+            disabled={selectedCometencies.length === 0}
+          />
 
           <p className={styles.countFree}>
             {selectedCometencies.length}/{MAX_SELECTIONS}

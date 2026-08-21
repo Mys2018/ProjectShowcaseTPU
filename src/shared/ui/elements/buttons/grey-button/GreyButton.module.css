@@ -1,0 +1,16 @@
+.button {
+  color: var(--color-gray-500);
+  font: var(--inter-13-600);
+  transition: background-color 0.5s ease;
+
+  display: flex;
+  align-items: center;
+}
+
+.button:hover {
+  color: var(--color-gray-400);
+}
+
+.button:active {
+  color: var(--color-gray-750);
+}

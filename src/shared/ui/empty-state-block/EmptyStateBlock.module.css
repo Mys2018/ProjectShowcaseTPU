@@ -34,7 +34,7 @@
 }
 
 .yellowBlinking {
-  animation: var(--blink-yellow-animation);
+  animation: var(--blink-yellow-animation-2);
 }
 
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
+import clsx from 'clsx';
 import styles from './ProjectRoleCard.module.css';
 import type { Skill } from '@/features/my-competencies/model/types.ts';
 // import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
@@ -19,9 +20,10 @@ interface ProjectRoleCardProps {
   form: CreateProjectForm;
   index: number;
   globalSkills: Skill[];
+  isBlink?: boolean;
 }
 
-export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardProps) {
+export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectRoleCardProps) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   
@@ -114,7 +116,7 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
 
             <div className={styles.cardBody}>
               <div
-                className={`${styles.body} ${styles.relativeBody} ${isEditing ? styles.editingBorder : ''}`}
+                className={`${styles.body} ${styles.relativeBody} ${isEditing ? styles.editingBorder : ''} ${isBlink ? 'blink-1' : ''}`}
               >
                 <div className={styles.mainContainer}>
                 <span className={`${styles.skillsLabel} ${isEditing ? styles.skillsLabelEditing : ''}`}>
@@ -187,7 +189,7 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
                 )}
               </div>
 
-              <div className={styles.requestBlock}>
+              <div className={clsx(styles.requestBlock, isBlink && 'blink-1')}>
                 <div className={styles.innerContainer}>
                   {!mockIsPublished && (
                       <div className={styles.unpublishContainer}>

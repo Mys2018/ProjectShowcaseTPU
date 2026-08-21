@@ -1,7 +1,7 @@
-import { Modal } from '@/shared/ui/modal/Modal.tsx';
+import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import { useEffect, useState } from 'react';
 import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
-import { ModalFooter } from '@/shared/ui/modal-footer/ModalFooter.tsx';
+import { ModalFooter } from '@/shared/ui/modals/modal-footer/ModalFooter.tsx';
 import styles from './SelectProjectLinksModal.module.css';
 
 interface SelectProjectLinksModalProps {

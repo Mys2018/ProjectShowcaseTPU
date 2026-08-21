@@ -1,0 +1,16 @@
+.button {
+  padding: 14px 28px 15px 28px;
+  border: 1px solid white;
+  font: var(--inter-13-600);
+  color: var(--color-brand-green);
+  background-color: white;
+  font-weight: 500;
+  border-radius: 59px;
+  transition: all 0.2s ease;
+}
+
+.activeButton {
+  background-color: transparent;
+  color: var(--color-gray-200);
+  border: 1px solid var(--color-gray-100);
+}

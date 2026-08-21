@@ -91,6 +91,8 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return null;
   }
 
+  console.log(project)
+
   return (
     <main className={styles.main}>
       <div className={styles.headerLeft} onClick={() => navigate(-1)}>

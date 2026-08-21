@@ -215,3 +215,12 @@
   color: var(--color-red, #e53e3e);
 }
 
+.archiveButton {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  color: var(--color-red);
+  font: var(--inter-12-300)
+}
+

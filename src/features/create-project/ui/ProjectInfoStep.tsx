@@ -9,6 +9,8 @@ import { RolesTab } from './tabs/RolesTab';
 import { DatesTab } from './tabs/DatesTab';
 import { AllTab } from './tabs/AllTab';
 import { useStore } from '@tanstack/react-form';
+import {FilledButton} from "@/shared/ui/elements/buttons/filled-button/FilledButton.tsx";
+import {GreyButton, OutlineButton} from "@/shared/ui/elements/buttons";
 
 type InfoTab = 'main' | 'prd' | 'roles' | 'dates' | 'all';
 
@@ -31,9 +33,11 @@ interface ProjectInfoStepProps {
   nextStep: () => void;
   prevStep: () => void;
   setStep: (step: number) => void;
+  blinkFields: string[];
+  setBlinkFields: (fields: string[]) => void;
 }
 
-export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDeleteDraft, partners, currentStep, nextStep, prevStep, setStep }: ProjectInfoStepProps) {
+export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDeleteDraft, partners, currentStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields }: ProjectInfoStepProps) {
   const fieldMeta = useStore(form.store, (state) => state.fieldMeta);
 
   const activeTab = TABS[currentStep - 1]?.key || 'main';
@@ -115,46 +119,44 @@ export function ProjectInfoStep({ form, stepErrors, isPending, onSubmit, onDelet
 
       <div className={styles.main}>
         <div>
-          {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} />}
-          {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} />}
-          {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} />}
-          {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} />}
-          {activeTab === 'all' && <AllTab form={form} setStep={setStep} />}
+          {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} blinkFields={blinkFields} />}
+          {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
+          {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
+          {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
+          {activeTab === 'all' && <AllTab form={form} setStep={setStep} setBlinkFields={setBlinkFields} />}
         </div>
       </div>
 
       <div className={styles.buttonBlock}>
         <div>
           {!isFirstStep && (
-            <button type="button" onClick={prevStep} className={styles.prevButton}>
+            <GreyButton
+              onClick={prevStep}
+              textButton={'К предыдущему шагу'}
+            >
               <BackIcon/>
-              К предыдущему шагу
-            </button>
+            </GreyButton>
           )}
         </div>
 
         <div className={styles.rightButtons}>
-          <button
-            type="button"
+          <GreyButton
             onClick={onDeleteDraft}
-            className={styles.cancelButton}
-          >
-            Сохранить черновик
-          </button>
+            textButton={'Сохранить черновик'}
+          />
 
           {!isLastStep ? (
-            <button type="button" onClick={nextStep} className={styles.nextButton}>
-              К следующему шагу
-            </button>
+            <OutlineButton
+              onClick={nextStep}
+              className={styles.nextButton}
+              textButton={'К следующему шагу'}
+            />
           ) : (
-            <button
-              type="button"
+            <FilledButton
+              textButton={isPending ? 'Отправка...' : 'Отправить на модерацию'}
               onClick={onSubmit}
               disabled={isPending}
-              className={clsx(styles.saveButton, isPending ? styles.disable : '')}
-            >
-              {isPending ? 'Отправка...' : 'Отправить на модерацию'}
-            </button>
+            />
           )}
         </div>
       </div>

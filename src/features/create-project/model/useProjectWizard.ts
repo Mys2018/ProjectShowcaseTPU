@@ -168,6 +168,23 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   const [currentStep, setCurrentStep] = useState(1);
   const [highestStep, setHighestStep] = useState(1);
   const [stepErrors, setStepErrors] = useState<StepErrors>({});
+  const [blinkFields, setBlinkFields] = useState<string[]>([]);
+  const [isRestored, setIsRestored] = useState(false);
+
+  useEffect(() => {
+    if (defaultValues && !isRestored) {
+      const savedStep = (defaultValues as any).currentStep;
+      const savedHighest = (defaultValues as any).highestStep;
+      if (savedStep && savedHighest) {
+        setCurrentStep(savedStep);
+        setHighestStep(savedHighest);
+        setIsRestored(true);
+      }
+    }
+  }, [defaultValues, isRestored]);
+
+  // Extract non-form fields so they don't get passed to useForm
+  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {}) as any;
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
@@ -176,7 +193,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     },
     defaultValues: {
       ...STUDY_DEFAULTS,
-      ...defaultValues,
+      ...formDefaultValues,
     } as CreateProjectFormValues,
 
     onSubmit: async ({ value }) => {
@@ -318,5 +335,5 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     setCurrentStep(step);
   };
 
-  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep };
+  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields };
 };

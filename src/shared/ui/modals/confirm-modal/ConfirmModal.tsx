@@ -1,6 +1,7 @@
-import { Modal } from '@/shared/ui/modal/Modal.tsx';
+import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import BigQuestionIcon from '@/shared/ui/icons/big-question.svg?react';
 import styles from './ConfirmModal.module.css';
+import {FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -35,12 +36,14 @@ export const ConfirmModal = ({
 
           
           <div className={styles.actions}>
-            <button className={styles.cancelBtn} onClick={onDecline}>
-              {cancelText}
-            </button>
-            <button className={styles.confirmBtn} onClick={onConfirm}>
-              {confirmText}
-            </button>
+            <GreyButton
+              onClick={onDecline}
+              textButton={cancelText}
+            />
+            <FilledButton
+              onClick={onConfirm}
+              textButton={confirmText}
+            />
           </div>
         </div>
       </Modal.Body>

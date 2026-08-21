@@ -3,6 +3,7 @@ import {ProjectCardData} from './data.ts'
 import {typeProjectsLabel} from "@/shared/constants/type-project-label/typeProjectsLabel.tsx";
 import ImageIcon from '@/shared/ui/icons/image.svg?react'
 import clsx from "clsx";
+import {SmallGreenButton} from "@/shared/ui/elements/buttons";
 
 type CreateProjectCardProps = {
   type: 'Case' | 'Real' | 'Study',
@@ -71,9 +72,10 @@ export function CreateProjectCard({type, onClick}: CreateProjectCardProps) {
 
           </div>
 
-          <button className={styles.choiceButton} onClick={onClick}>
-            Выбрать
-          </button>
+          <SmallGreenButton
+            onClick={onClick}
+            textButton={'Выбрать'}
+          />
         </div>
 
       </div>
