@@ -5,10 +5,11 @@ import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader'
 import { ProjectTags } from '../project-tags/ProjectTags'
 import { ProjectFormatBadge } from '../project-format-badge/ProjectFormatBadge'
 import type { ProjectCardData } from '../../model/types'
+import { getSortedTags } from '../../lib/tags'
 
 interface ProjectCardHorizontalProps {
   project: ProjectCardData
-  partnerSlot?: ReactElement
+  mainSlot?: ReactElement
   headerSlot?: ReactElement
   sideSlot?: ReactElement
   footerSlot?: ReactElement
@@ -18,7 +19,7 @@ interface ProjectCardHorizontalProps {
 
 export function ProjectCardHorizontal({
   project,
-  partnerSlot,
+  mainSlot,
   headerSlot,
   sideSlot,
   footerSlot,
@@ -27,14 +28,14 @@ export function ProjectCardHorizontal({
 }: ProjectCardHorizontalProps) {
   const { primaryTag, tags, type, id, meta } = project
   const { title } = meta
-  const filteredTags = [primaryTag, ...tags.filter(tag => tag.tagId !== primaryTag.tagId)]
+  const sortedTags = getSortedTags(tags, primaryTag)
 
   return (
     <div className={clsx(styles.card, onClick && styles.clickable, className)} onClick={onClick}>
       <ProjectCardHeader className={styles.cover} label={primaryTag.tagName} rotated />
       <div className={styles.content}>
         <div className={styles.header}>
-          <ProjectTags tags={filteredTags} />
+          <ProjectTags tags={sortedTags} />
           {headerSlot}
         </div>
         <div className={styles.main}>
@@ -48,7 +49,7 @@ export function ProjectCardHorizontal({
             </div>
             <div className={styles.meta}>
               <h3 className={styles.title}>{title}</h3>
-              {partnerSlot}
+              {mainSlot}
             </div>
           </div>
           {sideSlot}
