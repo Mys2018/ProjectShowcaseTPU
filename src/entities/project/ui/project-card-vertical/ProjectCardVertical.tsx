@@ -40,14 +40,9 @@ export function ProjectCardVertical({ project, small, headerSlot, footerSlot, cl
             </div>
           )}
           <h3 className={styles.title}>{title}</h3>
-          {!small && (
-            <div>
-              <ProjectCompetencies competencies={roles} rowDirection />
-              {footerSlot && <span className={styles.divider} />}
-            </div>
-          )}
+          {!small && <ProjectCompetencies className={styles.competencies} competencies={roles} />}
         </div>
-        {footerSlot && <div className={styles.footer}>{footerSlot}</div>}
+        {footerSlot}
       </div>
     </div>
   )

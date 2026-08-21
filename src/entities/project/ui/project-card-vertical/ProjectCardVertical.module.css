@@ -2,14 +2,14 @@
   position: relative;
   overflow: hidden;
 
+  display: flex;
+  flex-direction: column;
+  
+
   box-shadow: var(--card-drop-shadow);
 
   border-radius: 20px;
   background-color: var(--color-white);
-
-  &.small {
-
-  }
 
   &.clickable {
     cursor: pointer;
@@ -43,6 +43,8 @@
 }
 
 .main {
+  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -84,17 +86,10 @@
   display: -webkit-box;
 
   font: var(--card-title-platform);
-  line-clamp: 3;
-
   color: var(--color-gray-900);
 }
 
-.divider {
-	width: 100%;
-	height: 1px;
-	background-color: var(--color-gray-100);
-}
-
-.footer {
-  margin-top: 8px;
+.competencies {
+  flex-grow: 1;
+  justify-content: flex-end;
 }
