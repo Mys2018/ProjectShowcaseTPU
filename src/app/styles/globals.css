@@ -51,7 +51,8 @@ h6 {
   font-weight: 400;
 }
 
-body, p {
+body,
+p {
   font-size: 10px;
   font-weight: 400;
 }
@@ -96,12 +97,19 @@ input {
 
 .ellipsis {
   min-width: 0;
-  
+
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
+.no-scroll-start::before {
+  opacity: 0;
+}
+
+.no-scroll-end::after {
+  opacity: 0;
+}
 
 @media (max-width: 768px) {
   .hidden-mobile {
