@@ -1,0 +1,29 @@
+.partner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.picture {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-brand-green);
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--color-gray-900);
+}
+
+.name {
+  font: var(--OS-14-550);
+}
+
+.sub {
+  font: var(--OS-11-400);
+}
