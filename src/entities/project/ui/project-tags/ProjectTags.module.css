@@ -2,7 +2,7 @@
 	display: flex;
 	justify-content: start;
 	align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .tag {
@@ -18,4 +18,9 @@
   
 	border-radius: 20px;
   z-index: 2;
+}
+
+.label {
+	font: 400 10px var(--font-open-sans);
+	color: black;
 }
