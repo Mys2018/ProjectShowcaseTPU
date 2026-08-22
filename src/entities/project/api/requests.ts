@@ -3,7 +3,6 @@ import type {
   ProjectsResponseDto,
   GetProjectsQueryParams,
   CreateProjectDto,
-  ProjectCheckpoints, ProjectResponseCheckpointDto, GetProjectResponseCheckpoint,
   ProjectDto
 } from '../model/types';
 import { mapProjectDtoToEntity } from '../lib/mapProject';
@@ -50,20 +49,5 @@ export const projectApi = {
   createProject: async (payload: CreateProjectDto): Promise<string> => {
     const { data } = await api.post<{ projectId: string }>(ENDPOINTS.PROJECTS, payload)
     return data.projectId
-  },
-
-  getCheckpoints: async (offset = 1, limit = 1): Promise<ProjectResponseCheckpointDto> => {
-    const response = await api.get('/projects/checkpoints', {
-      params: {
-        offset,
-        limit
-      }
-    })
-    return response.data
-  },
-
-  createCheckpoints: async (data: ProjectCheckpoints): Promise<GetProjectResponseCheckpoint> => {
-    const response = await api.post('/projects/checkpoints', data);
-    return response.data;
   },
 };
