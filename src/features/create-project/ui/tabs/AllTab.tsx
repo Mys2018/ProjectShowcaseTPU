@@ -194,7 +194,7 @@ export function AllTab({ form }: TabProps) {
                       <div className={styles.skillList}>
                         {
                           role.skills.map((skill) => (
-                            <div key={skill.skillId} className={styles.skill}>
+                            <div key={skill.id} className={styles.skill}>
                               {skill.skillName}
                             </div>
                           ))

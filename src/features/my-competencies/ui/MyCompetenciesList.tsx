@@ -6,7 +6,8 @@ import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import { FooterBlockFields } from "@/shared";
 import { useSkillsStore } from "@/features/my-competencies/model/store/useSkillsStore.ts";
 import { useModalStore, useProfileEditStore } from "@/shared/model";
-import { useUpdateProfileMeta, useSkills } from '@/entities/user/api/queries';
+import { useUpdateProfileMeta } from '@/entities/user/api/queries';
+import { useSkills } from '@/entities/skill';
 import type { CompetenceDto } from '@/entities/user/model/types';
 
 type MyCompetenciesListProps = {
@@ -87,7 +88,7 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
 
   useEffect(() => {
     if (savedSkills && Array.isArray(savedSkills)) {
-      setInitialData(savedSkills);
+      setInitialData(savedSkills.map(c => (Object.assign(c, {skills: c.skills.map(s => ({id: s.skillId, name: s.skillName}))})))); // TODO низвести до атомов
     }
   }, [savedSkills, setInitialData]);
 
@@ -99,7 +100,7 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
 
     const skillsPayload = draftData.map(comp => ({
       roleTypeId: comp.roleTypeId,
-      skillIds: comp.skills.map(s => s.skillId)
+      skillIds: comp.skills.map(s => s.id)
     }));
     
     updateProfile(
