@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useNavigate } from 'react-router-dom'
 import styles from './StagesWidget.module.css'
-import { FeedbackIcon, FolderIcon, LikeIcon } from '..'
+import { ChevronRightIcon, FeedbackIcon, FolderIcon, LikeIcon } from '..'
 import { assertNever } from '../../lib'
 import { ROUTES } from '../../config'
 import { usePreferencesStore, type UserRole } from '@/entities/user'
@@ -145,7 +145,10 @@ export const StagesWidget = () => {
           </header>
           <footer className={styles.cardFooter}>
             <h4 className={clsx(styles.label, card.notification && styles.notification)}>{getName(card.type)}</h4>
-            <p className={styles.snippet}>{card.snippet}</p>
+            <div className={styles.wrapper}>
+              <p className={styles.snippet}>{card.snippet}</p>
+              <ChevronRightIcon className={styles.arrowIcon} />
+            </div>
           </footer>
         </div>
       ))}

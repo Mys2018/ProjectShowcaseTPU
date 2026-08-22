@@ -17,6 +17,8 @@ export * from './floating-tabs'
 export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx'
 export { AddOutlineButton } from './elements/add-outline-button/AddOutlineButton.tsx'
 export * from './horizontal-tabs'
+export { Modal } from './modal/Modal.tsx'
+export { ModalFooter } from './modal-footer/ModalFooter.tsx'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
@@ -25,4 +27,5 @@ import LikeIcon from './icons/like.svg?react'
 import BackArrowIcon from './icons/back-arrow.svg?react'
 import CodeIcon from './icons/code.svg?react'
 import StudyIcon from './icons/studyIcon.svg?react'
-export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon }
+import ChevronRightIcon from '../assets/chevron_right.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon }
