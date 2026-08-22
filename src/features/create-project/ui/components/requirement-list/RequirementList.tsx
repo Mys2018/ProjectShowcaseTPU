@@ -36,7 +36,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
     <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}
 
-      <form.Field name={name} mode="array">
+      <form.Field name={name as any} mode="array">
         {(field) => {
           // Initialize with empty array
           const items = (field.state.value as any[]) || [];

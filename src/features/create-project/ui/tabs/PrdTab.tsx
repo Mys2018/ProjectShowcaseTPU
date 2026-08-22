@@ -401,7 +401,7 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
             type={'bulb'}
           />
         </h4>
-        <TargetAudienceList form={form} stepErrors={stepErrors} isBlink={blinkFields.includes('Целевая аудитория')} />
+        <TargetAudienceList form={form} stepErrors={stepErrors} blinkFields={blinkFields} />
       </div>
 
       <div className={styles.block}>
