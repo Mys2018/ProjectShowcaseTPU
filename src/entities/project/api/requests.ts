@@ -1,12 +1,13 @@
-import { api } from '@/shared';
 import type {
   ProjectCardData,
   ProjectsResponseDto,
   GetProjectsQueryParams,
   CreateProjectDto,
-  ProjectCheckpoints, ProjectResponseCheckpointDto, GetProjectResponseCheckpoint
+  ProjectCheckpoints, ProjectResponseCheckpointDto, GetProjectResponseCheckpoint,
+  ProjectDto
 } from '../model/types';
 import { mapProjectDtoToEntity } from '../lib/mapProject';
+import { api, ENDPOINTS } from '@/shared';
 
 export interface ProjectDraftResponse {
   data: Record<string, unknown>;
@@ -15,20 +16,20 @@ export interface ProjectDraftResponse {
 
 export const projectApi = {
   getDraft: async (): Promise<ProjectDraftResponse> => {
-    const response = await api.get<ProjectDraftResponse>('/me/projects/draft');
+    const response = await api.get<ProjectDraftResponse>(ENDPOINTS.PROJECT_DRAFT);
     return response.data;
   },
 
   saveDraft: async (data: Record<string, unknown>): Promise<void> => {
-    await api.put('/me/projects/draft', data);
+    await api.put(ENDPOINTS.PROJECT_DRAFT, data);
   },
 
   deleteDraft: async (): Promise<void> => {
-    await api.delete('/me/projects/draft');
+    await api.delete(ENDPOINTS.PROJECT_DRAFT);
   },
 
   getProjects: async (params?: GetProjectsQueryParams): Promise<{ projects: ProjectCardData[]; total: number }> => {
-    const response = await api.get<ProjectsResponseDto>('/projects', { 
+    const response = await api.get<ProjectsResponseDto>(ENDPOINTS.PROJECTS, { 
       params,
       paramsSerializer: {
         indexes: null 
@@ -42,13 +43,13 @@ export const projectApi = {
   },
 
   getProjectById: async (id: string): Promise<ProjectCardData> => {
-    const response = await api.get(`/projects/${id}`);
-    return mapProjectDtoToEntity(response.data);
+    const { data } = await api.get<ProjectDto>(ENDPOINTS.PROJECT_BY_ID(id));
+    return mapProjectDtoToEntity(data);
   },
 
-  createProject: async (data: CreateProjectDto): Promise<ProjectCardData> => {
-    const response = await api.post('/projects', data);
-    return mapProjectDtoToEntity(response.data);
+  createProject: async (payload: CreateProjectDto): Promise<string> => {
+    const { data } = await api.post<{ projectId: string }>(ENDPOINTS.PROJECTS, payload)
+    return data.projectId
   },
 
   getCheckpoints: async (offset = 1, limit = 1): Promise<ProjectResponseCheckpointDto> => {

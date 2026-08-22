@@ -5,7 +5,7 @@ const STORAGE_KEYS = {
   STATE: "oauth_state",
 } as const;
 
-const OAUTH_AUTHORIZE_URL = import.meta.env.VITE_OAUTH_AUTHORIZE_URL as string;
+const OAUTH_AUTHORIZE_URL = import.meta.env.VITE_OAUTH_AUTHORIZE_URL;
 
 class PkceService {
   prepareAuth = async () => {
@@ -20,7 +20,7 @@ class PkceService {
   };
 
   async startAuth() {
-    const clientId = import.meta.env.VITE_TPU_OAUTH_CLIENT_ID as string;
+    const clientId = import.meta.env.VITE_TPU_OAUTH_CLIENT_ID;
 
     if (!clientId) {
       throw new Error("Не задан VITE_TPU_OAUTH_CLIENT_ID");
