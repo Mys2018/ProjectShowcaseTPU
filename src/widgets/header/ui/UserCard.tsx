@@ -3,7 +3,6 @@ import styles from './UserCard.module.css'
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared/index.ts";
 import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
 import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
 
 interface UserCardProps {
@@ -23,7 +22,9 @@ export function UserCard({ profilePicture } : UserCardProps) {
     <div className={styles.profileContainer}>
       <Avatar
         picture={profilePicture}
-        onClick={() => navigate(ROUTES.MY_PROFILE)}
+        onClick={() => {
+          navigate(ROUTES.MY_PROFILE)
+        }}
         label={'mentor'}
       />
     </div>

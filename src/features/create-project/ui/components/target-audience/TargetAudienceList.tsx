@@ -123,7 +123,7 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                           subtitle={"Описание сегмента"}
                           value={subField.state.value}
                           onChange={(e) => subField.handleChange(e.target.value as any)}
-                          maxLength={500}
+                          maxLength={200}
                           validError={
                             subField.state.meta.errors.length > 0
                               ? getErrorMessage(subField.state.meta.errors[0])

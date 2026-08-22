@@ -4,8 +4,11 @@ import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import {useState} from "react";
-import {InfoTooltip} from "@/shared";
+import {InfoTooltip, ROUTES} from "@/shared";
 import {FeedBackButton} from "@/shared/ui/elements/buttons";
+import {useIsProfileFilled} from "@/entities/user/lib";
+import {useAuthStore} from "@/entities/user";
+import {useNavigate} from "react-router-dom";
 
 interface FreeCompetenciesProps {
   roles: {
@@ -31,6 +34,10 @@ export const FreeCompetencies = ({roles}: FreeCompetenciesProps) => {
   const [selectedCometencies, setSelectedCometencies] = useState<string[]>([])
 
   const [isActiveFeedBack, setIsActiveFeedBack] = useState<boolean>(false)
+
+  const {isProfileFilled} = useIsProfileFilled()
+  const status = useAuthStore(state => state.status)
+  const navigate = useNavigate()
 
   const toggleFeedBack = () => {
     return setIsActiveFeedBack(!isActiveFeedBack)
@@ -165,11 +172,56 @@ export const FreeCompetencies = ({roles}: FreeCompetenciesProps) => {
         </div>
 
         <div className={styles.footer}>
-          <FeedBackButton
-            isActiveFeedBack={isActiveFeedBack}
-            toggleFeedBack={toggleFeedBack}
-            disabled={selectedCometencies.length === 0}
-          />
+          {
+            status === 'authenticated' ? (
+                isProfileFilled ?
+                  <>
+                    <FeedBackButton
+                      isActiveFeedBack={isActiveFeedBack}
+                      toggleFeedBack={toggleFeedBack}
+                      disabled={selectedCometencies.length === 0}
+                    />
+                  </> :
+                  <InfoTooltip
+                    title='Заполните профиль для отлика на проект'
+                    body={[
+                      {
+                        text: ['Для подачи заявки необходимо заполнить блок «О себе» и указать свои навыки. Это поможет наставнику оценить вашу кандидатуру.']
+                      }
+                    ]}
+                    size={'small'}
+                    pointer={'topRight'}
+                    greenButtonText={'Перейти к заполнению'}
+                    onClickGreenButtonText={() => { navigate(`/${ROUTES.MY_PROFILE}`) }}
+                  >
+                    <FeedBackButton
+                      isActiveFeedBack={isActiveFeedBack}
+                      toggleFeedBack={toggleFeedBack}
+                      disabled={true}
+                    />
+                  </InfoTooltip>
+              )
+              :
+              <InfoTooltip
+                body={[
+                  {
+                    text: ['Откликаться на проекты могут только зарегистрированные пользователи.']
+                  }
+                ]}
+                size={'small'}
+                pointer={'topRight'}
+                greenButtonText={'Войти в аккаунт'}
+                onClickGreenButtonText={() => { navigate(ROUTES.LOGIN) }}
+              >
+                <FeedBackButton
+                  isActiveFeedBack={isActiveFeedBack}
+                  toggleFeedBack={toggleFeedBack}
+                  disabled={true}
+                />
+              </InfoTooltip>
+
+          }
+
 
           <p className={styles.countFree}>
             {selectedCometencies.length}/{MAX_SELECTIONS}

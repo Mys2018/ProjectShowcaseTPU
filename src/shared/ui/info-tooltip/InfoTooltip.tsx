@@ -19,10 +19,13 @@ interface InfoTooltipProps {
     text?: string[];
   }[]
   size: SizeTooltip;
-  importantText: string;
+  importantText?: string;
   link?: string;
   type?: 'question' | 'help' | 'bulb';
   pointer: Pointer;
+
+  greenButtonText?: string;
+  onClickGreenButtonText?: () => void;
 }
 
 const THEME_MAP: Record<SizeTooltip, {
@@ -62,7 +65,7 @@ const getIconByType = (type: string, classNames: string) => {
   }
 }
 
-export const InfoTooltip = ({ children, className, iconClassName, title, body, size, importantText, pointer, type }: InfoTooltipProps) => {
+export const InfoTooltip = ({ children, className, iconClassName, title, body, size, importantText, pointer, type, greenButtonText, onClickGreenButtonText }: InfoTooltipProps) => {
 
   const s = THEME_MAP[size];
 
@@ -72,9 +75,11 @@ export const InfoTooltip = ({ children, className, iconClassName, title, body, s
         type ? getIconByType(type, iconClassName || '') : children
       }
       <div className={clsx(styles.tooltip, s.tooltipBg, styles[pointer], type && styles.centered)}>
-        <p className={clsx(styles.title, s.title)}>
-          {title}
-        </p>
+        {
+          title && <p className={clsx(styles.title, s.title)}>
+            {title}
+          </p>
+        }
         {
           body.map((block, index) => (
             <div key={index} className={styles.block}>
@@ -113,6 +118,13 @@ export const InfoTooltip = ({ children, className, iconClassName, title, body, s
         {/*    Ссылка на FAQ*/}
         {/*  </a>*/}
         {/*}*/}
+
+        {
+          greenButtonText && onClickGreenButtonText &&
+          <button className={styles.greenButton} onClick={onClickGreenButtonText}>
+            {greenButtonText}
+          </button>
+        }
       </div>
     </div>
   )

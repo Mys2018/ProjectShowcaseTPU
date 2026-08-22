@@ -235,6 +235,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   useEffect(() => {
     const fetchDefaultCheckpoints = async () => {
       const backCheckpoints = await projectApi.getCheckpoints()
+      console.log('backCheckpoints', backCheckpoints)
       const firstCheckpoints = backCheckpoints.checkpoints[0]?.checkpoints;
 
       if (firstCheckpoints && firstCheckpoints.length > 0) {

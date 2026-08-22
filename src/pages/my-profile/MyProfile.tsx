@@ -57,8 +57,6 @@ export const MyProfile = () => {
     return null;
   }
 
-  console.log(user.meta.portfolioLink)
-
   return (
     <div className={styles.mainContent}>
       <section className={styles.headerLeft} onClick={() => navigate(-1)}>

@@ -5,7 +5,7 @@ import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import SadIcon from '@/shared/ui/icons/sad_face.svg?react';
 import CrossIcon from '@/shared/ui/icons/cross.svg?react';
 import {TeamUserCard} from "@/shared/ui/team_user_card/TeamUserCard.tsx";
-import {InviteActionButton} from "@/shared/ui/invite-action-button";
+import {InviteActionButton} from "@/shared/ui/elements/buttons";
 import {SmallSearchField} from "@/shared/ui/small-search-field";
 
 interface InviteUserModalProps {

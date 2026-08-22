@@ -3,7 +3,7 @@ import styles from "./Tabs.module.css";
 import { useModalStore } from "@/shared/model";
 import { CheckpointsBlock } from "@/features/create-project/ui/components/checkpoints-block/CheckpointsBlock.tsx";
 import { RequirementList } from "@/features/create-project/ui/components/requirement-list/RequirementList.tsx";
-import { InfoTooltip } from "@/shared";
+import {EmptyStateBlock, InfoTooltip} from "@/shared";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -161,34 +161,66 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
             type={'bulb'}
           />
         </h4>
-        <RequirementList
-          form={form}
-          stepErrors={stepErrors}
-          name="links"
-          placeholder="Вставьте ссылку"
-          addBtnText="Добавить сервис"
-          onAddClick={() => {
-            const links = form.state.values.links || [];
-            openModal(
-              'SELECT_PROJECT_LINKS',
-              {
-                initialSelected: links.map(l => l.name),
-                onConfirm: (selectedLinks: { name: string; link: string }[]) => {
-                  const newLinks = selectedLinks.map(sl => {
-                    const existing = links.find(l => l.name === sl.name);
-                    return existing ? existing : sl;
-                  });
-                  form.setFieldValue('links', newLinks);
-                }
+        <div className={styles.errorWrapper}>
+          <form.Field name={'links'}>
+            {
+              (field) => {
+                const links = field.state.value || []
+
+                const handleAddLinkClick = () => {
+                  openModal(
+                    'SELECT_PROJECT_LINKS',
+                    {
+                      initialSelected: links.map(l => l.name),
+                      onConfirm: (selectedLinks: { name: string; link: string }[]) => {
+                        const newLinks = selectedLinks.map(sl => {
+                          const existing = links.find(l => l.name === sl.name);
+                          return existing ? existing : sl;
+                        });
+                        form.setFieldValue('links', newLinks);
+                      }
+                    }
+                  );
+                };
+
+                if (links.length === 0) return (
+                  <EmptyStateBlock
+                    title="Добавьте ссылки на необходимые сервисы"
+                    buttonText="Добавить"
+                    onAddClick={handleAddLinkClick}
+                    errorState={!!stepErrors?.['links']}
+                  />
+                );
+
+                return (
+                  <RequirementList
+                    form={form}
+                    stepErrors={stepErrors}
+                    name="links"
+                    placeholder="Вставьте ссылку"
+                    addBtnText="Добавить сервис"
+                    onAddClick={handleAddLinkClick}
+                    valueKey="link"
+                    subtitleKey="name"
+                    minItems={0}
+                    emptyStateTitle="Добавьте ссылки на необходимые сервисы"
+                    isBlink={blinkFields.includes('Ресурсы')}
+                  />
+                )
               }
-            );
-          }}
-          valueKey="link"
-          subtitleKey="name"
-          minItems={0}
-          emptyStateTitle="Добавьте ссылки на необходимые сервисы"
-          isBlink={blinkFields.includes('Ресурсы')}
-        />
+            }
+          </form.Field>
+
+          {stepErrors?.['links'] && (
+            <span className={styles.errorText}>
+              {stepErrors['links'][0]}
+            </span>
+          )}
+
+        </div>
+
+
+
       </div>
     </div>
   );

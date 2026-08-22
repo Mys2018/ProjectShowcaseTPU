@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react'
-import { Pagination } from '@/shared/ui'
+import { InfoTooltip, Pagination } from '@/shared/ui'
 import styles from './ProjectsHeader.module.css'
 import { MagicToggle } from '@/shared/ui/magic-checkbox/MagicToggle'
 import { useFilterStore } from '@/features/filter/model/useFilterStore'
 import type { SortKey } from '@/features/filter/model/types'
 import { getProjectPlural, useProjects } from '@/entities/project'
+import { useIsProfileFilled } from "@/entities/user/lib";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/shared";
+import { useAuthStore } from "@/entities/user";
 
 const SORT_OPTIONS: { key: Exclude<SortKey, 'relevance'>; label: string }[] = [
   { key: 'created_desc', label: 'Новые' },
@@ -13,6 +17,9 @@ const SORT_OPTIONS: { key: Exclude<SortKey, 'relevance'>; label: string }[] = [
 
 export function ProjectsHeader() {
   const [sortOpen, setSortOpen] = useState(false)
+  const { isSkillsFilled } = useIsProfileFilled()
+  const status = useAuthStore(state => state.status)
+  const navigate = useNavigate()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { tags, competencies, projectTypes, sort, setSort, isRelevanceSort, query, limit, page, setPage } = useFilterStore()
   const { data } = useProjects({
@@ -24,7 +31,7 @@ export function ProjectsHeader() {
     limit: limit,
     offset: (page - 1) * limit
   })
-  const {total} = data || {total: null}
+  const { total } = data || { total: null }
 
   const currentSort = SORT_OPTIONS.find(o => o.key === sort)
 
@@ -57,11 +64,48 @@ export function ProjectsHeader() {
         <div className={styles.titleBlock}>
           <h1 className={styles.title}>Набор на проекты</h1>
           {total ? <h2 className={styles.subTitle}>{getProjectPlural(total)}</h2> : ''}
-          
+
         </div>
         <nav className={styles.navPart}>
           <div className={styles.navEl}>
-            <MagicToggle />
+            {
+              status === 'authenticated' ? (
+                isSkillsFilled ?
+                  <>
+                    <MagicToggle />
+                  </> :
+                  <InfoTooltip
+                    title='Заполните ключевые навыки'
+                    body={[
+                      {
+                        text: ['Чтобы мы могли отображать подходящие тебе проекты,  необходимо заполнить хотя бы 1 компетенцию с навыками']
+                      }
+                    ]}
+                    size={'small'}
+                    pointer={'topRight'}
+                    greenButtonText={'Перейти к заполнению'}
+                    onClickGreenButtonText={() => { navigate(`/${ROUTES.MY_PROFILE}`) }}
+                  >
+                    <MagicToggle disabled={true} />
+                  </InfoTooltip>
+              )
+                :
+                <InfoTooltip
+                  body={[
+                    {
+                      text: ['Функция доступна только для зарегистрированных пользователей']
+                    }
+                  ]}
+                  size={'small'}
+                  pointer={'topRight'}
+                  greenButtonText={'Войти в аккаунт'}
+                  onClickGreenButtonText={() => { navigate(ROUTES.LOGIN) }}
+                >
+                  <MagicToggle disabled={true} />
+                </InfoTooltip>
+
+            }
+
             наиболее подходящие
           </div>
           <div className={`${styles.navEl} ${isRelevanceSort ? styles.disabled : ''}`} ref={dropdownRef}>

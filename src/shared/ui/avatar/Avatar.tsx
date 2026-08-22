@@ -11,17 +11,19 @@ interface AvatarProps {
 
 export const Avatar = ({picture, className, label, onClick}: AvatarProps) => {
   return (
-    <div className={styles.avatarContainer} onClick={onClick}>
+    <div className={clsx(styles.avatarContainer, className)} onClick={onClick}>
       {
         picture ?
-          <img className={clsx(styles.avatar, className)} src={picture} alt="Аватар студента" /> :
+          <img className={styles.avatar} src={picture} alt="Аватар студента" /> :
           <div className={styles.avatar}>
             <UserIcon className={styles.userIcon}/>
           </div>
       }
-      <div className={styles.status}>
-        {label}
-      </div>
+      {label && (
+        <div className={styles.status}>
+          {label}
+        </div>
+      )}
     </div>
   )
 }
