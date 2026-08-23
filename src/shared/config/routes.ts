@@ -38,3 +38,8 @@ export const ROUTES = {
     CREATE: `${MY_PLATFORM_BASE}/create`
   }
 } as const
+
+export const buildRoute = {
+  profileById: (id: string) => ROUTES.PROFILE.BY_ID.replace(':id', id),
+  project: (id: string) => ROUTES.CATALOG.PROJECT.replace(':id', id)
+} as const

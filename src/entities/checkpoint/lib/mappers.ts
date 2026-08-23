@@ -1,9 +1,8 @@
 import type { Checkpoint, CheckpointDto, CheckpointGroup, CheckpointGroupDto } from '../model/types'
-import { mapDateToBackendString } from '@/shared'
+import { mapDateToBackendString, mapStringToDate } from '@/shared'
 
 export const mapCheckpointDto = (dto: CheckpointDto): Checkpoint => {
-  const [year, month, day] = dto.deadline.split('-').map(Number)
-  const deadline = new Date(year, month - 1, day)
+  const deadline = mapStringToDate(dto.deadline)
   return { title: dto.title, deadline: deadline }
 }
 

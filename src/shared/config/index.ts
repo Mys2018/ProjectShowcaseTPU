@@ -1,2 +1,2 @@
 export { ENDPOINTS } from "./endpoints";
-export { ROUTES } from "./routes";
+export { ROUTES, buildRoute } from "./routes";
