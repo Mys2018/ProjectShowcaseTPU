@@ -91,7 +91,7 @@
 
 .field {
   font: var(--label-interface);
-  color: var(--color-gray-600)
+  color: var(--color-gray-600);
 }
 
 .tagsList {

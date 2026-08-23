@@ -1,9 +1,9 @@
 import styles from './Filter.module.css'
 import { useFilterStore } from '../../model/useFilterStore'
-import { useCompetencies } from '@/entities/competency'
-import { useTags } from '@/entities/tag'
-import FolderIcon from '@/shared/ui/icons/folder.svg?react'
+import { CompetencyChip, useCompetencies } from '@/entities/competency'
+import { TagChip, useTags } from '@/entities/tag'
 import { getProjectFormatTranslation, PROJECT_FORMATS } from '@/entities/project'
+import FolderIcon from '@/shared/ui/icons/folder.svg?react'
 
 export default function Filter() {
   const {
@@ -44,12 +44,10 @@ export default function Filter() {
             .filter(g => g.tags.length)
             .map(group => (
               <div className={styles.tagBlock} key={group.id}>
-                <p className={styles.field}>{group.name}</p>
+                <p className={styles.field}>{group.name}:</p>
                 <div className={styles.tagsList}>
                   {group.tags.map(tag => (
-                    <div key={tag.id} className={`${styles.tag} ${chosenTags.has(tag.id) ? styles.selected : ''}`} onClick={() => toggleTag(tag.id)}>
-                      {tag.name}
-                    </div>
+                    <TagChip key={tag.id} tag={tag} active={chosenTags.has(tag.id)} onClick={() => toggleTag(tag.id)} />
                   ))}
                 </div>
               </div>
@@ -63,13 +61,12 @@ export default function Filter() {
         <h3 className={styles.title}>Компетенции</h3>
         <div className={styles.competenciesList}>
           {competencies.map(competency => (
-            <div
+            <CompetencyChip
               key={competency.id}
-              className={`${styles.competencies} ${chosenCompetencies.has(competency.id) ? styles.selected : ''}`}
+              competency={competency}
+              active={chosenCompetencies.has(competency.id)}
               onClick={() => toggleCompetency(competency.id)}
-            >
-              {competency.name}
-            </div>
+            />
           ))}
         </div>
       </div>
