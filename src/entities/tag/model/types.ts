@@ -1,6 +1,7 @@
 export type Tag = {
 	id: string
 	name: string
+	groupId: string
 }
 
 export type TagGroup = {
