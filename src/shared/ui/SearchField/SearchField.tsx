@@ -1,6 +1,6 @@
 import { useFilterStore } from '@/features/filter/model/useFilterStore'
 import styles from './SearchField.module.css'
-import searchIcon from '@/assets/svg/SearchIcon.svg'
+import searchIcon from '../../assets/svg/SearchIcon.svg'
 import { useDebounce } from '@/shared/lib'
 import { useEffect, useState } from 'react'
 

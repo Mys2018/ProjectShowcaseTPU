@@ -9,7 +9,7 @@ export function ProjectActivitiesLayout() {
     <div className={styles.container}>
       <div className={styles.back} onClick={() => void navigate(-1)}>
         <BackArrowIcon className={styles.icon} />
-        <p>Вернуться к моей платформе</p>
+        <p>Вернуться к Моей платформе</p>
       </div>
       <h1 className={styles.title}>Проектная деятельность</h1>
       <ProjectActivitiesTabs className={styles.tabs} />
