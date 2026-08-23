@@ -180,7 +180,7 @@ export function ProjectRoleCard({ form, index, globalSkills }: ProjectRoleCardPr
                           {skills.map((skill) => (
                             <div key={skill.id} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
                               <div className={styles.featContainer}>
-                                {skill.name}
+                                {skill.skillName}
                                 {
                                   isEditing &&
                                   <>

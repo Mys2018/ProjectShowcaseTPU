@@ -1,4 +1,8 @@
+/* eslint-disable fsd/no-cross-slice-dependency */
+/* eslint-disable fsd/forbidden-imports */
 import type { PROJECT_FORMATS } from "./constants";
+import type { CheckpointGroup } from "@/entities/checkpoint";
+import type { Tag } from "@/entities/tag";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
@@ -12,7 +16,7 @@ export interface ProjectDirectionItem {
   label: string;
 }
 
-export interface TagItem {
+interface TagItem {
   tagId: string;
   tagName: string;
   groupId: string;
@@ -21,8 +25,8 @@ export interface TagItem {
 export interface ProjectCardData {
   id: string;
   type: ProjectFormat;
-  tags: TagItem[];
-  primaryTag: TagItem;
+  tags: Tag[];
+  primaryTag: Tag;
   ownerId: number;
   partnerId: string;
   status: string;
@@ -30,7 +34,7 @@ export interface ProjectCardData {
     title: string;
     description: string;
   };
-  checkpoints: ProjectCheckpoint[];
+  checkpoints: CheckpointGroup;
   roles: {
     roleId: string;
     placesCount: number;
@@ -58,12 +62,12 @@ export interface ProjectResponseCheckpointDto {
   checkpoints: ProjectCheckpoints[];
 }
 
-export interface ProjectCheckpoint {
+interface ProjectCheckpoint {
   title: string;
   deadline: string;
 }
 
-export interface ProjectCheckpoints {
+interface ProjectCheckpoints {
   id?: string;
   name: string;
   checkpoints: ProjectCheckpoint[];
@@ -89,11 +93,6 @@ export interface ProjectRole {
   meta: {
     description: string;
   };
-}
-
-export interface ProjectTag {
-  tagId: string;
-  tagName: string;
 }
 
 export interface AudienceSegment {

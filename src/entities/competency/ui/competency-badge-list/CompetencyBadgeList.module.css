@@ -1,0 +1,65 @@
+.competencies {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font: var(--body-small-platform);
+  color: var(--color-gray-600);
+}
+
+.wrapper {
+  position: relative;
+  max-height: 60px;
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    display: block;
+    height: 8px;
+    background: linear-gradient(to bottom, transparent, var(--color-white));
+    pointer-events: none;
+  }
+
+  &::before {
+    top: -1px;
+    background: linear-gradient(to top, transparent, var(--color-white));
+  }
+
+  &.row {
+    &::after,
+    &::before {
+      top: 0;
+      bottom: 0;
+      right: -1px;
+      left: auto;
+      width: 8px;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--color-white));
+    }
+
+    &::before {
+      right: auto;
+      left: -1px;
+      background: linear-gradient(to left, transparent, var(--color-white));
+    }
+
+    & .list {
+      flex-wrap: nowrap;
+    }
+  }
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  overflow: auto;
+  max-height: inherit;
+}

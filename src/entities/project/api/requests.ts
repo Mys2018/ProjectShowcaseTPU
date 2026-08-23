@@ -5,7 +5,7 @@ import type {
   CreateProjectDto,
   ProjectDto
 } from '../model/types';
-import { mapProjectDtoToEntity } from '../lib/mapProject';
+import { mapProjectDtoToEntity } from '../lib/mappers';
 import { api, ENDPOINTS } from '@/shared';
 
 export interface ProjectDraftResponse {

@@ -1,16 +1,16 @@
 import styles from './MyCompetencies.module.css';
-
+import { MyCompetenciesModal } from "./MyCompetenciesModal";
+import type { Competence } from "../model/types";
+import type { Skill } from '@/entities/skill';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import Trash from '@/shared/ui/icons/trash.svg?react'
 import Cross from '@/shared/ui/icons/cross.svg?react'
-import type { Competence, Skill } from "@/features/my-competencies/model/types.ts";
-import { MyCompetenciesModal } from "@/features/my-competencies/ui/MyCompetenciesModal.tsx";
 
 type MyCompetenciesProps = {
   data: Competence,
   isEditing: boolean,
   currentFullSkills: Skill[],
-  removeSkill: (competenceId: string, skillId: string) => void;
+  removeSkill: (competenceId: string, id: string) => void;
   addSkill: (skill: Skill) => void;
   removeCompetency: (competenceId: string) => void;
   popoverOpenFor: string | null;
@@ -46,11 +46,11 @@ export function MyCompetencies({
         <div className={styles.competenciesContainer}>
           {
             data.skills.map((competency) => (
-              <div key={competency.skillId} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
-                {competency.skillName}
+              <div key={competency.id} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
+                {competency.name}
                 {isEditing &&
                   <button
-                    onClick={() => removeSkill(data.roleTypeId, competency.skillId)}
+                    onClick={() => removeSkill(data.roleTypeId, competency.id)}
                   >
                     <Cross className={styles.crossIcon}/>
                   </button>

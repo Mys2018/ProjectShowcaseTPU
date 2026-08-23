@@ -16,6 +16,7 @@ import type {ProjectCardData} from "@/entities/project";
 import {useUserById} from "@/entities/user";
 import {useNavigate} from "react-router-dom";
 import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import { mapDateToLocalString } from "@/shared";
 
 interface ProjectPageProps {
   project: ProjectCardData
@@ -106,7 +107,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
         />
 
         <KeyPoints
-          checkpoints={project.checkpoints}
+          checkpoints={project.checkpoints?.checkpoints.map(c => ({ title: c.title, deadline: mapDateToLocalString(c.deadline) }))}
         />
 
         <LinkContainer links={linksMock} />

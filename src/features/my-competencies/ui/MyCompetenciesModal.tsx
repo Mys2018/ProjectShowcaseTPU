@@ -1,5 +1,5 @@
 import styles from './MyCompetenciesModal.module.css'
-import type { Skill } from "@/features/my-competencies/model/types.ts";
+import type { Skill } from '@/entities/skill';
 
 type MyCompetenciesModalProps = {
   currentFullSkills: Skill[],
@@ -12,8 +12,8 @@ export const MyCompetenciesModal = ({ currentFullSkills, addSkill, setPopoverOpe
     <div className={styles.modalBody}>
       <div className={styles.skillsList}>
         {currentFullSkills.map((skill) => (
-          <button type="button" key={skill.skillId} className={styles.skill} onClick={() => addSkill(skill)}>
-            {skill.skillName}
+          <button type="button" key={skill.id} className={styles.skill} onClick={() => addSkill(skill)}>
+            {skill.name}
           </button>
         ))}
 

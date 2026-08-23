@@ -1,9 +1,8 @@
-import type { ProjectCardData } from '@/entities/project/model/types';
-import styles from './ProjectInfo.module.css'
-import { typeProjectsLabel, getProjectTagBackground } from '@/entities/project';
-import {InfoTooltip, LikeButton} from "@/shared";
-import {getPartnerById} from "@/entities/partner/api/requests.ts";
 import {useEffect, useState} from "react";
+import styles from './ProjectInfo.module.css'
+import {InfoTooltip, LikeButton} from "..";
+import { typeProjectsLabel, getProjectTagBackground, type ProjectCardData } from '@/entities/project';
+import {getPartnerById} from "@/entities/partner/api/requests.ts";
 import type {PartnerDto} from "@/entities/partner/api/types.ts";
 
 type ProjectInfoProps = {
@@ -25,17 +24,17 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
   }, [data.partnerId]);
 
   return (
-    <div className={styles.projectMain} style={{ background: getProjectTagBackground(data.primaryTag.tagName) }}>
+    <div className={styles.projectMain} style={{ background: getProjectTagBackground(data.primaryTag.name) }}>
       <div className={styles.topLabel}>
         <div className={styles.mainInfo}>
           <div className={styles.tags}>
             <div className={styles.tag}>
-              {data.primaryTag.tagName}
+              {data.primaryTag.name}
             </div>
             {
               data.tags.map(direction => (
-                <div key={direction.tagId} className={styles.tag}>
-                  {direction.tagName}
+                <div key={direction.id} className={styles.tag}>
+                  {direction.name}
                 </div>
               ))
             }
