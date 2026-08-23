@@ -4,8 +4,10 @@ import { SearchField } from "@/shared/ui";
 import { Filter } from "@/features/filter";
 import { ProjectsHeader } from "@/widgets/ProjectsHeader";
 import { Outlet } from "react-router-dom";
+import { usePageTitle } from "@/shared/model";
 
 export const Catalog = () => {
+  usePageTitle('каталогу');
   const filterRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
 

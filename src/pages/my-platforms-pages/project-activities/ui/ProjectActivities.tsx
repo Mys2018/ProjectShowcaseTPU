@@ -7,6 +7,7 @@ import { useProjectDraft, useDeleteDraft } from '@/entities/project'
 import { FloatingTabs, ROUTES, StagesWidget, YourPointsWidget, YourTasksWidget, type Activity, type ClosingDiscipline } from '@/shared'
 import Pencil from '@/shared/ui/icons/pencil.svg?react'
 import Trash from '@/shared/ui/icons/trash.svg?react'
+import { usePageTitle } from '@/shared/model'
 
 const TYPE_LABELS: Record<string, string> = {
   Study: 'Учебный',
@@ -30,6 +31,7 @@ function formatDraftDate(dateStr: string): string {
 }
 
 export const ProjectActivities = () => {
+  usePageTitle('моей платформе');
   const navigate = useNavigate()
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
