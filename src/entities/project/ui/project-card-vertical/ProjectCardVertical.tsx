@@ -1,31 +1,27 @@
-import styles from './ProjectCardVertical.module.css'
-import type { MouseEventHandler, ReactElement } from 'react'
-import type { ProjectCardData } from '../../model/types'
 import clsx from 'clsx'
+import type { MouseEventHandler, ReactElement } from 'react'
+import styles from './ProjectCardVertical.module.css'
+import type { ProjectCardData } from '../../model/types'
 import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader'
-import { getSortedTags } from '../../lib/tags'
-import { ProjectTags } from '../project-tags/ProjectTags'
 import { ProjectFormatBadge } from '../project-format-badge/ProjectFormatBadge'
-import { ProjectCompetencies } from '../project-competencies/ProjectCompetencies'
 
 interface ProjectCardVerticalProps {
   project: ProjectCardData
   small?: boolean
   headerSlot?: ReactElement
+  bodySlot?: ReactElement
   footerSlot?: ReactElement
   className?: string
   onClick?: MouseEventHandler<HTMLDivElement>
 }
 
-export function ProjectCardVertical({ project, small, headerSlot, footerSlot, className, onClick }: ProjectCardVerticalProps) {
-  const { primaryTag, tags, type, id, meta, roles } = project
+export function ProjectCardVertical({ project, small, headerSlot, bodySlot, footerSlot, className, onClick }: ProjectCardVerticalProps) {
+  const { primaryTag, type, id, meta } = project
   const { title } = meta
-  const sortedTags = getSortedTags(tags, primaryTag)
 
   return (
     <div className={clsx(styles.card, onClick && styles.clickable, className)} onClick={onClick}>
-      <ProjectCardHeader className={styles.header} label={primaryTag.tagName}>
-        {!small && <ProjectTags tags={sortedTags} visibleCount={1} />}
+      <ProjectCardHeader className={styles.header} label={primaryTag.name}>
         {headerSlot}
       </ProjectCardHeader>
       <div className={clsx(styles.content, small && styles.small)}>
@@ -40,7 +36,7 @@ export function ProjectCardVertical({ project, small, headerSlot, footerSlot, cl
             </div>
           )}
           <h3 className={styles.title}>{title}</h3>
-          {!small && <ProjectCompetencies className={styles.competencies} competencies={roles} />}
+          {bodySlot}
         </div>
         {footerSlot}
       </div>

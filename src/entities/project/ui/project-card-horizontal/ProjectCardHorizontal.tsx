@@ -2,10 +2,8 @@ import clsx from 'clsx'
 import type { MouseEventHandler, ReactElement } from 'react'
 import styles from './ProjectCardHorizontal.module.css'
 import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader'
-import { ProjectTags } from '../project-tags/ProjectTags'
 import { ProjectFormatBadge } from '../project-format-badge/ProjectFormatBadge'
 import type { ProjectCardData } from '../../model/types'
-import { getSortedTags } from '../../lib/tags'
 
 interface ProjectCardHorizontalProps {
   project: ProjectCardData
@@ -26,16 +24,14 @@ export function ProjectCardHorizontal({
   className,
   onClick
 }: ProjectCardHorizontalProps) {
-  const { primaryTag, tags, type, id, meta } = project
+  const { primaryTag, type, id, meta } = project
   const { title } = meta
-  const sortedTags = getSortedTags(tags, primaryTag)
 
   return (
     <div className={clsx(styles.card, onClick && styles.clickable, className)} onClick={onClick}>
-      <ProjectCardHeader className={styles.cover} label={primaryTag.tagName} rotated />
+      <ProjectCardHeader className={styles.cover} label={primaryTag.name} rotated />
       <div className={styles.content}>
         <div className={styles.header}>
-          <ProjectTags tags={sortedTags} />
           {headerSlot}
         </div>
         <div className={styles.main}>

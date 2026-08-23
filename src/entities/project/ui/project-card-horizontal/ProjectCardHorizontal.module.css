@@ -61,7 +61,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  
+
   min-width: 0;
 
   & .label,
@@ -70,7 +70,7 @@
 
     font: var(--font-inter);
     font-weight: 400;
-    
+
     color: var(--color-gray-600);
   }
 

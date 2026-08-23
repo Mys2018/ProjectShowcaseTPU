@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import type { ComponentPropsWithoutRef } from 'react'
 import styles from './ProjectCardHeader.module.css'
-import { getProjectTagBackground } from '../../lib/tags'
+import { getProjectTagBackground } from '../../lib/getProjectTagBackground'
 
 interface ProjectCardHeaderProps extends ComponentPropsWithoutRef<'div'> {
   label: string

@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import styles from './ProjectFormatBadge.module.css'
 import type { ProjectFormat } from '../../model/types'
 import { getProjectFormatTranslation } from '../../lib/translations'
-import { getProjectFormatIcon } from '../../lib/icons'
+import { getProjectFormatIcon } from '../../lib/getProjectFormatIcon'
 
 interface ProjectFormatBadgeProps {
   format: ProjectFormat
