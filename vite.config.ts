@@ -34,14 +34,7 @@ export default defineConfig({
           key: fs.readFileSync(keyPath),
           cert: fs.readFileSync(certPath)
         }
-      }),
-      proxy: {
-        '/dev/api': {
-          target: 'https://project.tpu.ru',
-          changeOrigin: true,
-          secure: false
-        }
-      }
+      })
     }
   })()
 })
