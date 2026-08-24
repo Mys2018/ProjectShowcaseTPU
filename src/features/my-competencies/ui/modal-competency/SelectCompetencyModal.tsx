@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import styles from './SelectCompetencyModal.module.css';
 import { useSkillsStore } from '@/features/my-competencies';
+import { useRoleTypes } from '@/entities/user/api/queries.ts';
 import { useCompetencies } from '@/entities/competency';
 import { Checkbox, ModalFooter, Modal } from '@/shared';
 
@@ -75,6 +76,7 @@ export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelect
               const isDisabled = !isChecked && selectedIds.length >= limit;
               return (
                 <Checkbox
+                  className={styles.checkbox}
                   key={competency.id}
                   label={competency.name}
                   checked={isChecked}

@@ -1,4 +1,5 @@
 import styles from './FooterBlockFields.module.css'
+import {FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
 
 type FooterBlockFieldsProps = {
   MIN_LENGTH?: number,
@@ -33,9 +34,6 @@ export const FooterBlockFields = ({
     if (valueLength < MIN_LENGTH) {
       return <p className={`${styles.footerLabel} ${isValidSymbol ? styles.success : styles.error}`}>Мин: {MIN_LENGTH} символов</p>
     }
-    // if (isValid) {
-    //   return <p className={`${styles.footerLabel} ${isValidAnother ? styles.success : styles.error}`}>Не забывай про законы РФ</p>
-    // }
     if (isValid) {
       return <p></p>
     }
@@ -48,16 +46,15 @@ export const FooterBlockFields = ({
         label()
       }
       <div className={styles.buttonContainer}>
-        <button className={styles.cancelButton} onClick={handleCancel}>
-          Отмена
-        </button>
-        <button
-          className={styles.saveButton}
+        <GreyButton
+          onClick={handleCancel}
+          textButton={'Отмена'}
+        />
+        <FilledButton
           onClick={handleSubmit}
           disabled={disabled}
-        >
-          Сохранить изменения
-        </button>
+          textButton={'Сохранить изменения'}
+        />
       </div>
     </div>
   );

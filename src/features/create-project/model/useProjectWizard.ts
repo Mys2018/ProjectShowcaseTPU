@@ -36,7 +36,7 @@ export const baseProjectSchema = z.object({
       name: z.string(),
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
     })
-  ).min(1, 'Минимум 1 ссылка'),
+  ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
     title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),
     description: z.string().min(PROJECT_LIMITS.meta.description.min, `Минимум ${PROJECT_LIMITS.meta.description.min} символов`).max(PROJECT_LIMITS.meta.description.max, `Максимум ${PROJECT_LIMITS.meta.description.max} символов`),
@@ -155,7 +155,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' }],
+  checkpoints: [{ title: '', deadline: '' },{ title: '', deadline: '' },{ title: '', deadline: '' }],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -169,6 +169,23 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   const [currentStep, setCurrentStep] = useState(1);
   const [highestStep, setHighestStep] = useState(1);
   const [stepErrors, setStepErrors] = useState<StepErrors>({});
+  const [blinkFields, setBlinkFields] = useState<string[]>([]);
+  const [isRestored, setIsRestored] = useState(false);
+
+  useEffect(() => {
+    if (defaultValues && !isRestored) {
+      const savedStep = (defaultValues as any).currentStep;
+      const savedHighest = (defaultValues as any).highestStep;
+      if (savedStep && savedHighest) {
+        setCurrentStep(savedStep);
+        setHighestStep(savedHighest);
+        setIsRestored(true);
+      }
+    }
+  }, [defaultValues, isRestored]);
+
+  // Extract non-form fields so they don't get passed to useForm
+  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {}) as any;
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
@@ -177,7 +194,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     },
     defaultValues: {
       ...STUDY_DEFAULTS,
-      ...defaultValues,
+      ...formDefaultValues,
     } as CreateProjectFormValues,
 
     onSubmit: async ({ value }) => {
@@ -316,7 +333,6 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   const setStep = (step: number) => {
     if (step > highestStep) return;
 
-    // Validate current step if moving forward
     if (step > currentStep) {
       if (!validateCurrentStep()) return;
     }
@@ -324,5 +340,5 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     setCurrentStep(step);
   };
 
-  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep };
+  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields };
 };

@@ -1,28 +1,33 @@
 import styles from "./DesktopLayoutProjectPage.module.css";
-import {ProfileWidget} from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
-import {KeyPoints} from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
-import {LinkContainer} from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
+import { ProfileWidget } from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
+import { KeyPoints } from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
+import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
 import clsx from "clsx";
-import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
-import {ProjectPrd} from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import {FreeCompetencies} from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
-import {ProjectTeam} from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
+import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
+import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
+import { FreeCompetencies } from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
+import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
+import IdIcon from '@/shared/ui/icons/id.svg?react';
 import BackIcon from '@/shared/ui/icons/back.svg?react';
-import MoreLogo from '@/shared/ui/icons/more.svg?react'
-import {useEffect, useRef, useState} from "react";
-import type {ProjectCardData} from "@/entities/project";
+import MoreIcon from '@/shared/ui/icons/more.svg?react'
+import { useEffect, useRef, useState } from "react";
+import type { ProjectCardData } from "@/entities/project";
 // TODO
-import {useUserById} from "@/entities/user";
-import {useNavigate} from "react-router-dom";
-import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import { mapDateToLocalString } from "@/shared";
+import { useUserById } from "@/entities/user";
+import { useNavigate } from "react-router-dom";
+import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
 
 interface ProjectPageProps {
   project: ProjectCardData
 }
 
-export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
+export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
+  usePageTitle('проекту');
+  const backTitle = usePreviousPageTitle('Назад к списку проектов');
 
   const navigate = useNavigate();
 
@@ -38,7 +43,7 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
   const titleLabelRef = useRef<HTMLElement>(null)
   const titleTextRef = useRef<HTMLSpanElement>(null)
 
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(true);
 
   useEffect(() => {
     const label = titleLabelRef.current
@@ -92,9 +97,11 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.headerLeft} onClick={() => navigate(-1)}>
-        <BackIcon className={styles.backIcon}/>
-        <p className={styles.back}>Назад</p>
+      <div className={styles.headerLeft} onClick={() => {
+        navigate(-1)
+      }}>
+        <BackIcon className={styles.backIcon} />
+        <p className={styles.back}>{backTitle}</p>
       </div>
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
@@ -153,7 +160,19 @@ export const DesktopLayoutProjectPage = ({project}: ProjectPageProps) => {
           <ShareIcon />
           Поделиться проектом
         </a>
-        <MoreLogo className={styles.modeButton}/>
+
+        <PopupMenu
+          trigger={<button
+            type="button"
+            className={styles.moreMenuButton}
+          >
+            <MoreIcon />
+          </button>}
+        >
+          <PopupMenu.Row onClick={() => { }} title={'Скопировать ID'}>
+            <IdIcon />
+          </PopupMenu.Row>
+        </PopupMenu>
       </aside>
 
       <aside className={styles.rightWidgets} ref={rightWidgetsRef} onScroll={handleScroll}>

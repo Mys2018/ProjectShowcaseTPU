@@ -1,14 +1,15 @@
 import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
-import {SmallTextFieldForm} from '@/shared/ui/fields/text-field/TextField.tsx';
+import { SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+import clsx from 'clsx';
 import styles from './RequirementList.module.css';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react'
-import {PlusButton} from "@/shared/ui/elements/plus-button/PlusButton.tsx";
-import {EmptyStateBlock} from "@/shared/ui/empty-state-block/EmptyStateBlock.tsx";
+import { PlusButton } from "@/shared/ui/elements/buttons/plus-button/PlusButton.tsx";
+import { EmptyStateBlock } from "@/shared/ui/empty-state-block/EmptyStateBlock.tsx";
 
 interface RequirementListProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
-  name: any; // name of the array field, e.g. "prdMeta.functional"
+  name: string; // name of the array field, e.g. "prdMeta.functional"
   title?: string;
   placeholder?: string;
   maxLength?: number;
@@ -17,8 +18,9 @@ interface RequirementListProps {
   valueKey?: string;
   subtitleKey?: string;
   minItems?: number;
-  emptyStateTitle?: string | React.ReactNode;
-  emptyStateDescription?: string | React.ReactNode;
+  emptyStateTitle?: string;
+  emptyStateDescription?: string;
+  isBlink?: boolean;
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
@@ -29,12 +31,12 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 3, emptyStateTitle, emptyStateDescription }: RequirementListProps) {
+export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 3, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
   return (
-    <div className={styles.container}>
+    <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}
-      
-      <form.Field name={name} mode="array">
+
+      <form.Field name={name as any} mode="array">
         {(field) => {
           // Initialize with empty array
           const items = (field.state.value as any[]) || [];
@@ -52,7 +54,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
             field.removeValue(index);
           };
 
-          if (items.length === 0 && (emptyStateTitle || emptyStateDescription)) {
+          if (items.length === 0 && (emptyStateTitle && emptyStateDescription)) {
             return (
               <div className={styles.errorWrapper}>
                 <EmptyStateBlock
@@ -72,11 +74,11 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
           }
 
           return (
-            <div className={styles.list}>
+            <div className={clsx(styles.list, isBlink && 'blink-1')}>
               {items.map((item, index) => {
                 const prefix = valueKey ? `${name}[${index}].${valueKey}` as any : `${name}[${index}]` as any;
                 const subtitle = subtitleKey && item ? item[subtitleKey] : undefined;
-                
+
                 return (
                   <div key={index} className={styles.item}>
                     <div className={styles.inputWrapper}>
@@ -89,16 +91,16 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                             onChange={(e) => subField.handleChange(e.target.value as any)}
                             maxLength={maxLength}
                             validError={
-                              subField.state.meta.errors.length > 0 
-                                ? getErrorMessage(subField.state.meta.errors[0]) 
+                              subField.state.meta.errors.length > 0
+                                ? getErrorMessage(subField.state.meta.errors[0])
                                 : stepErrors[valueKey ? `${name}.${index}.${valueKey}` : `${name}.${index}`]?.[0]
                             }
                             children={
                               items.length > minItems && (
-                                  <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
-                                    <TrashIcon/>
-                                  </button>
-                                )
+                                <button type="button" onClick={() => handleRemove(index)} className={styles.removeButton}>
+                                  <TrashIcon />
+                                </button>
+                              )
                             }
                           />
                         )}
@@ -108,13 +110,13 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                 );
               })}
 
-              <PlusButton text={addBtnText} onClick={handleAdd}/>
+              <PlusButton text={addBtnText} onClick={handleAdd} />
 
               {field.state.meta.errors.length > 0 && (
-                 <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>
+                <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>
               )}
               {stepErrors[name] && (
-                 <span className={styles.errorText}>{stepErrors[name]?.[0]}</span>
+                <span className={styles.errorText}>{stepErrors[name]?.[0]}</span>
               )}
             </div>
           );

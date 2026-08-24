@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import styles from './CheckpointsBlock.module.css'
-import {PlusButton} from "@/shared/ui/elements/plus-button/PlusButton.tsx";
+import {PlusButton} from "@/shared/ui/elements/buttons/plus-button/PlusButton.tsx";
 import EditIcon from '@/shared/ui/icons/pencil.svg?react';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
 
@@ -15,11 +15,12 @@ interface CheckpointsBlockProps {
   addCheckpoint: () => void
   onEditCheckpoint?: (index: number) => void
   onDeleteCheckpoint?: (index: number) => void
+  isBlink?: boolean
 }
 
-export const CheckpointsBlock = ({checkpoints, addCheckpoint, onEditCheckpoint, onDeleteCheckpoint}: CheckpointsBlockProps) => {
+export const CheckpointsBlock = ({checkpoints, addCheckpoint, onEditCheckpoint, onDeleteCheckpoint, isBlink}: CheckpointsBlockProps) => {
   return (
-    <div className={styles.checkpointsBlock}>
+    <div className={clsx(styles.checkpointsBlock, isBlink && 'blink-1')}>
       <div className={styles.checkpointsList}>
         {
           checkpoints.map((checkpoint, index) => (
@@ -29,7 +30,7 @@ export const CheckpointsBlock = ({checkpoints, addCheckpoint, onEditCheckpoint, 
                 {index + 1}
               </div>
 
-              <div className={clsx(styles.content, !checkpoint.isImmutable ? styles.mutable: '')}>
+              <div className={clsx(styles.content, !checkpoint.isImmutable ? styles.mutable : '')}>
                 <div className={styles.card}>
                   <div className={styles.textContainer}>
                     <p>

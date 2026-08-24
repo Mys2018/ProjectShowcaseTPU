@@ -3,7 +3,7 @@ import styles from './MyCompetenciesList.module.css';
 import { MyCompetencies } from "@/features/my-competencies/ui/MyCompetencies.tsx";
 import Plus from '@/shared/ui/icons/plus.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';
-import { FooterBlockFields } from "@/shared";
+import { EmptyStateBlock, FooterBlockFields } from "@/shared";
 import { useSkillsStore } from "@/features/my-competencies/model/store/useSkillsStore.ts";
 import { useModalStore, useProfileEditStore } from "@/shared/model";
 import { useUpdateProfileMeta } from '@/entities/user/api/queries';
@@ -102,7 +102,7 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
       roleTypeId: comp.roleTypeId,
       skillIds: comp.skills.map(s => s.id)
     }));
-    
+
     updateProfile(
       { skills: skillsPayload },
       {
@@ -120,8 +120,8 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
   return (
     <div className={styles.mainContainer}>
       <div className={styles.bioContainer}>
-        <h3>Мои навыки</h3>
-        {(!isEditing && !readonly) && (
+        {(!readonly || draftData.length > 0) && <h3>Мои навыки</h3>}
+        {(!isEditing && !readonly && draftData.length > 0) && (
           <button
             className={styles.editButton}
             onClick={handleStartEditing}
@@ -132,24 +132,40 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
           </button>
         )}
       </div>
-      <div className={styles.myCompetenciesList}>
-        {draftData.map((competency) => (
-          <div key={competency.roleTypeId} className={styles.competencyContainer}>
-            <MyCompetencies
-              data={competency}
-              removeSkill={removeSkill}
-              addSkill={addSkill}
-              removeCompetency={removeCompetency}
-              popoverOpenFor={popoverOpenFor}
-              setPopoverOpenFor={setPopoverOpenFor}
-              isEditing={isEditing}
-              getSkillsForCompetence={getSkillsForCompetence}
-              currentFullSkills={currentFullSkills}
-              isLastCompetency={draftData.length === 1}
-            />
+      {
+        !readonly && !isEditing && draftData.length === 0 ? (
+          <EmptyStateBlock
+            onAddClick={() => {
+              handleStartEditing();
+              openModal('COMPETENCY_CHOICE');
+            }}
+            title={'Кем хотите быть в проектах?'}
+            description={'Укажите свои компетенции и навыки, чтобы находить подходящие проекты и откликаться на них.'}
+            buttonText={'Добавить компетенцию'}
+            firstTime={true}
+          />
+        ) : (
+          <div className={styles.myCompetenciesList}>
+            {draftData.map((competency) => (
+              <div key={competency.roleTypeId} className={styles.competencyContainer}>
+                <MyCompetencies
+                  data={competency}
+                  removeSkill={removeSkill}
+                  addSkill={addSkill}
+                  removeCompetency={removeCompetency}
+                  popoverOpenFor={popoverOpenFor}
+                  setPopoverOpenFor={setPopoverOpenFor}
+                  isEditing={isEditing}
+                  getSkillsForCompetence={getSkillsForCompetence}
+                  currentFullSkills={currentFullSkills}
+                  isLastCompetency={draftData.length === 1}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        )
+      }
+
       {isEditing &&
         <button
           className={styles.addCompetencyBtn}

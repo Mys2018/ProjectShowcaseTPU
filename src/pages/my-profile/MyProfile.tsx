@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useBlocker } from 'react-router-dom';
 import styles from './MyProfile.module.css';
 import { ProfileHeader } from '@/widgets/profile-header';
+import { MyInterests } from "@/features/my-interests";
 import { AboutMe } from "@/features/about-me";
 import { MyCompetenciesList } from "@/features/my-competencies";
 import { Portfolio } from "@/features/portfolio";
@@ -11,8 +12,12 @@ import EyeIcon from '@/shared/ui/icons/eye.svg?react';
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import { useProfileEditStore, useModalStore } from '@/shared/model';
 import { ROUTES } from '@/shared';
+import { usePageTitle, usePreviousPageTitle } from '@/shared/model';
 
 export const MyProfile = () => {
+  usePageTitle('моему профилю');
+  const backTitle = usePreviousPageTitle('Назад к списку проектов');
+
   const navigate = useNavigate();
   const { data: user } = useMe();
   const { activeEditBlock, hasUnsavedChanges, setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore();
@@ -57,13 +62,11 @@ export const MyProfile = () => {
     return null;
   }
 
-  console.log(user.meta.portfolioLink)
-
   return (
     <div className={styles.mainContent}>
       <section className={styles.headerLeft} onClick={() => void navigate(-1)}>
         <BackIcon className={styles.backIcon}/>
-        <p className={styles.back}>Назад к списку проектов</p>
+        <p className={styles.back}>{backTitle}</p>
       </section>
 
       <section className={styles.title}>
@@ -82,13 +85,23 @@ export const MyProfile = () => {
           <ProfileHeader data={user} links={user.meta.messengers} />
         </div>
         <div className={styles.body}>
-          <div style={{ opacity: activeEditBlock === 'competencies' ? 0.5 : 1, pointerEvents: activeEditBlock === 'competencies' ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'aboutMe') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <AboutMe
+              MAX_LENGTH={500}
+              MIN_LENGTH={100}
               bio={user.meta.bio}
               className={styles.wid}
             />
           </div>
-          <div style={{ opacity: activeEditBlock === 'aboutMe' ? 0.5 : 1, pointerEvents: activeEditBlock === 'aboutMe' ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'interests') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'interests') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
+            <MyInterests
+              MAX_LENGTH={500}
+              MIN_LENGTH={100}
+              interests={user.meta.interests}
+              className={styles.wid}
+            />
+          </div>
+          <div style={{ opacity: (activeEditBlock && activeEditBlock !== 'competencies') ? 0.5 : 1, pointerEvents: (activeEditBlock && activeEditBlock !== 'competencies') ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>
             <MyCompetenciesList savedSkills={user.meta.skills} />
           </div>
           <div style={{ opacity: activeEditBlock ? 0.5 : 1, pointerEvents: activeEditBlock ? 'none' : 'auto', transition: 'opacity 0.2s', flex: 1 }}>

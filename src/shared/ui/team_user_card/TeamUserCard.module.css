@@ -1,0 +1,70 @@
+.leftHalf {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userIcon {
+  width: 48px;
+  height: 48px;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: start;
+  min-width: 0;
+}
+
+.name {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moreInfo {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  align-items: center;
+}
+
+.moreInfo p {
+  font: var(--field-label-interface);
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+
+.moreInfo p:first-child {
+  flex-shrink: 0;
+}
+
+.moreInfo p:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.verticalSeparator {
+  width: 1px;
+  height: 12px;
+  background-color: var(--color-gray-100);
+  flex-shrink: 0;
+}

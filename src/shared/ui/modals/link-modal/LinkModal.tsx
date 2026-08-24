@@ -1,8 +1,7 @@
 import styles from './LinkModal.module.css'
-import { Modal } from "@/shared/ui/modal/Modal.tsx";
-import TrashIcon from "@/shared/ui/icons/trash.svg?react"
 import { useEffect, useState } from "react";
-import clsx from "clsx";
+import { Modal } from "@/shared/ui/modals/modal/Modal.tsx";
+import {DeleteButton, FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
 
 type LinkModalProps = {
   isOpen: boolean,
@@ -66,13 +65,10 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
           <h3>
             {typeLink}
           </h3>
-          <button
-            className={styles.deleteButton}
+          <DeleteButton
             onClick={handleDelete}
-          >
-            <TrashIcon />
-            Удалить
-          </button>
+            textButton={'Удалить'}
+          />
         </div>
       </Modal.SpecialBlock>
 
@@ -89,12 +85,15 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
 
       <Modal.Footer>
         <div className={styles.buttonContainer}>
-          <button onClick={onClose}>
-            Отмена
-          </button>
-          <button className={clsx(styles.submitButton, firstValue === value ? styles.disable : '')} onClick={handleSubmit}>
-            Сохранить изменения
-          </button>
+          <GreyButton
+            onClick={onClose}
+            textButton={'Отмена'}
+          />
+          <FilledButton
+            onClick={handleSubmit}
+            disabled={ firstValue === value}
+            textButton={'Сохранить изменения'}
+          />
         </div>
       </Modal.Footer>
     </Modal>

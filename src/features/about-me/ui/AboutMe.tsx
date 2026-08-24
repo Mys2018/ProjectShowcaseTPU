@@ -1,18 +1,18 @@
 import styles from './AboutMe.module.css';
-import Pencil from '@/shared/ui/icons/pencil.svg?react'
 import { type ChangeEvent, useState, useEffect } from "react";
-import { FooterBlockFields, TextArea } from "@/shared";
 import { useUpdateProfileMeta } from '@/entities/user/api/queries';
+import Pencil from '@/shared/ui/icons/pencil.svg?react'
+import { FooterBlockFields, TextArea } from "@/shared";
 import { useModalStore, useProfileEditStore } from '@/shared/model';
 
 type AboutMeProps = {
+  MAX_LENGTH: number,
+  MIN_LENGTH: number,
   bio: string,
   className: string
 };
 
-export function AboutMe({ bio, className }: AboutMeProps) {
-  const MAX_LENGTH = 500
-  const MIN_LENGTH = 100
+export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps) {
 
   const [value, setValue] = useState<string>(bio || '')
   const [prevValue, setPrevValue] = useState<string>(bio || '')

@@ -18,6 +18,7 @@ export type User = UserBase & {
     firstName: string
     lastName: string
     bio: string
+    interests: string
     skills: CompetenceDto[]
     experience: string,
     messengers: Messengers,
@@ -64,6 +65,7 @@ export type UserDto = {
     firstName: string
     lastName: string
     bio: string
+    interests: string
     skills: CompetenceDto[]
     experience: string,
     messengers: Messengers

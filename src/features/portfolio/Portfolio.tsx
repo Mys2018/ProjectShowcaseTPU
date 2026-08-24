@@ -1,6 +1,7 @@
 import styles from './Portfolio.module.css'
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import {useState} from "react";
+import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 import {useUpdateProfileMeta} from "@/entities/user/api/queries.ts";
 
 type PortfolioProps = {
@@ -67,7 +68,7 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
               }}
               disabled={readonly}
               className={styles.input}
-              placeholder="Вставьте ссылку на портфолио"
+              placeholder={readonly ? "Портфолио отсутствует" : "Вставьте ссылку на портфолио"}
             />
             {!readonly ? (
               <div className={styles.buttonContainer}>
@@ -83,10 +84,12 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
               </div>
             ) : (
               <button className={styles.saveButton}
+                disabled={!value}
                 onClick={ () => {
-                  window.open(value, '_blank', 'noopener, noreferrer');
+                  if (value) {
+                    window.open(value, '_blank', 'noopener, noreferrer');
+                  }
                 }
-
                 }
               >
                   Посмотреть
@@ -101,6 +104,7 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
             </p>
           )}
         </div>
+        {readonly && <img className={styles.image} src={blankPictureSrc} alt={"Картинка портфолио"}/>}
       </div>
     </div>
   )

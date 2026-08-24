@@ -1,0 +1,16 @@
+.deleteButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: var(--inter-12-300);
+  color: var(--color-gray-400);
+  transition: all 0.5s ease;
+}
+
+.deleteButton:hover {
+  color: var(--color-red);
+}
+
+.deleteButton:active {
+  color: var(--color-dark-red);
+}

@@ -23,14 +23,29 @@ import {
 // import {useProjectDraft} from "@/entities/project";
 // import {useNavigate} from "react-router-dom";
 
-export const MyPlatformPage = () => {
+export const ProjectActivities = () => {
+  usePageTitle('моей платформе');
+  const navigate = useNavigate()
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-  // const { data: draft } = useProjectDraft();
-  // const navigate = useNavigate();
-  //
-  // const draftTitle = (draft?.data as Record<string, { title?: string }>)?.meta?.title || 'Без названия';
+  const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
+  const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
+
+  const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
+  const draftTitle = draftValues?.meta?.title || 'Без названия'
+  const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
+  const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
+  const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
+
+  const handleContinueDraft = () => {
+    navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
+  }
+
+  const handleDeleteDraft = () => {
+    deleteDraft()
+  }
+
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
       {

@@ -1,5 +1,6 @@
-import { Modal } from '@/shared/ui/modal/Modal';
 import styles from './AvatarUploadModal.module.css';
+import { Modal } from '@/shared/ui/modals/modal/Modal';
+import {GreyButton, FilledButton} from "@/shared/ui/elements/buttons";
 
 interface AvatarUploadModalProps {
   isOpen: boolean;
@@ -16,12 +17,14 @@ export const AvatarUploadModal = ({ isOpen, onClose }: AvatarUploadModalProps) =
         </p>
       </Modal.Body>
       <Modal.Footer>
-        <button className={styles.cancelBtn} onClick={onClose}>
-          Отмена
-        </button>
-        <a href="https://lk.tpu.ru/profile/avatar_editor" target="_blank" rel="noreferrer" className={styles.linkBtn}>
-          Перейти в Личный кабинет
-        </a>
+        <GreyButton
+          onClick={onClose}
+          textButton={'Отмена'}
+        />
+        <FilledButton
+          onClick={() => window.open("https://lk.tpu.ru/profile/avatar_editor", "_blank", "noreferrer")}
+          textButton={'Перейти в Личный кабинет'}
+        />
       </Modal.Footer>
     </Modal>
   );

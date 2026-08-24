@@ -21,6 +21,13 @@
   gap: 16px;
 }
 
+.transparentContent {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  gap: 8px;
+}
+
 .header {
   display: flex;
   flex-direction: column;

@@ -7,9 +7,10 @@ import { useModalStore, AddOutlineButton, EmptyStateBlock } from '@/shared';
 interface TabProps {
   form: CreateProjectForm;
   stepErrors?: StepErrors;
+  blinkFields: string[];
 }
 
-export function RolesTab({ form, stepErrors }: TabProps) {
+export function RolesTab({ form, stepErrors, blinkFields }: TabProps) {
   const { openModal } = useModalStore();
   const { data: globalSkills = [] } = useSkills();
 
@@ -17,21 +18,27 @@ export function RolesTab({ form, stepErrors }: TabProps) {
     const currentRoles = form.state.values.roles || [];
 
     openModal('COMPETENCY_CHOICE', {
-      initialSelectedIds: currentRoles.map(r => r.roleTypeId),
+      initialSelectedIds: [...new Set(currentRoles.map(r => r.roleTypeId))],
       onSubmitCallback: (selectedRoles: { id: string, name: string }[]) => {
         const currentRolesForSubmit = form.state.values.roles || [];
-        const newRoles = selectedRoles.map(selectedRole => {
-          const existing = currentRolesForSubmit.find(r => r.roleTypeId === selectedRole.id);
-          if (existing) return existing;
-          return {
-            roleTypeId: selectedRole.id,
+        const selectedIds = new Set(selectedRoles.map(r => r.id));
+
+        // Keep all existing roles whose roleTypeId is still selected
+        const keptRoles = currentRolesForSubmit.filter(r => selectedIds.has(r.roleTypeId));
+
+        // Find which selected roles are completely new (no existing role with that ID)
+        const existingIds = new Set(currentRolesForSubmit.map(r => r.roleTypeId));
+        const brandNewRoles = selectedRoles
+          .filter(sr => !existingIds.has(sr.id))
+          .map(sr => ({
+            roleTypeId: sr.id,
             placesCount: 1,
             minPlacesCount: 1,
-            meta: { name: selectedRole.name, description: '' },
+            meta: { name: sr.name, description: '' },
             skills: [],
-          };
-        });
-        form.setFieldValue('roles', newRoles);
+          }));
+
+        form.setFieldValue('roles', [...keptRoles, ...brandNewRoles]);
       }
     });
   };
@@ -53,7 +60,7 @@ export function RolesTab({ form, stepErrors }: TabProps) {
               return (
                 <EmptyStateBlock
                   title="Какие специалисты нужны проекту?"
-                  description={<>Укажите компетенции и навыки, необходимые<br/>для успешной реализации ваших задач.</>}
+                  description={'Укажите компетенции и навыки, необходимые для успешной реализации ваших задач.'}
                   buttonText="Добавить компетенцию"
                   onAddClick={handleAddRoleClick}
                   errorState={!!stepErrors?.['roles']}
@@ -69,6 +76,7 @@ export function RolesTab({ form, stepErrors }: TabProps) {
                     index={index}
                     form={form}
                     globalSkills={globalSkills}
+                    isBlink={blinkFields.includes('Компетенции')}
                   />
                 ))}
 

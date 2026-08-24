@@ -111,6 +111,8 @@ input {
   opacity: 0;
 }
 
+
+
 @media (max-width: 768px) {
   .hidden-mobile {
     display: none;

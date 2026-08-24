@@ -223,11 +223,134 @@
   }
 }
 
-@media (max-width: 1024px) {
-  .heroWrapper {
-    padding: 12px;
-  }
+.draftsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
+
+.draftsTitle {
+  font: var(--subhead-interface);
+  color: var(--color-gray-650);
+}
+
+.templateDraftCard {
+  background-color: white;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.templateDraftCard:hover {
+  border-color: var(--color-brand-violet);
+  box-shadow: var(--card-drop-shadow);
+}
+
+.draftCardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.draftCardTitle {
+  font: var(--card-title-platform);
+  color: var(--color-brand-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.draftCardMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.draftCardType {
+  font: var(--inter-11-600);
+  color: var(--color-brand-violet);
+  background-color: rgba(101, 115, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.draftCardDate {
+  font: var(--body-small-platform);
+  color: var(--color-gray-400);
+}
+
+.draftCardActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.draftContinueBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--color-brand-violet);
+  color: var(--color-white);
+  font: var(--inter-12-500);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.draftContinueBtn:hover {
+  opacity: 0.85;
+}
+
+.draftContinueBtn svg {
+  width: 14px;
+  height: 14px;
+  fill: var(--color-white);
+}
+
+.draftDeleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--color-gray-200);
+  background-color: transparent;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.draftDeleteBtn:hover {
+  border-color: var(--color-red);
+  background-color: var(--color-red-error-bg);
+}
+
+.draftDeleteBtn svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--color-gray-500);
+  transition: fill 0.2s ease;
+}
+
+.draftDeleteBtn:hover svg {
+  fill: var(--color-red);
+}
+
+.draftDeleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 @media (max-width: 768px) {
   .container {

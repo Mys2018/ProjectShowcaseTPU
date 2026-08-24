@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styles from './CreateProjectPage.module.css';
-import { BackArrowIcon } from '@/shared';
+import BackIcon from '@/shared/ui/icons/back.svg?react';
 import { CreateProjectCard } from '@/shared/ui/create-project-card/CreateProjectCard.tsx';
 import { ProjectInfoStep } from '@/features/create-project/ui/ProjectInfoStep';
 import {
@@ -12,16 +12,20 @@ import { useCreateProject } from '@/entities/project/api/queries';
 import type { CreateProjectRequestType } from '@/entities/project/model/types';
 
 import { usePartners } from '@/entities/partner/api/queries';
-import {CreateProjectProgressWidget} from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
-import {getSaveStatus} from "@/shared/constants/save-status-drafts/getSaveStatus.tsx";
+import { CreateProjectProgressWidget } from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
+import { getSaveStatus } from "@/shared/constants/save-status-drafts/getSaveStatus.tsx";
 import { useProjectDraft, useSaveDraft, useDeleteDraft } from '@/entities/project/api/queries';
 import type { StatusType } from '@/shared/constants/save-status-drafts/getSaveStatus.tsx';
+import { usePageTitle, usePreviousPageTitle } from '@/shared/model';
 
 type PageStep = 'type-select' | 'fill';
 
 const AUTOSAVE_DELAY_MS = 3000;
 
-export function CreateProjectPage() {
+export default function CreateProjectPage() {
+  usePageTitle('созданию проекта');
+  const backTitle = usePreviousPageTitle('Назад к списку проектов');
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
@@ -39,14 +43,13 @@ export function CreateProjectPage() {
 
   const { mutate: createProject, isPending } = useCreateProject();
 
-  // Determine default values from draft if available
   const draftDefaultValues = isDraftMode && draftData?.data
     ? (draftData.data as Partial<CreateProjectFormValues>)
     : undefined;
 
   const initialType = draftDefaultValues?.type || selectedType;
 
-  const { form, stepErrors, currentStep, nextStep, prevStep, setStep } = useProjectWizard({
+  const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
     defaultValues: {
       type: initialType,
       ...draftDefaultValues,
@@ -75,7 +78,8 @@ export function CreateProjectPage() {
 
   const performAutoSave = useCallback(() => {
     const currentValues = form.state.values;
-    const serialized = JSON.stringify(currentValues);
+    const draftPayload = { ...currentValues, currentStep, highestStep };
+    const serialized = JSON.stringify(draftPayload);
 
     // Skip save if nothing changed
     if (serialized === previousValuesRef.current) return;
@@ -83,7 +87,7 @@ export function CreateProjectPage() {
 
     setSaveStatus('save');
 
-    saveDraft(currentValues as unknown as Record<string, unknown>, {
+    saveDraft(draftPayload as unknown as Record<string, unknown>, {
       onSuccess: () => {
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
@@ -138,9 +142,9 @@ export function CreateProjectPage() {
     if (type === 'Study') {
       form.setFieldValue('prdMeta', { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] });
     } else if (type === 'Case') {
-      form.setFieldValue('prdMeta', { prerequisites: '', projectGoal: '', audience: [{title: '', description: '', minAge: 18, maxAge: 35}], functional: ['', '', ''], problemStatement: '' });
+      form.setFieldValue('prdMeta', { prerequisites: '', projectGoal: '', audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }], functional: ['', '', ''], problemStatement: '' });
     } else {
-      form.setFieldValue('prdMeta', { productVision: '', projectGoal: '', businessGoal: '', audience: [{title: '', description: '', minAge: 18, maxAge: 35}], functional: ['', '', ''], nonFunctional: ['', '', ''], businessMetrics: [''], projectPlan: [''] });
+      form.setFieldValue('prdMeta', { productVision: '', projectGoal: '', businessGoal: '', audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }], functional: ['', '', ''], nonFunctional: ['', '', ''], businessMetrics: [''], projectPlan: [''] });
     }
     setPageStep('fill');
   };
@@ -149,7 +153,7 @@ export function CreateProjectPage() {
     // Save current state as draft and navigate back
     const currentValues = form.state.values;
     saveDraft(currentValues as unknown as Record<string, unknown>, {
-      onSuccess: () => void navigate(-1),
+      onSuccess: () => navigate(-1),
     });
   };
 
@@ -168,9 +172,9 @@ export function CreateProjectPage() {
   if (pageStep === 'type-select') {
     return (
       <main className={styles.mainContent}>
-        <div className={styles.headerLeft} onClick={() => void navigate(-1)}>
-          <BackArrowIcon />
-          <p>Назад к списку проектов</p>
+        <div className={styles.headerLeft} onClick={() => navigate(-1)}>
+          <BackIcon />
+          <p>{backTitle}</p>
         </div>
 
         <h1 className={styles.title}>Новый проект</h1>
@@ -202,7 +206,7 @@ export function CreateProjectPage() {
           className={styles.headerLeft}
           onClick={() => setPageStep('type-select')}
         >
-          <BackArrowIcon />
+          <BackIcon />
           <p>Назад к выбору типа проекта</p>
         </div>
 
@@ -237,6 +241,8 @@ export function CreateProjectPage() {
             nextStep={nextStep}
             prevStep={prevStep}
             setStep={setStep}
+            blinkFields={blinkFields}
+            setBlinkFields={setBlinkFields}
           />
         </section>
       </main>
