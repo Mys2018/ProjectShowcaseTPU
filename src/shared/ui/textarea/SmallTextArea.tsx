@@ -18,6 +18,8 @@ export function TextArea({ value, maxLength, handleChange, isDisable, isValid, i
 
       </p>
       <textarea
+        name="smallTextarea"
+        id="smallTextarea"
         value={value}
         onChange={handleChange}
         disabled={isDisable}

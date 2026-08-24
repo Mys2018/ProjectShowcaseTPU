@@ -8,14 +8,31 @@ type ModalProps = {
   variant?: 'default' | 'transparent'
 }
 
+import { useRef } from 'react';
+
 export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalProps) {
+  const isOverlayClicked = useRef(false);
+
   if (!isOpen) return null;
 
   const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''}`
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={contentClass} onClick={e => e.stopPropagation()}>
+    <div 
+      className={styles.overlay} 
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) {
+          isOverlayClicked.current = true;
+        }
+      }}
+      onMouseUp={(e) => {
+        if (isOverlayClicked.current && e.target === e.currentTarget) {
+          onClose();
+        }
+        isOverlayClicked.current = false;
+      }}
+    >
+      <div className={contentClass}>
         {children}
       </div>
     </div>

@@ -60,6 +60,8 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
         <div className={styles.validContainer}>
           <label className={isError ? styles.errorState : ''}>
             <input
+              name="portfolioLink"
+              id="portfolioLink"
               type="url"
               value={value}
               onChange={(e) => {

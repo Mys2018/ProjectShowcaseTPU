@@ -192,7 +192,7 @@ export const FreeCompetencies = ({roles}: FreeCompetenciesProps) => {
                     size={'small'}
                     pointer={'topRight'}
                     greenButtonText={'Перейти к заполнению'}
-                    onClickGreenButtonText={() => { navigate(`/${ROUTES.MY_PROFILE}`) }}
+                    onClickGreenButtonText={() => { navigate(ROUTES.PROFILE.BASE) }}
                   >
                     <FeedBackButton
                       isActiveFeedBack={isActiveFeedBack}

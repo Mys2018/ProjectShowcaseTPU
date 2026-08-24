@@ -23,7 +23,7 @@ export function UserCard({ profilePicture }: UserCardProps) {
       <Avatar
         picture={profilePicture}
         onClick={() => {
-          navigate(ROUTES.MY_PROFILE)
+          navigate(ROUTES.PROFILE.BASE)
         }}
         label={'mentor'}
       />

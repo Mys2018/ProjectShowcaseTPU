@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import styles from './SelectCompetencyModal.module.css';
 import { useSkillsStore } from '@/features/my-competencies';
-import { useRoleTypes } from '@/entities/user/api/queries.ts';
 import { useCompetencies } from '@/entities/competency';
 import { Checkbox, ModalFooter, Modal } from '@/shared';
 

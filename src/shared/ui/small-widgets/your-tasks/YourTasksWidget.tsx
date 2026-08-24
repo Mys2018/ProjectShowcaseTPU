@@ -1,4 +1,4 @@
-import { formatDeadline, getDaysUntil } from '@/shared/lib/date';
+import { formatDeadline, getDaysUntil, getPluralDays } from '@/shared/lib/date';
 import ClockIcon from '@/shared/ui/icons/clock.svg?react'
 import { InfoTooltip } from '../../info-tooltip/InfoTooltip';
 import type { Activity } from './model/types';
@@ -67,7 +67,7 @@ export const YourTasksWidget = ({ data }: YourTasksWidgetProps) => {
                           ]
                         }
                         size={'small'}
-                        pointer={'topRight'}
+                        pointer={'bottomRight'}
                         importantText={'Важно тут!'}
                         link={'sdfsdsdsds'}
                         className={styles.infoIconTooltip}
@@ -144,7 +144,7 @@ export const YourTasksWidget = ({ data }: YourTasksWidgetProps) => {
                       {
                         showCountdown && (
                           <div className={styles.countdown}>
-                            {`через ${dayUntilDeadline} дней`}
+                            {`через ${dayUntilDeadline} ${getPluralDays(dayUntilDeadline!)}`}
                           </div>
                         )
                       }

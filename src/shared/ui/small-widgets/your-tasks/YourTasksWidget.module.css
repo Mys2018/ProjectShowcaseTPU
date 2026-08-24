@@ -48,6 +48,10 @@
   background-color: var(--color-gray-100);
 }
 
+.taskItem:hover {
+  z-index: 10;
+}
+
 .currentStage {
   background-image: linear-gradient(var(--color-gray-150), var(--color-gray-150)), var(--grad-brand);
   background-origin: border-box;
@@ -64,6 +68,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 5px;
+  
+  position: relative;
+  z-index: 2;
 }
 
 .taskType {

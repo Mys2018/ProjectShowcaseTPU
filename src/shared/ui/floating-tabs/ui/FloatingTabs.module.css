@@ -4,7 +4,7 @@
 
   position: relative;
 
-  font: var(--label-interface);
+  font: var(--inter-12-400);
 
   display: flex;
   justify-content: center;
@@ -23,6 +23,7 @@
 .item {
   position: relative;
   width: 100%;
+  font: var(--inter-12-400);
 
   display: flex;
   align-items: center;
@@ -46,6 +47,7 @@
 
   & p {
     position: relative;
+    font: var(--inter-12-400);
   }
 
   &.active {

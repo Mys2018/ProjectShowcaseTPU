@@ -1,11 +1,9 @@
 import { useState } from 'react';
-import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
 import clsx from 'clsx';
 import styles from './ProjectRoleCard.module.css';
-import type { Skill } from '@/features/my-competencies/model/types.ts';
+import type { CreateProjectForm } from '@/features/create-project';
 // import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
 import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
-import {RequestBlock} from "@/features/create-project/ui/components/request-block/RequestBlock.tsx";
 import type { Skill } from '@/entities/skill';
 import Cross from '@/shared/ui/icons/cross.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';

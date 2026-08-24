@@ -6,6 +6,10 @@
     fill: var(--color-gray-500);
 }
 
+.tooltipBody:hover {
+    z-index: 9999;
+}
+
 .tooltip {
     position: absolute;
     z-index: 100;

@@ -3,7 +3,7 @@ import type { MouseEventHandler, ReactElement } from 'react'
 import styles from './ProjectCardVertical.module.css'
 import type { ProjectCardData } from '../../model/types'
 import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader'
-import { ProjectFormatBadge } from '../project-format-badge/ProjectFormatBadge'
+import {typeProjectsLabel} from "@/shared/constants/type-project-label/typeProjectsLabel.tsx";
 
 interface ProjectCardVerticalProps {
   project: ProjectCardData
@@ -28,7 +28,7 @@ export function ProjectCardVertical({ project, small, headerSlot, bodySlot, foot
         <div className={styles.main}>
           {!small && (
             <div className={styles.short}>
-              <ProjectFormatBadge format={type} />
+              {typeProjectsLabel(type)}
               <div className={styles.id}>
                 <span className={styles.label}>ID</span>
                 <span className={`${styles.value} ellipsis`}>{id}</span>

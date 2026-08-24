@@ -1,8 +1,8 @@
 import styles from './ProjectCardExtended.module.css';
 import type { ProjectCardData } from '../../model/types';
-import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel';
 import Pattern from '@/assets/svg/Pattern.svg'
 import { useState } from "react";
+import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel';
 import { LikeButton } from "@/shared/ui";
 
 interface Props {
@@ -35,10 +35,10 @@ export default function ProjectCardExtended({ project }: Props) {
 
         <img className={styles.pattern} src={Pattern} alt='Узор' />
 
-        <div className={`${styles.header} ${styles[primaryTag.tagId]}`}>
+        <div className={`${styles.header} ${styles[primaryTag.id]}`}>
           <div className={styles.tags}>
             {visibleDirections.map((d) => (
-              <div key={d.tagId} className={styles.tag}>{primaryTag.tagName}</div>
+              <div key={d.id} className={styles.tag}>{primaryTag.name}</div>
             ))}
             {remainCount > 0 && (
               <div className={styles.tagCount}>Ещё +{remainCount}</div>

@@ -18,33 +18,31 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem
+  type FloatingTabItem, usePageTitle
 } from '@/shared'
-// import {useProjectDraft} from "@/entities/project";
-// import {useNavigate} from "react-router-dom";
 
-export const ProjectActivities = () => {
+
+export const MyPlatformPage = () => {
   usePageTitle('моей платформе');
-  const navigate = useNavigate()
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-  const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
-  const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
-
-  const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
-  const draftTitle = draftValues?.meta?.title || 'Без названия'
-  const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
-  const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
-  const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
-
-  const handleContinueDraft = () => {
-    navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
-  }
-
-  const handleDeleteDraft = () => {
-    deleteDraft()
-  }
+  // const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
+  // const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
+  //
+  // const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
+  // const draftTitle = draftValues?.meta?.title || 'Без названия'
+  // const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
+  // const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
+  // const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
+  //
+  // const handleContinueDraft = () => {
+  //   navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
+  // }
+  //
+  // const handleDeleteDraft = () => {
+  //   deleteDraft()
+  // }
 
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [

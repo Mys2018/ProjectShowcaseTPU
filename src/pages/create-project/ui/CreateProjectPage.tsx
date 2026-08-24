@@ -22,7 +22,7 @@ type PageStep = 'type-select' | 'fill';
 
 const AUTOSAVE_DELAY_MS = 3000;
 
-export default function CreateProjectPage() {
+export function CreateProjectPage() {
   usePageTitle('созданию проекта');
   const backTitle = usePreviousPageTitle('Назад к списку проектов');
 

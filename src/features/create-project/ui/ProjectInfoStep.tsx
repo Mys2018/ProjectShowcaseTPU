@@ -7,9 +7,10 @@ import { RolesTab } from './tabs/RolesTab'
 import { DatesTab } from './tabs/DatesTab'
 import { AllTab } from './tabs/AllTab'
 import type { CreateProjectForm, StepErrors } from '@/features/create-project'
-import { BackIcon, HorizontalTabs, type HorizontalTabItem } from '@/shared'
+import { HorizontalTabs, type HorizontalTabItem } from '@/shared'
 import {FilledButton} from "@/shared/ui/elements/buttons/filled-button/FilledButton.tsx";
 import {GreyButton, OutlineButton} from "@/shared/ui/elements/buttons";
+import BackIcon from '@/shared/ui/icons/back.svg?react'
 
 type InfoTab = 'main' | 'prd' | 'roles' | 'dates' | 'all'
 
@@ -91,7 +92,7 @@ export function ProjectInfoStep({
         className={styles.nav}
         items={tabItems}
         value={activeTab}
-        onChange={() => setStep(tabItems.findIndex(t => t.value === t.value) + 1)}
+        onChange={(val) => setStep(tabItems.findIndex(t => t.value === val) + 1)}
       />
 
       <div className={styles.main}>

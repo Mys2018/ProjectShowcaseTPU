@@ -70,7 +70,12 @@ export const router = createBrowserRouter([
               {
                 path: ROUTES.MY_PLATFORM.ACTIVITIES.BASE,
                 element: <ProjectActivitiesLayout />,
-                children: []
+                children: [
+                  {
+                    path: '*',
+                    element: null
+                  }
+                ]
               },
               {
                 path: ROUTES.MY_PLATFORM.CREATE,

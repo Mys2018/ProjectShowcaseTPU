@@ -88,7 +88,13 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
 
   useEffect(() => {
     if (savedSkills && Array.isArray(savedSkills)) {
-      setInitialData(savedSkills.map(c => (Object.assign(c, {skills: c.skills.map(s => ({id: s.skillId, name: s.skillName}))})))); // TODO низвести до атомов
+      setInitialData(savedSkills.map(c => ({
+        ...c,
+        skills: c.skills.map((s: any) => ({
+          id: s.skillId || s.id,
+          name: s.skillName || s.name
+        }))
+      })));
     }
   }, [savedSkills, setInitialData]);
 
