@@ -5,7 +5,7 @@ import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import {useState} from "react";
 import {InfoTooltip, ROUTES} from "@/shared";
-import {FeedBackButton} from "@/shared/ui/elements/buttons";
+import {FeedBackButton} from "@/features/feedback-button";
 import {useIsProfileFilled} from "@/entities/user/lib";
 import {useAuthStore} from "@/entities/user";
 import {useNavigate} from "react-router-dom";
