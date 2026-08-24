@@ -120,7 +120,8 @@
   --OS-16-600: 600 16px/1 var(--font-open-sans);
   --OS-16-400: 400 16px/1 var(--font-open-sans);
   --OS-12-600: 600 12px/1 var(--font-open-sans);
-  --OS-12-400: 400 12px/1 var(--font-open-sans);
+  --OS-12-400: 400 12px/1.4 var(--font-open-sans);
+  --OS-12-500: 500 12px/1.4 var(--font-open-sans);
   --OS-13-600: 600 13px/1 var(--font-open-sans);
   --OS-11-300: 300 11px/1 var(--font-open-sans);
   --OS-11-5-300: 300 11.5px/1 var(--font-open-sans);

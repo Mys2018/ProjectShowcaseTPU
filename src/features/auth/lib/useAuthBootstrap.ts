@@ -31,7 +31,7 @@ export const useAuthBootstrap = () => {
       for (const role of userData.roles) {
         if (role.type === 'Student' || role.type === 'Curator' || role.type === 'Moderator') {
           setPreferredRoleType(role.type)
-          break
+          if (role.type === 'Student') break
         }
       }
     }

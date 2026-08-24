@@ -1,0 +1,14 @@
+.tag {
+  display: inline-block;
+  
+	font: 400 10px var(--font-open-sans);
+  white-space: nowrap;
+  
+	padding: 7px 10px 8px;
+	
+  color: var(--color-gray-900);
+  background-color: var(--color-gray-50);
+  
+	border-radius: 20px;
+  z-index: 2;
+}

@@ -1,13 +1,16 @@
+import clsx from 'clsx'
 import { useNavigate } from 'react-router-dom'
 import styles from './StagesWidget.module.css'
-import { FeedbackIcon, FolderIcon, LikeIcon } from '..'
+import { ChevronRightIcon, FeedbackIcon, FolderIcon, LikeIcon } from '..'
 import { assertNever } from '../../lib'
+import { ROUTES } from '../../config'
 import { usePreferencesStore, type UserRole } from '@/entities/user'
 
 interface StagesData {
   type: 'projects' | 'feedback' | 'likes' | 'moderator-projects' | 'moderator-requests' | 'curator-projects' | 'curator-requests'
   count: number
   snippet?: string
+  notification?: boolean
 }
 
 const getStagesData = (roleType: UserRole['type']): StagesData[] => {
@@ -97,12 +100,34 @@ const getIcon = (type: StagesData['type']) => {
     case 'curator-projects':
       return <FolderIcon className={styles.icon} />
     case 'curator-requests':
-      return <FolderIcon className={styles.icon} /> 
+      return <FolderIcon className={styles.icon} />
     default:
       assertNever(type)
       return null
-  } 
+  }
 } // TODO заменить иконки
+
+const getLink = (type: StagesData['type']) => {
+  switch (type) {
+    case 'projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.PROJECTS
+    case 'feedback':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.APPLICATIONS
+    case 'likes':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.LIKES
+    case 'moderator-projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS
+    case 'moderator-requests':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS
+    case 'curator-projects':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.PROJECTS
+    case 'curator-requests':
+      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.APPLICATIONS
+    default:
+      assertNever(type)
+      return ROUTES.MY_PLATFORM.BASE
+  }
+}
 
 export const StagesWidget = () => {
   const navigate = useNavigate()
@@ -113,14 +138,17 @@ export const StagesWidget = () => {
   return (
     <div className={styles.mainContainer}>
       {stagesData.map(card => (
-        <div key={card.type} className={styles.cardBody} onClick={() => void navigate('/my-platform/create')}>
+        <div key={card.type} className={styles.cardBody} onClick={() => void navigate(getLink(card.type))}>
           <header className={styles.cardHeader}>
             <span className={styles.count}>{card.count}</span>
             {getIcon(card.type)}
           </header>
           <footer className={styles.cardFooter}>
-            <h4 className={styles.label}>{getName(card.type)}</h4>
-            <p className={styles.snippet}>{card.snippet}</p>
+            <h4 className={clsx(styles.label, card.notification && styles.notification)}>{getName(card.type)}</h4>
+            <div className={styles.wrapper}>
+              <p className={styles.snippet}>{card.snippet}</p>
+              <ChevronRightIcon className={styles.arrowIcon} />
+            </div>
           </footer>
         </div>
       ))}

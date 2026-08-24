@@ -23,6 +23,8 @@ export function TextArea({ value, maxLength, handleChange, isDisable, isValid, i
           </p>
         }
         <textarea
+          name="textarea"
+          id="textarea"
           value={value}
           onChange={handleChange}
           disabled={isDisable}

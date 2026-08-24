@@ -1,10 +1,8 @@
+import styles from "./Tabs.module.css";
 import { ProjectRoleCard } from '../components/project-role-card/ProjectRoleCard.tsx';
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import styles from "./Tabs.module.css";
-import { useSkills } from '@/entities/user/api/queries';
-import { useModalStore } from '@/shared/model';
-import { EmptyStateBlock } from '@/shared/ui/empty-state-block/EmptyStateBlock.tsx';
-import { AddOutlineButton } from '@/shared/ui';
+import { useSkills } from '@/entities/skill';
+import { useModalStore, AddOutlineButton, EmptyStateBlock } from '@/shared';
 
 interface TabProps {
   form: CreateProjectForm;

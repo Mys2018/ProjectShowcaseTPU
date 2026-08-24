@@ -1,0 +1,16 @@
+.clickable {
+	cursor: default;
+
+	&:hover,
+	&:active {
+		background-color: var(--sec-color);
+	}
+}
+
+.info {
+	width: 100%;
+
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}

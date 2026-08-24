@@ -1,20 +1,45 @@
+const MY_PLATFORM_BASE = '/my-platform'
+const PROJECT_ACTIVITIES_BASE = `${MY_PLATFORM_BASE}/project-activities`
+const CATALOG_BASE = '/catalog'
+const PROFILE_BASE = '/profile'
+
 export const ROUTES = {
   MAIN: '/',
   LOGIN: '/login',
-  
-  // Роуты каталога
-  CATALOG: '/catalog',
-  CATALOG_ALL_PROJECTS: 'all-projects',
-  CATALOG_RECRUITING: 'recruiting',
-  CATALOG_IN_WORK: 'in-work',
-  CATALOG_PROJECT: 'projects/:id',
-  
-  // Роуты платформы
-  MY_PLATFORM: '/my-platform',
-  MY_PLATFORM_ACTIVITIES: 'project-activities',
-  MY_PLATFORM_CREATE: 'create',
+  PROFILE: {
+    BASE: PROFILE_BASE,
+    BY_ID: `${PROFILE_BASE}/:id`
+  },
+  CATALOG: {
+    BASE: CATALOG_BASE,
+    ALL_PROJECTS: `${CATALOG_BASE}/all-projects`,
+    RECRUITING: `${CATALOG_BASE}/recruiting`,
+    IN_WORK: `${CATALOG_BASE}/in-work`,
+    PROJECT: `${CATALOG_BASE}/projects/:id`
+  },
+  MY_PLATFORM: {
+    BASE: MY_PLATFORM_BASE,
+    ACTIVITIES: {
+      BASE: PROJECT_ACTIVITIES_BASE,
+      STUDENT: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/my-projects`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/my-applications`,
+        LIKES: `${PROJECT_ACTIVITIES_BASE}/likes`
+      },
+      CURATOR: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-management`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/incoming-applications`
+      },
+      MODERATOR: {
+        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-moderation`,
+        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/moderation-applications`
+      }
+    },
+    CREATE: `${MY_PLATFORM_BASE}/create`
+  }
+} as const
 
-  // Роуты пользователя
-  MY_PROFILE: 'profile',
-  SOMEONE_PROFILE: 'profile/:id'
-};
+export const buildRoute = {
+  profileById: (id: string) => ROUTES.PROFILE.BY_ID.replace(':id', id),
+  project: (id: string) => ROUTES.CATALOG.PROJECT.replace(':id', id)
+} as const

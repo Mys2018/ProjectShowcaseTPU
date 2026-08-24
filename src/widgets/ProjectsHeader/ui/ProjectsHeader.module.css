@@ -34,17 +34,19 @@
 .navPart {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
+  width: fit-content;
 }
 
 .navEl {
   position: relative;
   display: flex;
   align-items: center;
+  width: fit-content;
   gap: 8px;
-  font: var(--label-interface);
-  font-weight: 400;
-  color: var(--color-gray-600)
+  font: var(--inter-12-400);
+  color: var(--color-gray-600);
+
 }
 
 .navEl input[type="checkbox"] {
@@ -78,72 +80,32 @@
   transform: translateX(150%);
 }
 
-.navEl svg {
-  width: 8px;
-  height: 7px;
-  cursor: pointer;
-}
 
 .sortTrigger {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
 }
 
-.arrow {
-  transition: transform 0.2s ease;
+.popup {
+  margin-top: 8px;
 }
 
-.arrowUp {
+.sortTrigger > button {
+  transition: all .2s;
+}
+
+.opened {
   transform: rotate(180deg);
+
 }
 
-.dropdown {
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 0;
-  background: white;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  z-index: 100;
-  min-width: 200px;
-}
+.backIcon {
+  transform: rotate(-90deg);
 
-.dropdownItem {
-  font: var(--label-interface);
-  font-weight: 400;
-  color: var(--color-gray-500);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: color 0.2s;
-}
+  max-height: 11px;
 
-.dropdownItem:hover {
-  color: var(--color-gray-900);
-}
-
-.dropdownItemActive {
-  color: rgb(var(--green));
-  font-weight: 600;
-}
-
-.bottomPart {
-  z-index: 10;
-  display: flex;
-  margin: 0;
-  border-bottom: 0px solid;
-  padding: 0;
-  -webkit-box-shadow: 0px 1px 0px 0px #D9D9D9;
-  -moz-box-shadow: 0px 1px 0px 0px #D9D9D9;
-  box-shadow: 0px 1px 0px 0px #D9D9D9;
-  color: #D9D9D9;
-  font-size: 16px;
-  list-style: none;
 }
 
 .tab {
@@ -151,19 +113,6 @@
   transition: 0.3s;
   cursor: pointer;
   white-space: nowrap;
-}
-
-.bottomPart li {
-  border-bottom: 0px solid;
-  transition: 0.3s;
-}
-
-li.selected {
-  border-bottom: 0px solid;
-  -webkit-box-shadow: 0px 2px 0px 0px rgb(var(--green));
-  -moz-box-shadow: 0px 2px 0px 0px rgb(var(--green));
-  box-shadow: 0px 2px 0px 0px rgb(var(--green));
-  color: rgb(var(--green));
 }
 
 .sepLine {

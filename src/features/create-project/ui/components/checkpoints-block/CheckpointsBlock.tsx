@@ -1,11 +1,12 @@
+import clsx from "clsx";
 import styles from './CheckpointsBlock.module.css'
-import type {ProjectCheckpoint} from "@/entities/project";
 import {PlusButton} from "@/shared/ui/elements/buttons/plus-button/PlusButton.tsx";
 import EditIcon from '@/shared/ui/icons/pencil.svg?react';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
-import clsx from "clsx";
 
-export interface ExtendedProjectCheckpoint extends ProjectCheckpoint {
+export interface ExtendedProjectCheckpoint {
+  title: string
+  deadline: string
   isImmutable?: boolean;
 }
 

@@ -1,15 +1,15 @@
 export const getProjectTagBackground = (tag: string) => {
   switch (tag) {
     case 'Веб-разработка':
-      return 'var(--grad-fiolet)';
+      return 'var(--grad-fiolet)'
     case 'Инженерия':
-      return 'var(--grad-blue)';
+      return 'var(--grad-blue)'
     case 'E-commerce':
     case 'VR/AR':
-      return 'var(--grad-orange)';
+      return 'var(--grad-orange)'
     case 'Мобайл-разработка':
-      return 'var(--grad-green)';
+      return 'var(--grad-green)'
     default:
-      return 'var(--grad-blue)';
+      return 'var(--grad-blue)'
   }
-};
+}

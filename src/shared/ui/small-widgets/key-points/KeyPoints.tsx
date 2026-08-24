@@ -1,8 +1,9 @@
-import { parseDeadline, formatDeadline, getDaysUntil } from '@/shared/lib/date';
+import { parseDeadline, formatDeadline, getDaysUntil, getPluralDays } from '@/shared/lib/date';
 import CalendarIcon from '@/shared/ui/icons/calendar.svg?react';
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import ClockIcon from '@/shared/ui/icons/clock.svg?react'
 import styles from './KeyPoints.module.css'
+import clsx from "clsx";
 
 interface KeyPoint {
   title: string;
@@ -76,7 +77,7 @@ export const KeyPoints = ({ checkpoints }: KeyPointsProps) => {
 
 
               <div className={styles.keyInfo}>
-                <p className={`${styles.keyTitle} ${isActive ? styles.keyTitleActive : ''}`}>
+                <p className={clsx(styles.keyTitle, isActive ? styles.keyTitleActive : '')}>
                   {keyPoint.title}
                 </p>
                 <p className={styles.keyDeadline}>
@@ -86,7 +87,7 @@ export const KeyPoints = ({ checkpoints }: KeyPointsProps) => {
                     <>
                       {formatDeadline(keyPoint.deadline)}
                       {showCountdown && (
-                        <span className={styles.countdown}> (через <span className={styles.countdownDays}>{daysUntil} дней</span>)</span>
+                        <span className={styles.countdown}> (через <span className={styles.countdownDays}>{daysUntil} {getPluralDays(daysUntil!)}</span>)</span>
                       )}
                     </>
                   )}

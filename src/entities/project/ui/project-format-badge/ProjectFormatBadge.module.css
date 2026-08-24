@@ -1,0 +1,42 @@
+.badge {
+  height: fit-content;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  font: var(--OS-14-400);
+
+  padding: 5.5px 10px 5.5px 6px;
+
+  border: 1px solid var(--color-gray-350);
+  border-radius: 6px;
+
+  color: var(--color-gray-750);
+  background-color: var(--color-white);
+}
+
+.case {
+  border-color: var(--color-brand-violet);
+}
+
+.real {
+  border-color: var(--color-brand-black);
+  
+	color: var(--color-white);
+  background: var(--color-brand-black);
+}
+
+.study {
+  border-color: var(--color-brand-green);
+}
+
+.pathFolder {
+  fill: var(--color-gray-750);
+}
+
+.pathCode,
+.pathStar {
+  fill: white;
+}

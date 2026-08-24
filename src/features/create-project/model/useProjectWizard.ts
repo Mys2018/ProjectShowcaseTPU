@@ -1,9 +1,10 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
-import { projectApi } from '@/entities/project/api/requests';
 import { useEffect, useState } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
+import { createCheckpointGroup, getCheckpointGroups } from '@/entities/checkpoint/api/requests';
+import { mapDateToBackendString, parseDeadline } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
 
@@ -15,7 +16,7 @@ export const createProjectRoleSchema = z.object({
     name: z.string(),
     description: z.string(),
   }),
-  skills: z.array(z.object({ skillId: z.string(), skillName: z.string() })),
+  skills: z.array(z.object({ id: z.string(), skillName: z.string() })),
 }).refine((data) => data.minPlacesCount <= data.placesCount, {
   message: 'Минимум мест не может быть больше максимума мест',
   path: ['minPlacesCount'],
@@ -203,10 +204,10 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         return rest;
       });
 
-      const { checkpointId } = await projectApi.createCheckpoints({
-        name: "checkpoint",
-        checkpoints: cleanCheckpoints
-      } as Omit<Parameters<typeof projectApi.createCheckpoints>[0], 'id'> & { id?: string })
+      const checkpointId = await createCheckpointGroup({
+        title: 'checkpoint',
+        checkpoints: cleanCheckpoints.map(c => ({ title: c.title, deadline: parseDeadline(c.deadline)! }))
+      })
 
       const payload = {
         type: value.type,
@@ -223,7 +224,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           meta: {
             description: "Бла бла"
           },
-          skillIds: role.skills.map(skill => skill.skillId)
+          skillIds: role.skills.map(skill => skill.id)
         })),
       } as unknown as CreateProjectDto;
 
@@ -234,13 +235,16 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
 
   useEffect(() => {
     const fetchDefaultCheckpoints = async () => {
-      const backCheckpoints = await projectApi.getCheckpoints()
-      console.log('backCheckpoints', backCheckpoints)
-      const firstCheckpoints = backCheckpoints.checkpoints[0]?.checkpoints;
+      const backCheckpoints = await getCheckpointGroups(10, 0)
+      const firstCheckpoints = backCheckpoints.checkpointGroups[0]?.checkpoints
 
       if (firstCheckpoints && firstCheckpoints.length > 0) {
-        const immutableCheckpoints = firstCheckpoints.map((cp: { title: string; deadline: string }) => ({ ...cp, isImmutable: true }));
-        form.setFieldValue('checkpoints', immutableCheckpoints);
+        const immutableCheckpoints = firstCheckpoints.map(cp => ({
+          title: cp.title,
+          deadline: mapDateToBackendString(cp.deadline),
+          isImmutable: true
+        }))
+        form.setFieldValue('checkpoints', immutableCheckpoints)
       }
     }
 

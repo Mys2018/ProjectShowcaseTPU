@@ -50,6 +50,7 @@
 }
 
 .nav {
+  padding-bottom: 32px;
   display: flex;
   gap: 20px;
   align-items: center;
@@ -61,31 +62,6 @@
 .leftBlock {
   display: flex;
   gap: 20px
-}
-
-.navItem {
-  font: var(--ALS-16-400);
-  color: var(--color-gray-400);
-  padding: 0 0 12px 0;
-  border-bottom: 2px solid transparent;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  position: relative;
-  cursor: pointer;
-}
-
-.navItemError {
-  color: var(--color-red, #F14C4C) !important;
-}
-
-.navItem.active.navItemError {
-  border-bottom-color: var(--color-red, #F14C4C) !important;
-}
-
-.active {
-  color: var(--color-brand-green);
-  border-bottom: 2px solid var(--color-brand-green);
 }
 
 .mainFieldContainer {

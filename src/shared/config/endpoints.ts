@@ -1,13 +1,19 @@
 export const ENDPOINTS = {
-  LOGIN: import.meta.env.VITE_REF_POST_LOGIN,
-  STATUS: import.meta.env.VITE_REF_GET_AUTH_STATUS,
-  ME: import.meta.env.VITE_REF_GET_ME_DATA,
-  REFRESH: import.meta.env.VITE_REF_POST_RELOGIN,
-  LOGOUT: import.meta.env.VITE_REF_POST_LOGOUT,
-  USER_BY_ID: import.meta.env.VITE_REF_GET_CURRENT_USER,
-  USERS_BY_NAME: import.meta.env.VITE_REF_GET_USERS_BY_NAME,
-  PROJECTS_BY_NAME: import.meta.env.VITE_REF_GET_PROJECTS_BY_NAME,
-  TAGS: import.meta.env.VITE_REF_GET_TAGS,
-  TAG_BY_ID: (tagId: string) => `${import.meta.env.VITE_REF_GET_TAGS}/${tagId}`,
-  ROLE_TYPES: import.meta.env.VITE_REF_GET_ROLE_TYPES
-};
+  STATUS: import.meta.env.VITE_API_AUTH_STATUS_URL,
+  REFRESH: import.meta.env.VITE_API_RELOGIN_URL,
+  LOGIN: import.meta.env.VITE_API_LOGIN_URL,
+  LOGOUT: import.meta.env.VITE_API_LOGOUT_URL,
+  ME: import.meta.env.VITE_API_ME_URL,
+  USERS: import.meta.env.VITE_API_USERS_URL,
+  USER_BY_ID: (userId: string) => `${import.meta.env.VITE_API_USERS_URL}/${userId}`,
+  PROJECTS: import.meta.env.VITE_API_PROJECTS_URL,
+  PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}`,
+  PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL,
+  TAGS: import.meta.env.VITE_API_TAGS_URL,
+  PARTNERS: import.meta.env.VITE_API_PARTNERS_URL,
+  PARTNER_BY_ID: (partnerId: string) => `${import.meta.env.VITE_API_PARTNERS_URL}/${partnerId}`,
+  COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL,
+  SKILLS: import.meta.env.VITE_API_SKILLS_URL,
+  CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL,
+  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`
+}

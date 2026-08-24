@@ -119,10 +119,13 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
                     </h6>
 
                   </div>
-                  <button onClick={() => handleOpenModal(link.type, link.link)}>
-                    <Plus/>
-                    Добавить
-                  </button>
+                  {
+                    link.type !== 'element' && <button onClick={() => handleOpenModal(link.type, link.link)}>
+                      <Plus/>
+                      Добавить
+                    </button>
+                  }
+
                 </div>
               )
             }

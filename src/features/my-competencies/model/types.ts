@@ -1,7 +1,4 @@
-export type Skill = {
-  skillId: string;
-  skillName: string
-};
+import type { Skill } from "@/entities/skill";
 
 export type Competence = {
   roleTypeId: string;

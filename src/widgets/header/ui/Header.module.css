@@ -14,10 +14,22 @@
   position: absolute;
   top: calc(100% + 8px);
   left: 50%;
-  transform: translateX(-50%);
+  /*transform: translateX(-50%);*/
   z-index: 50;
 
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
+
+
+.headerWrap:hover .switchWrap {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
 
 .header {
   display: flex;

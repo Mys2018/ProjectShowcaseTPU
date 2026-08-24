@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import styles from './UserRow.module.css'
 import { ImageSkeleton, TextSkeleton } from '@/shared'
 
@@ -7,9 +8,11 @@ interface UserRowSkeletonProps {
 
 export function UserRowSkeleton({ className }: UserRowSkeletonProps) {
   return (
-    <div className={`${styles.container} ${className ?? ''}`}>
+    <div className={clsx(styles.container, className)}>
       <ImageSkeleton className={styles.avatar} />
-      <TextSkeleton className={styles.info} rows={2} />
+      <div className={clsx(styles.info, styles.skeleton)}>
+        <TextSkeleton rows={2} />
+      </div>
     </div>
   )
 }

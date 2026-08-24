@@ -8,7 +8,7 @@ export type CompetenceDto = {
   roleTypeId: string
   roleTypeName: string
   skills: SkillDto[]
-}
+} // TODO убрать экспорт
 
 export type User = UserBase & {
   profilePicture: string

@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import type { CreateProjectForm } from '../../../model/useProjectWizard.ts';
 import clsx from 'clsx';
 import styles from './ProjectRoleCard.module.css';
-import type { Skill } from '@/features/my-competencies/model/types.ts';
+import type { CreateProjectForm } from '@/features/create-project';
 // import FullStarIcon from '@/shared/ui/icons/full_star.svg?react';
 import { MyCompetenciesModal } from '@/features/my-competencies/ui/MyCompetenciesModal.tsx';
+import type { Skill } from '@/entities/skill';
 import Cross from '@/shared/ui/icons/cross.svg?react';
 import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react';
 import CopyIcon from '@/shared/ui/icons/copyCompetency.svg?react';
 import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
 import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
+// import compStyles from '@/features/my-competencies/ui/MyCompetencies.module.css';
 import { useModalStore } from '@/shared/model';
 import AddUserIcon from '@/shared/ui/icons/addUser.svg?react';
 import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
@@ -128,19 +129,19 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                       const skills = skillsField.state.value || [];
 
                       const handleAddSkill = (skill: Skill) => {
-                        if (!skills.find((s) => s.skillId === skill.skillId)) {
-                          skillsField.pushValue({ skillId: skill.skillId, skillName: skill.skillName });
+                        if (!skills.find((s) => s.id === skill.id)) {
+                          skillsField.pushValue({ id: skill.id, skillName: skill.name });
                         }
                       };
 
-                      const handleRemoveSkill = (skillId: string) => {
-                        skillsField.handleChange(skills.filter((s) => s.skillId !== skillId));
+                      const handleRemoveSkill = (id: string) => {
+                        skillsField.handleChange(skills.filter((s) => s.id !== id));
                       };
 
                       return (
                         <div className={styles.competenciesContainer}>
                           {skills.map((skill) => (
-                            <div key={skill.skillId} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
+                            <div key={skill.id} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
                               <div className={styles.featContainer}>
                                 {skill.skillName}
                                 {
@@ -157,7 +158,7 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                               {isEditing && (
                                 <button
                                   type="button"
-                                  onClick={() => handleRemoveSkill(skill.skillId)}
+                                  onClick={() => handleRemoveSkill(skill.id)}
                                 >
                                   <Cross className={styles.crossIcon} />
                                 </button>
@@ -167,7 +168,7 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
 
                           {popoverOpen && (
                             <MyCompetenciesModal
-                              currentFullSkills={globalSkills.filter(g => !skills.find((s) => s.skillId === g.skillId))}
+                              currentFullSkills={globalSkills.filter(g => !skills.find((s) => s.id === g.id))}
                               addSkill={handleAddSkill}
                               setPopoverOpenFor={() => setPopoverOpen(false)}
                             />

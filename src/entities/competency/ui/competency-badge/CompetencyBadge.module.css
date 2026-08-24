@@ -1,0 +1,13 @@
+.competency {
+  font-family: var(--font-open-sans);
+  font-weight: 600;
+  font-size: 9px;
+
+  padding: 4px 7px;
+  border: 1px solid var(--color-gray-200);
+
+  border-radius: 6px;
+
+  color: var(--color-gray-500);
+  background-color: var(--color-white);
+}

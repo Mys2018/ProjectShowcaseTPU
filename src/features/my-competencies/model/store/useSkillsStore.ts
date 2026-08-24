@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import type { Skill, Competence } from "@/features/my-competencies/model/types.ts";
+import type { Competence } from "@/features/my-competencies/model/types.ts";
+import type { Skill } from "@/entities/skill";
 
 interface SkillsStoreTypes {
   originalData: Competence[];
@@ -22,7 +23,7 @@ interface SkillsStoreTypes {
   resetHasChanges: () => void;
 
   // TODO Типы поменять
-  removeSkill: (competenceId: string, skillId: string) => void;
+  removeSkill: (competenceId: string, id: string) => void;
   addSkill: (skill: Skill) => void;
   removeCompetency: (competenceId: string) => void;
   addCompetency: (competenceId: string, roleTypeName: string) => void;
@@ -57,17 +58,17 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
 
   resetHasChanges: () => set({ hasChanges: false }),
 
-  removeSkill: (competenceId, skillId) => set((state) => {
+  removeSkill: (competenceId, id) => set((state) => {
     const newDraft = state.draftData.map((comp) =>
-      comp.roleTypeId === competenceId ? { ...comp, skills: comp.skills.filter(skill => skill.skillId !== skillId) } : comp
+      comp.roleTypeId === competenceId ? { ...comp, skills: comp.skills.filter(skill => skill.id !== id) } : comp
     );
     let newCurrentFullSkills = state.currentFullSkills;
     if (state.popoverOpenFor === competenceId) {
-      const addedSkillIds = new Set(newDraft.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.skillId) ?? []);
+      const addedids = new Set(newDraft.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.id) ?? []);
 
       const filteredGlobals = state.globalSkills;
 
-      newCurrentFullSkills = filteredGlobals.filter(s => !addedSkillIds.has(s.skillId));
+      newCurrentFullSkills = filteredGlobals.filter(s => !addedids.has(s.id));
     }
     return { draftData: newDraft, currentFullSkills: newCurrentFullSkills, hasChanges: JSON.stringify(newDraft) !== JSON.stringify(state.originalData) };
   }),
@@ -77,12 +78,12 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
       // Check if this skill actually belongs to the current competence being edited if needed.
       // Assuming addSkill adds to the competence that opened the popover:
       if (comp.roleTypeId === state.popoverOpenFor) {
-        if (comp.skills.some((s) => s.skillId === skill.skillId)) return comp;
+        if (comp.skills.some((s) => s.id === skill.id)) return comp;
         return { ...comp, skills: [...comp.skills, skill] }
       }
       return comp
     });
-    const newCurrentFullSkills = state.currentFullSkills.filter(s => s.skillId !== skill.skillId);
+    const newCurrentFullSkills = state.currentFullSkills.filter(s => s.id !== skill.id);
     return { draftData: newDraft, currentFullSkills: newCurrentFullSkills, hasChanges: JSON.stringify(newDraft) !== JSON.stringify(state.originalData) };
   }),
 
@@ -133,14 +134,14 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
   setPopoverOpenFor: (competenceId) => set({ popoverOpenFor: competenceId }),
 
   getSkillsForCompetence: (competenceId) => set((state) => {
-    const addedSkillIds = new Set(
-      state.draftData.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.skillId) ?? []
+    const addedids = new Set(
+      state.draftData.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.id) ?? []
     );
 
     const filteredGlobals = state.globalSkills;
 
     return {
-      currentFullSkills: filteredGlobals.filter(s => !addedSkillIds.has(s.skillId)),
+      currentFullSkills: filteredGlobals.filter(s => !addedids.has(s.id)),
     };
   }),
 

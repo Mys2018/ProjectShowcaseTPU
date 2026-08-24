@@ -1,9 +1,8 @@
-import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
 import styles from "./Tabs.module.css";
-import { useModalStore } from "@/shared/model";
-import { CheckpointsBlock } from "@/features/create-project/ui/components/checkpoints-block/CheckpointsBlock.tsx";
-import { RequirementList } from "@/features/create-project/ui/components/requirement-list/RequirementList.tsx";
-import {EmptyStateBlock, InfoTooltip} from "@/shared";
+import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
+import { CheckpointsBlock } from "../components/checkpoints-block/CheckpointsBlock.tsx";
+import { RequirementList } from "../components/requirement-list/RequirementList.tsx";
+import { EmptyStateBlock, InfoTooltip, useModalStore } from "@/shared";
 
 interface TabProps {
   form: CreateProjectForm;

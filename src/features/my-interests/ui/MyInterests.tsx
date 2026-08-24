@@ -114,7 +114,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
           isDisable={!isEditing || isPending}
           isValid={isValidSymbol}
           isEditing={isEditing}
-          placeholder={'Битуби саас ЭЙЯЙ стартапы, фримиум модели, подписки'}
+          placeholder={'Интересующие сферы и задачи, которыми вам нравится заниматься'}
         />
         {
           isEditing && (

@@ -1,10 +1,8 @@
-import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import { useEffect, useMemo, useState } from 'react';
-import { useSkillsStore } from '@/features/my-competencies/model/store/useSkillsStore.ts';
-import { useRoleTypes } from '@/entities/user/api/queries.ts';
-import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
-import { ModalFooter } from '@/shared/ui/modals/modal-footer/ModalFooter.tsx';
 import styles from './SelectCompetencyModal.module.css';
+import { useSkillsStore } from '@/features/my-competencies';
+import { useCompetencies } from '@/entities/competency';
+import { Checkbox, ModalFooter, Modal } from '@/shared';
 
 interface SelectCompetencyModalProps {
   isOpen: boolean;
@@ -16,7 +14,7 @@ interface SelectCompetencyModalProps {
 
 export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelectedIds, onSubmitCallback }: SelectCompetencyModalProps) => {
   const { draftData, setCompetencies } = useSkillsStore();
-  const { data: roleTypesData = [], isLoading } = useRoleTypes();
+  const { data: roleTypesData = [], isLoading } = useCompetencies();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   useEffect(() => {

@@ -1,5 +1,5 @@
 import styles from './SmallSearchField.module.css'
-import SearchIcon from '@/assets/svg/SearchIcon.svg?react';
+import SearchIcon from '@/shared/ui/icons/SearchIcon.svg?react';
 import React from "react";
 
 interface SmallSearchFieldProps {

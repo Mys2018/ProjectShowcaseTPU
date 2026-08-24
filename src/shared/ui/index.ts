@@ -4,7 +4,6 @@ export { LikeButton } from './like-button/LikeButton.tsx'
 export { InfoTooltip } from './info-tooltip/InfoTooltip.tsx'
 export { RouterTabs, type TabItem } from './router-tabs/RouterTabs.tsx'
 export { StagesWidget } from './stages-widget/StagesWidget.tsx'
-
 export { YourTasksWidget } from './small-widgets/your-tasks/YourTasksWidget.tsx'
 export type { Activity } from './small-widgets/your-tasks/model/types.ts'
 export { YourPointsWidget } from './small-widgets/your-points/YourPointsWidget.tsx'
@@ -12,16 +11,22 @@ export type { ClosingDiscipline } from './small-widgets/your-points/model/types.
 export { TextArea } from './textarea/TextArea.tsx'
 export { FooterBlockFields } from './footer-block-fields/FooterBlockFields.tsx'
 export { Checkbox } from './fields/checkbox'
-
-export { ConfirmModal } from '@/shared/ui/modals/confirm-modal/ConfirmModal.tsx'
+export { ConfirmModal } from './modals/confirm-modal/ConfirmModal.tsx'
 export * from './skeleton'
-export { FloatingTabs } from './floating-tabs/FloatingTabs.tsx'
-
-export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx';
-export { AddOutlineButton } from '@/shared/ui/elements/buttons/add-outline-button/AddOutlineButton.tsx';
+export * from './floating-tabs'
+export { EmptyStateBlock } from './empty-state-block/EmptyStateBlock.tsx'
+export { AddOutlineButton } from './elements/buttons/add-outline-button/AddOutlineButton.tsx'
+export * from './horizontal-tabs'
+export { Modal } from './modals/modal/Modal.tsx'
+export { ModalFooter } from './modals/modal-footer/ModalFooter.tsx'
+export { PopupMenu } from './popup-menu/PopupMenu.tsx'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
 import FolderIcon from './icons/folder.svg?react'
 import LikeIcon from './icons/like.svg?react'
-export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon }
+import BackArrowIcon from './icons/back-arrow.svg?react'
+import CodeIcon from './icons/code.svg?react'
+import StudyIcon from './icons/studyIcon.svg?react'
+import ChevronRightIcon from '../assets/chevron_right.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon }

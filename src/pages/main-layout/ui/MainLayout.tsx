@@ -22,11 +22,11 @@ export const MainLayout = () => {
         onClose: closeModal,
         profilePicture: user?.profilePicture,
         onCancel: () => {
-          navigate(ROUTES.MY_PLATFORM)
+          navigate(ROUTES.MY_PLATFORM.BASE)
           closeModal()
         },
         onAgree: () => {
-          navigate(ROUTES.MY_PROFILE)
+          navigate(ROUTES.PROFILE.BASE)
           closeModal()
         },
       })

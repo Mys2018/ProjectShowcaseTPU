@@ -1,0 +1,11 @@
+.tags {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+  gap: 5px;
+}
+
+.label {
+	font: 400 10px var(--font-open-sans);
+	color: black;
+}
