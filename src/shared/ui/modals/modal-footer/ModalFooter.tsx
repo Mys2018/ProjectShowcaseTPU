@@ -1,4 +1,5 @@
 import styles from './ModalFooter.module.css';
+import {GreyButton, OutlineButton} from "@/shared/ui/elements/buttons";
 
 interface ModalFooterProps {
   onClose: () => void;
@@ -22,21 +23,16 @@ export function ModalFooter({ onClose, handleSubmit, selectedValue, disabled, er
         <div />
       )}
       <div className={styles.actions}>
-        <button
-          className={styles.cancel}
-          onClick={onClose}
-          type="button"
-        >
-          {customCloseText}
-        </button>
-        <button
-          className={styles.agree}
+        <GreyButton
+         onClick={onClose}
+         textButton={customCloseText}
+        />
+
+        <OutlineButton
           onClick={handleSubmit}
           disabled={isSubmitDisabled}
-          type="button"
-        >
-          {customSubmitText}
-        </button>
+          textButton={customSubmitText}
+        />
       </div>
     </div>
   );

@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.header h3 {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+}
+
+.input {
+  display: flex;
+  padding: 18px;
+  font: var(--body-text-platform);
+  border: 1px solid var(--color-gray-250);
+  border-radius: 16px;
+  color: var(--color-brand-black);
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 24px;
+}

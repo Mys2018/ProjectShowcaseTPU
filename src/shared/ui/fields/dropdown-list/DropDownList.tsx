@@ -8,6 +8,7 @@ interface DropDownListProps {
   onChange?: (value: string) => void;
   placeholder?: string;
   error?: string;
+  isBlink?: boolean;
 }
 
 export const DropDownList = ({
@@ -17,6 +18,7 @@ export const DropDownList = ({
   onChange,
   placeholder = 'Выберите...',
   error,
+  isBlink,
 }: DropDownListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -32,12 +34,12 @@ export const DropDownList = ({
   }, []);
 
   return (
-    <div className={styles.wrapper} ref={dropdownRef}>
+    <div className={`${styles.wrapper}`} ref={dropdownRef}>
       {label && <label className={styles.label}>{label}</label>}
 
       <div className={styles.selectContainer}>
         <div
-          className={`${styles.trigger} ${isOpen ? styles.triggerActive : ''} ${error ? styles.triggerError : ''}`}
+          className={`${styles.trigger} ${isOpen ? styles.triggerActive : ''} ${error ? styles.triggerError : ''} ${isBlink ? 'blink-1' : ''}`}
           onClick={() => setIsOpen(!isOpen)}
         >
           <span className={`${styles.triggerText} ${!value ? styles.triggerPlaceholder : ''}`}>
@@ -75,4 +77,4 @@ export const DropDownList = ({
     </div>
   );
 };
-
+

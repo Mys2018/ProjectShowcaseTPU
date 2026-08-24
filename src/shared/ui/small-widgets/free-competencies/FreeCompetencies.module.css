@@ -2,12 +2,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 16px 8px 12px 8px;
+  padding: 16px 8px;
   width: 100%;
 
   background-color: var(--color-brand-violet);
   border-radius: 20px;
-
   gap: 16px
 }
 
@@ -137,33 +136,9 @@
 
 .footer {
   display: flex;
-  padding: 0 12px 0 4px;
+  padding: 0 8px 0 4px;
   justify-content: space-between;
   align-items: center;
-}
-
-.button {
-  padding: 14px 28px 15px 28px;
-  border: 1px solid white;
-  font: var(--inter-13-600);
-  color: var(--color-brand-green);
-  background-color: white;
-  font-weight: 500;
-  border-radius: 59px;
-
-  transition: 0.2s;
-}
-
-.button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  color: var(--color-gray-350);
-}
-
-.activeButton {
-  background-color: transparent;
-  color: var(--color-gray-200);
-  border: 1px solid var(--color-gray-100);
 }
 
 .questionIcon {

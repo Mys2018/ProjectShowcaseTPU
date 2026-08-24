@@ -8,11 +8,14 @@ import { MyCompetenciesList } from "@/features/my-competencies";
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import EyeIcon from '@/shared/ui/icons/eye.svg?react';
 import { Portfolio } from "@/features/portfolio/Portfolio.tsx";
-import { useProfileEditStore, useModalStore } from '@/shared/model';
+import { useProfileEditStore, useModalStore, usePageTitle, usePreviousPageTitle } from '@/shared/model';
 import { useSkillsStore } from '@/features/my-competencies/model/store/useSkillsStore.ts';
 import { useEffect } from 'react';
 
 export const MyProfile = () => {
+  usePageTitle('моему профилю');
+  const backTitle = usePreviousPageTitle('Назад к списку проектов');
+  
   const navigate = useNavigate();
   const { data: user } = useMe();
   const { activeEditBlock, hasUnsavedChanges, setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore();
@@ -57,13 +60,11 @@ export const MyProfile = () => {
     return null;
   }
 
-  console.log(user.meta.portfolioLink)
-
   return (
     <div className={styles.mainContent}>
       <section className={styles.headerLeft} onClick={() => navigate(-1)}>
         <BackIcon className={styles.backIcon}/>
-        <p className={styles.back}>Назад к списку проектов</p>
+        <p className={styles.back}>{backTitle}</p>
       </section>
 
       <section className={styles.title}>

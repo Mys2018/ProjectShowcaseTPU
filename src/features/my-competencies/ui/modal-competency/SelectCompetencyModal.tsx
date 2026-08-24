@@ -1,9 +1,9 @@
-import { Modal } from '@/shared/ui/modal/Modal.tsx';
+import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import { useEffect, useMemo, useState } from 'react';
 import { useSkillsStore } from '@/features/my-competencies/model/store/useSkillsStore.ts';
 import { useRoleTypes } from '@/entities/user/api/queries.ts';
 import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
-import { ModalFooter } from '@/shared/ui/modal-footer/ModalFooter.tsx';
+import { ModalFooter } from '@/shared/ui/modals/modal-footer/ModalFooter.tsx';
 import styles from './SelectCompetencyModal.module.css';
 
 interface SelectCompetencyModalProps {

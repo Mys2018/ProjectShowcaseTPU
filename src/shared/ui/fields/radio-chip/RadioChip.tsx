@@ -6,11 +6,12 @@ interface RadioChipProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   className?: string;
   checked?: boolean;
+  isBlink?: boolean;
 }
 
-export const RadioChip = ({ label, className, checked, ...props }: RadioChipProps)=> {
+export const RadioChip = ({ label, className, checked, isBlink, ...props }: RadioChipProps)=> {
   return (
-    <label className={clsx(styles.wrapper, { [styles.active]: checked }, className)}>
+    <label className={clsx(styles.wrapper, { [styles.active]: checked }, isBlink && 'blink-1', className)}>
       <input
         type='radio'
         className={styles.visuallyHidden}

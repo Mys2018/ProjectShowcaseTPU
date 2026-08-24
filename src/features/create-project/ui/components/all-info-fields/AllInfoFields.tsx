@@ -102,7 +102,7 @@ export const AllList = ({list}: AllListProps) => {
     <div className={styles.allList}>
       {
         list.map((piece: string, index: number) => (
-          <div key={piece} className={styles.piece}>
+          <div key={index} className={styles.piece}>
             <p>
               {index + 1}.
             </p>

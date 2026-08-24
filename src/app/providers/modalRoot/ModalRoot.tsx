@@ -1,13 +1,14 @@
-import {useModalStore} from "@/shared/model";
-import { SelectCompetencyModal } from '@/features/my-competencies/ui/modal-competency/SelectCompetencyModal.tsx'
-import type {ModalType} from "@/shared/model/useModalStore.ts";
 import React from "react";
-import {LinkModal} from "@/features/link-modal/LinkModal.tsx";
-import { ConfirmModal } from "@/shared/ui";
-import {AddCheckpointsModal} from "@/shared/ui/add-checkpoints-modal/AddCheckpointsModal.tsx";
-import {SelectProjectLinksModal} from "@/features/create-project/ui/components/select-project-links-modal/SelectProjectLinksModal.tsx";
 import {AvatarUploadModal} from "@/widgets/profile-header/ui/AvatarUploadModal.tsx";
+import { SelectCompetencyModal } from '@/features/my-competencies/ui/modal-competency/SelectCompetencyModal.tsx'
+import {SelectProjectLinksModal} from "@/features/create-project/ui/components/select-project-links-modal/SelectProjectLinksModal.tsx";
 import {InviteUserModal} from "@/features/create-project/ui/components/invite-user-modal/InviteUserModal.tsx";
+import {useModalStore} from "@/shared/model";
+import type {ModalType} from "@/shared/types";
+import {LinkModal} from "@/shared/ui/modals/link-modal/LinkModal.tsx";
+import { ConfirmModal } from "@/shared/ui";
+import {AddCheckpointsModal} from "@/shared/ui/modals/add-checkpoints-modal/AddCheckpointsModal.tsx";
+import {StartModal} from "@/shared/ui/modals/start-modal";
 const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   COMPETENCY_CHOICE: SelectCompetencyModal,
   LINK_UPDATE: LinkModal,
@@ -18,6 +19,7 @@ const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   SELECT_PROJECT_LINKS: SelectProjectLinksModal,
   AVATAR_UPLOAD: AvatarUploadModal,
   INVITE_USER: InviteUserModal,
+  START_MODAL: StartModal,
 }
 
 export function ModalRoot() {

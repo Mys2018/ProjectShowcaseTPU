@@ -1,14 +1,15 @@
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
-import { BigTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
 import { TargetAudienceList } from '../components/target-audience/TargetAudienceList.tsx';
 import { RequirementList } from '../components/requirement-list/RequirementList.tsx';
 import styles from './Tabs.module.css'
+import { BigTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
-import {InfoTooltip} from "@/shared";
+import { InfoTooltip } from "@/shared";
 
 interface PrdFieldProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
+  blinkFields: string[];
 }
 
 const getErrorMessage = (error: unknown): string | undefined => {
@@ -19,7 +20,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function PrdTab({ form, stepErrors }: PrdFieldProps) {
+export function PrdTab({ form, stepErrors, blinkFields }: PrdFieldProps) {
   const type = form.state.values.type;
 
   return (
@@ -33,15 +34,15 @@ export function PrdTab({ form, stepErrors }: PrdFieldProps) {
         </p>
       </div>
 
-      {type === 'Study' && <StudyPrdFields form={form} stepErrors={stepErrors} />}
-      {type === 'Case' && <CasePrdFields form={form} stepErrors={stepErrors} />}
-      {type === 'Real' && <RealPrdFields form={form} stepErrors={stepErrors} />}
+      {type === 'Study' && <StudyPrdFields form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
+      {type === 'Case' && <CasePrdFields form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
+      {type === 'Real' && <RealPrdFields form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
 
     </div>
   );
 }
 
-function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
+function StudyPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
       <div className={styles.block} id="field-prd-prerequisites">
@@ -71,10 +72,11 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
           {(field) => (
             <BigTextFieldForm
               placeholder="Опишите основные причины..."
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.prerequisites.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
+              isBlink={blinkFields.includes('Актуальность')}
             />
           )}
         </form.Field>
@@ -111,6 +113,7 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.projectGoal.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
+              isBlink={blinkFields.includes('Цель проекта')}
             />
           )}
         </form.Field>
@@ -146,13 +149,14 @@ function StudyPrdFields({ form, stepErrors }: PrdFieldProps) {
           title="Ключевой функционал"
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.lists.itemLength.max}
+          isBlink={blinkFields.includes('Ключевой функционал')}
         />
       </div>
     </div>
   );
 }
 
-function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
+function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
       <div className={styles.block} id="field-prd-case-prerequisites">
@@ -182,10 +186,11 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
           {(field) => (
             <BigTextFieldForm
               placeholder="Опишите основные причины..."
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.prerequisites.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.prerequisites']?.[0]}
+              isBlink={blinkFields.includes('Актуальность')}
             />
           )}
         </form.Field>
@@ -215,7 +220,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
             type={'bulb'}
           />
         </h4>
-        <TargetAudienceList form={form} stepErrors={stepErrors} />
+        <TargetAudienceList form={form} stepErrors={stepErrors} blinkFields={blinkFields} />
       </div>
 
       <div className={styles.block}>
@@ -245,10 +250,10 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
           {(field) => (
             <BigTextFieldForm
               placeholder="Что да как кратенько..."
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.projectGoal.max}
-              validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
+              isBlink={blinkFields.includes('Цель проекта')}
             />
           )}
         </form.Field>
@@ -286,6 +291,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
           title="Функциональные требования"
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.lists.itemLength.max}
+          isBlink={blinkFields.includes('Функциональные требования')}
         />
       </div>
 
@@ -317,10 +323,11 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
             <BigTextFieldForm
               subtitle={"Постановка задачи..."}
               placeholder="Что да как кратенько..."
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.problemStatement.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.problemStatement']?.[0]}
+              isBlink={blinkFields.includes('Постановка задачи')}
             />
           )}
         </form.Field>
@@ -331,7 +338,7 @@ function CasePrdFields({ form, stepErrors }: PrdFieldProps) {
   );
 }
 
-function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
+function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
   return (
     <div className={styles.mainFieldContainer}>
       <div className={styles.block} id="field-prd-real-productVision">
@@ -361,10 +368,11 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
           {(field) => (
             <BigTextFieldForm
               placeholder="Расскажите стратегическое описание продукта..."
-              value={field.state.value as string}
+              value={field.state.value}
               onChange={(e) => field.handleChange(e.target.value)}
               maxLength={PROJECT_LIMITS.prd.productVision.max}
               validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.productVision']?.[0]}
+              isBlink={blinkFields.includes('Product vision')}
             />
           )}
         </form.Field>
@@ -393,7 +401,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
             type={'bulb'}
           />
         </h4>
-        <TargetAudienceList form={form} stepErrors={stepErrors} />
+        <TargetAudienceList form={form} stepErrors={stepErrors} blinkFields={blinkFields} />
       </div>
 
       <div className={styles.block}>
@@ -425,10 +433,11 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
               <BigTextFieldForm
                 subtitle={"Цель проекта..."}
                 placeholder={"Что да как кратенько..."}
-                value={field.state.value as string}
+                value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 maxLength={PROJECT_LIMITS.prd.projectGoal.max}
                 validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.projectGoal']?.[0]}
+                isBlink={blinkFields.includes('Цель проекта')}
               />
             )}
           </form.Field>
@@ -437,10 +446,11 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
               <BigTextFieldForm
                 subtitle={"Цель бизнеса..."}
                 placeholder={"Что да как кратенько..."}
-                value={field.state.value as string}
+                value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
                 maxLength={PROJECT_LIMITS.prd.businessGoal.max}
                 validError={getErrorMessage(field.state.meta.errors[0]) || stepErrors['prdMeta.businessGoal']?.[0]}
+                isBlink={blinkFields.includes('Бизнес цель')}
               />
             )}
           </form.Field>
@@ -478,6 +488,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
             title="Функциональные требования"
             placeholder="Что да как кратенько..."
             maxLength={PROJECT_LIMITS.lists.itemLength.max}
+            isBlink={blinkFields.includes('Функциональные требования')}
           />
           <RequirementList
             form={form}
@@ -486,6 +497,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
             title="Нефункциональные требования"
             placeholder="Что да как кратенько..."
             maxLength={PROJECT_LIMITS.lists.itemLength.max}
+            isBlink={blinkFields.includes('Нефункциональные требования')}
           />
         </div>
       </div>
@@ -519,6 +531,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
           name="prdMeta.businessMetrics"
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.lists.itemLength.max}
+          isBlink={blinkFields.includes('Бизнес метрики')}
         />
       </div>
 
@@ -551,6 +564,7 @@ function RealPrdFields({ form, stepErrors }: PrdFieldProps) {
           name="prdMeta.projectPlan"
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.projectPlan.itemLength.max}
+          isBlink={blinkFields.includes('План проекта')}
         />
       </div>
     </div>

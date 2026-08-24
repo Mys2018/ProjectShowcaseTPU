@@ -1,0 +1,12 @@
+export type ModalType =
+  'COMPETENCY_CHOICE' |
+  'LINK_UPDATE' |
+  'CONFIRM_SAVE' |
+  'CONFIRM_CANCEL' |
+  'ADD_CHECKPOINT' |
+  'ADD_LINK' |
+  'SELECT_PROJECT_LINKS' |
+  'AVATAR_UPLOAD' |
+  'INVITE_USER' |
+  'START_MODAL' |
+  null

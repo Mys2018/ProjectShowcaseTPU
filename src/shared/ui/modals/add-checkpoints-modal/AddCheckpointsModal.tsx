@@ -1,9 +1,9 @@
 import styles from './AddCheckpointsModal.module.css'
 import DateIcon from '@/shared/ui/icons/date.svg?react';
-import {Modal} from "@/shared/ui/modal/Modal.tsx";
+import {Modal} from "@/shared/ui/modals/modal/Modal.tsx";
 import {SmallTextFieldForm} from "@/shared/ui/fields/text-field/TextField.tsx";
 import {useRef, useState} from "react";
-import {ModalFooter} from "@/shared/ui/modal-footer/ModalFooter.tsx";
+import {ModalFooter} from "@/shared/ui/modals/modal-footer/ModalFooter.tsx";
 
 interface AddCheckpointsModalProps {
   isOpen: boolean,

@@ -1,0 +1,16 @@
+.button {
+  padding: 13px 24px 14px 24px;
+  border-radius: 50px;
+  background-color: var(--color-brand-green);
+  font: var(--inter-13-600);
+  color: white;
+  transition: background-color 0.5s ease;
+}
+
+.button:hover {
+  background-color: var(--color-light-green);
+}
+
+.button:active {
+  background-color: var(--color-dark-green);
+}

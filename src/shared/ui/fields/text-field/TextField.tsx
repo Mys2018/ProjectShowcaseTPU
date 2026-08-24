@@ -1,5 +1,5 @@
 import styles from './TextField.module.css'
-import {type ChangeEvent, useState} from "react";
+import { type ChangeEvent, useState } from "react";
 import clsx from "clsx";
 
 type BigTextFieldProps = {
@@ -9,14 +9,15 @@ type BigTextFieldProps = {
   maxLength?: number
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
   validError?: string | undefined
+  isBlink?: boolean
 }
 
-export const BigTextField = ({value, placeholder, maxLength, onChange, subtitle, validError}: BigTextFieldProps)=>  {
+export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle, validError, isBlink }: BigTextFieldProps) => {
 
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className={clsx(styles.textContainer, (validError ? styles.error : ''))}>
+    <div className={clsx(styles.textContainer, (validError ? styles.error : ''), (isBlink && 'blink-1'))}>
       <div className={styles.innerContainer}>
         {subtitle && <p className={clsx(styles.subtitle, validError ? styles.error : '')}>
           {subtitle}
@@ -45,13 +46,14 @@ type SmallTextFieldProps = {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   validError?: string | undefined
   subtitle?: string
+  isBlink?: boolean
 }
 
-export const SmallTextField = ({value, placeholder, maxLength, onChange, validError, subtitle}: SmallTextFieldProps)=>  {
+export const SmallTextField = ({ value, placeholder, maxLength, onChange, validError, subtitle, isBlink }: SmallTextFieldProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <div className={clsx(styles.inputTextContainer, (validError ? styles.error : ''))}>
+    <div className={clsx(styles.inputTextContainer, (validError ? styles.error : ''), isBlink && 'blink-1')}>
       <div className={styles.smallInnerContainer}>
         {subtitle && <p className={clsx(styles.subtitle, validError ? styles.error : '')}>
           {subtitle}
@@ -84,9 +86,10 @@ interface BigTextFieldFormProps {
   title?: string
   validError?: string | undefined,
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void,
+  isBlink?: boolean;
 }
 
-export const BigTextFieldForm  = ({value, placeholder, maxLength, validError, title, onChange, subtitle} : BigTextFieldFormProps) => {
+export const BigTextFieldForm = ({ value, placeholder, maxLength, validError, title, onChange, subtitle, isBlink }: BigTextFieldFormProps) => {
   return (
     <div className={styles.body}>
       {
@@ -95,9 +98,9 @@ export const BigTextFieldForm  = ({value, placeholder, maxLength, validError, ti
         </h5>
       }
 
-      <BigTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} subtitle={subtitle} validError={validError}/>
+      <BigTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} subtitle={subtitle} validError={validError} isBlink={isBlink} />
       {validError &&
-        <p className={clsx(styles.errorText, styles.error,  styles.errorBlock)}>
+        <p className={clsx(styles.errorText, styles.error, styles.errorBlock)}>
           {validError || ''}
         </p>
       }
@@ -114,10 +117,11 @@ interface SmallTextFieldFormProps {
   validError?: string | undefined,
   hideErrorText?: boolean,
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  isBlink?: boolean;
 }
 
-export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, hideErrorText, title, onChange, children, subtitle} : SmallTextFieldFormProps) => {
+export const SmallTextFieldForm = ({ value, placeholder, maxLength, validError, hideErrorText, title, onChange, children, subtitle, isBlink }: SmallTextFieldFormProps) => {
   return (
     <div className={styles.body}>
       {
@@ -127,7 +131,7 @@ export const SmallTextFieldForm  = ({value, placeholder, maxLength, validError, 
       }
 
       <div className={styles.iconBody}>
-        <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle}/>
+        <SmallTextField value={value} placeholder={placeholder} maxLength={maxLength} onChange={onChange} validError={validError} subtitle={subtitle} isBlink={isBlink} />
         {children}
       </div>
       {validError && !hideErrorText &&

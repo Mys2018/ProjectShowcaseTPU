@@ -169,3 +169,9 @@
 .linkLarge {
     font: var(--OS-10-5-400)
 }
+
+.greenButton {
+    color: var(--color-brand-green);
+    font: var(--OS-10-400);
+    width: fit-content;
+}

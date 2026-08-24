@@ -1,4 +1,4 @@
-import type {CreateProjectForm} from '../../model/useProjectWizard';
+import type { CreateProjectForm } from '../../model/useProjectWizard';
 import styles from "./Tabs.module.css";
 import clsx from "clsx";
 import {
@@ -7,23 +7,34 @@ import {
   SmallBlockBody, Tag,
   Separator, AllList
 } from "@/features/create-project/ui/components/all-info-fields/AllInfoFields.tsx";
-import type {PrdMeta} from "@/entities/project";
+import type { PrdMeta } from "@/entities/project";
+import ArchiveIcon from '@/shared/ui/icons/archive.svg?react'
 
 interface TabProps {
   form: CreateProjectForm;
   setStep: (step: number) => void;
+  setBlinkFields: (fields: string[]) => void;
 }
 
-export function AllTab({ form, setStep }: TabProps) {
+export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
   const prd = form.state.values.prdMeta as PrdMeta;
 
-  const handleEdit = (step: number, _searchTexts?: string[], _tagNames?: string[]) => {
+  const handleEdit = (step: number, searchTexts: string[]) => {
     setStep(step);
-    
-    // Скроллим наверх страницы при переключении таба для удобства
+    if (searchTexts) {
+      setBlinkFields(searchTexts);
+      setTimeout(() => setBlinkFields([]), 1400);
+    }
+
+    // Скроллим к подсвеченному элементу при переключении таба
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 50);
+      const blinkingElement = document.querySelector('.blink-1');
+      if (blinkingElement) {
+        blinkingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const renderSeparator = (condition: boolean) => condition ? <Separator /> : null;
@@ -37,7 +48,7 @@ export function AllTab({ form, setStep }: TabProps) {
       </div>
 
       {/*Основа*/}
-      <BigBlock  bigTitle={'Основная информация'}>
+      <BigBlock bigTitle={'Основная информация'}>
         <div className={styles.grid}>
           <SmallBlock title={'Название проекта'} onEditField={() => handleEdit(1, ['Название проекта'])}>
             <SmallBlockBody
@@ -57,13 +68,13 @@ export function AllTab({ form, setStep }: TabProps) {
           />
         </SmallBlock>
 
-        <SmallBlock title={'Трек теги'} onEditField={() => handleEdit(1, ['Основной тег', 'Дополнительные теги'])}>
+        <SmallBlock title={'Трек теги'} onEditField={() => handleEdit(1, ['Основной тег'])}>
           <div className={styles.tags}>
             <div className={styles.tagColumn}>
               <p>
                 Основной
               </p>
-              <Tag title={form.state.values.extraFieldsForAll?.primaryTagName}/>
+              <Tag title={form.state.values.extraFieldsForAll?.primaryTagName} />
             </div>
 
             <div className={styles.tagColumn}>
@@ -73,7 +84,7 @@ export function AllTab({ form, setStep }: TabProps) {
               <div className={styles.tagList}>
                 {
                   form.state.values.extraFieldsForAll?.tags?.map(tag => (
-                    <Tag key={tag} title={tag}/>
+                    <Tag key={tag} title={tag} />
                   ))
                 }
               </div>
@@ -108,11 +119,11 @@ export function AllTab({ form, setStep }: TabProps) {
         {prd.audience && prd.audience.length > 0 && (
           <>
             <SmallBlock title={'Целевая аудитория'} subtitle={'z'}>
-               <div className={styles.grid}>
-                 {prd.audience.map((segment, index: number) => (
-                    <SmallBlockBody key={index} subtitle={`Сегмент ${index + 1}`} mainText={segment.description} onEditField={() => handleEdit(2, ['Целевая аудитория'])} />
-                 ))}
-               </div>
+              <div className={styles.grid}>
+                {prd.audience.map((segment, index: number) => (
+                  <SmallBlockBody key={index} subtitle={`Сегмент ${index + 1}`} mainText={segment.description} onEditField={() => handleEdit(2, [`Сегмент ${index + 1}`])} />
+                ))}
+              </div>
             </SmallBlock>
             {renderSeparator(true)}
           </>
@@ -123,10 +134,10 @@ export function AllTab({ form, setStep }: TabProps) {
             <SmallBlock title={'Цели'} subtitle={'z'}>
               <div className={styles.grid}>
                 {prd.projectGoal && (
-                  <SmallBlockBody subtitle={'Цель проекта'} mainText={prd.projectGoal} onEditField={() => handleEdit(2, ['Цели'])} />
+                  <SmallBlockBody subtitle={'Цель проекта'} mainText={prd.projectGoal} onEditField={() => handleEdit(2, ['Цель проекта'])} />
                 )}
                 {prd.businessGoal && (
-                  <SmallBlockBody subtitle={'Бизнес цель'} mainText={prd.businessGoal} onEditField={() => handleEdit(2, ['Цели'])} />
+                  <SmallBlockBody subtitle={'Бизнес цель'} mainText={prd.businessGoal} onEditField={() => handleEdit(2, ['Бизнес цель'])} />
                 )}
               </div>
 
@@ -141,17 +152,17 @@ export function AllTab({ form, setStep }: TabProps) {
             <SmallBlock title={'Требования'} subtitle={'z'}>
               <div className={styles.grid}>
                 {prd.keyFunctionality && (
-                  <SmallBlockBody subtitle={'Ключевой функционал'} onEditField={() => handleEdit(2, ['Требования'])}>
+                  <SmallBlockBody subtitle={'Ключевой функционал'} onEditField={() => handleEdit(2, ['Ключевой функционал'])}>
                     <AllList list={prd.keyFunctionality} />
                   </SmallBlockBody>
                 )}
                 {prd.functional && (
-                  <SmallBlockBody subtitle={'Функциональные требования'} onEditField={() => handleEdit(2, ['Требования'])}>
+                  <SmallBlockBody subtitle={'Функциональные требования'} onEditField={() => handleEdit(2, ['Функциональные требования'])}>
                     <AllList list={prd.functional} />
                   </SmallBlockBody>
                 )}
                 {prd.nonFunctional && (
-                  <SmallBlockBody subtitle={'Нефункциональные требования'} onEditField={() => handleEdit(2, ['Требования'])}>
+                  <SmallBlockBody subtitle={'Нефункциональные требования'} onEditField={() => handleEdit(2, ['Нефункциональные требования'])}>
                     <AllList list={prd.nonFunctional} />
                   </SmallBlockBody>
                 )}
@@ -166,10 +177,10 @@ export function AllTab({ form, setStep }: TabProps) {
             <SmallBlock title={'Реализация'} subtitle={'z'}>
               <div className={styles.grid}>
                 {prd.problemStatement && (
-                  <SmallBlockBody subtitle={'Постановка задачи'} mainText={prd.problemStatement} onEditField={() => handleEdit(2, ['Реализация', 'Постановка задачи'])} />
+                  <SmallBlockBody subtitle={'Постановка задачи'} mainText={prd.problemStatement} onEditField={() => handleEdit(2, ['Постановка задачи'])} />
                 )}
                 {prd.businessMetrics && (
-                  <SmallBlockBody subtitle={'Бизнес метрики'} onEditField={() => handleEdit(2, ['Реализация', 'Бизнес метрики'])}>
+                  <SmallBlockBody subtitle={'Бизнес метрики'} onEditField={() => handleEdit(2, ['Бизнес метрики'])}>
                     <AllList list={prd.businessMetrics} />
                   </SmallBlockBody>
                 )}
@@ -180,9 +191,9 @@ export function AllTab({ form, setStep }: TabProps) {
         )}
 
         {prd.projectPlan && (
-           <SmallBlock title={'План проекта'} onEditField={() => handleEdit(2, ['План проекта'])}>
-             <AllList list={prd.projectPlan} />
-           </SmallBlock>
+          <SmallBlock title={'План проекта'} onEditField={() => handleEdit(2, ['План проекта'])}>
+            <AllList list={prd.projectPlan} />
+          </SmallBlock>
         )}
       </BigBlock>
 
@@ -250,30 +261,34 @@ export function AllTab({ form, setStep }: TabProps) {
           </SmallBlock>
 
           <SmallBlock title={'Ресурсы'} onEditField={() => handleEdit(4, ['Ссылки', 'Ресурсы'])}>
-              <div className={styles.linkList}>
-                {
-                  form.state.values.links.map((link, index) => (
-                    <div key={index} className={styles.linkContainer}>
-                      <div className={styles.innerContainer}>
-                        <p>
-                          {
-                            link.name
-                          }
-                        </p>
-                        <p>
-                          {
-                            link.link
-                          }
-                        </p>
-                      </div>
+            <div className={styles.linkList}>
+              {
+                form.state.values.links.map((link, index) => (
+                  <div key={index} className={styles.linkContainer}>
+                    <div className={styles.innerContainer}>
+                      <p>
+                        {
+                          link.name
+                        }
+                      </p>
+                      <p>
+                        {
+                          link.link
+                        }
+                      </p>
                     </div>
-                  ))
-                }
-              </div>
+                  </div>
+                ))
+              }
+            </div>
           </SmallBlock>
         </div>
 
       </BigBlock>
+
+      {
+        <button className={styles.archiveButton}> <ArchiveIcon/> Архивировать проект </button>
+      }
     </div>
 
   );

@@ -6,8 +6,12 @@
   --color-white: #FFFFFF;
   --color-red: #FF3344;
   --color-red-error-bg: rgba(255, 51, 68, 0.03);
+  --color-dark-red: #D72836;
   --color-yellow: #FFB600;
   --transparent-yellow: rgba(255, 182, 0, 0.03);
+
+  --color-light-green: #17CF3C;
+  --color-dark-green: #34B24D;
 
   --black: 29, 29, 31;
   --green: 40, 190, 70;
@@ -147,15 +151,32 @@
   --padding-inline: 180px;
   --max-container-width: calc(1560px + var(--padding-inline) * 2);
 
-  --blink-yellow-animation: animationYellowBlinking 1.4s ease-in-out 2;
+  --blink-yellow-animation-2: animationYellowBlinking 1.4s ease-in-out 2;
+  --blink-yellow-animation-1: animationYellowBlinking 1.4s ease-in-out 1;
+}
+
+.blink-2 {
+  animation: var(--blink-yellow-animation-2);
+}
+
+.blink-1 {
+  animation: var(--blink-yellow-animation-1);
 }
 
 @keyframes animationYellowBlinking {
   0% {
   }
-  50% {
-    background-color: var(--transparent-yellow);
+  28% {
+  }
+  57% {
+    background-color: rgba(255, 182, 0, 0.15);
     border-color: var(--color-yellow);
+    color: var(--color-brand-black);
+  }
+  71% {
+    background-color: rgba(255, 182, 0, 0.15);
+    border-color: var(--color-yellow);
+    color: var(--color-brand-black);
   }
   100% {
   }

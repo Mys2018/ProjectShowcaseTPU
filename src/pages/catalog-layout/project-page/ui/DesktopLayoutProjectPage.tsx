@@ -18,12 +18,15 @@ import { useUserById } from "@/entities/user";
 import { useNavigate } from "react-router-dom";
 import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
 
 interface ProjectPageProps {
   project: ProjectCardData
 }
 
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
+  usePageTitle('проекту');
+  const backTitle = usePreviousPageTitle('Назад к списку проектов');
 
   const navigate = useNavigate();
 
@@ -93,9 +96,11 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.headerLeft} onClick={() => navigate(-1)}>
+      <div className={styles.headerLeft} onClick={() => {
+        navigate(-1)
+      }}>
         <BackIcon className={styles.backIcon} />
-        <p className={styles.back}>Назад</p>
+        <p className={styles.back}>{backTitle}</p>
       </div>
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
