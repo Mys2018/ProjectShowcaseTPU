@@ -29,6 +29,12 @@ export default defineConfig({
 
     return {
       host: true,
+      proxy: {
+        '/dev/api': {
+          target: 'https://project.tpu.ru',
+          changeOrigin: true
+        }
+      },
       ...(hasCerts && {
         https: {
           key: fs.readFileSync(keyPath),

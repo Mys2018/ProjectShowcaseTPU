@@ -35,17 +35,20 @@ jobs:
       - name: Build project
         env:
           VITE_TPU_OAUTH_CLIENT_ID: ${{ secrets.VITE_TPU_OAUTH_CLIENT_ID }}
-          VITE_REF_POST_LOGIN: /auth/login
-          VITE_REF_GET_AUTH_STATUS: /auth/status
-          VITE_REF_POST_RELOGIN: /auth/refresh
-          VITE_REF_POST_LOGOUT: /auth/logout
-          VITE_REF_GET_ME_DATA: /users/me
-          VITE_REF_GET_USERS: /users
-          VITE_REF_ROLES: /roles
-          VITE_REF_GET_PROJECTS: /projects
-          VITE_REF_GET_TAGS: /tags
-          VITE_REF_GET_ROLE_TYPES: /role-types
           VITE_API_BASE_URL: /dev/api
+          VITE_API_AUTH_STATUS_URL: /auth/status
+          VITE_API_RELOGIN_URL: /auth/refresh
+          VITE_API_LOGIN_URL: /auth/login
+          VITE_API_LOGOUT_URL: /auth/logout
+          VITE_API_ME_URL: /users/me
+          VITE_API_USERS_URL: /users
+          VITE_API_PROJECTS_URL: /projects
+          VITE_API_PROJECT_DRAFT_URL: /me/projects/draft
+          VITE_API_TAGS_URL: /tags
+          VITE_API_PARTNERS_URL: /partners
+          VITE_API_COMPETENCIES_URL: /role-types
+          VITE_API_SKILLS_URL: /skills
+          VITE_API_CHECKPOINTS_URL: /projects/checkpoints
           VITE_OAUTH_AUTHORIZE_URL: https://oauth.tpu.ru/authorize
 
         run: |
