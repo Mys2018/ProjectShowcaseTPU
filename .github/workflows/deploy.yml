@@ -45,7 +45,7 @@ jobs:
           VITE_REF_GET_PROJECTS: /projects
           VITE_REF_GET_TAGS: /tags
           VITE_REF_GET_ROLE_TYPES: /role-types
-          VITE_API_BASE_URL: https://project.tpu.ru/dev/api
+          VITE_API_BASE_URL: /dev/api
           VITE_OAUTH_AUTHORIZE_URL: https://oauth.tpu.ru/authorize
 
         run: |
