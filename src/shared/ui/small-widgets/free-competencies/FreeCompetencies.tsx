@@ -1,14 +1,14 @@
 import styles from './FreeCompetencies.module.css'
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {FeedBackButton} from "@/shared/ui/elements/buttons";
+import {useIsProfileFilled} from "@/entities/user/lib";
+import {useAuthStore} from "@/entities/user";
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
-import {useState} from "react";
 import {InfoTooltip, ROUTES} from "@/shared";
-import {FeedBackButton} from "@/features/feedback-button";
-import {useIsProfileFilled} from "@/entities/user/lib";
-import {useAuthStore} from "@/entities/user";
-import {useNavigate} from "react-router-dom";
 
 interface FreeCompetenciesProps {
   roles: {

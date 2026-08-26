@@ -155,7 +155,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' },{ title: '', deadline: '' },{ title: '', deadline: '' }],
+  checkpoints: [{ title: '', deadline: '' }, { title: '', deadline: '' }, { title: '', deadline: '' }],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -221,11 +221,30 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           roleTypeId: role.roleTypeId,
           placesCount: role.placesCount,
           minPlacesCount: role.minPlacesCount,
-          meta: {
-            description: "Бла бла"
-          },
           skillIds: role.skills.map(skill => skill.id)
         })),
+        // TODO: УБРАТЬ НАХУЙ ЭТО
+        //ki5DpvbZds1wnCWP - repo
+        // u7ZftcYmGyDauTWk - task
+
+        repository: [
+          {
+            platformId: "ki5DpvbZds1wnCWP",
+            url: "https://github.com/mock"
+          }
+        ],
+        taskTracker: [
+          {
+            platformId: "u7ZftcYmGyDauTWk",
+            url: "https://trello.com/mock"
+          }
+        ],
+        designEnvironment: [
+          {
+            platformId: "a-qGXo4vvPS6lHex",
+            url: "https://figma.com/mock"
+          }
+        ]
       } as unknown as CreateProjectDto;
 
       console.log('payload:', payload)

@@ -168,7 +168,7 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
 
                           {popoverOpen && (
                             <MyCompetenciesModal
-                              currentFullSkills={globalSkills.filter(g => !skills.find((s) => s.id === g.id))}
+                              currentFullSkills={globalSkills.filter(g => g.roleTypeId === role.roleTypeId && !skills.find((s) => s.id === g.id))}
                               addSkill={handleAddSkill}
                               setPopoverOpenFor={() => setPopoverOpen(false)}
                             />

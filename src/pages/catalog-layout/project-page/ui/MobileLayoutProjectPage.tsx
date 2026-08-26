@@ -1,32 +1,32 @@
 import styles from './MobileLayoutProjectPage.module.css'
-import {useState} from "react";
-import {Drawer} from "@/features/drawer/Drawer.tsx";
-import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
+import { useState } from "react";
+import { Drawer } from "@/features/drawer/Drawer.tsx";
+import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
 // TODO
-import {useUserById} from "@/entities/user";
-import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import { useUserById } from "@/entities/user";
+import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import UpIcon from '@/shared/ui/icons/up.svg?react';
 
-import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
-import {SegmentedSwitch} from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
-import {ProfileWidget} from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
-import {ProjectTeam} from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
-import {KeyPoints} from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
-import {LinkContainer} from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
-import {ProjectPrd} from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import {FreeCompetencies} from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
-import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
+import { SegmentedSwitch } from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
+import { ProfileWidget } from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
+import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
+import { KeyPoints } from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
+import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
+import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
+import { FreeCompetencies } from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
+import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 
 interface ProjectPageProps {
   project: ProjectCardData
 }
 
 
-export const MobileLayoutProjectPage = ({project} : ProjectPageProps ) => {
+export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   // TODO
   const { data: owner } = useUserById(
@@ -78,11 +78,11 @@ export const MobileLayoutProjectPage = ({project} : ProjectPageProps ) => {
               type="button"
               className={styles.moreMenuButton}
             >
-              <MoreIcon/>
+              <MoreIcon />
             </button>}
           >
-            <PopupMenu.Row onClick={() => {}} title={'Скопировать ID'}>
-              <IdIcon/>
+            <PopupMenu.Row onClick={() => { }} title={'Скопировать ID'}>
+              <IdIcon />
             </PopupMenu.Row>
           </PopupMenu>
         </div>
@@ -138,7 +138,7 @@ export const MobileLayoutProjectPage = ({project} : ProjectPageProps ) => {
       </button>
 
       <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)}>
-        <FreeCompetencies roles={project.roles}/>
+        <FreeCompetencies roles={project.roles} />
       </Drawer>
     </main>
   )
