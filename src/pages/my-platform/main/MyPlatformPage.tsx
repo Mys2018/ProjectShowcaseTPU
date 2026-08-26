@@ -9,7 +9,7 @@ import {
   usePreferencesStore,
   UserRow,
   UserRowSkeleton,
-  type UserRole
+  type UserSwitchableRole
 } from '@/entities/user'
 import {
   FloatingTabs,
@@ -18,12 +18,12 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem, usePageTitle
+  type FloatingTabItem,
+  usePageTitle
 } from '@/shared'
 
-
 export const MyPlatformPage = () => {
-  usePageTitle('моей платформе');
+  usePageTitle('моей платформе')
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
@@ -85,7 +85,7 @@ export const MyPlatformPage = () => {
   } // TODO заменить на реальные данные
 
   const switchableRoles = user ? getSwitchableRoles(user.roles) : []
-  const tabItems: FloatingTabItem<UserRole['type']>[] = switchableRoles
+  const tabItems: FloatingTabItem<UserSwitchableRole['type']>[] = switchableRoles
     .sort((a, b) => a.weight - b.weight)
     .map(role => ({ label: ROLES_TRANSLATIONS[role.type], value: role.type }))
   const isHeroWrapperVisible = switchableRoles.some(role => role.type !== 'Student')
@@ -104,13 +104,17 @@ export const MyPlatformPage = () => {
     const shapeElement = shapeRef.current
 
     if (activitiesElement) activitiesElement.scrollTop = scrollTop
-    if (contentElement) contentElement.scrollTop = scrollTop
-    if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
-    if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
+    if (contentElement) {
+      const contentScrollTop = contentElement.scrollTop
+      contentElement.scrollTop = scrollTop
+
+      if (bgElement) bgElement.style.transform = `translateY(-${contentScrollTop}px)`
+      if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, contentScrollTop)}px)`
+    }
   }
 
   return (
-    <main className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`} onScroll={handleScroll}>
+    <main className={`${styles.container} ${preferredRoleType ? styles[preferredRoleType.toLowerCase()] : ''}`} onScroll={handleScroll}>
       <span className={`${styles.background} ${styles.fixed}`} />
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
@@ -121,7 +125,7 @@ export const MyPlatformPage = () => {
         {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}
       </div>
 
-      {switchableRoles.length > 1 && (
+      {switchableRoles.length > 1 && preferredRoleType && (
         <aside className={styles.switchContainer}>
           <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
         </aside>

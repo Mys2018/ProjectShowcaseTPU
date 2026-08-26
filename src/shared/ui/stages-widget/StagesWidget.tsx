@@ -4,7 +4,7 @@ import styles from './StagesWidget.module.css'
 import { ChevronRightIcon, FeedbackIcon, FolderIcon, LikeIcon } from '..'
 import { assertNever } from '../../lib'
 import { ROUTES } from '../../config'
-import { usePreferencesStore, type UserRole } from '@/entities/user'
+import { usePreferencesStore, type UserSwitchableRole } from '@/entities/user'
 
 interface StagesData {
   type: 'projects' | 'feedback' | 'likes' | 'moderator-projects' | 'moderator-requests' | 'curator-projects' | 'curator-requests'
@@ -13,7 +13,7 @@ interface StagesData {
   notification?: boolean
 }
 
-const getStagesData = (roleType: UserRole['type']): StagesData[] => {
+const getStagesData = (roleType: UserSwitchableRole['type']): StagesData[] => {
   switch (roleType) {
     case 'Student':
       return [
@@ -133,6 +133,7 @@ export const StagesWidget = () => {
   const navigate = useNavigate()
   const { preferredRoleType: roleType } = usePreferencesStore()
 
+  if (!roleType) return null
   const stagesData = getStagesData(roleType)
 
   return (
