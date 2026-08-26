@@ -96,3 +96,4 @@ type Role<T> = {
 }[keyof Required<T>]
 
 export type UserRole = Role<UserDto['roles']>
+export type UserSwitchableRole = Extract<UserRole, { type: 'Student' | 'Curator' | 'Moderator' }>

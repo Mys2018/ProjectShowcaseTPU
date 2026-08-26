@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "../api/mutations";
 import { pkceService } from "./pkce";
 import {
+  getSwitchableRoles,
   useAuthStatus,
   useAuthStore,
   useMe,
@@ -28,12 +29,8 @@ export const useAuthBootstrap = () => {
 
   useEffect(() => {
     if (userData?.roles) {
-      for (const role of userData.roles) {
-        if (role.type === 'Student' || role.type === 'Curator' || role.type === 'Moderator') {
-          setPreferredRoleType(role.type)
-          if (role.type === 'Student') break
-        }
-      }
+      const preferredRole = getSwitchableRoles(userData.roles).at(0)
+      if (preferredRole) setPreferredRoleType(preferredRole.type)
     }
   }, [userData, setPreferredRoleType])
 

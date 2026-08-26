@@ -1,12 +1,12 @@
 import { create } from 'zustand'
-import type { UserRole } from '../types'
+import type { UserSwitchableRole } from '../types'
 
 interface PreferencesState {
-  preferredRoleType: UserRole['type']
-  setPreferredRoleType: (roleType: UserRole['type']) => void
+  preferredRoleType: UserSwitchableRole['type'] | null
+  setPreferredRoleType: (roleType: UserSwitchableRole['type']) => void
 }
 
 export const usePreferencesStore = create<PreferencesState>(set => ({
-  preferredRoleType: 'Default',
+  preferredRoleType: null,
   setPreferredRoleType: roleType => set({ preferredRoleType: roleType })
 }))
