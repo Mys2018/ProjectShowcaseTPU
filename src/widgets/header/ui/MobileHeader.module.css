@@ -1,0 +1,90 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  height: var(--header-mobile-h);
+  padding: 10px 20px;
+
+  background: var(--color-brand-black);
+  will-change: transform;
+}
+
+.logo {
+  width: 178px;
+  height: 23px;
+  /* на узких экранах ужимается целиком, без искажения пропорций */
+  min-width: 0;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 24px;
+
+  height: 46px;
+  padding: 4px 4px 4px 0;
+  flex-shrink: 0;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-gray-50);
+}
+
+.iconButton svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* в ассетах fill зашит атрибутом (#EFF1F5) — CSS его перебивает, чтобы цветом можно было управлять */
+.iconButton svg path {
+  fill: currentColor;
+}
+
+.heart {
+  width: 18.75px;
+  height: 15.79px;
+}
+
+.bell {
+  width: 16px;
+  height: 20px;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.avatar img,
+.avatar svg {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+}

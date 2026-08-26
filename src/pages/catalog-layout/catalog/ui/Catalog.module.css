@@ -78,6 +78,44 @@
   }
 }
 
+/* Мобильный хедер (fixed, умеет прятаться при скролле) требует, чтобы контент
+   скроллился ПОД ним одним потоком: скроллером становится сам .mainContent,
+   а отступ под хедер уходит внутрь него. */
+@media (max-width: 1199px) {
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    /* Гасим отступ под хедер из MainLayout и забираем его внутрь себя: контент
+       должен уезжать ПОД хедер, иначе reveal оставляет пустую полосу.
+       Другим страницам каталога (например, странице проекта) это не нужно —
+       поэтому правило живёт здесь, а не в CatalogLayout. */
+    flex: none;
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    /* хедер (66) + зазор (12) + панель поиска (80) — она fixed и места в потоке не занимает */
+    padding: 158px 12px 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .mainContent::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterPart {
+    display: none;
+  }
+
+  .projectsPart {
+    overflow: visible;
+    padding: 8px 4px 24px;
+  }
+
+  .projectsPart::before {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .mainContent {
     grid-template-columns: 1fr;

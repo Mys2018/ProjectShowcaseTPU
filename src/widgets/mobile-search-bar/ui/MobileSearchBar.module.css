@@ -1,0 +1,163 @@
+/* Позиционирующая обёртка. Здесь только transform — его длительностью управляет
+   инлайновый стиль, поэтому никаких других переходов на этом элементе быть не должно:
+   инлайновый `transition` перебил бы их целиком. */
+.dock {
+  --dock-morph: 0.3s;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 501; /* выше хедера: в состоянии header панель заезжает на него */
+  will-change: transform;
+}
+
+/* Видимая плашка. Все различия между состояниями — длины и цвета, поэтому
+   переключение класса анимируется, а не щёлкает. */
+.card {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+
+  transition:
+    margin-inline var(--dock-morph) ease,
+    padding var(--dock-morph) ease,
+    gap var(--dock-morph) ease,
+    background-color var(--dock-morph) ease,
+    border-radius var(--dock-morph) ease;
+}
+
+/* --- Статичная: страница в самом верху ------------------------------- */
+
+.static .card {
+  /* 345 при ширине экрана 375 — то есть по 15px с боков */
+  margin-inline: 15px;
+  padding: 16px 8px;
+  /* в макете поле фиксированное (268) и прижато space-between, что даёт зазор 13.
+     Тот же результат через gap, но поле остаётся резиновым и его ширина анимируется. */
+  gap: 13px;
+
+  background: rgba(239, 241, 245, 0.9);
+  border-radius: 20px;
+}
+
+/* --- Прилипла к хедеру ------------------------------------------------ */
+
+.header .card {
+  margin-inline: 0;
+  padding: 8px 20px 16px;
+  gap: 12px;
+
+  background: var(--color-brand-black);
+  border-radius: 0 0 20px 20px;
+}
+
+/* --- Прилипла к верху, хедер спрятан ---------------------------------- */
+
+.top .card {
+  margin-inline: 0;
+  padding: 16px 20px;
+  gap: 12px;
+
+  background: var(--color-brand-black);
+  border-radius: 0 0 20px 20px;
+}
+
+/* --- Содержимое ------------------------------------------------------- */
+
+.searchBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+
+  height: 48px;
+  min-width: 0;
+  flex-grow: 1;
+  padding: 16px 16px 18px;
+  border: 1px solid;
+  border-radius: 16px;
+
+  transition:
+    background-color var(--dock-morph) ease,
+    border-color var(--dock-morph) ease;
+}
+
+.static .searchBar {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-350);
+}
+
+.header .searchBar,
+.top .searchBar {
+  background: var(--color-white);
+  border-color: var(--color-white);
+}
+
+.searchIcon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--color-gray-600);
+}
+
+.searchIcon path {
+  fill: currentColor;
+  fill-opacity: 1;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: var(--OS-13-400);
+  color: var(--color-gray-600);
+}
+
+.input::placeholder {
+  color: var(--color-gray-600);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--color-gray-350);
+  border-radius: 16px;
+  cursor: pointer;
+
+  transition: background-color var(--dock-morph) ease;
+}
+
+.static .filters {
+  background: var(--color-gray-50);
+}
+
+.header .filters,
+.top .filters {
+  background: var(--color-white);
+}
+
+/* ponytail: в макете на месте иконки серый плейсхолдер — ассета фильтра ещё нет */
+.filtersIcon {
+  width: 16px;
+  height: 16px;
+  background: #D9D9D9;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock {
+    --dock-morph: 0s;
+  }
+}
