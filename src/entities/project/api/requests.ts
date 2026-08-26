@@ -3,7 +3,8 @@ import type {
   ProjectsResponseDto,
   GetProjectsQueryParams,
   CreateProjectDto,
-  ProjectDto
+  ProjectDto,
+  GetProjectsResponse
 } from '../model/types';
 import { mapProjectDtoToEntity } from '../lib/mappers';
 import { api, ENDPOINTS } from '@/shared';
@@ -27,7 +28,7 @@ export const projectApi = {
     await api.delete(ENDPOINTS.PROJECT_DRAFT);
   },
 
-  getProjects: async (params?: GetProjectsQueryParams): Promise<{ projects: ProjectCardData[]; total: number }> => {
+  getProjects: async (params?: GetProjectsQueryParams): Promise<GetProjectsResponse> => {
     const response = await api.get<ProjectsResponseDto>(ENDPOINTS.PROJECTS, { 
       params,
       paramsSerializer: {
@@ -49,5 +50,13 @@ export const projectApi = {
   createProject: async (payload: CreateProjectDto): Promise<string> => {
     const { data } = await api.post<{ projectId: string }>(ENDPOINTS.PROJECTS, payload)
     return data.projectId
+  },
+
+  likeProject: async (projectId: string): Promise<void> => {
+    await api.post(ENDPOINTS.LIKE_PROJECT(projectId))
+  },
+
+  unlikeProject: async (projectId: string): Promise<void> => {
+    await api.delete(ENDPOINTS.LIKE_PROJECT(projectId))
   },
 };
