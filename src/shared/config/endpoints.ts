@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   USER_BY_ID: (userId: string) => `${import.meta.env.VITE_API_USERS_URL}/${userId}`,
   PROJECTS: import.meta.env.VITE_API_PROJECTS_URL,
   PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}`,
+  LIKE_PROJECT: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}/like`,
   PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL,
   TAGS: import.meta.env.VITE_API_TAGS_URL,
   PARTNERS: import.meta.env.VITE_API_PARTNERS_URL,
