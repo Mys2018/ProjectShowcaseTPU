@@ -1,10 +1,10 @@
+import {useEffect} from "react";
 import {Outlet, useNavigate} from 'react-router-dom'
 import styles from './MainLayout.module.css'
 import { Header } from '@/widgets/header'
 import {useIsProfileFilled} from "@/entities/user/lib";
-import {useModalStore} from "@/shared/model";
-import {useEffect} from "react";
 import {useMe} from "@/entities/user";
+import {useModalStore} from "@/shared/model";
 import {ROUTES} from "@/shared";
 
 export const MainLayout = () => {
