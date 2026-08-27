@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import styles from './ProjectInfo.module.css'
-import {InfoTooltip, LikeButton} from "..";
+import {InfoTooltip} from "..";
 import { typeProjectsLabel, getProjectTagBackground, type ProjectCardData } from '@/entities/project';
 import {getPartnerById} from "@/entities/partner/api/requests.ts";
 import type {PartnerDto} from "@/entities/partner/api/types.ts";
@@ -62,7 +62,7 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
             {typeProjectsLabel(data.type)}
           </InfoTooltip>
 
-          <LikeButton isLiked={false} onClick={() => {}}/>
+          {/* TODO move to widget -> add like button (features/like-project) */}
         </div>
       </div>
 
