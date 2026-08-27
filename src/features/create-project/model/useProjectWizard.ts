@@ -161,7 +161,7 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   primaryTag: '',
   tags: [],
   links: [],
-  prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] },
+  prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', ''] },
   extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
 };
 

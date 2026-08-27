@@ -1,4 +1,4 @@
-import type {Messengers} from "@/entities/user/model/types.ts";
+import type {Messengers, UserDto} from "../model/types.ts";
 
 export interface OAuthExchangeParams {
   code: string;
@@ -23,4 +23,14 @@ export interface UpdateProfileMetaRequest {
     roleTypeId: string;
     skillIds: string[];
   }[];
+}
+
+export interface GetUsersRequest {
+  query: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface GetUsersResponse {
+  users: UserDto
 }

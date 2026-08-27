@@ -15,5 +15,7 @@ export const ENDPOINTS = {
   COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL,
   SKILLS: import.meta.env.VITE_API_SKILLS_URL,
   CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL,
-  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`
+  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`,
+  APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL,
+  APPLICATION_SET_STATUS: (applicationId: string, status: string) => `${import.meta.env.VITE_APPLICATIONS_URL}/${applicationId}/status/${status}`,
 }

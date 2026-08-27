@@ -5,7 +5,7 @@ import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContaine
 import clsx from "clsx";
 import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
 import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import { FreeCompetencies } from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
+import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import IdIcon from '@/shared/ui/icons/id.svg?react';

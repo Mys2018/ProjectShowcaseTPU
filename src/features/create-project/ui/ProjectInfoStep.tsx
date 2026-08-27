@@ -92,6 +92,7 @@ export function ProjectInfoStep({
         className={styles.nav}
         items={tabItems}
         value={activeTab}
+        lastButtonPadding={true}
         onChange={(val) => setStep(tabItems.findIndex(t => t.value === val) + 1)}
       />
 

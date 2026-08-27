@@ -18,7 +18,7 @@ import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.
 import { KeyPoints } from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
 import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
 import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import { FreeCompetencies } from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
+import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 
 interface ProjectPageProps {

@@ -31,7 +31,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 3, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
+export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 2, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
   return (
     <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}

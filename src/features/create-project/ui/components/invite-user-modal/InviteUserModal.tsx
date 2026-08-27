@@ -31,6 +31,7 @@ const MOCK_USERS = [
 
 export const InviteUserModal = ({ isOpen, onClose, roleName }: InviteUserModalProps) => {
   const [query, setQuery] = useState('');
+  
 
   const filteredUsers = query
     ? MOCK_USERS.filter(u => u.name.toLowerCase().includes(query.toLowerCase()) || u.id.toString().includes(query))
