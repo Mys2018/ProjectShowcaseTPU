@@ -53,6 +53,7 @@ export interface ProjectCardData {
   prdMeta: PrdMeta;
   extended?: boolean;
   brandColor?: string;
+  liked: boolean
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -131,6 +132,7 @@ export interface ProjectDto {
   roles: ProjectRole[];
   prdMeta: PrdMeta;
   type?: ProjectFormat;
+  isLikedByMe?: boolean
 }
 
 export interface ProjectsResponseDto {
@@ -138,6 +140,11 @@ export interface ProjectsResponseDto {
   total: number;
   offset: number;
   limit: number;
+}
+
+export interface GetProjectsResponse {
+  projects: ProjectCardData[];
+  total: number;
 }
 
 export interface GetProjectsQueryParams {

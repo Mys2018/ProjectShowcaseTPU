@@ -1,6 +1,5 @@
 export { Pagination } from './Pagination/Pagination'
 export { default as SearchField } from './SearchField/SearchField'
-export { LikeButton } from './like-button/LikeButton.tsx'
 export { InfoTooltip } from './info-tooltip/InfoTooltip.tsx'
 export { RouterTabs, type TabItem } from './router-tabs/RouterTabs.tsx'
 export { StagesWidget } from './stages-widget/StagesWidget.tsx'

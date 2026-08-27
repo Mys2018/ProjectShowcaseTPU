@@ -43,6 +43,8 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     prdMeta: dto.prdMeta,
 
+    liked: dto.isLikedByMe ?? false,
+
     extended: dto.tags?.some(t => t.tagId === 'ml' || t.tagId === 'fintech'),
     brandColor: dto.id === '8201' ? '28be46' : undefined
   }
