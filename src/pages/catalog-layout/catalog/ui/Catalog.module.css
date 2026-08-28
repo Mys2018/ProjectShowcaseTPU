@@ -78,6 +78,50 @@
   }
 }
 
+/* Мобильный хедер (fixed, умеет прятаться при скролле) требует, чтобы контент
+   скроллился ПОД ним одним потоком: скроллером становится сам .mainContent,
+   а отступ под хедер уходит внутрь него. */
+@media (max-width: 1199px) {
+  .mainContent {
+    display: flex;
+    flex-direction: column;
+    /* Гасим отступ под хедер из MainLayout и забираем его внутрь себя: контент
+       должен уезжать ПОД хедер, иначе reveal оставляет пустую полосу.
+       Другим страницам каталога (например, странице проекта) это не нужно —
+       поэтому правило живёт здесь, а не в CatalogLayout. */
+    flex: none;
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    /* хедер (66) + зазор (12) + панель поиска (80) — она fixed и места в потоке не занимает */
+    padding: 158px 12px 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .mainContent::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterPart {
+    display: none;
+  }
+
+  .projectsPart {
+    overflow: visible;
+    /* Обязательно: иначе флекс сжимает секцию до остатка высоты экрана, список
+       вываливается наружу, и нижний отступ считается не от низа контента. */
+    flex: none;
+    min-height: auto;
+    /* Отступ под навигационную панель (56 + 14). На .mainContent его ставить нельзя:
+       padding-bottom у flex-скроллера не попадает в scrollHeight. */
+    padding: 8px 4px calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .projectsPart::before {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .mainContent {
     grid-template-columns: 1fr;

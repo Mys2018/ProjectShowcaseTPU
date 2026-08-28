@@ -29,13 +29,18 @@ const getLogo = (type: linkType | undefined) => {
   }
 }
 
+/** Якорь для кнопки «Связаться» на мобильной панели. */
+export const CONTACTS_ANCHOR_ID = 'profile-contacts'
+
 type SomeoneProfileHeaderProps = {
   onClickSee?: () => void,
   user: User;
   links: Messengers;
+  /** Короткая подсветка блока контактов после нажатия «Связаться». */
+  highlight?: boolean;
 }
 
-export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileHeaderProps) {
+export function SomeoneProfileHeader({onClickSee, user, links, highlight }: SomeoneProfileHeaderProps) {
   return (
     <div className={styles.container}>
 
@@ -110,7 +115,7 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
               <OpenLogo className={styles.whiteShareLogo}/>
             </div>
           </div>
-          <div className={styles.linkList}>
+          <div id={CONTACTS_ANCHOR_ID} className={clsx(styles.linkList, highlight && styles.highlight)}>
             {
               links && ['element', 'telegram', 'vk'].map((type) => {
                 const link = links[type as keyof Messengers];

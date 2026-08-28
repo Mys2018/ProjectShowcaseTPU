@@ -7,7 +7,6 @@
   flex-grow: 1;
 
   padding-top: 24px;
-  padding-bottom: 81px;
   gap: 16px;
 
   overflow: auto;
@@ -16,6 +15,9 @@
   scroll-behavior: smooth;
 
   position: relative;
+
+  /* место под плавающую панель: 56 высота + 14 отступ + вырез */
+  padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
 }
 
 .topElement {
@@ -73,7 +75,8 @@
   font: var(--inter-13-600);
   color: var(--color-brand-black);
 
-  margin: 0 20px;
+  /* нижние 16 — чтобы кнопка не выглядела приклеенной к плавающей панели */
+  margin: 0 20px 16px;
   height: 50px;
   display: flex;
   gap: 16px;
@@ -84,20 +87,14 @@
   text-decoration: none;
 }
 
-.choiceComp {
-  position: fixed;
-  bottom: 11px;
-  left: 50%;
-  transform:  translateX(-50%);
-  padding: 8px 24px;
 
-  font: var(--inter-13-600);
-  color: var(--color-brand-green);
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 59px;
-  outline: 3px solid var(--color-brand-violet);
-  background-color: white;
+/* Хедер прячется при скролле, поэтому контент должен уезжать ПОД него, а не
+   стоять за отступом: иначе на месте уехавшего хедера остаётся пустая полоса.
+   Гасим padding-top из MainLayout и забираем его внутрь скроллера. */
+@media (max-width: 1199px) {
+  .main {
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    padding-top: calc(var(--header-mobile-h) + 24px);
+  }
 }

@@ -1,4 +1,7 @@
 :root {
+  /* высота мобильного хедера (см. widgets/header) */
+  --header-mobile-h: 66px;
+
   --color-brand-green: #28BE46;
   --color-brand-black: #1B1B1D;
   --color-brand-violet: #6573FF;
