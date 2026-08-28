@@ -9,6 +9,8 @@
   
 	border-radius: 24px;
   background-color: var(--color-white);
+
+  cursor: pointer;
 }
 
 .avatar, .userIcon {
