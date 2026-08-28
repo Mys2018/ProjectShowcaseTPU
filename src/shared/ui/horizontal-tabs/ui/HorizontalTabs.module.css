@@ -4,11 +4,8 @@
 	--errorTabColor: var(--color-red);
 
   display: flex;
-  gap: 24px
-}
-
-.lastPadded {
-  margin-left: auto;
+  gap: 24px;
+  align-items: flex-start;
 }
 
 .item {

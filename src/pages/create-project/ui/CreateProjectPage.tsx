@@ -200,7 +200,9 @@ export function CreateProjectPage() {
   if (pageStep === 'type-select') {
     return (
       <main className={styles.mainContent}>
-        <div className={styles.headerLeft} onClick={() => navigate(-1)}>
+        <div className={styles.headerLeft} onClick={() => {
+          navigate(-1)
+        }}>
           <BackIcon />
           <p>{backTitle}</p>
         </div>

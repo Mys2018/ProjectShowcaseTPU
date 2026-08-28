@@ -4,7 +4,7 @@ export interface ProjectRoleApplication {
   applicationID: string;
   studentID: number;
   roleID: string;
-  createdAt: string;
+  createdAt: Date;
   status: ProjectRoleApplicationStatus;
 }
 
@@ -13,6 +13,14 @@ export interface ListApplicationsResponse {
   total: number;
   offset: number;
   limit: number;
+}
+
+export interface ProjectRoleApplicationDto extends Omit<ProjectRoleApplication, 'createdAt'> {
+  createdAt: string;
+}
+
+export interface ListApplicationsResponseDto extends Omit<ListApplicationsResponse, 'applications'> {
+  applications: ProjectRoleApplicationDto[];
 }
 
 export interface CreateApplicationRequest {

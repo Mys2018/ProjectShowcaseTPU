@@ -9,7 +9,32 @@ import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import { InfoTooltip, ROUTES } from "@/shared";
-import { useApplications, useCreateApplication, useUpdateApplicationStatus } from "@/entities/application";
+import { useApplications, applicationApi, applicationKeys } from "@/entities/application";
+import type { CreateApplicationRequest, ProjectRoleApplicationStatus } from "@/entities/application";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+const useCreateApplication = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (newApplication: CreateApplicationRequest) => applicationApi.createApplication(newApplication),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });
+    },
+  });
+};
+
+const useUpdateApplicationStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ applicationId, status }: { applicationId: string; status: ProjectRoleApplicationStatus }) => 
+      applicationApi.updateApplicationStatus(applicationId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });
+    },
+  });
+};
 
 interface FreeCompetenciesProps {
   roles: {

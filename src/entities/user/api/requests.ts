@@ -13,8 +13,6 @@ export async function login(params: OAuthExchangeParams): Promise<void> {
   await api.post(ENDPOINTS.LOGIN, params)
 }
 
-
-
 export async function getAuthStatus(): Promise<AuthStatusResponse> {
   const { data } = await api.get<AuthStatusResponse>(ENDPOINTS.STATUS)
   return data
@@ -35,9 +33,9 @@ export async function getUserById(uid: string): Promise<User> {
   return mapUserDto(data)
 }
 
-export async function getUsers(params: GetUsersResponse): Promise<GetUsersRequest> {
-  const { data } = await api.post<GetUsersRequest>(ENDPOINTS.USERS, params)
-  return data
+export async function getUsers(params: GetUsersRequest): Promise<{ users: User[] }> {
+  const { data } = await api.post<GetUsersResponse>(ENDPOINTS.USERS, params)
+  return { users: data.users.map(mapUserDto) }
 }
 
 export async function updateProfileMeta(payload: UpdateProfileMetaRequest): Promise<void> {

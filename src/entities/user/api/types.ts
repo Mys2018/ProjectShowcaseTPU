@@ -32,5 +32,5 @@ export interface GetUsersRequest {
 }
 
 export interface GetUsersResponse {
-  users: UserDto
+  users: UserDto[]
 }

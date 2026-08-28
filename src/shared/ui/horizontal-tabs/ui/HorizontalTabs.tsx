@@ -7,15 +7,12 @@ interface HorizontalTabsProps<T extends string> {
   value: T
   onChange: (value: T) => void
   className?: string
-  lastButtonPadding?: boolean
 }
 
-export function HorizontalTabs<T extends string>({items, value, onChange, className, lastButtonPadding = false,}: HorizontalTabsProps<T>) {
+export function HorizontalTabs<T extends string>({items, value, onChange, className,}: HorizontalTabsProps<T>) {
   return (
     <div className={clsx(styles.list, className)}>
-      {items.map((item, index) => {
-        const isLast = index === items.length - 1
-
+      {items.map((item) => {
         return (
           <button
             key={item.value}
@@ -24,7 +21,6 @@ export function HorizontalTabs<T extends string>({items, value, onChange, classN
               styles.item,
               item.value === value && styles.active,
               item.error && styles.error,
-              isLast && lastButtonPadding && styles.lastPadded
             )}
             onClick={() => onChange(item.value)}
           >
