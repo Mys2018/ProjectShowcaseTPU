@@ -8,11 +8,12 @@ import { updateScrollFade } from '@/shared'
 
 interface CompetencyBadgeListProps {
   competencies: Competency[]
+  label?: string
   row?: boolean
   className?: string
 }
 
-export function CompetencyBadgeList({ competencies, row, className }: CompetencyBadgeListProps) {
+export function CompetencyBadgeList({ competencies, label, row, className }: CompetencyBadgeListProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -36,7 +37,7 @@ export function CompetencyBadgeList({ competencies, row, className }: Competency
 
   return (
     <div className={clsx(styles.competencies, className)}>
-      <div className={styles.label}>{getCompetencyPlural(competencies.length)}</div>
+      <div className={styles.label}>{label ?? getCompetencyPlural(competencies.length)}</div>
       <div className={clsx(styles.wrapper, row && styles.row)} ref={wrapperRef}>
         <div className={styles.list} ref={listRef}>
           {competencies.map(competency => (
