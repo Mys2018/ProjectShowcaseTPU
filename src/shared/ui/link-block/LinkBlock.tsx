@@ -13,8 +13,6 @@ type LinkBlockProps = {
   linksObj: Messengers
 };
 
-
-
 const getLogo = (type: MessengerType, link?: string) => {
   switch (type) {
     case 'telegram':
@@ -69,7 +67,9 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
       onSubmit: (newValue: string) => {
         updateProfileMeta({
           messengers: {
-            ...linksObj,
+            element: linksObj.element || "",
+            telegram: linksObj.telegram || "",
+            vk: linksObj.vk || "",
             [type]: newValue
           }
         })
@@ -77,8 +77,10 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
       onDelete: () => {
         updateProfileMeta({
           messengers: {
-            ...linksObj,
-            [type]: null
+            element: linksObj.element || "",
+            telegram: linksObj.telegram || "",
+            vk: linksObj.vk || "",
+            [type]: ""
           }
         })
       },

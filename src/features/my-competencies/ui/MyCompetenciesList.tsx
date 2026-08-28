@@ -92,7 +92,8 @@ export function MyCompetenciesList({ savedSkills, readonly = false }: MyCompeten
         ...c,
         skills: c.skills.map((s: any) => ({
           id: s.skillId || s.id,
-          name: s.skillName || s.name
+          name: s.skillName || s.name,
+          roleTypeId: c.roleTypeId
         }))
       })));
     }

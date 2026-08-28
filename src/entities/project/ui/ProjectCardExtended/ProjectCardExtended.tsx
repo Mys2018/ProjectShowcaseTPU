@@ -1,9 +1,7 @@
 import styles from './ProjectCardExtended.module.css';
 import type { ProjectCardData } from '../../model/types';
 import Pattern from '@/assets/svg/Pattern.svg'
-import { useState } from "react";
 import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel';
-import { LikeButton } from "@/shared/ui";
 
 interface Props {
   project: ProjectCardData;
@@ -11,12 +9,6 @@ interface Props {
 
 export default function ProjectCardExtended({ project }: Props) {
   const { id, type, tags, primaryTag, partnerId, meta, roles, brandColor } = project;
-
-  const [isLiked, setIsLiked] = useState(false);
-
-  const toggleLike = () => {
-    return setIsLiked(!isLiked)
-  }
 
   const visibleDirections = tags.slice(0, 3);
   const remainCount = tags.length - 3;
@@ -26,13 +18,6 @@ export default function ProjectCardExtended({ project }: Props) {
   return (
     <div className={`${styles.cardBody}`} style={brandColor ? { '--accent': brandColor.startsWith('#') ? brandColor : `#${brandColor}` } as React.CSSProperties : undefined}>
       <div className={styles.accentBody}>
-
-        <LikeButton
-          isLiked={isLiked}
-          onClick={toggleLike}
-          className={`${styles.like} ${isLiked ? styles.liked : ''}`}
-        />
-
         <img className={styles.pattern} src={Pattern} alt='Узор' />
 
         <div className={`${styles.header} ${styles[primaryTag.id]}`}>

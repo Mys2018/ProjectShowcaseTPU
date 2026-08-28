@@ -8,6 +8,7 @@ export const ENDPOINTS = {
   USER_BY_ID: (userId: string) => `${import.meta.env.VITE_API_USERS_URL}/${userId}`,
   PROJECTS: import.meta.env.VITE_API_PROJECTS_URL,
   PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}`,
+  LIKE_PROJECT: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}/like`,
   PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL,
   TAGS: import.meta.env.VITE_API_TAGS_URL,
   PARTNERS: import.meta.env.VITE_API_PARTNERS_URL,
@@ -15,5 +16,7 @@ export const ENDPOINTS = {
   COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL,
   SKILLS: import.meta.env.VITE_API_SKILLS_URL,
   CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL,
-  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`
+  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`,
+  APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL,
+  APPLICATION_SET_STATUS: (applicationId: string, status: string) => `${import.meta.env.VITE_APPLICATIONS_URL}/${applicationId}/status/${status}`,
 }

@@ -72,6 +72,7 @@
 
 .editingBorder {
   border-color: var(--color-brand-violet) !important;
+  z-index: 3;
 }
 
 .skillsLabel {

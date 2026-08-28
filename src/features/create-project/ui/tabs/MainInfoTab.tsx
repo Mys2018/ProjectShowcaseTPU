@@ -23,7 +23,6 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProp
     group.tags.map(t => ({ label: t.name, value: t.id }))
   );
 
-  // Вспомогательная функция для ошибок
   const getErrorMessage = (error: unknown): string | undefined => {
     if (typeof error === 'string') return error;
     if (error && typeof error === 'object' && 'message' in error) {
@@ -62,8 +61,6 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProp
             }
             size={'small'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -102,8 +99,6 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProp
             }
             size={'small'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>

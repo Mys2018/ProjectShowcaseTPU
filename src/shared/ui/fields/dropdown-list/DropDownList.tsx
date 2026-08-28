@@ -22,6 +22,15 @@ export const DropDownList = ({
 }: DropDownListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen && listRef.current) {
+      setTimeout(() => {
+        listRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 10);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -49,12 +58,12 @@ export const DropDownList = ({
             className={`${styles.caret} ${isOpen ? styles.caretOpen : ''}`}
             width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M1 1L7 7L13 1" stroke="#8A92A6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 1L7 7L13 1" stroke="#8A92A6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
 
         {isOpen && (
-          <div className={styles.dropdown}>
+          <div className={styles.dropdown} ref={listRef}>
             {options.length === 0 && (
               <div className={styles.option}>
                 <span className={styles.optionText}>Нет доступных вариантов</span>

@@ -147,6 +147,7 @@ function StudyPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           stepErrors={stepErrors}
           name="prdMeta.keyFunctionality"
           title="Ключевой функционал"
+          minItems={2}
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.lists.itemLength.max}
           isBlink={blinkFields.includes('Ключевой функционал')}
@@ -290,6 +291,7 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           name="prdMeta.functional"
           title="Функциональные требования"
           placeholder="Что да как кратенько..."
+          minItems={2}
           maxLength={PROJECT_LIMITS.lists.itemLength.max}
           isBlink={blinkFields.includes('Функциональные требования')}
         />
@@ -487,6 +489,7 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
             name="prdMeta.functional"
             title="Функциональные требования"
             placeholder="Что да как кратенько..."
+            minItems={2}
             maxLength={PROJECT_LIMITS.lists.itemLength.max}
             isBlink={blinkFields.includes('Функциональные требования')}
           />
@@ -496,6 +499,7 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
             name="prdMeta.nonFunctional"
             title="Нефункциональные требования"
             placeholder="Что да как кратенько..."
+            minItems={2}
             maxLength={PROJECT_LIMITS.lists.itemLength.max}
             isBlink={blinkFields.includes('Нефункциональные требования')}
           />
@@ -564,6 +568,7 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           name="prdMeta.projectPlan"
           placeholder="Что да как кратенько..."
           maxLength={PROJECT_LIMITS.projectPlan.itemLength.max}
+          minItems={2}
           isBlink={blinkFields.includes('План проекта')}
         />
       </div>

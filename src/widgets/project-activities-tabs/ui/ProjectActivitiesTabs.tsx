@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePreferencesStore } from '@/entities/user'
-import { HorizontalTabs, ROUTES, type HorizontalTabItem } from '@/shared'
+import { assertNever, HorizontalTabs, ROUTES, type HorizontalTabItem } from '@/shared'
 
 interface ProjectActivitiesTabsProps {
   className?: string
@@ -29,7 +29,10 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
           { label: 'Модерация проектов', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS },
           { label: 'Заявки на модерацию', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS }
         ]
+      case null:
+        return []
       default:
+        assertNever(preferredRoleType)
         return []
     }
   }

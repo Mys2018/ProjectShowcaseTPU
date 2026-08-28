@@ -6,9 +6,9 @@ import type { Tag } from "@/entities/tag";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
-export type CreateProjectRequestType = 
-  | 'Case' 
-  | 'Real' 
+export type CreateProjectRequestType =
+  | 'Case'
+  | 'Real'
   | 'Study';
 
 export interface ProjectDirectionItem {
@@ -53,6 +53,7 @@ export interface ProjectCardData {
   prdMeta: PrdMeta;
   extended?: boolean;
   brandColor?: string;
+  liked: boolean
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -131,6 +132,7 @@ export interface ProjectDto {
   roles: ProjectRole[];
   prdMeta: PrdMeta;
   type?: ProjectFormat;
+  isLikedByMe?: boolean
 }
 
 export interface ProjectsResponseDto {
@@ -138,6 +140,11 @@ export interface ProjectsResponseDto {
   total: number;
   offset: number;
   limit: number;
+}
+
+export interface GetProjectsResponse {
+  projects: ProjectCardData[];
+  total: number;
 }
 
 export interface GetProjectsQueryParams {
@@ -176,6 +183,9 @@ export interface BaseCreateProjectDto {
   roles: CreateProjectRolePayload[];
   tags: TagItem[];
   primaryTag: TagItem;
+  repository?: { platformId: string, url: string }[];
+  taskTracker?: { platformId: string, url: string }[];
+  designEnvironment?: { platformId: string, url: string }[];
 }
 
 export interface CreateStudyProjectDto extends BaseCreateProjectDto {
