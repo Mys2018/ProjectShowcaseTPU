@@ -88,9 +88,16 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                               return (
                                 <input
                                   type="number"
+                                  min={0}
+                                  max={100}
                                   className={`${styles.ageInput} ${hasError ? styles.ageError : ''}`}
                                   value={subField.state.value}
-                                  onChange={(e) => subField.handleChange(Number(e.target.value) as any)}
+                                  onChange={(e) => {
+                                    let val = Number(e.target.value);
+                                    if (val < 0) val = 0;
+                                    if (val > 100) val = 100;
+                                    subField.handleChange(val as any);
+                                  }}
                                 />
                               );
                             }}
@@ -103,9 +110,16 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                               return (
                                 <input
                                   type="number"
+                                  min={0}
+                                  max={100}
                                   className={`${styles.ageInput} ${hasError ? styles.ageError : ''}`}
                                   value={subField.state.value}
-                                  onChange={(e) => subField.handleChange(Number(e.target.value) as any)}
+                                  onChange={(e) => {
+                                    let val = Number(e.target.value);
+                                    if (val < 0) val = 0;
+                                    if (val > 100) val = 100;
+                                    subField.handleChange(val as any);
+                                  }}
                                 />
                               );
                             }}
@@ -137,7 +151,9 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
               );
             })}
 
-            <AddOutlineButton onClick={handleAdd} text="Добавить сегмент"/>
+            {segments.length < 4 && (
+              <AddOutlineButton onClick={handleAdd} text="Добавить сегмент"/>
+            )}
 
             {field.state.meta.errors.length > 0 && (
               <span className={styles.errorText}>{getErrorMessage(field.state.meta.errors[0])}</span>

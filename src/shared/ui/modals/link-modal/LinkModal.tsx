@@ -31,6 +31,14 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
+
+    if (rawValue.length > 33) return;
+
+    const textWithoutAt = rawValue.replace(/^@+/, '');
+    if (textWithoutAt && !/^[a-zA-Z0-9_.-]+$/.test(textWithoutAt)) {
+      return;
+    }
+
     const formatted = formatSocialLink(rawValue);
     setValue(formatted);
   };
@@ -65,10 +73,13 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
           <h3>
             {typeLink}
           </h3>
-          <DeleteButton
-            onClick={handleDelete}
-            textButton={'Удалить'}
-          />
+          {
+            firstValue === '' ? <DeleteButton
+              onClick={handleDelete}
+              textButton={'Удалить'}
+            /> : ''
+          }
+
         </div>
       </Modal.SpecialBlock>
 

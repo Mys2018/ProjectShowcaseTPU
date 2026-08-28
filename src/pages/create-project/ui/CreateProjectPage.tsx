@@ -134,18 +134,46 @@ export function CreateProjectPage() {
     };
   }, [pageStep, form.store, performAutoSave]);
 
+  // Scroll to top on step change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pageStep, currentStep]);
+
   // Выбор типа и переход к форме
   const handleTypeSelect = (type: CreateProjectRequestType) => {
     setSelectedType(type);
     form.setFieldValue('type', type);
-    // Сбрасываем prdMeta под новый тип
+    
+    // Получаем текущие значения, чтобы сохранить совпадающие поля
+    const currentPrdMeta = (form.state.values as any).prdMeta || {};
+
     if (type === 'Study') {
-      form.setFieldValue('prdMeta', { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] });
+      form.setFieldValue('prdMeta', { 
+        prerequisites: currentPrdMeta.prerequisites ?? '', 
+        projectGoal: currentPrdMeta.projectGoal ?? '', 
+        keyFunctionality: currentPrdMeta.keyFunctionality ?? ['', ''] 
+      });
     } else if (type === 'Case') {
-      form.setFieldValue('prdMeta', { prerequisites: '', projectGoal: '', audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }], functional: ['', '', ''], problemStatement: '' });
+      form.setFieldValue('prdMeta', { 
+        prerequisites: currentPrdMeta.prerequisites ?? '', 
+        projectGoal: currentPrdMeta.projectGoal ?? '', 
+        audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }], 
+        functional: currentPrdMeta.functional ?? ['', ''], 
+        problemStatement: currentPrdMeta.problemStatement ?? '' 
+      });
     } else {
-      form.setFieldValue('prdMeta', { productVision: '', projectGoal: '', businessGoal: '', audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }], functional: ['', '', ''], nonFunctional: ['', '', ''], businessMetrics: [''], projectPlan: [''] });
+      form.setFieldValue('prdMeta', { 
+        productVision: currentPrdMeta.productVision ?? '', 
+        projectGoal: currentPrdMeta.projectGoal ?? '', 
+        businessGoal: currentPrdMeta.businessGoal ?? '', 
+        audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }], 
+        functional: currentPrdMeta.functional ?? ['', ''], 
+        nonFunctional: currentPrdMeta.nonFunctional ?? ['', ''], 
+        businessMetrics: currentPrdMeta.businessMetrics ?? ['', ''], 
+        projectPlan: currentPrdMeta.projectPlan ?? ['', ''] 
+      });
     }
+    setStep(1);
     setPageStep('fill');
   };
 
@@ -172,7 +200,9 @@ export function CreateProjectPage() {
   if (pageStep === 'type-select') {
     return (
       <main className={styles.mainContent}>
-        <div className={styles.headerLeft} onClick={() => navigate(-1)}>
+        <div className={styles.headerLeft} onClick={() => {
+          navigate(-1)
+        }}>
           <BackIcon />
           <p>{backTitle}</p>
         </div>
