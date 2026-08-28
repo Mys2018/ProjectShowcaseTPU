@@ -1,0 +1,145 @@
+/* Навигация на корневых страницах: тёмный остров с тремя равными табами.
+   Форма та же, что у панели действий, но роль другая — «где я», а не «что я могу». */
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 400;
+
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+
+  transition: transform .3s ease, opacity .3s ease;
+}
+
+.hidden {
+  transform: translateY(calc(100% + 32px + env(safe-area-inset-bottom, 0px)));
+  opacity: 0;
+}
+
+.hidden .island {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .indicator,
+  .tab,
+  .tab .icon { transition: none; }
+}
+
+.island {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  width: 350px;
+  max-width: calc(100% - 24px);
+  height: 56px;
+  padding: 3px;
+
+  background: var(--color-brand-black);
+  border-radius: 100px;
+  pointer-events: auto;
+}
+
+/* Белая пилюля живёт отдельно от табов и переезжает между ними — иначе фон
+   мигал бы скачком при смене активного пункта. */
+.indicator {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  height: 50px;
+  border-radius: 50px;
+  background: var(--color-white);
+  transition: transform .32s cubic-bezier(.4, 0, .2, 1), width .32s cubic-bezier(.4, 0, .2, 1);
+  pointer-events: none;
+}
+
+.tab {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+
+  width: 112px;
+  height: 50px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 50px;
+  background: none;
+
+  font: 500 9px/1.1 var(--font-inter);
+  color: var(--color-white);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--color-brand-green);
+}
+
+.tab,
+.tab .icon {
+  transition: color .32s ease, background-color .32s ease;
+}
+
+/* Общий контейнер иконки: у «Проектов» он и есть иконка, у остальных — подложка. */
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 6px;
+}
+
+/* ponytail: иконка «Проектов» в макете — просто скруглённый квадрат, ассет не нужен */
+.iconProjects {
+  background: currentColor;
+}
+
+.tab.active .iconPlatform {
+  background: var(--color-brand-green);
+}
+
+.icon svg {
+  display: block;
+}
+
+/* домик нарисован обводкой, поэтому он всегда белый — и на тёмном фоне, и на зелёном */
+.iconPlatform svg {
+  width: 14px;
+  height: 14px;
+}
+
+.iconResearch svg {
+  width: 16px;
+  height: 16px;
+}
+
+.iconResearch svg path {
+  fill: var(--color-white);
+}
+
+/* Раздела «Исследования» ещё нет — таб виден, но не нажимается. */
+.tab:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-brand-green);
+  outline-offset: 2px;
+}

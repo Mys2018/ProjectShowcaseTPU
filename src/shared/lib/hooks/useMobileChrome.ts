@@ -11,6 +11,8 @@ const SEARCH_TOP_STATIC = 78
 const HEADER_OVERLAP = 4
 /** Порог накопления скролла, px. */
 const REVEAL = 8
+/** Допуск, при котором считаем, что доскроллили до конца. */
+const BOTTOM_EDGE = 4
 
 export type SearchDockState =
   /** Панель в потоке под хедером: светлая, 345px, едет вместе с контентом. */
@@ -26,6 +28,8 @@ export interface MobileChromeState {
   searchTop: number
   searchState: SearchDockState
   searchAnimate: boolean
+  /** Нижняя панель прячется вместе с хедером, но у самого низа страницы всегда видна. */
+  panelHidden: boolean
 }
 
 const AT_TOP: MobileChromeState = {
@@ -33,7 +37,8 @@ const AT_TOP: MobileChromeState = {
   headerAnimate: false,
   searchTop: SEARCH_TOP_STATIC,
   searchState: 'static',
-  searchAnimate: false
+  searchAnimate: false,
+  panelHidden: false
 }
 
 /**
@@ -107,13 +112,17 @@ export function useMobileChrome(enabled = true, resetKey?: string): MobileChrome
       // иначе на этом отрезке мелькает светлая узкая плашка у пустого верха экрана
       const stuck = flowTop <= stickTop || headerY === -HEADER_H
 
+      // у конца страницы панель возвращается и работает вместо футера
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - BOTTOM_EDGE
+
       const next: MobileChromeState = {
         headerTransform: headerY === -HEADER_H ? 'translateY(-100%)' : `translateY(${headerY}px)`,
         headerAnimate,
         searchTop: stuck ? stickTop : flowTop,
         searchState: stuck ? (headerY === 0 ? 'header' : 'top') : 'static',
         // пока панель едет с контентом, анимация только смазывала бы движение
-        searchAnimate: stuck
+        searchAnimate: stuck,
+        panelHidden: headerY === -HEADER_H && !atBottom
       }
 
       lastY = y
@@ -124,7 +133,8 @@ export function useMobileChrome(enabled = true, resetKey?: string): MobileChrome
         next.headerAnimate === last.headerAnimate &&
         next.searchTop === last.searchTop &&
         next.searchState === last.searchState &&
-        next.searchAnimate === last.searchAnimate
+        next.searchAnimate === last.searchAnimate &&
+        next.panelHidden === last.panelHidden
       if (same) return
 
       last = next

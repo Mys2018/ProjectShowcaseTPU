@@ -108,7 +108,13 @@
 
   .projectsPart {
     overflow: visible;
-    padding: 8px 4px 24px;
+    /* Обязательно: иначе флекс сжимает секцию до остатка высоты экрана, список
+       вываливается наружу, и нижний отступ считается не от низа контента. */
+    flex: none;
+    min-height: auto;
+    /* Отступ под навигационную панель (56 + 14). На .mainContent его ставить нельзя:
+       padding-bottom у flex-скроллера не попадает в scrollHeight. */
+    padding: 8px 4px calc(70px + env(safe-area-inset-bottom, 0px));
   }
 
   .projectsPart::before {

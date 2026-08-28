@@ -35,6 +35,8 @@ export function MobileHeader() {
       {isAuthenticated ? (
         <div className={styles.actions}>
           <div className={styles.icons}>
+            {/* TODO: роут есть, но страница лайков пустая — вложенный element: null в роутере.
+                Наполняется запросом GET /me/projects/liked через существующий ProjectsGrid. */}
             <button
               className={clsx(styles.iconButton, styles.heart)}
               aria-label="Понравившиеся проекты"
@@ -42,7 +44,7 @@ export function MobileHeader() {
             >
               <HeartIcon />
             </button>
-            {/* ponytail: страницы уведомлений в роутере нет, кнопка без действия */}
+            {/* TODO: уведомлений нет ни в роутере, ни в API — кнопка пока без действия */}
             <button className={clsx(styles.iconButton, styles.bell)} aria-label="Уведомления">
               <BellIcon />
             </button>

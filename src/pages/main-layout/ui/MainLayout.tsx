@@ -1,10 +1,13 @@
+import {Outlet, useLocation, useNavigate} from 'react-router-dom'
 import {useEffect} from "react";
-import {Outlet, useNavigate} from 'react-router-dom'
+import {useMediaQuery} from "usehooks-ts";
 import styles from './MainLayout.module.css'
 import { Header } from '@/widgets/header'
+import { MobileNavBar } from '@/widgets/mobile-nav-bar'
 import {useIsProfileFilled} from "@/entities/user/lib";
 import {useMe} from "@/entities/user";
 import {useModalStore} from "@/shared/model";
+import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import {ROUTES} from "@/shared";
 
 export const MainLayout = () => {
@@ -12,6 +15,14 @@ export const MainLayout = () => {
   const { isProfileFilled } = useIsProfileFilled()
   const { data: user, isSuccess } = useMe()
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+  // Навигация живёт только на корневых страницах. На страницах-деталях её место
+  // занимает панель действий — договорённость «где я» против «что я могу».
+  const isRootPage =
+    (pathname.startsWith(ROUTES.CATALOG.BASE) && !pathname.includes('/projects/')) ||
+    pathname === ROUTES.MY_PLATFORM.BASE;
 
   const openModal = useModalStore(state => state.openModal)
   const closeModal = useModalStore(state => state.closeModal)
@@ -39,6 +50,7 @@ export const MainLayout = () => {
       <div className={styles.pageContainer}>
         <Outlet/>
       </div>
+      {isMobile && isRootPage && <MobileNavBar />}
     </main>
   )
 }

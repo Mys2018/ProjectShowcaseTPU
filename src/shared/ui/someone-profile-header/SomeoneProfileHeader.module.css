@@ -308,3 +308,17 @@
     box-sizing: border-box;
   }
 }
+/* Отклик на «Связаться»: блок чуть уменьшается и возвращается. */
+.highlight {
+  animation: contactsPulse 0.7s ease;
+}
+
+@keyframes contactsPulse {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight { animation: none; }
+}
