@@ -1,25 +1,28 @@
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import styles from './MobileLayoutProjectPage.module.css'
-import { useState } from "react";
-import { Drawer } from "@/features/drawer/Drawer.tsx";
-import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
-// TODO
-import { useUserById } from "@/entities/user";
-import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
-
+import {MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplicationsParams} from "@/widgets/project-action-panel";
+import {FreeCompetencies} from "@/widgets/free-competencies/FreeCompetencies.tsx";
+import {Drawer} from "@/features/drawer/Drawer.tsx";
+import {useApplications} from "@/entities/application";
+import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
+import {useUserById} from "@/entities/user";
+import {useIsProfileFilled} from "@/entities/user/lib";
+import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import {FloatingPanel} from "@/shared/ui/floating-panel";
+import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
+import {SegmentedSwitch} from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
+import {ProfileWidget} from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
+import {ProjectTeam} from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
+import {KeyPoints} from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
+import {LinkContainer} from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
+import {ProjectPrd} from "@/shared/ui/project-prd/ProjectPrd.tsx";
+import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import {ROUTES} from "@/shared";
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import UpIcon from '@/shared/ui/icons/up.svg?react';
-
-import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
-import { SegmentedSwitch } from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
-import { ProfileWidget } from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
-import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
-import { KeyPoints } from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
-import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
-import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
-import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 
 interface ProjectPageProps {
   project: ProjectCardData
@@ -35,6 +38,12 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const [blockedBy, setBlockedBy] = useState<'guest' | 'profile' | null>(null);
+  const [isApplicationsOpen, setApplicationsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { isProfileFilled } = useIsProfileFilled();
+  const { data: applications } = useApplications(myApplicationsParams(project.id));
+  const myApplications = (applications?.applications ?? []).filter(isActiveApplication);
 
   const options = [
     { value: 'about', label: 'О проекте' },
@@ -133,12 +142,38 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
         Наверх
       </a>
 
-      <button className={styles.choiceComp} onClick={() => setDrawerOpen(true)}>
-        Выбрать компетенцию
-      </button>
+      <ProjectActionPanel
+        project={project}
+        isProfileFilled={isProfileFilled}
+        onOpenCompetencies={() => setDrawerOpen(true)}
+        onOpenApplications={() => setApplicationsOpen(true)}
+        onBlocked={setBlockedBy}
+        // TODO: экрана баллов и формы отзыва ещё нет — бэк не готов
+        onShowPoints={() => {}}
+        onLeaveReview={() => {}}
+        onShare={() => {}}
+      />
+
+      {blockedBy && (
+        <FloatingPanel.Hint
+          title={blockedBy === 'profile' ? 'Заполните профиль для отклика на проект' : undefined}
+          text={
+            blockedBy === 'profile'
+              ? 'Для подачи заявки необходимо заполнить блок «О себе» и указать свои навыки. Это поможет наставнику оценить вашу кандидатуру.'
+              : 'Откликаться на проекты могут только зарегистрированные пользователи.'
+          }
+          actionText={blockedBy === 'profile' ? 'Перейти к заполнению' : 'Войти в аккаунт'}
+          onAction={() => void navigate(blockedBy === 'profile' ? ROUTES.PROFILE.BASE : ROUTES.LOGIN)}
+          onClose={() => setBlockedBy(null)}
+        />
+      )}
 
       <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)}>
         <FreeCompetencies roles={project.roles} />
+      </Drawer>
+
+      <Drawer isOpen={isApplicationsOpen} onClose={() => setApplicationsOpen(false)}>
+        <MyApplicationsSheet project={project} applications={myApplications} />
       </Drawer>
     </main>
   )

@@ -143,3 +143,10 @@
     padding: 0 20px;
   }
 }
+/* место под плавающую панель действий */
+@media (max-width: 1199px) {
+  .profile {
+    /* panel-space */
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+}

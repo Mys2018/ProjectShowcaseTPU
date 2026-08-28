@@ -40,6 +40,7 @@ export interface ProjectCardData {
     placesCount: number;
     minPlacesCount: number;
     places: number;
+    placeUserIds: number[];
     meta: {
       name: string;
       description: string;
@@ -51,6 +52,9 @@ export interface ProjectCardData {
     }[];
   }[];
   prdMeta: PrdMeta;
+  isLiked: boolean;
+  /** TODO: заглушка — отзывов в API пока нет */
+  hasMyReview: boolean;
   extended?: boolean;
   brandColor?: string;
   liked: boolean

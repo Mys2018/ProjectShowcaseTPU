@@ -31,6 +31,8 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
       placesCount: r.placesCount,
       minPlacesCount: r.minPlacesCount,
       places: r.places?.length || 0,
+      // ID занявших место: по ним считается «я в команде». Раньше здесь терялся весь массив.
+      placeUserIds: r.places ?? [],
       meta: {
         name: r.roleType?.name || 'Без названия',
         description: r.meta?.description || ''
@@ -42,6 +44,9 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     })),
 
     prdMeta: dto.prdMeta,
+    isLiked: dto.isLikedByMe ?? false,
+    // TODO: заглушка под отзывы, пока их нет в API
+    hasMyReview: (dto as { hasMyReview?: boolean }).hasMyReview ?? false,
 
     liked: dto.isLikedByMe ?? false,
 
