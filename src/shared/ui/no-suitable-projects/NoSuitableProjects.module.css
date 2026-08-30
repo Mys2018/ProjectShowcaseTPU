@@ -10,6 +10,7 @@
   height: 171px;
   object-fit: cover;
   object-position: center;
+  border-radius: 16px;
 }
 
 .wrapper div {

@@ -43,17 +43,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  
 	font: var(--meta-title-interface);
   color: var(--color-gray-900);
 }
 
 .role {
-  /* Странный шрифт */
-  font-family: var(--font-ALS);
-  font-weight: 400;
-  font-size: 10px;
-
+  font: var(--ALS-10-400);
   color: var(--color-gray-900);
   
 	text-overflow: ellipsis;

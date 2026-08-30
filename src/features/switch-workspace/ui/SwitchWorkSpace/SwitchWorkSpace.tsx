@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './SwitchWorkSpace.module.css';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ROUTES } from '@/shared';
 
 export default function SwitchWorkSpace() {
   type Tab = 'catalog' | 'mySpace' | null;
@@ -19,9 +20,16 @@ export default function SwitchWorkSpace() {
 
   useEffect(() => {
     let currentActive: Tab = null;
-    if (path.includes('catalog')) {
+    if (path.startsWith(ROUTES.PROJECTS.BASE) && !path.startsWith(ROUTES.PROJECTS.CREATE)) {
       currentActive = 'catalog';
-    } else if (path.includes('my-platform')) {
+    } else if (
+      path === ROUTES.MAIN || 
+      path.startsWith('/profile') || 
+      path.startsWith(ROUTES.PROJECTS.CREATE) ||
+      path.startsWith('/activity') ||
+      path.startsWith('/manage') ||
+      path.startsWith('/moderation')
+    ) {
       currentActive = 'mySpace';
     }
     
@@ -59,7 +67,7 @@ export default function SwitchWorkSpace() {
         onClick={
           () => {
             setActive('catalog')
-            navigate('/catalog')
+            navigate(ROUTES.PROJECTS.BASE)
           }
         }
       >
@@ -71,7 +79,7 @@ export default function SwitchWorkSpace() {
         onClick={
           () => {
             setActive('mySpace')
-            navigate('/my-platform')
+            navigate(ROUTES.MAIN)
           }
         }
       >

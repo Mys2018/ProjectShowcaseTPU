@@ -17,6 +17,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
   const [value, setValue] = useState<string>(interests || '')
   const [prevValue, setPrevValue] = useState<string>(interests || '')
   const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [showError, setShowError] = useState<boolean>(false)
 
   const { setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore()
   const { openModal, closeModal } = useModalStore()
@@ -33,7 +34,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
   const isValid = isValidSymbol && isValidAnother
 
   const hasUpdate = value.trim() !== (interests || '').trim()
-  const disabled = !hasUpdate || !isValid || isPending
+  const disabled = !hasUpdate || isPending
 
   useEffect(() => {
     if (isEditing) {
@@ -43,6 +44,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
+    if (showError) setShowError(false)
   }
 
   const handleCancel = () => {
@@ -57,6 +59,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
           setActiveEditBlock(null);
           setHasUnsavedChanges(false);
           setValue(prevValue);
+          setShowError(false);
         },
         onConfirm: () => {
           closeModal();
@@ -68,10 +71,15 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
       setActiveEditBlock(null);
       setHasUnsavedChanges(false);
       setValue(prevValue);
+      setShowError(false);
     }
   }
 
   const handleSubmit = () => {
+    if (!isValid) {
+      setShowError(true);
+      return;
+    }
     if (disabled) return;
 
     updateProfileMeta(
@@ -82,6 +90,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
           setActiveEditBlock(null);
           setHasUnsavedChanges(false);
           setPrevValue(value);
+          setShowError(false);
         }
       }
     )
@@ -100,6 +109,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
               setIsEditing(true)
               setActiveEditBlock('interests')
               setPrevValue(value)
+              setShowError(false)
             }}
             disabled={isPending}
           >
@@ -112,7 +122,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
           maxLength={MAX_LENGTH}
           handleChange={handleChange}
           isDisable={!isEditing || isPending}
-          isValid={isValidSymbol}
+          isValid={showError ? isValidSymbol : true}
           isEditing={isEditing}
           placeholder={'Интересующие сферы и задачи, которыми вам нравится заниматься'}
         />
@@ -127,6 +137,7 @@ export function MyInterests({MAX_LENGTH, MIN_LENGTH, interests, className }: MyI
               disabled={disabled}
               handleCancel={handleCancel}
               handleSubmit={handleSubmit}
+              showError={showError}
             />
           )
         }

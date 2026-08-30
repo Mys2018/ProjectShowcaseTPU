@@ -15,16 +15,30 @@ export const Catalog = () => {
   const filterRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
 
+  const programmaticScrolls = useRef(new WeakSet<HTMLElement>());
+
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
+    
+    if (programmaticScrolls.current.has(target)) {
+      programmaticScrolls.current.delete(target);
+      return;
+    }
+
     const scrollTop = target.scrollTop;
 
     if (filterRef.current && target !== filterRef.current) {
-      filterRef.current.scrollTop = scrollTop;
+      if (filterRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(filterRef.current);
+        filterRef.current.scrollTop = scrollTop;
+      }
     }
 
     if (projectsRef.current && target !== projectsRef.current) {
-      projectsRef.current.scrollTop = scrollTop;
+      if (projectsRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(projectsRef.current);
+        projectsRef.current.scrollTop = scrollTop;
+      }
     }
   };
 

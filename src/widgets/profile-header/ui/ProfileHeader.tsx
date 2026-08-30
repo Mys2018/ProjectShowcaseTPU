@@ -4,11 +4,10 @@ import EditIcon from '@/shared/ui/icons/edit.svg?react';
 import BigInfoIcon from '@/shared/ui/icons/big_info.svg?react';
 import { LinkBlock } from '@/shared/ui/link-block/LinkBlock';
 import styles from './ProfileHeader.module.css';
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react';
-
-
 
 import { useModalStore } from '@/shared/model';
+import { getAvatarRoleInfo } from '@/shared/lib';
+import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
 
 interface ProfileHeaderProps {
   data: User;
@@ -17,26 +16,36 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
   const openModal = useModalStore((state) => state.openModal);
+  const roleInfo = getAvatarRoleInfo(data.roles);
 
   return (
     <div className={styles.mainInfo}>
       <div className={styles.infoGrid}>
         <section className={styles.mainInfoContainer}>
-          <div className={styles.avatarContainer}>
-            {
-              data.profilePicture ?
-                <img className={styles.avatar} src={data.profilePicture} alt="Аватар студента" /> :
-                <div className={styles.avatar}>
-                  <UserIcon className={styles.userIcon}/>
-                </div>
-            }
-            <button className={styles.editButton} onClick={() => openModal('AVATAR_UPLOAD')}>
-              <EditIcon />
-            </button>
-            <div className={styles.status}>
-              mentor
-            </div>
-          </div>
+          {/*<div className={styles.avatarContainer}>*/}
+          {/*  {*/}
+          {/*    data.profilePicture ?*/}
+          {/*      <img className={styles.avatar} src={data.profilePicture} alt="Аватар студента" /> :*/}
+          {/*      <div className={styles.avatar}>*/}
+          {/*        <UserIcon className={styles.userIcon}/>*/}
+          {/*      </div>*/}
+          {/*  }*/}
+          {/*  <button className={styles.editButton} onClick={() => openModal('AVATAR_UPLOAD')}>*/}
+          {/*    <EditIcon />*/}
+          {/*  </button>*/}
+          {/*  <div className={styles.status}>*/}
+          {/*    mentor*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+          <Avatar 
+            fallbackType={roleInfo?.fallback || 'user'} 
+            size={"70px"} 
+            strokeColor={"grey"} 
+            onClickEditButton={() => openModal('AVATAR_UPLOAD')} 
+            label={roleInfo?.label} 
+            labelColor={roleInfo?.label ? 'white' : undefined}
+            picture={data.profilePicture}
+          />
           <div className={styles.nameContainer}>
             <div className={styles.name}>
               <p>{data.meta.firstName}</p>
@@ -69,7 +78,7 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
           {/*</button>*/}
         </section>
 
-        <section className={styles.secontInfoContainer}>
+        <section className={styles.secondInfoContainer}>
           <div className={styles.header}>
             <div className={styles.contactsText}>
               <h1>Контакты</h1>

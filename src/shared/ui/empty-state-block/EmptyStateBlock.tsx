@@ -12,8 +12,6 @@ interface EmptyStateBlockProps {
 }
 
 export const EmptyStateBlock = ({ title, description, buttonText, onAddClick, errorState, firstTime }: EmptyStateBlockProps) => {
-  console.log(errorState)
-
   return (
     <div className={clsx(styles.emptyStateBlock, errorState ? styles.errorState : '', firstTime && styles.yellowBlinking) }>
       {(title || description) && (

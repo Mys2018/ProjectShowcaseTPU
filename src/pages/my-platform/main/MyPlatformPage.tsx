@@ -95,22 +95,38 @@ export const MyPlatformPage = () => {
   const bgRef = useRef<HTMLSpanElement>(null)
   const shapeRef = useRef<HTMLSpanElement>(null)
 
+  const programmaticScrolls = useRef(new WeakSet<HTMLElement>())
+
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop
+    const target = e.currentTarget
+    
+    if (programmaticScrolls.current.has(target)) {
+      programmaticScrolls.current.delete(target)
+      return
+    }
+
+    const scrollTop = target.scrollTop
 
     const activitiesElement = activitiesRef.current
     const contentElement = contentRef.current
     const bgElement = bgRef.current
     const shapeElement = shapeRef.current
 
-    if (activitiesElement) activitiesElement.scrollTop = scrollTop
-    if (contentElement) {
-      const contentScrollTop = contentElement.scrollTop
-      contentElement.scrollTop = scrollTop
-
-      if (bgElement) bgElement.style.transform = `translateY(-${contentScrollTop}px)`
-      if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, contentScrollTop)}px)`
+    if (activitiesElement && activitiesElement !== target) {
+      if (activitiesElement.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(activitiesElement)
+        activitiesElement.scrollTop = scrollTop
+      }
     }
+    if (contentElement && contentElement !== target) {
+      if (contentElement.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(contentElement)
+        contentElement.scrollTop = scrollTop
+      }
+    }
+
+    if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
+    if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
   }
 
   return (

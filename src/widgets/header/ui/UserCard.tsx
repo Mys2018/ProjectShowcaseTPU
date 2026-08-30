@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import styles from './UserCard.module.css'
 import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
-import { useAuthStore } from '@/entities/user'
+import {useAuthStore, useMe} from '@/entities/user'
 import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
-import { ROUTES } from '@/shared'
+import {getAvatarRoleInfo, ROUTES} from '@/shared'
 
 interface UserCardProps {
   profilePicture?: string
@@ -12,7 +12,7 @@ interface UserCardProps {
 export function UserCard({ profilePicture }: UserCardProps) {
   const status = useAuthStore(s => s.status)
   const navigate = useNavigate()
-  // const { data: user = placeholderUser } = useMe(status === "authenticated");
+  const { data: user} = useMe();
 
   if (status !== 'authenticated' && status !== 'loading') {
     return <EnterButton />
@@ -23,9 +23,13 @@ export function UserCard({ profilePicture }: UserCardProps) {
       <Avatar
         picture={profilePicture}
         onClick={() => {
-          navigate(ROUTES.PROFILE.BASE)
+          navigate(ROUTES.PROFILE.BASE);
         }}
-        label={'mentor'}
+        label={getAvatarRoleInfo(user?.roles)?.label}
+        labelColor={'black'}
+        fallbackType={getAvatarRoleInfo(user?.roles)?.fallback || 'user'}
+        size={"48px"}
+        strokeColor={"grad"}
       />
     </div>
   )

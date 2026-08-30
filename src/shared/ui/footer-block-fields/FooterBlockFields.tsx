@@ -12,19 +12,20 @@ type FooterBlockFieldsProps = {
   disabled?: boolean
 
   handleCancel?: () => void,
-  handleSubmit?: () => void
-  customError?: string
+  handleSubmit?: () => void,
+  customError?: string,
+  showError?: boolean
 };
 
 export const FooterBlockFields = ({
    MIN_LENGTH = 100,
    valueLength = 200,
-   isValidSymbol,
    isValid,
    disabled,
    handleCancel,
    handleSubmit,
-   customError
+   customError,
+   showError
 }: FooterBlockFieldsProps) => {
 
   const label = () => {
@@ -32,7 +33,7 @@ export const FooterBlockFields = ({
       return <p className={`${styles.footerLabel} ${styles.error}`}>{customError}</p>
     }
     if (valueLength < MIN_LENGTH) {
-      return <p className={`${styles.footerLabel} ${isValidSymbol ? styles.success : styles.error}`}>Мин: {MIN_LENGTH} символов</p>
+      return <p className={`${styles.footerLabel} ${showError ? styles.error : ''}`}>Мин: {MIN_LENGTH} символов</p>
     }
     if (isValid) {
       return <p></p>

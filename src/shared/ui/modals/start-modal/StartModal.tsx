@@ -2,6 +2,8 @@ import styles from './StartModal.module.css'
 import {Modal} from "@/shared/ui/modals/modal/Modal.tsx";
 import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
 import {FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
+import {useMe} from "@/entities/user";
+import {getAvatarRoleInfo} from "@/shared";
 
 interface StartModalProps {
   isOpen: boolean;
@@ -14,12 +16,22 @@ interface StartModalProps {
 }
 
 export const StartModal = ({isOpen, onClose, profilePicture, onCancel, onAgree}: StartModalProps) => {
+
+  const { data: user} = useMe()
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.Body>
         <div className={styles.body}>
           {
-            <Avatar picture={profilePicture} className={styles.avatar}/>
+            <Avatar
+              picture={profilePicture}
+              className={styles.avatar}
+              fallbackType={"user"}
+              size={"108px"}
+              strokeColor={"white"}
+              label={getAvatarRoleInfo(user?.roles)?.label}
+            />
           }
           <div className={styles.textContainer}>
             <h2 className={styles.title}>

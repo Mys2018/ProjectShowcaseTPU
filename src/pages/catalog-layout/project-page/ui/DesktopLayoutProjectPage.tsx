@@ -75,18 +75,35 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   ];
 
 
+  const programmaticScrolls = useRef(new WeakSet<HTMLElement>());
+
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
+
+    if (programmaticScrolls.current.has(target)) {
+      programmaticScrolls.current.delete(target);
+      return;
+    }
+
     const scrollTop = target.scrollTop;
 
     if (leftWidgetsRef.current && target !== leftWidgetsRef.current) {
-      leftWidgetsRef.current.scrollTop = scrollTop;
+      if (leftWidgetsRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(leftWidgetsRef.current);
+        leftWidgetsRef.current.scrollTop = scrollTop;
+      }
     }
     if (projectsInfoRef.current && target !== projectsInfoRef.current) {
-      projectsInfoRef.current.scrollTop = scrollTop;
+      if (projectsInfoRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(projectsInfoRef.current);
+        projectsInfoRef.current.scrollTop = scrollTop;
+      }
     }
     if (rightWidgetsRef.current && target !== rightWidgetsRef.current) {
-      rightWidgetsRef.current.scrollTop = scrollTop;
+      if (rightWidgetsRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(rightWidgetsRef.current);
+        rightWidgetsRef.current.scrollTop = scrollTop;
+      }
     }
   };
 

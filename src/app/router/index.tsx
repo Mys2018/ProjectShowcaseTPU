@@ -9,6 +9,7 @@ import { MyProfile } from '@/pages/my-profile'
 import { CreateProjectPage } from '@/pages/create-project'
 import { SomeoneProfile } from '@/pages/someone-profile'
 import { ProjectsGrid } from '@/widgets/projects-grid'
+import { NotFoundPage } from '@/pages/not-found-page'
 import { ROUTES } from '@/shared'
 
 export const router = createBrowserRouter([
@@ -24,71 +25,61 @@ export const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           {
-            index: true,
-            element: <Navigate to={ROUTES.CATALOG.BASE} replace />
+            element: <ProtectedRoute />,
+            children: [
+              {
+                index: true,
+                element: <MyPlatformPage />
+              },
+              {
+                path: ROUTES.ACTIVITY.BASE,
+                element: <ProjectActivitiesLayout />
+              },
+              {
+                path: ROUTES.MANAGE.BASE,
+                element: <ProjectActivitiesLayout />
+              },
+              {
+                path: ROUTES.MODERATION.BASE,
+                element: <ProjectActivitiesLayout />
+              },
+              {
+                path: ROUTES.PROJECTS.CREATE,
+                element: <CreateProjectPage />
+              }
+            ]
           },
-
           {
-            path: ROUTES.CATALOG.BASE,
+            path: ROUTES.PROJECTS.BASE,
             element: <CatalogLayout />,
             children: [
               {
                 index: true,
-                element: <Navigate to={ROUTES.CATALOG.ALL_PROJECTS} replace />
+                element: <Navigate to={ROUTES.PROJECTS.RECRUITMENT} replace />
               },
               {
                 element: <Catalog />,
                 children: [
                   {
-                    path: ROUTES.CATALOG.ALL_PROJECTS,
+                    path: ROUTES.PROJECTS.RECRUITMENT,
                     element: <ProjectsGrid />
                   },
                   {
-                    path: ROUTES.CATALOG.RECRUITING,
-                    element: <ProjectsGrid />
-                  },
-                  {
-                    path: ROUTES.CATALOG.IN_WORK,
+                    path: ROUTES.PROJECTS.IN_PROGRESS,
                     element: <ProjectsGrid />
                   }
                 ]
               },
               {
-                path: ROUTES.CATALOG.PROJECT,
+                path: ROUTES.PROJECTS.PROJECT,
                 element: <ProjectPage />
               }
             ]
           },
-
-          {
-            element: <ProtectedRoute />,
-            children: [
-              {
-                path: ROUTES.MY_PLATFORM.BASE,
-                element: <MyPlatformPage />
-              },
-              {
-                path: ROUTES.MY_PLATFORM.ACTIVITIES.BASE,
-                element: <ProjectActivitiesLayout />,
-                children: [
-                  {
-                    path: '*',
-                    element: null
-                  }
-                ]
-              },
-              {
-                path: ROUTES.MY_PLATFORM.CREATE,
-                element: <CreateProjectPage />
-              }
-            ]
-          },
-
           {
             path: ROUTES.PROFILE.BASE,
             element: <MyProfile />
           },
-
           {
             path: ROUTES.PROFILE.BY_ID,
             element: <SomeoneProfile />
@@ -97,8 +88,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '*',
-        // TODO - сделать NotFoundPage
-        element: <Navigate to={ROUTES.LOGIN} replace />
+        element: <NotFoundPage />
       }
     ]
   }
