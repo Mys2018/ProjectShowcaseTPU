@@ -7,7 +7,7 @@ import styles from './ProfileHeader.module.css';
 
 import { useModalStore } from '@/shared/model';
 import { getAvatarRoleInfo } from '@/shared/lib';
-import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
+import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
 
 interface ProfileHeaderProps {
   data: User;
@@ -22,21 +22,6 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
     <div className={styles.mainInfo}>
       <div className={styles.infoGrid}>
         <section className={styles.mainInfoContainer}>
-          {/*<div className={styles.avatarContainer}>*/}
-          {/*  {*/}
-          {/*    data.profilePicture ?*/}
-          {/*      <img className={styles.avatar} src={data.profilePicture} alt="Аватар студента" /> :*/}
-          {/*      <div className={styles.avatar}>*/}
-          {/*        <UserIcon className={styles.userIcon}/>*/}
-          {/*      </div>*/}
-          {/*  }*/}
-          {/*  <button className={styles.editButton} onClick={() => openModal('AVATAR_UPLOAD')}>*/}
-          {/*    <EditIcon />*/}
-          {/*  </button>*/}
-          {/*  <div className={styles.status}>*/}
-          {/*    mentor*/}
-          {/*  </div>*/}
-          {/*</div>*/}
           <Avatar 
             fallbackType={roleInfo?.fallback || 'user'} 
             size={"70px"} 

@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import styles from './MobileHeader.module.css'
 import EnterButton from './EnterButton/EnterButton.tsx'
 import { useAuthStore, useMe } from '@/entities/user'
-import { Avatar } from '@/shared/ui/avatar/Avatar.tsx'
+import { Avatar } from '@/entities/user/ui/avatar/Avatar.tsx'
 // ponytail: ассет как в макете — знак ТПУ, разделитель и чип «ИШИТР +» одной картинкой.
 // Школа в нём зашита, из данных пользователя не подставляется.
 import LogoTPU from '@/shared/assets/svg/logoTPUMobile.svg'

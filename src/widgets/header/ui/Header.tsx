@@ -1,12 +1,13 @@
 import {useMediaQuery} from "usehooks-ts";
 import styles from "./Header.module.css";
-import { UserCard } from "./UserCard.tsx";
 import { MobileHeader } from "./MobileHeader.tsx";
 import {useNavigate} from "react-router-dom";
+import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
 import { SwitchWorkSpace } from "@/features/switch-workspace";
 import {SwitchMyPlatform} from "@/features/switch-my-platform";
 import {useAuthStore, useMe} from "@/entities/user";
-import { MOBILE_BREAKPOINT } from "@/shared/lib";
+import {Avatar} from "@/entities/user/ui/avatar";
+import {getAvatarRoleInfo, MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
 
@@ -39,8 +40,21 @@ export default function Header() {
           <div className={styles.center}>
             <SwitchWorkSpace />
           </div>
-          {/*<EnterButton /> */}
-          <UserCard profilePicture={data?.profilePicture}/>
+          {
+            status !== 'authenticated' && status !== 'loading' ?
+              <EnterButton/> :
+              <Avatar
+                picture={data?.profilePicture}
+                onClick={() => {
+                  navigate(ROUTES.PROFILE.BASE);
+                }}
+                label={getAvatarRoleInfo(data?.roles)?.label}
+                labelColor={'black'}
+                fallbackType={getAvatarRoleInfo(data?.roles)?.fallback || 'user'}
+                size={"48px"}
+                strokeColor={"grad"}
+              />
+          }
         </div>
       </header>
       <div className={styles.switchWrap}>

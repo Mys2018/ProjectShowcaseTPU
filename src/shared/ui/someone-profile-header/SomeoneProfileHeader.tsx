@@ -11,7 +11,7 @@ import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
-import {Avatar} from "@/shared/ui/avatar/Avatar.tsx";
+import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
 import {getAvatarRoleInfo} from "@/shared";
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'

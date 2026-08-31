@@ -2,7 +2,7 @@ import styles from './ProjectsGrid.module.css'
 import { ProjectCardFactory } from './project-card-factory/ProjectCardFactory'
 import { useFilterStore } from '@/features/filter'
 import { useProjects } from '@/entities/project'
-import {NoSuitableProjects} from "@/shared/ui/no-suitable-projects/NoSuitableProjects.tsx";
+import {NoSuitableProjects} from "@/entities/project/ui/no-suitable-projects";
 
 export default function ProjectsGrid() {
   const { tags, competencies, projectTypes, sort, isRelevanceSort, query, limit, page } = useFilterStore()
