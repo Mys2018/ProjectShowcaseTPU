@@ -123,7 +123,7 @@ export interface ProjectDto {
   tags: TagItem[];
   primaryTag: TagItem;
   partnerId: string;
-  status: 'Active' | 'Completed' | string;
+  status: 'Active' | 'Approved' | 'Archived' | 'Completed' | 'NeedsRework' | 'Pending' | 'Rejected';
   meta: {
     title: string;
     description: string;

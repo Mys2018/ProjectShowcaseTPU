@@ -17,7 +17,7 @@ export function SomeoneProfile() {
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>()
-  const uid = params.id || ''
+  const uid = Number(params.id)
   const { data: user } = useUserById(uid)
 
   if (!user) {

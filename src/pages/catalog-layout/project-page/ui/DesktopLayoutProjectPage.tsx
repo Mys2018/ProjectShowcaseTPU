@@ -32,9 +32,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   const navigate = useNavigate();
 
   // TODO
-  const { data: owner } = useUserById(
-    project?.ownerId?.toString() || ''
-  )
+  const { data: owner } = useUserById(project.ownerId)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);

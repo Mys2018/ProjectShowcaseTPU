@@ -28,7 +28,7 @@ export async function logout(): Promise<void> {
 }
 
 // TODO Undefined
-export async function getUserById(uid: string): Promise<User> {
+export async function getUserById(uid: number): Promise<User> {
   const { data } = await api.get<UserDto>(`/users/${uid}`)
   return mapUserDto(data)
 }
