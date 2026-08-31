@@ -3,10 +3,10 @@ import { ROUTES } from '@/shared';
 import { RouterTabs, type TabItem } from '@/shared/ui';
 
 const MY_PLATFORMS_TABS: TabItem[] = [
-    { label: 'Главная', to: ROUTES.MY_PLATFORM.BASE },
-    // { label: 'Проектная деятельность', to: ROUTES.MY_PLATFORM.ACTIVITIES.BASE },
-    { label: 'Создание проекта', to: ROUTES.MY_PLATFORM.CREATE },
-    { label: 'Мой профиль', to: '/profile' },
+    { label: 'Главная', to: ROUTES.MAIN },
+    // { label: 'Проектная деятельность', to: ROUTES.ACTIVITY.BASE },
+    { label: 'Создание проекта', to: ROUTES.PROJECTS.CREATE },
+    { label: 'Мой профиль', to: ROUTES.PROFILE.BASE },
 ];
 
 
@@ -15,7 +15,14 @@ export const SwitchMyPlatform = () => {
 
     let currentTabs: TabItem[] | null = null;
 
-    if (location.pathname.startsWith('/my-platform') || location.pathname.startsWith('/profile')) {
+    if (
+      location.pathname === ROUTES.MAIN || 
+      location.pathname.startsWith('/profile') || 
+      location.pathname.startsWith('/projects/create') ||
+      location.pathname.startsWith('/activity') ||
+      location.pathname.startsWith('/manage') ||
+      location.pathname.startsWith('/moderation')
+    ) {
         currentTabs = MY_PLATFORMS_TABS;
     }
 

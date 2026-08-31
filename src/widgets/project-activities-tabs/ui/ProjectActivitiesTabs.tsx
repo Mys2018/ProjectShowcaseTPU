@@ -15,19 +15,20 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
     switch (preferredRoleType) {
       case 'Student':
         return [
-          { label: 'Мои проекты', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.PROJECTS },
-          { label: 'Отклики', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.APPLICATIONS },
-          { label: 'Понравились', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.LIKES }
+          { label: 'Мои проекты', value: ROUTES.ACTIVITY.MY_PROJECTS },
+          { label: 'Мои отклики', value: ROUTES.ACTIVITY.MY_APPLICATIONS },
+          { label: 'Понравившиеся', value: ROUTES.ACTIVITY.FAVORITES }
         ]
       case 'Curator':
         return [
-          { label: 'Управление проектами', value: ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.PROJECTS },
-          { label: 'Входящие заявки', value: ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.APPLICATIONS }
+          { label: 'Все проекты', value: ROUTES.MANAGE.PROJECTS },
+          { label: 'Отклики и команда', value: ROUTES.MANAGE.TEAMS },
+          { label: 'Оценка участников', value: ROUTES.MANAGE.GRADES }
         ]
       case 'Moderator':
         return [
-          { label: 'Модерация проектов', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS },
-          { label: 'Заявки на модерацию', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS }
+          { label: 'Модерация проектов', value: ROUTES.MODERATION.PROJECTS },
+          { label: 'Входящие жалобы', value: ROUTES.MODERATION.COMPLAINTS }
         ]
       case null:
         return []
@@ -37,5 +38,7 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
     }
   }
 
-  return <HorizontalTabs className={className} items={getTabItems()} value={location.pathname} onChange={value => void navigate(value)} />
+  const currentValue = location.pathname + location.hash
+
+  return <HorizontalTabs className={className} items={getTabItems()} value={currentValue} onChange={value => void navigate(value, { replace: true })} />
 }

@@ -1,8 +1,16 @@
 .like {
   z-index: 3;
 
-  opacity: 0;
+
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
 }
 
 .card:hover .like {

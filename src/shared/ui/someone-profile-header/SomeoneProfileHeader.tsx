@@ -3,7 +3,6 @@ import clsx from "clsx";
 import type {User} from "@/entities/user";
 // import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
 import type {Messengers} from "@/entities/user/model/types.ts";
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
 import TgLogo from '@/shared/ui/icons/telegram.svg?react'
 import ElementLogo from '@/shared/ui/icons/white_element.svg?react'
 import VkLogo from '@/shared/ui/icons/vk.svg?react'
@@ -12,6 +11,8 @@ import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
+import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
+import {getAvatarRoleInfo} from "@/shared";
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 
@@ -59,23 +60,13 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
       <div className={styles.header}>
         <div className={styles.bioBlock}>
 
-          {/*Основа профиля*/}
-          {
-            user.profilePicture ?
-              <img className={styles.avatar} src={user.profilePicture} alt="Аватар студента" /> :
-              <div className={styles.avatar}>
-                <UserIcon/>
-              </div>
-          }
-
-          <div className={styles.roleLabel}>
-            {'mentor'}
-          </div>
-
-          {/*<div className={styles.statuses}>*/}
-          {/*  {getStatuses({ type: 'aha' })}*/}
-          {/*  {getStatuses({ type: 'toughGuy' })}*/}
-          {/*</div>*/}
+          <Avatar
+            fallbackType={getAvatarRoleInfo(user?.roles)?.fallback || 'user'}
+            size={'108px'}
+            labelColor={'white'}
+            label={getAvatarRoleInfo(user?.roles)?.label}
+            strokeColor={'grad'}
+          />
 
           <div className={styles.infoBlock}>
             <div className={styles.nameBlock}>

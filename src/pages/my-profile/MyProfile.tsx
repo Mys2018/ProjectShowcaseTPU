@@ -69,7 +69,7 @@ export const MyProfile = () => {
         <p className={styles.back}>{backTitle}</p>
       </section>
 
-      <section className={styles.title}>
+      <section className={styles.pageTitle}>
         <h2>Мой профиль</h2>
       </section>
 

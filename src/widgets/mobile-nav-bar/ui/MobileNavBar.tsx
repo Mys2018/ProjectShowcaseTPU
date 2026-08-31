@@ -12,9 +12,9 @@ export function MobileNavBar() {
   const { pathname } = useLocation()
   const { panelHidden } = useMobileChrome(true, pathname)
 
-  const isCatalog = pathname.startsWith(ROUTES.CATALOG.BASE)
-  const isPlatform = pathname.startsWith(ROUTES.MY_PLATFORM.BASE)
-  const activeIndex = isCatalog ? 0 : isPlatform ? 1 : -1
+  const isProjects = pathname.startsWith(ROUTES.PROJECTS.BASE)
+  const isPlatform = pathname === ROUTES.MAIN || pathname.startsWith(ROUTES.ACTIVITY.BASE) || pathname.startsWith(ROUTES.MANAGE.BASE) || pathname.startsWith(ROUTES.MODERATION.BASE)
+  const activeIndex = isProjects ? 0 : isPlatform ? 1 : -1
 
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([])
   const [indicator, setIndicator] = useState({ left: 0, width: 0 })
@@ -40,8 +40,8 @@ export function MobileNavBar() {
         <button
           ref={el => { tabsRef.current[0] = el }}
           type="button"
-          className={clsx(styles.tab, isCatalog && styles.active)}
-          onClick={() => void navigate(ROUTES.CATALOG.BASE)}
+          className={clsx(styles.tab, isProjects && styles.active)}
+          onClick={() => void navigate(ROUTES.PROJECTS.BASE)}
         >
           <span className={clsx(styles.icon, styles.iconProjects)} />
           Проекты
@@ -51,7 +51,7 @@ export function MobileNavBar() {
           ref={el => { tabsRef.current[1] = el }}
           type="button"
           className={clsx(styles.tab, isPlatform && styles.active)}
-          onClick={() => void navigate(ROUTES.MY_PLATFORM.BASE)}
+          onClick={() => void navigate(ROUTES.MAIN)}
         >
           <span className={clsx(styles.icon, styles.iconPlatform)}>
             <PlatformIcon />

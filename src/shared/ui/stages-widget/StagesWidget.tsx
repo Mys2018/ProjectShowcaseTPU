@@ -110,22 +110,22 @@ const getIcon = (type: StagesData['type']) => {
 const getLink = (type: StagesData['type']) => {
   switch (type) {
     case 'projects':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.PROJECTS
+      return ROUTES.ACTIVITY.MY_PROJECTS
     case 'feedback':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.APPLICATIONS
+      return ROUTES.ACTIVITY.MY_APPLICATIONS
     case 'likes':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.LIKES
+      return ROUTES.ACTIVITY.FAVORITES
     case 'moderator-projects':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS
+      return ROUTES.MODERATION.PROJECTS
     case 'moderator-requests':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS
+      return ROUTES.MODERATION.COMPLAINTS
     case 'curator-projects':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.PROJECTS
+      return ROUTES.MANAGE.PROJECTS
     case 'curator-requests':
-      return ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.APPLICATIONS
+      return ROUTES.MANAGE.TEAMS
     default:
       assertNever(type)
-      return ROUTES.MY_PLATFORM.BASE
+      return ROUTES.MAIN
   }
 }
 

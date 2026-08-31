@@ -1,0 +1,73 @@
+.avatarContainer {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #84CEF6;
+  border-radius: 50%;
+
+
+  border: 1px solid transparent;
+
+  cursor: pointer;
+  position: relative;
+}
+
+.whiteStroke {
+  border-color: white;
+}
+
+.greyStroke {
+  border-color: var(--color-gray-100);
+}
+
+.gradStroke {
+  background-image:
+    linear-gradient(#84cef6, #84cef6),
+    var(--grad-brand);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.avatar {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.status {
+  position: absolute;
+  background-color: var(--color-brand-green);
+  border-radius: 28px;
+  bottom: -2px;
+  right: -2px;
+}
+
+.whiteText {
+  padding: 2px 8px 4px 8px;
+  color: white;
+}
+
+.blackText {
+  padding: 1px 6px 2px 6px;
+  font: var(--ALS-9-400);
+  color: var(--color-brand-black);
+}
+
+.editButton {
+  position: absolute;
+  width: 19px;
+  height: 19px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-gray-900);
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+
+  color: white;
+}

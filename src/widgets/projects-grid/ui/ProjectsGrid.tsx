@@ -2,6 +2,7 @@ import styles from './ProjectsGrid.module.css'
 import { ProjectCardFactory } from './project-card-factory/ProjectCardFactory'
 import { useFilterStore } from '@/features/filter'
 import { useProjects } from '@/entities/project'
+import {NoSuitableProjects} from "@/entities/project/ui/no-suitable-projects";
 
 export default function ProjectsGrid() {
   const { tags, competencies, projectTypes, sort, isRelevanceSort, query, limit, page } = useFilterStore()
@@ -18,7 +19,12 @@ export default function ProjectsGrid() {
 
   if (isLoading) return <h2>Загрузка проектов...</h2>
   if (isError) return <h2>Ошибка при загрузке проектов</h2>
-  if (!total) return <h2>Проектов не нашлось</h2>
+  if (!total) return (
+    <div className={styles.emptyContainer}>
+      <NoSuitableProjects/>
+    </div>
+  )
+
 
   return (
     <div className={styles.body}>

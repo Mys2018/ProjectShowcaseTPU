@@ -1,5 +1,6 @@
 import styles from './Modal.module.css'
 import type {ReactNode} from "react";
+import { useRef } from 'react';
 
 type ModalProps = {
   isOpen: boolean,
@@ -7,8 +8,6 @@ type ModalProps = {
   children: ReactNode,
   variant?: 'default' | 'transparent'
 }
-
-import { useRef } from 'react';
 
 export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalProps) {
   const isOverlayClicked = useRef(false);

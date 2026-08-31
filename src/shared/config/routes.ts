@@ -1,45 +1,38 @@
-const MY_PLATFORM_BASE = '/my-platform'
-const PROJECT_ACTIVITIES_BASE = `${MY_PLATFORM_BASE}/project-activities`
-const CATALOG_BASE = '/catalog'
-const PROFILE_BASE = '/profile'
 
 export const ROUTES = {
   MAIN: '/',
   LOGIN: '/login',
   PROFILE: {
-    BASE: PROFILE_BASE,
-    BY_ID: `${PROFILE_BASE}/:id`
+    BASE: '/profile',
+    BY_ID: '/profile/:id'
   },
-  CATALOG: {
-    BASE: CATALOG_BASE,
-    ALL_PROJECTS: `${CATALOG_BASE}/all-projects`,
-    RECRUITING: `${CATALOG_BASE}/recruiting`,
-    IN_WORK: `${CATALOG_BASE}/in-work`,
-    PROJECT: `${CATALOG_BASE}/projects/:id`
+  PROJECTS: {
+    BASE: '/projects',
+    RECRUITMENT: '/projects/recruitment',
+    IN_PROGRESS: '/projects/in-progress',
+    PROJECT: '/projects/:id',
+    CREATE: '/projects/create'
   },
-  MY_PLATFORM: {
-    BASE: MY_PLATFORM_BASE,
-    ACTIVITIES: {
-      BASE: PROJECT_ACTIVITIES_BASE,
-      STUDENT: {
-        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/my-projects`,
-        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/my-applications`,
-        LIKES: `${PROJECT_ACTIVITIES_BASE}/likes`
-      },
-      CURATOR: {
-        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-management`,
-        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/incoming-applications`
-      },
-      MODERATOR: {
-        PROJECTS: `${PROJECT_ACTIVITIES_BASE}/projects-moderation`,
-        APPLICATIONS: `${PROJECT_ACTIVITIES_BASE}/moderation-applications`
-      }
-    },
-    CREATE: `${MY_PLATFORM_BASE}/create`
+  ACTIVITY: {
+    BASE: '/activity',
+    MY_PROJECTS: '/activity#my-projects',
+    MY_APPLICATIONS: '/activity#my-applications',
+    FAVORITES: '/activity#favorites'
+  },
+  MANAGE: {
+    BASE: '/manage',
+    PROJECTS: '/manage#projects',
+    TEAMS: '/manage#teams',
+    GRADES: '/manage#grades'
+  },
+  MODERATION: {
+    BASE: '/moderation',
+    PROJECTS: '/moderation#projects',
+    COMPLAINTS: '/moderation#complaints'
   }
 } as const
 
 export const buildRoute = {
   profileById: (id: string) => ROUTES.PROFILE.BY_ID.replace(':id', id),
-  project: (id: string) => ROUTES.CATALOG.PROJECT.replace(':id', id)
+  project: (id: string) => ROUTES.PROJECTS.PROJECT.replace(':id', id)
 } as const

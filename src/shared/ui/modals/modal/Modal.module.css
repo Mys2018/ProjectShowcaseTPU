@@ -59,3 +59,10 @@
   justify-content: end;
   gap: 12px;
 }
+
+@media (max-width: 768px) {
+  .content {
+    width: 90%;
+  }
+
+}

@@ -37,11 +37,7 @@
 .avatarContainer {
   width: 70px;
   height: 70px;
-
-
-
   position: relative;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,24 +54,6 @@
   min-height: 70px;
 }
 
-
-.editButton {
-  position: absolute;
-  width: 19px;
-  height: 19px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background-color: var(--color-gray-900);
-  border-radius: 50%;
-  top: 0;
-  right: 0;
-
-  color: white;
-}
-
 .nameContainer {
   display: flex;
   flex-direction: column;
@@ -90,9 +68,7 @@
 }
 
 .name p {
-  font-family: var(--font-ALS);
-  font-size: 16px;
-  font-weight: 400;
+  font: var(--ALS-16-400)
 }
 
 .group {
@@ -130,7 +106,7 @@
   border-radius: 50px;
 }
 
-.secontInfoContainer {
+.secondInfoContainer {
   grid-row: 1 / 3;
   grid-column: 2;
 
@@ -214,3 +190,31 @@
   right: 0;
   color: white;
 }
+
+@media (max-width: 768px) {
+
+  .mainInfo {
+    width: 100%;
+    padding: 20px;
+  }
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mainInfoContainer {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .secondInfoContainer {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .editBody {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+}
+

@@ -6,6 +6,7 @@ import { ProjectCardVertical, type ProjectCardData } from '@/entities/project'
 import { CompetencyBadgeList } from '@/entities/competency'
 import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
 import { buildRoute } from '@/shared'
+import clsx from "clsx";
 
 interface ProjectCardFactoryProps {
   project: ProjectCardData
@@ -30,7 +31,7 @@ export const ProjectCardFactory = ({ project }: ProjectCardFactoryProps) => {
       headerSlot={
         <div className={styles.header}>
           <TagBadgeList visibleCount={1} tags={getSortedTags(tags, primaryTag)} />
-          <LikeProjectButton className={styles.like} projectId={id} liked={liked} onClick={e => e.stopPropagation()} />
+          <LikeProjectButton className={clsx(styles.like, !liked ? styles.invisible : styles.visible)} projectId={id} liked={liked} onClick={e => e.stopPropagation()} />
         </div>
       }
       bodySlot={<CompetencyBadgeList row competencies={competencies} />}

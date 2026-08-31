@@ -1,22 +1,32 @@
 import {useMediaQuery} from "usehooks-ts";
 import styles from "./Header.module.css";
-import { UserCard } from "./UserCard.tsx";
 import { MobileHeader } from "./MobileHeader.tsx";
+import {useNavigate} from "react-router-dom";
+import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
 import { SwitchWorkSpace } from "@/features/switch-workspace";
 import {SwitchMyPlatform} from "@/features/switch-my-platform";
-import {useMe} from "@/entities/user";
-import { MOBILE_BREAKPOINT } from "@/shared/lib";
+import {useAuthStore, useMe} from "@/entities/user";
+import {Avatar} from "@/entities/user/ui/avatar";
+import {getAvatarRoleInfo, MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
-import {useNavigate} from "react-router-dom";
 import {ROUTES} from "@/shared";
 
 export default function Header() {
 
   const { data } = useMe()
+  const status = useAuthStore(state => state.status);
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
 
-  if (isMobile) return <MobileHeader />
+  const handleLogoClick = () => {
+    if (status == 'authenticated') {
+      navigate(ROUTES.PROJECTS.RECRUITMENT);
+    } else if (status == 'unauthenticated') {
+      navigate(ROUTES.PROJECTS.BASE);
+    }
+  }
+
+  if (isMobile) return <MobileHeader/>
 
   return (
     <div className={styles.headerWrap}>
@@ -24,16 +34,27 @@ export default function Header() {
         <div className={styles.wrap}>
           <img
             className={styles.logo}
-            onClick={() => {
-              navigate(ROUTES.CATALOG.BASE)
-            }}
+            onClick={handleLogoClick}
             src={LogoTPU}
             alt={'Лого'}/>
           <div className={styles.center}>
             <SwitchWorkSpace />
           </div>
-          {/*<EnterButton /> */}
-          <UserCard profilePicture={data?.profilePicture}/>
+          {
+            status !== 'authenticated' && status !== 'loading' ?
+              <EnterButton/> :
+              <Avatar
+                picture={data?.profilePicture}
+                onClick={() => {
+                  navigate(ROUTES.PROFILE.BASE);
+                }}
+                label={getAvatarRoleInfo(data?.roles)?.label}
+                labelColor={'black'}
+                fallbackType={getAvatarRoleInfo(data?.roles)?.fallback || 'user'}
+                size={"48px"}
+                strokeColor={"grad"}
+              />
+          }
         </div>
       </header>
       <div className={styles.switchWrap}>

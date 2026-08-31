@@ -49,7 +49,7 @@ function Back({ onClick }: { onClick?: () => void }) {
   // При заходе по прямой ссылке истории нет и navigate(-1) увёл бы из приложения.
   // Ключ 'default' у роутера означает, что это первая запись в истории.
   const goBack = () => {
-    if (location.key === 'default') void navigate(ROUTES.MY_PLATFORM.BASE)
+    if (location.key === 'default') void navigate(ROUTES.MAIN)
     else void navigate(-1)
   }
 

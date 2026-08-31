@@ -20,9 +20,14 @@ export const MainLayout = () => {
 
   // Навигация живёт только на корневых страницах. На страницах-деталях её место
   // занимает панель действий — договорённость «где я» против «что я могу».
-  const isRootPage =
-    (pathname.startsWith(ROUTES.CATALOG.BASE) && !pathname.includes('/projects/')) ||
-    pathname === ROUTES.MY_PLATFORM.BASE;
+  const isRootPage = [
+    ROUTES.MAIN,
+    ROUTES.ACTIVITY.BASE,
+    ROUTES.MANAGE.BASE,
+    ROUTES.MODERATION.BASE,
+    ROUTES.PROJECTS.RECRUITMENT,
+    ROUTES.PROJECTS.IN_PROGRESS
+  ].some(route => route === pathname);
 
   const openModal = useModalStore(state => state.openModal)
   const closeModal = useModalStore(state => state.closeModal)
@@ -33,7 +38,7 @@ export const MainLayout = () => {
         onClose: closeModal,
         profilePicture: user?.profilePicture,
         onCancel: () => {
-          navigate(ROUTES.MY_PLATFORM.BASE)
+          navigate(ROUTES.MAIN)
           closeModal()
         },
         onAgree: () => {

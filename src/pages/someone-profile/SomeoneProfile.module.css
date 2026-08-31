@@ -91,6 +91,7 @@
   flex-direction: column;
   gap: 32px;
   padding: 24px 16px;
+  flex-shrink: 0;
 }
 
 .see {
@@ -120,9 +121,14 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    margin: 0;
 
     position: relative;
+
+    flex: none;
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    padding-top: var(--header-mobile-h);
+    overflow-y: auto;
   }
 
   .title, .see {
@@ -132,7 +138,9 @@
   .profile {
     padding: 0 0 20px 0;
     margin: 0;
-    gap: 32px
+    gap: 32px;
+    height: auto;
+    overflow-y: visible;
   }
 
   .headerLeft {
