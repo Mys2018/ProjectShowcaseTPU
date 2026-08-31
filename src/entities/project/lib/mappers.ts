@@ -1,4 +1,4 @@
-import type { ProjectDto, ProjectCardData } from '../model/types'
+import type { ProjectDto, ProjectCardData, ProjectStatus } from '../model/types'
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
   return {
@@ -10,7 +10,7 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     ownerId: dto.ownerId,
     partnerId: dto.partnerId,
-    status: dto.status,
+    status: dto.status.toLowerCase() as ProjectStatus,
     meta: {
       title: dto.meta?.title || '',
       description: dto.meta?.description || ''
