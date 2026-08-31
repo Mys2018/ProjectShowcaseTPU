@@ -16,8 +16,8 @@
 
 .cover {
   flex-shrink: 0;
-  height: 335px;
-  width: 77px;
+  flex-grow: 1;
+  width: 72px;
 }
 
 .content {
