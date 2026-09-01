@@ -6,6 +6,7 @@ import type { Tag } from "@/entities/tag";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
+export type ProjectStatus = Lowercase<ProjectDto['status']>;
 export type CreateProjectRequestType =
   | 'Case'
   | 'Real'
@@ -29,7 +30,7 @@ export interface ProjectCardData {
   primaryTag: Tag;
   ownerId: number;
   partnerId: string;
-  status: string;
+  status: ProjectStatus;
   meta: {
     title: string;
     description: string;
@@ -127,7 +128,7 @@ export interface ProjectDto {
   tags: TagItem[];
   primaryTag: TagItem;
   partnerId: string;
-  status: 'Active' | 'Completed' | string;
+  status: 'Active' | 'Approved' | 'Archived' | 'Completed' | 'NeedsRework' | 'Pending' | 'Rejected';
   meta: {
     title: string;
     description: string;

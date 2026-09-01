@@ -20,7 +20,7 @@ export function SomeoneProfile() {
 
   const navigate = useNavigate();
   const params = useParams<{ id: string }>()
-  const uid = params.id || ''
+  const uid = Number(params.id)
   const { data: user } = useUserById(uid)
 
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
