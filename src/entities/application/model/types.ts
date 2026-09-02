@@ -1,40 +1,44 @@
-export type ProjectRoleApplicationStatus = 'Approved' | 'Closed' | 'Pending' | 'Rejected';
+export type ApplicationStatus = 'approved' | 'closed' | 'pending' | 'rejected'
 
-export interface ProjectRoleApplication {
-  applicationID: string;
-  studentID: number;
-  roleID: string;
-  createdAt: Date;
-  status: ProjectRoleApplicationStatus;
+export interface Application {
+  applicationID: string
+  studentID: number
+  roleID: string
+  createdAt: Date
+  status: ApplicationStatus
 }
 
 export interface ListApplicationsResponse {
-  applications: ProjectRoleApplication[];
-  total: number;
-  offset: number;
-  limit: number;
+  applications: Application[]
+  total: number
+  offset: number
+  limit: number
 }
 
-export interface ProjectRoleApplicationDto extends Omit<ProjectRoleApplication, 'createdAt'> {
-  createdAt: string;
+export interface ApplicationDto {
+  applicationID: string
+  studentID: number
+  roleID: string
+  createdAt: string
+  status: Capitalize<ApplicationStatus>
 }
 
 export interface ListApplicationsResponseDto extends Omit<ListApplicationsResponse, 'applications'> {
-  applications: ProjectRoleApplicationDto[];
+  applications: ApplicationDto[]
 }
 
 export interface CreateApplicationRequest {
-  roleId: string;
+  roleId: string
 }
 
 export interface CreateApplicationResponse {
-  applicationId: string;
+  applicationId: string
 }
 
 export interface GetApplicationsQueryParams {
-  mode: 'AsStudent' | 'AsOwner';
-  status?: ProjectRoleApplicationStatus;
-  projectId?: string;
-  offset: number;
-  limit: number;
+  mode: 'AsStudent' | 'AsOwner'
+  status?: ApplicationStatus
+  projectId?: string
+  offset: number
+  limit: number
 }
