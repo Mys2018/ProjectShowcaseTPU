@@ -22,17 +22,6 @@ interface ProjectActionPanelProps {
   isProfileFilled: boolean
 }
 
-/** Набор идёт. Единственный статус, где можно откликнуться. */
-const RECRUITING = 'Active'
-/** Проект закончен: участник может оставить отзыв. */
-const COMPLETED = 'Completed'
-/**
- * Работа идёт — набор закрыт. Список явный: иначе проект на модерации,
- * отклонённый или архивный тоже показал бы «В работе», то есть заведомо неверный статус.
- * TODO: сверить с бэкендом, какой статус означает «в работе» — Approved или вычисляемое.
- */
-const IN_PROGRESS = ['Approved']
-
 /**
  * Центр панели считается одной цепочкой приоритетов: завершён → идёт работа →
  * набор открыт. Первое совпадение выигрывает. Владелец отдельной ветки не имеет —
@@ -56,9 +45,9 @@ export function ProjectActionPanel({
   const { data: me } = useMe()
   const isGuest = status !== 'authenticated' && status !== 'loading'
 
-  const isRecruiting = project.status === RECRUITING
-  const isCompleted = project.status === COMPLETED
-  const isInProgress = IN_PROGRESS.includes(project.status)
+  const isRecruiting = project.status === 'active'
+  const isCompleted = project.status === 'completed'
+  const isInProgress = project.status === 'approved'
 
   const { data: applications } = useApplications(myApplicationsParams(project.id))
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)

@@ -9,27 +9,26 @@ import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import { InfoTooltip, ROUTES } from "@/shared";
-import { useApplications, applicationApi, applicationKeys } from "@/entities/application";
-import type { CreateApplicationRequest, ProjectRoleApplicationStatus } from "@/entities/application";
+import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const useCreateApplication = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newApplication: CreateApplicationRequest) => applicationApi.createApplication(newApplication),
+    mutationFn: (roleId: string) => createApplication({ roleId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });
-    },
-  });
+      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
+    }
+  })
 };
 
 const useUpdateApplicationStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ applicationId, status }: { applicationId: string; status: ProjectRoleApplicationStatus }) => 
-      applicationApi.updateApplicationStatus(applicationId, status),
+    mutationFn: ({ applicationId, status }: { applicationId: string; status: ApplicationStatus }) => 
+      updateApplicationStatus(applicationId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });
     },
@@ -70,7 +69,7 @@ export const FreeCompetencies = ({ roles }: FreeCompetenciesProps) => {
   const currentApplications = useMemo(() => {
     if (!myApplications?.applications) return [];
     const roleIds = roles.map(r => r.roleId);
-    return myApplications.applications.filter(app => roleIds.includes(app.roleID) && (app.status === 'Pending' || app.status === 'Approved'));
+    return myApplications.applications.filter(app => roleIds.includes(app.roleID) && (app.status === 'pending' || app.status === 'approved'));
   }, [myApplications, roles]);
 
   const isAppliedToProject = currentApplications.length > 0;
@@ -81,7 +80,7 @@ export const FreeCompetencies = ({ roles }: FreeCompetenciesProps) => {
       try {
         await Promise.all(
           currentApplications.map(app =>
-            updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'Closed' })
+            updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'closed' })
           )
         );
         setSelectedCompetencies([]);
@@ -92,7 +91,7 @@ export const FreeCompetencies = ({ roles }: FreeCompetenciesProps) => {
       try {
         await Promise.all(
           selectedCompetencies.map(roleId =>
-            createApplicationMutation.mutateAsync({ roleId })
+            createApplicationMutation.mutateAsync(roleId)
           )
         );
       } catch (error) {

@@ -1,11 +1,11 @@
 import styles from './MyApplicationsSheet.module.css'
 import { useCancelApplication } from '../model/applications'
-import { type ProjectRoleApplication } from '@/entities/application'
+import { type Application } from '@/entities/application'
 import { type ProjectCardData } from '@/entities/project'
 
 interface MyApplicationsSheetProps {
   project: ProjectCardData
-  applications: ProjectRoleApplication[]
+  applications: Application[]
 }
 
 /**
@@ -29,16 +29,9 @@ export function MyApplicationsSheet({ project, applications }: MyApplicationsShe
             <li key={application.applicationID} className={styles.row}>
               <div className={styles.info}>
                 <p className={styles.role}>{role?.meta.name ?? 'Роль'}</p>
-                <p className={styles.status}>
-                  {application.status === 'Approved' ? 'Заявка одобрена' : 'На рассмотрении'}
-                </p>
+                <p className={styles.status}>{application.status === 'approved' ? 'Заявка одобрена' : 'На рассмотрении'}</p>
               </div>
-              <button
-                type="button"
-                className={styles.cancel}
-                onClick={() => cancel.mutate(application.applicationID)}
-                disabled={pending}
-              >
+              <button type='button' className={styles.cancel} onClick={() => cancel.mutate(application.applicationID)} disabled={pending}>
                 {pending ? 'Отменяем…' : 'Отменить'}
               </button>
             </li>
@@ -46,9 +39,7 @@ export function MyApplicationsSheet({ project, applications }: MyApplicationsShe
         })}
       </ul>
 
-      {cancel.isError && (
-        <p className={styles.error}>Не удалось отменить заявку. Попробуйте ещё раз.</p>
-      )}
+      {cancel.isError && <p className={styles.error}>Не удалось отменить заявку. Попробуйте ещё раз.</p>}
     </div>
   )
 }

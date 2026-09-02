@@ -1,3 +1,3 @@
-export { applicationApi } from './requests';
-export * from './queries';
-export * from './queryKeys';
+export { createApplication, updateApplicationStatus } from './requests'
+export * from './queries'
+export { applicationKeys } from './queryKeys'
