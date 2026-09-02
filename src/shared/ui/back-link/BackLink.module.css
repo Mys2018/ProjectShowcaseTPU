@@ -1,0 +1,40 @@
+.link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  color: var(--color-gray-400);
+}
+
+.icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+/* Название страницы может быть длинным («к Управлению проектами»), а колонка
+   узкой — обрезаем по месту, а не по количеству знаков. */
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font: var(--step-title-platform);
+  color: currentColor;
+}
+
+.link:hover {
+  color: var(--color-gray-500);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-brand-violet);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

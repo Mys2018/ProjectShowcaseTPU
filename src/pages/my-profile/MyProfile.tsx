@@ -9,15 +9,11 @@ import { Portfolio } from "@/features/portfolio";
 import { useSkillsStore } from '@/features/my-competencies';
 import { useMe } from '@/entities/user';
 import EyeIcon from '@/shared/ui/icons/eye.svg?react';
-import BackIcon from '@/shared/ui/icons/back.svg?react';
 import { useProfileEditStore, useModalStore } from '@/shared/model';
+import { BackLink } from '@/shared/ui/back-link';
 import { ROUTES } from '@/shared';
-import { usePageTitle, usePreviousPageTitle } from '@/shared/model';
 
 export const MyProfile = () => {
-  usePageTitle('моему профилю');
-  const backTitle = usePreviousPageTitle('Назад к списку проектов');
-
   const navigate = useNavigate();
   const { data: user } = useMe();
   const { activeEditBlock, hasUnsavedChanges, setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore();
@@ -64,10 +60,7 @@ export const MyProfile = () => {
 
   return (
     <div className={styles.mainContent}>
-      <section className={styles.headerLeft} onClick={() => void navigate(-1)}>
-        <BackIcon className={styles.backIcon}/>
-        <p className={styles.back}>{backTitle}</p>
-      </section>
+      <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
 
       <section className={styles.pageTitle}>
         <h2>Мой профиль</h2>

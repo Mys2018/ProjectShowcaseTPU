@@ -18,12 +18,10 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem,
-  usePageTitle
+  type FloatingTabItem
 } from '@/shared'
 
 export const MyPlatformPage = () => {
-  usePageTitle('моей платформе')
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
