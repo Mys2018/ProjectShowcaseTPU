@@ -13,12 +13,23 @@ interface BackLinkProps {
 /**
  * Стрелка «назад» с названием страницы, к которой она ведёт. Название берётся
  * из словаря backTargets по предыдущему адресу в истории.
+ *
+ * Глазами направление читается по стрелке, а скринридер её не озвучивает —
+ * поэтому вслух кнопка представляется полностью. Двоеточие вместо предлога:
+ * иначе название пришлось бы склонять, а весь смысл словаря в том, что
+ * названия лежат в нём ровно так, как написаны в интерфейсе.
  */
 export function BackLink({ fallback, className }: BackLinkProps) {
   const { label, go } = useBack(fallback);
 
   return (
-    <button type="button" className={clsx(styles.link, className)} onClick={go} title={label}>
+    <button
+      type="button"
+      className={clsx(styles.link, className)}
+      onClick={go}
+      aria-label={label ? `Назад: ${label}` : 'Назад'}
+      title={label}
+    >
       <BackIcon className={styles.icon} />
       <span className={styles.text}>{label}</span>
     </button>

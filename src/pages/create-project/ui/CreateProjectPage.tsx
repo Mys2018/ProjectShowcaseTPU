@@ -230,7 +230,9 @@ export function CreateProjectPage() {
           onClick={() => setPageStep('type-select')}
         >
           <BackIcon />
-          <p>Назад к выбору типа проекта</p>
+          {/* Шаг мастера, а не страница, поэтому мимо словаря — но подпись
+              по тому же правилу: стрелка плюс название, куда ведёт. */}
+          <p>Выбор типа проекта</p>
         </div>
 
         <h1 className={styles.title}>Новый проект — «{typeLabel}»</h1>

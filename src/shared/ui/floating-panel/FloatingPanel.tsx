@@ -61,7 +61,12 @@ function Back({ onClick, fallback = ROUTES.MAIN }: { onClick?: () => void; fallb
   const { label, go } = useBack(fallback)
 
   return (
-    <button type="button" className={clsx(styles.round, styles.back)} aria-label={label} onClick={onClick ?? go}>
+    <button
+      type="button"
+      className={clsx(styles.round, styles.back)}
+      aria-label={label ? `Назад: ${label}` : 'Назад'}
+      onClick={onClick ?? go}
+    >
       <span className={styles.iconBox}>
         <ChevronLeftIcon />
       </span>
