@@ -10,21 +10,15 @@
   display: flex;
   justify-content: center;
   pointer-events: none;
-
-  transition: transform .3s ease, opacity .3s ease;
 }
 
-.hidden {
-  transform: translateY(calc(100% + 32px + env(safe-area-inset-bottom, 0px)));
-  opacity: 0;
-}
-
+/* Сдвиг приходит инлайн из useMobileChrome — нав-бар уезжает синхронно с хедером
+   и остальными панелями. Здесь остаётся только снять клики с уехавшего бара. */
 .hidden .island {
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bar,
   .indicator,
   .tab,
   .tab .icon { transition: none; }

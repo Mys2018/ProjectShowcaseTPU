@@ -113,9 +113,10 @@
        вываливается наружу, и нижний отступ считается не от низа контента. */
     flex: none;
     min-height: auto;
-    /* Отступ под навигационную панель (56 + 14). На .mainContent его ставить нельзя:
+    /* Отступ под навигационную панель: 56 высота + 14 снизу + 24 воздуха, иначе
+       последняя карточка упирается в панель. На .mainContent его ставить нельзя:
        padding-bottom у flex-скроллера не попадает в scrollHeight. */
-    padding: 8px 4px calc(70px + env(safe-area-inset-bottom, 0px));
+    padding: 8px 4px calc(94px + env(safe-area-inset-bottom, 0px));
   }
 
   .projectsPart::before {

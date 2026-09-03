@@ -18,14 +18,12 @@
   /* в макете группа занимает 362 из 375 — по 6-7px с краёв */
   padding-inline: 6px;
   pointer-events: none; /* фон панели кликов не ловит — только сами кнопки */
-
-  transition: transform .3s ease, opacity .3s ease;
 }
 
-/* Прячется вместе с хедером. Уводим ниже экрана с запасом на тень и вырез. */
+/* Сам сдвиг задаётся инлайн из useMobileChrome — панель уезжает синхронно
+   с хедером, а не по отдельному порогу. Здесь остаётся только снять клики
+   с уже уехавшей панели: прозрачной она не становится, просто уходит за экран. */
 .hidden {
-  transform: translateY(calc(100% + 32px + env(safe-area-inset-bottom, 0px)));
-  opacity: 0;
   pointer-events: none;
 }
 
@@ -64,8 +62,22 @@
   color: var(--color-white);
 }
 
-.round svg {
+/* Фиксированный слот под иконку: размер кнопки от иконки не зависит,
+   поэтому иконки можно менять, не трогая раскладку панели. */
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.iconBox svg {
   display: block;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .round svg path {
@@ -261,8 +273,9 @@
   transform: scale(0.97);
 }
 
+/* Панель сюда не входит: её transition задаётся инлайн и учитывает
+   prefers-reduced-motion в самом useMobileChrome. */
 @media (prefers-reduced-motion: reduce) {
-  .panel,
   .action {
     transition: none;
   }

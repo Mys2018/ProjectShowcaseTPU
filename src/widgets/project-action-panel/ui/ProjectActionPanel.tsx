@@ -6,6 +6,7 @@ import { type ProjectCardData } from '@/entities/project'
 import { useAuthStore, useMe } from '@/entities/user'
 import { FloatingPanel } from '@/shared/ui/floating-panel'
 import { useMobileChrome } from '@/shared/lib'
+import { ROUTES } from '@/shared'
 
 interface ProjectActionPanelProps {
   project: ProjectCardData
@@ -22,16 +23,23 @@ interface ProjectActionPanelProps {
   isProfileFilled: boolean
 }
 
+/* Статусы приходят из API в CamelCase, но mapProjectDtoToEntity приводит их
+   к нижнему регистру — сравниваем с тем, что реально лежит в сущности. */
+
 /** Набор идёт. Единственный статус, где можно откликнуться. */
-const RECRUITING = 'Active'
+const RECRUITING = 'active'
 /** Проект закончен: участник может оставить отзыв. */
-const COMPLETED = 'Completed'
+const COMPLETED = 'completed'
 /**
- * Работа идёт — набор закрыт. Список явный: иначе проект на модерации,
- * отклонённый или архивный тоже показал бы «В работе», то есть заведомо неверный статус.
- * TODO: сверить с бэкендом, какой статус означает «в работе» — Approved или вычисляемое.
+ * Работа идёт — набор закрыт. Сверяемся с одним статусом, а не «всё кроме набора»:
+ * иначе проект на модерации или отклонённый тоже показал бы «В работе».
+ * TODO: сверить с бэкендом, какой статус означает «в работе» — approved или вычисляемое.
  */
-const IN_PROGRESS = ['Approved']
+const IN_PROGRESS = 'approved'
+/** Модерация не пропустила проект. */
+const REJECTED = 'rejected'
+/** TODO: сверить с бэкендом — предполагаем, что «не реализован» это archived. */
+const UNREALIZED = 'archived'
 
 /**
  * Центр панели считается одной цепочкой приоритетов: завершён → идёт работа →
@@ -49,7 +57,7 @@ export function ProjectActionPanel({
   isProfileFilled
 }: ProjectActionPanelProps) {
   const { pathname } = useLocation()
-  const { panelHidden } = useMobileChrome(true, pathname)
+  const { panelTransform, panelAnimate, panelHidden } = useMobileChrome(true, pathname)
 
   const { mutate: toggleLike } = useToggleLikeProject(project.liked)
   const status = useAuthStore(state => state.status)
@@ -58,7 +66,7 @@ export function ProjectActionPanel({
 
   const isRecruiting = project.status === RECRUITING
   const isCompleted = project.status === COMPLETED
-  const isInProgress = IN_PROGRESS.includes(project.status)
+  const isInProgress = project.status === IN_PROGRESS
 
   const { data: applications } = useApplications(myApplicationsParams(project.id))
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)
@@ -99,8 +107,16 @@ export function ProjectActionPanel({
       )
     }
 
-    // Статусы вне согласованного набора («не реализован», «отклонён», «на модерации»)
-    // пока не оформлены — показываем нейтральный центр вместо чужой подписи.
+    if (project.status === REJECTED) {
+      return <FloatingPanel.Status>Отклонён модератором</FloatingPanel.Status>
+    }
+
+    if (project.status === UNREALIZED) {
+      return <FloatingPanel.Status>Не реализован</FloatingPanel.Status>
+    }
+
+    // Остальное («на модерации», «на доработке») дизайном пока не покрыто —
+    // нейтральный центр честнее, чем чужая подпись.
     if (!isRecruiting) return <FloatingPanel.Status>Проект недоступен</FloatingPanel.Status>
 
     if (myActive.length > 0) {
@@ -121,8 +137,10 @@ export function ProjectActionPanel({
   })()
 
   return (
-    <FloatingPanel hidden={panelHidden}>
-      <FloatingPanel.Back />
+    <FloatingPanel transform={panelTransform} animate={panelAnimate} hidden={panelHidden}>
+      {/* Фолбэк тот же, что у десктопной ссылки на этой странице, — иначе
+          «назад» с телефона и с компьютера уводило бы в разные места. */}
+      <FloatingPanel.Back fallback={ROUTES.PROJECTS.RECRUITMENT} />
       {center}
       {isRecruiting ? (
         <FloatingPanel.Favorite active={project.liked} onClick={() => toggleLike(project.id)} />

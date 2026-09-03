@@ -12,7 +12,7 @@ import { useMobileChrome } from '@/shared/lib'
  */
 export function WebOnlyPanel() {
   const { pathname } = useLocation()
-  const { panelHidden } = useMobileChrome(true, pathname)
+  const { panelTransform, panelAnimate, panelHidden } = useMobileChrome(true, pathname)
   const [copied, setCopied] = useState(false)
 
   const copyLink = () => {
@@ -22,7 +22,7 @@ export function WebOnlyPanel() {
   }
 
   return (
-    <FloatingPanel hidden={panelHidden}>
+    <FloatingPanel transform={panelTransform} animate={panelAnimate} hidden={panelHidden}>
       <FloatingPanel.Back />
       <FloatingPanel.Action tone={copied ? 'muted' : 'violet'} onClick={copyLink}>
         {copied ? 'Ссылка скопирована' : 'Скопировать ссылку'}

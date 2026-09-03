@@ -10,7 +10,7 @@ import { ROUTES } from '@/shared'
 export function MobileNavBar() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
-  const { panelHidden } = useMobileChrome(true, pathname)
+  const { panelTransform, panelAnimate, panelHidden } = useMobileChrome(true, pathname)
 
   const isProjects = pathname.startsWith(ROUTES.PROJECTS.BASE)
   const isPlatform = pathname === ROUTES.MAIN || pathname.startsWith(ROUTES.ACTIVITY.BASE) || pathname.startsWith(ROUTES.MANAGE.BASE) || pathname.startsWith(ROUTES.MODERATION.BASE)
@@ -28,7 +28,10 @@ export function MobileNavBar() {
   }, [activeIndex, pathname])
 
   return (
-    <nav className={clsx(styles.bar, panelHidden && styles.hidden)}>
+    <nav
+      className={clsx(styles.bar, panelHidden && styles.hidden)}
+      style={{ transform: panelTransform, transition: panelAnimate ? 'transform .3s ease' : 'none' }}
+    >
       <div className={styles.island}>
         {activeIndex >= 0 && (
           <span
