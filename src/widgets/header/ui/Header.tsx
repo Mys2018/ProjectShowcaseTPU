@@ -7,9 +7,10 @@ import { SwitchWorkSpace } from "@/features/switch-workspace";
 import {SwitchMyPlatform} from "@/features/switch-my-platform";
 import {useAuthStore, useMe} from "@/entities/user";
 import {Avatar} from "@/entities/user/ui/avatar";
-import {getAvatarRoleInfo, MOBILE_BREAKPOINT} from "@/shared/lib";
+import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
+import { getAvatarRoleInfo } from "@/entities/user";
 
 export default function Header() {
 

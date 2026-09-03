@@ -1,6 +1,6 @@
 import styles from './SomeoneProfileHeader.module.css'
 import clsx from "clsx";
-import type {User} from "@/entities/user";
+import {getAvatarRoleInfo, type User} from "@/entities/user";
 // import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
 import type {Messengers} from "@/entities/user/model/types.ts";
 import TgLogo from '@/shared/ui/icons/telegram.svg?react'
@@ -12,7 +12,6 @@ import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
-import {getAvatarRoleInfo} from "@/shared";
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 

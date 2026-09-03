@@ -1,7 +1,7 @@
 import styles from './FreeCompetencies.module.css'
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsProfileFilled } from "@/entities/user/lib";
+import { useIsProfileFilled } from "@/entities/user";
 import { useAuthStore } from "@/entities/user";
 import { FeedBackButton } from "@/features/feedback-button";
 import CheckIcon from '@/shared/ui/icons/check.svg?react';

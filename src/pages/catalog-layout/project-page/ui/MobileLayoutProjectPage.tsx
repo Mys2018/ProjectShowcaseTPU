@@ -6,8 +6,7 @@ import {FreeCompetencies} from "@/widgets/free-competencies/FreeCompetencies.tsx
 import {Drawer} from "@/features/drawer/Drawer.tsx";
 import {useApplications} from "@/entities/application";
 import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
-import {useUserById} from "@/entities/user";
-import {useIsProfileFilled} from "@/entities/user/lib";
+import {useIsProfileFilled, useUserById} from "@/entities/user";
 import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import {FloatingPanel} from "@/shared/ui/floating-panel";
 import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
