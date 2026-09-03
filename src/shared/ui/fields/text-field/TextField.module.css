@@ -6,7 +6,7 @@
 }
 
 .title {
-  font: var(--subhead-interface);
+  font: var(--field-title-small-interface);
   color: var(--color-gray-500);
   box-sizing: border-box;
 }

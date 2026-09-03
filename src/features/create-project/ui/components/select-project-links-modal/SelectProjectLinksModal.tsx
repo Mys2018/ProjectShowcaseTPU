@@ -1,81 +1,78 @@
 import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
 import { ModalFooter } from '@/shared/ui/modals/modal-footer/ModalFooter.tsx';
 import styles from './SelectProjectLinksModal.module.css';
+import {usePlatforms} from "@/entities/platforms/api/queries.ts";
+import type {Category, Platform} from "@/entities/platforms/model/types.ts";
 
 interface SelectProjectLinksModalProps {
   isOpen: boolean;
   onClose: () => void;
   maxCount?: number;
-  initialSelected?: string[];
-  onConfirm: (selectedLinks: { name: string; link: string }[]) => void;
+  initialSelected?: Platform[];
+  onConfirm: (selectedLinks: Platform[]) => void;
 }
 
-const PROJECT_LINKS_MOCK = [
-  {
-    category: 'Репозиторий',
-    required: true,
-    links: [
-      { name: 'GitHub' },
-      { name: 'GitLab' },
-      { name: 'GitVerse' },
-    ]
-  },
-  {
-    category: 'Таск-трекеры',
-    required: true,
-    links: [
-      { name: 'Trello' },
-      { name: 'Jira' },
-      { name: 'Kaiten' },
-    ]
-  },
-  {
-    category: 'Дизайн-среда',
-    required: false,
-    links: [
-      { name: 'Figma' },
-    ]
-  }
-];
+const CATEGORY_CONFIG: Record<Category, { title: string; required: boolean }> = {
+  Repository: { title: 'Репозиторий', required: true },
+  TaskTracker: { title: 'Таск-трекеры', required: true },
+  DesignEnvironment: { title: 'Дизайн-среда', required: false },
+};
 
 export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initialSelected = [], onConfirm }: SelectProjectLinksModalProps) => {
-  const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
   const [showErrors, setShowErrors] = useState(false);
+
+  const { data: platformsData } = usePlatforms();
+
+  const projectLinks = useMemo(() => {
+    if (!platformsData) return [];
+    
+    return platformsData.map(group => {
+      const config = CATEGORY_CONFIG[group.category] || { title: group.category, required: false };
+      return {
+        categoryKey: group.category,
+        category: config.title,
+        required: config.required,
+        links: group.platforms
+      };
+    });
+  }, [platformsData]);
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedNames(initialSelected);
+      setSelectedPlatforms(initialSelected);
       setShowErrors(false);
     }
   }, [isOpen, initialSelected]);
 
   const limit = maxCount;
 
-  const handleToggle = (name: string) => {
+  const handleToggle = (platform: Platform) => {
     setShowErrors(false);
-    setSelectedNames((prev) => {
-      if (prev.includes(name)) {
-        return prev.filter((item) => item !== name);
+    setSelectedPlatforms((prev) => {
+      const exists = prev.some(p => p.platformId === platform.platformId);
+      if (exists) {
+        return prev.filter((item) => item.platformId !== platform.platformId);
       }
       if (prev.length >= limit) {
         return prev;
       }
-      return [...prev, name];
+      return [...prev, platform];
     });
   };
 
   const getRequiredGroupsMissing = () => {
-    return PROJECT_LINKS_MOCK
+    return projectLinks
       .filter(group => group.required)
-      .filter(group => !group.links.some(link => selectedNames.includes(link.name)));
+      .filter(group => !group.links.some(link => selectedPlatforms.some(sp => sp.platformId === link.platformId)));
   };
 
   const isRequiredMet = getRequiredGroupsMissing().length === 0;
 
-  const isGroupMissing = (category: string) => {
-    return showErrors && getRequiredGroupsMissing().some(g => g.category === category);
+  const isGroupMissing = (categoryTitle: string) => {
+    return showErrors && getRequiredGroupsMissing().some(g => g.category === categoryTitle);
   };
 
   const handleSubmit = () => {
@@ -83,13 +80,12 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
       setShowErrors(true);
       return;
     }
-    const result = selectedNames.map(name => ({ name, link: '' }));
-    onConfirm(result);
+    onConfirm(selectedPlatforms);
     onClose();
   };
 
-  const title = selectedNames.length > 0 ? 'Добавьте или измените ссылки' : 'Добавьте ссылки';
-  const subtitle = `Выбрано ${selectedNames.length}/${limit}`;
+  const title = selectedPlatforms.length > 0 ? 'Добавьте или измените ссылки' : 'Добавьте ссылки';
+  const subtitle = `Выбрано ${selectedPlatforms.length}/${limit}`;
 
   const errorMessage = showErrors && !isRequiredMet
     ? 'Выберите хотя бы по одной ссылке из обязательных блоков'
@@ -101,24 +97,24 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
 
       <Modal.Body>
         <div className={styles.list}>
-          {PROJECT_LINKS_MOCK.map((group) => (
-            <div key={group.category} className={`${styles.group} ${isGroupMissing(group.category) ? styles.groupError : ''}`}>
+          {projectLinks.map((group) => (
+            <div key={group.categoryKey} className={`${styles.group} ${isGroupMissing(group.category) ? styles.groupError : ''}`}>
               <h4 className={styles.groupTitle}>
                 {group.category}
                 {group.required && <span className={styles.required}>*</span>}
               </h4>
               <div className={styles.groupLinks}>
                 {group.links.map((link) => {
-                  const isChecked = selectedNames.includes(link.name);
-                  const isDisabled = !isChecked && selectedNames.length >= limit;
+                  const isChecked = selectedPlatforms.some(sp => sp.platformId === link.platformId);
+                  const isDisabled = !isChecked && selectedPlatforms.length >= limit;
                   return (
                     <Checkbox
                       className={styles.checkbox}
-                      key={link.name}
+                      key={link.platformId}
                       label={link.name}
                       checked={isChecked}
                       disabled={isDisabled}
-                      onChange={() => handleToggle(link.name)}
+                      onChange={() => handleToggle(link)}
                     />
                   );
                 })}
@@ -135,7 +131,7 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
         <ModalFooter
           onClose={onClose}
           handleSubmit={handleSubmit}
-          disabled={selectedNames.length === 0}
+          disabled={selectedPlatforms.length === 0}
           error={errorMessage}
         />
       </Modal.Footer>

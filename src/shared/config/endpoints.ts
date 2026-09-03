@@ -19,4 +19,7 @@ export const ENDPOINTS = {
   CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`,
   APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL,
   APPLICATION_SET_STATUS: (applicationId: string, status: string) => `${import.meta.env.VITE_APPLICATIONS_URL}/${applicationId}/status/${status}`,
+
+  PLATFORMS: import.meta.env.VITE_PLATFORMS_URL,
+  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL}/${platformId}`,
 }

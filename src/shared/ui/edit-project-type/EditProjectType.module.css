@@ -1,0 +1,38 @@
+.typeContainer {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.typeContainer > div {
+  display: flex;
+  align-items: center;
+  gap: 8px
+}
+
+.typeContainer > div > p {
+  font: var(--field-title-small-interface);
+  color: var(--color-brand-black);
+}
+
+.typeContainer > div > div {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  padding: 6px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-gray-100);
+}
+
+.typeContainer > button {
+  color: var(--color-gray-400);
+  font: var(--inter-12-300);
+
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.typeContainer > button > svg {
+  width: 13px;
+  height: 13px;
+}

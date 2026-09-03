@@ -8,15 +8,18 @@ import {
   Separator, AllList
 } from "@/features/create-project/ui/components/all-info-fields/AllInfoFields.tsx";
 import type { PrdMeta } from "@/entities/project";
+import { getProjectFormatTranslation } from "@/entities/project";
 import ArchiveIcon from '@/shared/ui/icons/archive.svg?react'
+import {EditProjectType} from "@/shared/ui/edit-project-type";
 
 interface TabProps {
   form: CreateProjectForm;
   setStep: (step: number) => void;
   setBlinkFields: (fields: string[]) => void;
+  onEditType: () => void;
 }
 
-export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
+export function AllTab({ form, setStep, setBlinkFields, onEditType }: TabProps) {
   const prd = form.state.values.prdMeta as PrdMeta;
 
   const handleEdit = (step: number, searchTexts: string[]) => {
@@ -46,6 +49,11 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
           Перед публикацией посмотрите все поля и отредактируйте, если необходимо
         </p>
       </div>
+
+      <EditProjectType 
+        type={getProjectFormatTranslation(form.state.values.type) || ''} 
+        onClick={onEditType}
+      />
 
       {/*Основа*/}
       <BigBlock bigTitle={'Основная информация'}>

@@ -31,7 +31,7 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 2, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
+export function RequirementList({ form, stepErrors, name, title, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 2, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
   return (
     <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}
@@ -75,7 +75,8 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
 
           return (
             <div className={clsx(styles.list, isBlink && 'blink-1')}>
-              {items.map((item, index) => {
+              {Array.from({ length: Math.max(items.length, minItems) }).map((_, index) => {
+                const item = items[index];
                 const prefix = valueKey ? `${name}[${index}].${valueKey}` as any : `${name}[${index}]` as any;
                 const subtitle = subtitleKey && item ? item[subtitleKey] : undefined;
 
@@ -85,7 +86,7 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                       <form.Field name={prefix}>
                         {(subField) => (
                           <SmallTextFieldForm
-                            placeholder={placeholder}
+                            placeholder={`Пункт ${index + 1}`}
                             subtitle={subtitle}
                             value={(subField.state.value as string) || ''}
                             onChange={(e) => subField.handleChange(e.target.value as any)}

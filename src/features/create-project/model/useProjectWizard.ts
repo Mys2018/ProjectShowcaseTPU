@@ -33,7 +33,9 @@ export const baseProjectSchema = z.object({
   ).min(1, 'Укажите хотя бы одну ключевую точку'),
   links: z.array(
     z.object({
+      platformId: z.string(),
       name: z.string(),
+      category: z.string(),
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
     })
   ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
@@ -82,6 +84,7 @@ const casePrdSchema = z.object({
 });
 
 const realPrdSchema = z.object({
+  prerequisites: z.string().min(prd.prerequisites.min, `Минимум ${prd.prerequisites.min} символов`).max(prd.prerequisites.max, `Максимум ${prd.prerequisites.max} символов`),
   productVision: z.string().min(prd.productVision.min, `Минимум ${prd.productVision.min} символов`).max(prd.productVision.max, `Максимум ${prd.productVision.max} символов`),
   audience: z.array(audienceSegmentSchema).min(audience.count.min, `Укажите хотя бы ${audience.count.min} сегмент аудитории`).max(audience.count.max, `Максимум ${audience.count.max} сегмента`),
   projectGoal: z.string().min(prd.projectGoal.min, `Минимум ${prd.projectGoal.min} символов`).max(prd.projectGoal.max, `Максимум ${prd.projectGoal.max} символов`),
@@ -94,6 +97,11 @@ const realPrdSchema = z.object({
     .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
     .min(lists.count.min, `Нефункциональные требования обязательны (минимум ${lists.count.min})`)
     .max(lists.count.max, `Максимум ${lists.count.max} требований`),
+  keyFunctionality: z
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Добавьте минимум ${lists.count.min} функции`)
+    .max(lists.count.max, `Максимум ${lists.count.max} функций`),
+  problemStatement: z.string().min(prd.problemStatement.min, `Минимум ${prd.problemStatement.min} символов`).max(prd.problemStatement.max, `Максимум ${prd.problemStatement.max} символов`),
   businessMetrics: z
     .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
     .min(lists.count.min, `Минимум ${lists.count.min} бизнес-метрики`)
@@ -122,9 +130,11 @@ const step1Schema = z.object({
   partnerId: baseProjectSchema.shape.partnerId,
 });
 
-const step2Schema = z.object({
-  prdMeta: z.union([studyPrdSchema, casePrdSchema, realPrdSchema]),
-});
+const step2Schema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('Study'), prdMeta: studyPrdSchema }),
+  z.object({ type: z.literal('Case'), prdMeta: casePrdSchema }),
+  z.object({ type: z.literal('Real'), prdMeta: realPrdSchema }),
+]);
 
 const step3Schema = z.object({
   roles: baseProjectSchema.shape.roles,
@@ -151,7 +161,7 @@ interface UseProjectWizardProps {
   defaultValues?: Partial<CreateProjectFormValues>;
 }
 
-const STUDY_DEFAULTS: CreateProjectFormValues = {
+const STUDY_DEFAULTS = {
   type: 'Study',
   ownerId: 1,
   partnerId: '',
@@ -161,9 +171,21 @@ const STUDY_DEFAULTS: CreateProjectFormValues = {
   primaryTag: '',
   tags: [],
   links: [],
-  prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', ''] },
+  prdMeta: {
+    prerequisites: '',
+    projectGoal: '',
+    keyFunctionality: ['', ''],
+    functional: ['', ''],
+    nonFunctional: ['', ''],
+    businessMetrics: ['', ''],
+    projectPlan: ['', ''],
+    problemStatement: '',
+    productVision: '',
+    businessGoal: '',
+    audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }],
+  },
   extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
-};
+} as unknown as CreateProjectFormValues;
 
 export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardProps) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -223,28 +245,15 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           minPlacesCount: role.minPlacesCount,
           skillIds: role.skills.map(skill => skill.id)
         })),
-        // TODO: УБРАТЬ НАХУЙ ЭТО
-        //ki5DpvbZds1wnCWP - repo
-        // u7ZftcYmGyDauTWk - task
-
-        repository: [
-          {
-            platformId: "ki5DpvbZds1wnCWP",
-            url: "https://github.com/mock"
-          }
-        ],
-        taskTracker: [
-          {
-            platformId: "u7ZftcYmGyDauTWk",
-            url: "https://trello.com/mock"
-          }
-        ],
-        designEnvironment: [
-          {
-            platformId: "a-qGXo4vvPS6lHex",
-            url: "https://figma.com/mock"
-          }
-        ]
+        repository: value.links
+          .filter(l => l.category === 'Repository')
+          .map(l => ({ platformId: l.platformId, url: l.link })),
+        taskTracker: value.links
+          .filter(l => l.category === 'TaskTracker')
+          .map(l => ({ platformId: l.platformId, url: l.link })),
+        designEnvironment: value.links
+          .filter(l => l.category === 'DesignEnvironment')
+          .map(l => ({ platformId: l.platformId, url: l.link }))
       } as unknown as CreateProjectDto;
 
       console.log('payload:', payload)

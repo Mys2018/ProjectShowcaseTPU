@@ -57,7 +57,10 @@ export interface ProjectCardData {
   hasMyReview: boolean;
   extended?: boolean;
   brandColor?: string;
-  liked: boolean
+  liked: boolean;
+  repository?: { platformId: string, url: string }[];
+  taskTracker?: { platformId: string, url: string }[];
+  designEnvironment?: { platformId: string, url: string }[];
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -136,7 +139,10 @@ export interface ProjectDto {
   roles: ProjectRole[];
   prdMeta: PrdMeta;
   type?: ProjectFormat;
-  isLikedByMe?: boolean
+  isLikedByMe?: boolean;
+  repository?: { platformId: string, url: string }[];
+  taskTracker?: { platformId: string, url: string }[];
+  designEnvironment?: { platformId: string, url: string }[];
 }
 
 export interface ProjectsResponseDto {
@@ -215,12 +221,15 @@ export interface CreateCaseProjectDto extends BaseCreateProjectDto {
 export interface CreateRealProjectDto extends BaseCreateProjectDto {
   type: 'Real';
   prdMeta: {
+    prerequisites: string,
     productVision: string,
     audience: AudienceSegment[],
     projectGoal: string,
     businessGoal: string,
+    keyFunctionality: string[],
     functional: string[],
     nonFunctional: string[],
+    problemStatement: string,
     businessMetrics: string[],
     projectPlan: string[]
   };

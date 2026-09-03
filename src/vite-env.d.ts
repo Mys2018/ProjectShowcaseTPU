@@ -17,9 +17,9 @@ interface ImportMetaEnv {
   readonly VITE_API_PARTNERS_URL: string
   readonly VITE_API_COMPETENCIES_URL: string
   readonly VITE_API_SKILLS_URL: string
-  readonly VITE_API_CHECKPOINTS_URL: string,
-  readonly VITE_APPLICATIONS_URL: string,
-  readonly APPLICATION_SET_STATUS: string
+  readonly VITE_API_CHECKPOINTS_URL: string
+  readonly VITE_APPLICATIONS_URL: string
+  readonly VITE_PLATFORMS_URL: string
 }
 
 interface ImportMeta {
