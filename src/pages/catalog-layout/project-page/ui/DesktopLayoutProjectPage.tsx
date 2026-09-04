@@ -17,7 +17,6 @@ import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
 import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
-import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
 import { usePlatforms } from "@/entities/platforms/api/queries.ts";
 import { useMemo } from "react";
 import { BackLink } from "@/shared/ui/back-link";
