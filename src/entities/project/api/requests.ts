@@ -20,7 +20,7 @@ export const projectApi = {
     return response.data;
   },
 
-  saveDraft: async (data: Record<string, unknown>): Promise<void> => {
+  saveDraft: async (data: unknown): Promise<void> => {
     await api.put(ENDPOINTS.PROJECT_DRAFT, data);
   },
 

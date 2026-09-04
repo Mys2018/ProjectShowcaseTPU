@@ -9,7 +9,7 @@ import {
   type CreateProjectFormValues,
 } from '@/features/create-project/model/useProjectWizard';
 import { useCreateProject } from '@/entities/project/api/queries';
-import type { CreateProjectRequestType } from '@/entities/project/model/types';
+import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
 import { getProjectFormatTranslation } from '@/entities/project';
 
 import { usePartners } from '@/entities/partner/api/queries';
@@ -88,7 +88,7 @@ export function CreateProjectPage() {
 
     setSaveStatus('save');
 
-    saveDraft(draftPayload as unknown as Record<string, unknown>, {
+    saveDraft(draftPayload, {
       onSuccess: () => {
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
@@ -146,7 +146,7 @@ export function CreateProjectPage() {
     form.setFieldValue('type', type);
     
     // Получаем текущие значения, чтобы сохранить совпадающие поля
-    const currentPrdMeta = (form.state.values as any).prdMeta || {};
+    const currentPrdMeta = (form.state.values.prdMeta as Partial<PrdMeta>) || {};
 
     if (type === 'Study') {
       form.setFieldValue('prdMeta', { 
@@ -184,7 +184,7 @@ export function CreateProjectPage() {
   const handleDeleteDraft = () => {
     // Save current state as draft and navigate back
     const currentValues = form.state.values;
-    saveDraft(currentValues as unknown as Record<string, unknown>, {
+    saveDraft(currentValues, {
       onSuccess: () => navigate(-1),
     });
   };

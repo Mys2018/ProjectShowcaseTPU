@@ -158,7 +158,7 @@ export type StepErrors = Record<string, string[]>;
 
 interface UseProjectWizardProps {
   onSubmit: (values: CreateProjectDto) => void | Promise<void>;
-  defaultValues?: Partial<CreateProjectFormValues>;
+  defaultValues?: Partial<CreateProjectFormValues> & { currentStep?: number; highestStep?: number };
 }
 
 const STUDY_DEFAULTS = {
@@ -175,17 +175,9 @@ const STUDY_DEFAULTS = {
     prerequisites: '',
     projectGoal: '',
     keyFunctionality: ['', ''],
-    functional: ['', ''],
-    nonFunctional: ['', ''],
-    businessMetrics: ['', ''],
-    projectPlan: ['', ''],
-    problemStatement: '',
-    productVision: '',
-    businessGoal: '',
-    audience: [{ title: '', description: '', minAge: 18, maxAge: 35 }],
   },
   extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
-} as unknown as CreateProjectFormValues;
+} as CreateProjectFormValues;
 
 export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardProps) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -196,8 +188,8 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
 
   useEffect(() => {
     if (defaultValues && !isRestored) {
-      const savedStep = (defaultValues as any).currentStep;
-      const savedHighest = (defaultValues as any).highestStep;
+      const savedStep = defaultValues.currentStep;
+      const savedHighest = defaultValues.highestStep;
       if (savedStep && savedHighest) {
         setCurrentStep(savedStep);
         setHighestStep(savedHighest);
@@ -207,7 +199,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   }, [defaultValues, isRestored]);
 
   // Extract non-form fields so they don't get passed to useForm
-  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {}) as any;
+  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {});
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
@@ -231,7 +223,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         checkpoints: cleanCheckpoints.map(c => ({ title: c.title, deadline: parseDeadline(c.deadline)! }))
       })
 
-      const payload = {
+      const payload: CreateProjectDto = {
         type: value.type,
         partnerId: value.partnerId,
         checkpoints: checkpointId,
@@ -254,7 +246,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         designEnvironment: value.links
           .filter(l => l.category === 'DesignEnvironment')
           .map(l => ({ platformId: l.platformId, url: l.link }))
-      } as unknown as CreateProjectDto;
+      } as CreateProjectDto;
 
       console.log('payload:', payload)
       await onSubmit(payload);
@@ -316,11 +308,11 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     });
 
     return () => {
-      if (typeof subscription === 'function') {
-        (subscription as any)();
-      } else if (subscription && typeof (subscription as any).unsubscribe === 'function') {
-        (subscription as any).unsubscribe();
-      }
+      // @ts-ignore - store subscription cleanup
+      // @ts-ignore
+      if (typeof subscription === 'function') subscription();
+      // @ts-ignore
+      else if (subscription?.unsubscribe) subscription.unsubscribe();
     };
   }, [form.store, currentStep]);
 

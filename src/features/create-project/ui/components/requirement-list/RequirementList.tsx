@@ -1,5 +1,8 @@
-import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
+import type { CreateProjectForm, StepErrors, CreateProjectFormValues } from '../../../model/useProjectWizard.ts';
+import type { DeepKeys } from '@tanstack/react-form';
 import { SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+
+type FieldName = DeepKeys<CreateProjectFormValues>;
 import clsx from 'clsx';
 import styles from './RequirementList.module.css';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react'
@@ -36,10 +39,10 @@ export function RequirementList({ form, stepErrors, name, title, maxLength, addB
     <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}
 
-      <form.Field name={name as any} mode="array">
+      <form.Field name={name as FieldName} mode="array">
         {(field) => {
           // Initialize with empty array
-          const items = (field.state.value as any[]) || [];
+          const items = (field.state.value as unknown[]) || [];
 
           const handleAdd = () => {
             if (onAddClick) {
@@ -76,8 +79,8 @@ export function RequirementList({ form, stepErrors, name, title, maxLength, addB
           return (
             <div className={clsx(styles.list, isBlink && 'blink-1')}>
               {Array.from({ length: Math.max(items.length, minItems) }).map((_, index) => {
-                const item = items[index];
-                const prefix = valueKey ? `${name}[${index}].${valueKey}` as any : `${name}[${index}]` as any;
+                const item = items[index] as Record<string, string>;
+                const prefix = (valueKey ? `${name}[${index}].${valueKey}` : `${name}[${index}]`) as FieldName;
                 const subtitle = subtitleKey && item ? item[subtitleKey] : undefined;
 
                 return (
@@ -89,7 +92,7 @@ export function RequirementList({ form, stepErrors, name, title, maxLength, addB
                             placeholder={`Пункт ${index + 1}`}
                             subtitle={subtitle}
                             value={(subField.state.value as string) || ''}
-                            onChange={(e) => subField.handleChange(e.target.value as any)}
+                            onChange={(e) => subField.handleChange(e.target.value as never)}
                             maxLength={maxLength}
                             validError={
                               subField.state.meta.errors.length > 0

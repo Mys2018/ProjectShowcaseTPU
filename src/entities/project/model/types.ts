@@ -174,16 +174,11 @@ export interface CreateProjectRolePayload {
   roleTypeId: string;
   placesCount: number;
   minPlacesCount: number;
-  meta: {
-    name: string;
-    description: string;
-  };
-  tags: TagItem[];
-  primaryTag: TagItem;
+  skillIds: string[];
 }
 
 export interface BaseCreateProjectDto {
-  ownerId: number;
+  ownerId?: number;
   partnerId: string;
   checkpoints: string;
   meta: {
@@ -191,8 +186,8 @@ export interface BaseCreateProjectDto {
     description: string;
   };
   roles: CreateProjectRolePayload[];
-  tags: TagItem[];
-  primaryTag: TagItem;
+  tagIds: string[];
+  primaryTagId: string;
   repository?: { platformId: string, url: string }[];
   taskTracker?: { platformId: string, url: string }[];
   designEnvironment?: { platformId: string, url: string }[];

@@ -41,7 +41,7 @@ export const useSaveDraft = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Record<string, unknown>) => projectApi.saveDraft(data),
+    mutationFn: (data: unknown) => projectApi.saveDraft(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectKeys.draft() });
     },

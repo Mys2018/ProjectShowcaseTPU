@@ -1,5 +1,8 @@
-import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
+import type { CreateProjectForm, StepErrors, CreateProjectFormValues } from '../../../model/useProjectWizard.ts';
+import type { DeepKeys } from '@tanstack/react-form';
 import { BigTextFieldForm, SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+
+type FieldName = DeepKeys<CreateProjectFormValues>;
 import clsx from 'clsx';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
 import styles from './TargetAudienceList.module.css';
@@ -42,7 +45,7 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
         return (
           <div className={clsx(styles.container)}>
             {segments.map((_, index) => {
-              const prefix = `prdMeta.audience[${index}]` as any;
+              const prefix = `prdMeta.audience[${index}]` as FieldName;
 
               return (
                 <div  className={clsx(styles.body)} key={prefix}>
@@ -61,13 +64,13 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
 
                   <div key={index} className={clsx(styles.segment, blinkFields?.includes(`Сегмент ${index + 1}`) && 'blink-1')}>
                     <div className={styles.headerRow}>
-                      <form.Field name={`${prefix}.title` as any}>
+                      <form.Field name={`${prefix}.title` as FieldName}>
                         {(subField) => (
                           <SmallTextFieldForm
                             placeholder="Например: Студенты"
                             subtitle={"Тип сегмента"}
-                            value={subField.state.value}
-                            onChange={(e) => subField.handleChange(e.target.value as any)}
+                            value={subField.state.value as string}
+                            onChange={(e) => subField.handleChange(e.target.value as never)}
                             maxLength={70}
                             validError={
                               subField.state.meta.errors.length > 0
@@ -82,7 +85,7 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                         <span className={styles.ageLabel}>Возраст</span>
                         <div className={styles.ageInputRow}>
                           <span className={styles.ageLabelInner}>от</span>
-                          <form.Field name={`${prefix}.minAge` as any}>
+                          <form.Field name={`${prefix}.minAge` as FieldName}>
                             {(subField) => {
                               const hasError = subField.state.meta.errors.length > 0 || stepErrors[`prdMeta.audience.${index}.minAge`];
                               return (
@@ -91,12 +94,12 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                                   min={0}
                                   max={100}
                                   className={`${styles.ageInput} ${hasError ? styles.ageError : ''}`}
-                                  value={subField.state.value}
+                                  value={subField.state.value as number}
                                   onChange={(e) => {
                                     let val = Number(e.target.value);
                                     if (val < 0) val = 0;
                                     if (val > 100) val = 100;
-                                    subField.handleChange(val as any);
+                                    subField.handleChange(val as never);
                                   }}
                                 />
                               );
@@ -104,7 +107,7 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                           </form.Field>
 
                           <span className={styles.ageLabelInner}>до</span>
-                          <form.Field name={`${prefix}.maxAge` as any}>
+                          <form.Field name={`${prefix}.maxAge` as FieldName}>
                             {(subField) => {
                               const hasError = subField.state.meta.errors.length > 0 || stepErrors[`prdMeta.audience.${index}.maxAge`];
                               return (
@@ -113,12 +116,12 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
                                   min={0}
                                   max={100}
                                   className={`${styles.ageInput} ${hasError ? styles.ageError : ''}`}
-                                  value={subField.state.value}
+                                  value={subField.state.value as number}
                                   onChange={(e) => {
                                     let val = Number(e.target.value);
                                     if (val < 0) val = 0;
                                     if (val > 100) val = 100;
-                                    subField.handleChange(val as any);
+                                    subField.handleChange(val as never);
                                   }}
                                 />
                               );
@@ -130,13 +133,13 @@ export function TargetAudienceList({ form, stepErrors, blinkFields }: TargetAudi
 
 
 
-                    <form.Field name={`${prefix}.description` as any}>
+                    <form.Field name={`${prefix}.description` as FieldName}>
                       {(subField) => (
                         <BigTextFieldForm
                           placeholder="Опишите целевую аудиторию подробнее..."
                           subtitle={"Описание сегмента"}
-                          value={subField.state.value}
-                          onChange={(e) => subField.handleChange(e.target.value as any)}
+                          value={subField.state.value as string}
+                          onChange={(e) => subField.handleChange(e.target.value as never)}
                           maxLength={200}
                           validError={
                             subField.state.meta.errors.length > 0
