@@ -7,16 +7,20 @@ import clsx from 'clsx';
 import styles from '../ProjectInfoStep.module.css';
 
 import { useTags } from '@/entities/tag/api/queries';
+import { getProjectFormatTranslation } from '@/entities/project';
+
 import { InfoTooltip } from "@/shared";
+import {EditProjectType} from "@/shared/ui/edit-project-type";
 
 interface TabProps {
   form: CreateProjectForm;
   stepErrors: StepErrors;
   partners: { value: string; verbose: string }[];
   blinkFields: string[];
+  onEditType: () => void;
 }
 
-export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProps) {
+export function MainInfoTab({ form, stepErrors, partners, blinkFields, onEditType }: TabProps) {
   const { data: tagGroups = [] } = useTags();
 
   const allTags = tagGroups.flatMap(group =>
@@ -33,14 +37,22 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields }: TabProp
 
   return (
     <div className={clsx(styles.mainFieldContainer)}>
-      <div className={styles.mainInfo}>
-        <h5>
-          Заполните основную информацию
-        </h5>
-        <p>
-          После этого вы сможете создать проект и перейти к PRD
-        </p>
+      <div className={styles.header}>
+        <div className={styles.mainInfo}>
+          <h5>
+            Заполните основную информацию
+          </h5>
+          <p>
+            После этого вы сможете создать проект и перейти к PRD
+          </p>
+        </div>
+
+        <EditProjectType 
+          type={getProjectFormatTranslation(form.state.values.type) || ''} 
+          onClick={onEditType}
+        />
       </div>
+
 
       {/* Название */}
       <div className={styles.block} id="field-meta-title">

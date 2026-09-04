@@ -1,5 +1,8 @@
-import type { CreateProjectForm, StepErrors } from '../../../model/useProjectWizard.ts';
+import type { CreateProjectForm, StepErrors, CreateProjectFormValues } from '../../../model/useProjectWizard.ts';
+import type { DeepKeys } from '@tanstack/react-form';
 import { SmallTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
+
+type FieldName = DeepKeys<CreateProjectFormValues>;
 import clsx from 'clsx';
 import styles from './RequirementList.module.css';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react'
@@ -31,15 +34,15 @@ const getErrorMessage = (error: unknown): string | undefined => {
   return undefined;
 };
 
-export function RequirementList({ form, stepErrors, name, title, placeholder, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 2, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
+export function RequirementList({ form, stepErrors, name, title, maxLength, addBtnText = 'Добавить пункт', onAddClick, valueKey, subtitleKey, minItems = 2, emptyStateTitle, emptyStateDescription, isBlink }: RequirementListProps) {
   return (
     <div className={clsx(styles.container)}>
       {title && <span className={styles.title}>{title}</span>}
 
-      <form.Field name={name as any} mode="array">
+      <form.Field name={name as FieldName} mode="array">
         {(field) => {
           // Initialize with empty array
-          const items = (field.state.value as any[]) || [];
+          const items = (field.state.value as unknown[]) || [];
 
           const handleAdd = () => {
             if (onAddClick) {
@@ -75,8 +78,9 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
 
           return (
             <div className={clsx(styles.list, isBlink && 'blink-1')}>
-              {items.map((item, index) => {
-                const prefix = valueKey ? `${name}[${index}].${valueKey}` as any : `${name}[${index}]` as any;
+              {Array.from({ length: Math.max(items.length, minItems) }).map((_, index) => {
+                const item = items[index] as Record<string, string>;
+                const prefix = (valueKey ? `${name}[${index}].${valueKey}` : `${name}[${index}]`) as FieldName;
                 const subtitle = subtitleKey && item ? item[subtitleKey] : undefined;
 
                 return (
@@ -85,10 +89,10 @@ export function RequirementList({ form, stepErrors, name, title, placeholder, ma
                       <form.Field name={prefix}>
                         {(subField) => (
                           <SmallTextFieldForm
-                            placeholder={placeholder}
+                            placeholder={`Пункт ${index + 1}`}
                             subtitle={subtitle}
                             value={(subField.state.value as string) || ''}
-                            onChange={(e) => subField.handleChange(e.target.value as any)}
+                            onChange={(e) => subField.handleChange(e.target.value as never)}
                             maxLength={maxLength}
                             validError={
                               subField.state.meta.errors.length > 0

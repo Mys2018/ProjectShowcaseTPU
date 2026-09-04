@@ -3,6 +3,7 @@ import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard
 import { CheckpointsBlock } from "../components/checkpoints-block/CheckpointsBlock.tsx";
 import { RequirementList } from "../components/requirement-list/RequirementList.tsx";
 import { EmptyStateBlock, InfoTooltip, useModalStore } from "@/shared";
+import type { Platform } from "@/entities/platforms/model/types.ts";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -170,11 +171,11 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
                   openModal(
                     'SELECT_PROJECT_LINKS',
                     {
-                      initialSelected: links.map(l => l.name),
-                      onConfirm: (selectedLinks: { name: string; link: string }[]) => {
-                        const newLinks = selectedLinks.map(sl => {
-                          const existing = links.find(l => l.name === sl.name);
-                          return existing ? existing : sl;
+                      initialSelected: links.map(l => ({ platformId: l.platformId, name: l.name, category: l.category }) as Platform),
+                      onConfirm: (selectedPlatforms: Platform[]) => {
+                        const newLinks = selectedPlatforms.map(sp => {
+                          const existing = links.find(l => l.platformId === sp.platformId);
+                          return existing ? existing : { ...sp, link: '' };
                         });
                         form.setFieldValue('links', newLinks);
                       }

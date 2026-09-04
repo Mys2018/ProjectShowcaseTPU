@@ -17,6 +17,9 @@ import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
 import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
+import { usePlatforms } from "@/entities/platforms/api/queries.ts";
+import { useMemo } from "react";
 import { BackLink } from "@/shared/ui/back-link";
 import { ROUTES } from "@/shared";
 
@@ -62,10 +65,40 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { name: 'Яра', role: 'Frontend', avatarSrc: '' }
   ];
 
-  const linksMock = [
-    { title: 'Репозиторий', service: 'GitHub', link: 'https://github.com' }
-  ];
+  const { data: platformsData } = usePlatforms();
 
+  const links = useMemo(() => {
+    const result: { title: string; link: string; service: string }[] = [];
+    if (!platformsData) return result;
+
+    const findPlatformName = (id: string) => {
+      for (const group of platformsData) {
+        const found = group.platforms.find(p => p.platformId === id);
+        if (found) return found.name;
+      }
+      return 'Unknown';
+    };
+
+    if (project.repository) {
+      project.repository.forEach(item => {
+        result.push({ title: 'Репозиторий', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    if (project.taskTracker) {
+      project.taskTracker.forEach(item => {
+        result.push({ title: 'Таск-трекер', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    if (project.designEnvironment) {
+      project.designEnvironment.forEach(item => {
+        result.push({ title: 'Другое', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    return result;
+  }, [project, platformsData]);
 
   const programmaticScrolls = useRef(new WeakSet<HTMLElement>());
 
@@ -121,7 +154,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
           checkpoints={project.checkpoints?.checkpoints.map(c => ({ title: c.title, deadline: mapDateToLocalString(c.deadline) }))}
         />
 
-        <LinkContainer links={linksMock} />
+        {links.length > 0 && <LinkContainer links={links} />}
 
       </aside>
 

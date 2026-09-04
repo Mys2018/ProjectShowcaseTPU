@@ -25,7 +25,7 @@ export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle
 
         <textarea
           name="text"
-          value={value}
+          value={value ?? ''}
           placeholder={placeholder}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
@@ -33,7 +33,7 @@ export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle
         />
       </div>
       {maxLength && <p className={clsx(styles.value, validError ? styles.error : '', isFocused && styles.visible)}>
-        {value.length} / {maxLength}
+        {(value ?? '').length} / {maxLength}
       </p>}
     </div>
   )
@@ -61,7 +61,7 @@ export const SmallTextField = ({ value, placeholder, maxLength, onChange, validE
 
         <input
           name="text"
-          value={value}
+          value={value ?? ''}
           placeholder={placeholder}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
@@ -70,7 +70,7 @@ export const SmallTextField = ({ value, placeholder, maxLength, onChange, validE
       </div>
       {
         maxLength && <p className={clsx(styles.inputValue, validError ? styles.error : '', isFocused && styles.visible)}>
-          {value.length} / {maxLength}
+          {(value ?? '').length} / {maxLength}
         </p>
       }
 

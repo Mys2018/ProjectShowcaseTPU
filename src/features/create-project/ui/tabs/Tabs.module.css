@@ -37,6 +37,13 @@
   flex-direction: column;
   gap: 16px
 }
+
+.blockBig {
+  display: flex;
+  flex-direction: column;
+  gap: 24px
+}
+
 .emptyStateBlock {
   display: flex;
   flex-direction: column;

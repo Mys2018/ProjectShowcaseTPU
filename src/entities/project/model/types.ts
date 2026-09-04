@@ -58,7 +58,10 @@ export interface ProjectCardData {
   hasMyReview: boolean;
   extended?: boolean;
   brandColor?: string;
-  liked: boolean
+  liked: boolean;
+  repository?: { platformId: string, url: string }[];
+  taskTracker?: { platformId: string, url: string }[];
+  designEnvironment?: { platformId: string, url: string }[];
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -137,7 +140,10 @@ export interface ProjectDto {
   roles: ProjectRole[];
   prdMeta: PrdMeta;
   type?: ProjectFormat;
-  isLikedByMe?: boolean
+  isLikedByMe?: boolean;
+  repository?: { platformId: string, url: string }[];
+  taskTracker?: { platformId: string, url: string }[];
+  designEnvironment?: { platformId: string, url: string }[];
 }
 
 export interface ProjectsResponseDto {
@@ -174,16 +180,11 @@ export interface CreateProjectRolePayload {
   roleTypeId: string;
   placesCount: number;
   minPlacesCount: number;
-  meta: {
-    name: string;
-    description: string;
-  };
-  tags: TagItem[];
-  primaryTag: TagItem;
+  skillIds: string[];
 }
 
 export interface BaseCreateProjectDto {
-  ownerId: number;
+  ownerId?: number;
   partnerId: string;
   checkpoints: string;
   meta: {
@@ -191,8 +192,8 @@ export interface BaseCreateProjectDto {
     description: string;
   };
   roles: CreateProjectRolePayload[];
-  tags: TagItem[];
-  primaryTag: TagItem;
+  tagIds: string[];
+  primaryTagId: string;
   repository?: { platformId: string, url: string }[];
   taskTracker?: { platformId: string, url: string }[];
   designEnvironment?: { platformId: string, url: string }[];
@@ -221,12 +222,15 @@ export interface CreateCaseProjectDto extends BaseCreateProjectDto {
 export interface CreateRealProjectDto extends BaseCreateProjectDto {
   type: 'Real';
   prdMeta: {
+    prerequisites: string,
     productVision: string,
     audience: AudienceSegment[],
     projectGoal: string,
     businessGoal: string,
+    keyFunctionality: string[],
     functional: string[],
     nonFunctional: string[],
+    problemStatement: string,
     businessMetrics: string[],
     projectPlan: string[]
   };

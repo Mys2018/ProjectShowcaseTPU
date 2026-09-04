@@ -9,7 +9,8 @@ import {
   type CreateProjectFormValues,
 } from '@/features/create-project/model/useProjectWizard';
 import { useCreateProject } from '@/entities/project/api/queries';
-import type { CreateProjectRequestType } from '@/entities/project/model/types';
+import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
+import { getProjectFormatTranslation } from '@/entities/project';
 
 import { usePartners } from '@/entities/partner/api/queries';
 import { CreateProjectProgressWidget } from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
@@ -85,7 +86,7 @@ export function CreateProjectPage() {
 
     setSaveStatus('save');
 
-    saveDraft(draftPayload as unknown as Record<string, unknown>, {
+    saveDraft(draftPayload, {
       onSuccess: () => {
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
@@ -143,7 +144,7 @@ export function CreateProjectPage() {
     form.setFieldValue('type', type);
     
     // Получаем текущие значения, чтобы сохранить совпадающие поля
-    const currentPrdMeta = (form.state.values as any).prdMeta || {};
+    const currentPrdMeta = (form.state.values.prdMeta as Partial<PrdMeta>) || {};
 
     if (type === 'Study') {
       form.setFieldValue('prdMeta', { 
@@ -161,12 +162,15 @@ export function CreateProjectPage() {
       });
     } else {
       form.setFieldValue('prdMeta', { 
+        prerequisites: currentPrdMeta.prerequisites ?? '', 
         productVision: currentPrdMeta.productVision ?? '', 
         projectGoal: currentPrdMeta.projectGoal ?? '', 
         businessGoal: currentPrdMeta.businessGoal ?? '', 
         audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }], 
+        keyFunctionality: currentPrdMeta.keyFunctionality ?? ['', ''], 
         functional: currentPrdMeta.functional ?? ['', ''], 
         nonFunctional: currentPrdMeta.nonFunctional ?? ['', ''], 
+        problemStatement: currentPrdMeta.problemStatement ?? '', 
         businessMetrics: currentPrdMeta.businessMetrics ?? ['', ''], 
         projectPlan: currentPrdMeta.projectPlan ?? ['', ''] 
       });
@@ -178,7 +182,7 @@ export function CreateProjectPage() {
   const handleDeleteDraft = () => {
     // Save current state as draft and navigate back
     const currentValues = form.state.values;
-    saveDraft(currentValues as unknown as Record<string, unknown>, {
+    saveDraft(currentValues, {
       onSuccess: () => navigate(-1),
     });
   };
@@ -220,7 +224,7 @@ export function CreateProjectPage() {
       </main>
     );
   }
-  const typeLabel = selectedType === 'Study' ? 'Учебный' : selectedType === 'Case' ? 'Кейс' : 'Реальный';
+  const typeLabel = getProjectFormatTranslation(selectedType);
 
   return (
     <div className={styles.formPageWrapper}>
@@ -257,6 +261,7 @@ export function CreateProjectPage() {
         <section className={styles.body}>
           <ProjectInfoStep
             form={form}
+            onEditType={() => setPageStep('type-select')}
             stepErrors={stepErrors}
             isPending={isPending}
             onSubmit={handleSubmit}

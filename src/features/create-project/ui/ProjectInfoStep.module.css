@@ -10,6 +10,12 @@
   gap: 6px
 }
 
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .mainInfo h5 {
   font: var(--section-title-interface);
   color: var(--color-brand-black)

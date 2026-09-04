@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useMemo} from "react";
 import {useNavigate} from "react-router-dom";
 import styles from './MobileLayoutProjectPage.module.css'
 import {MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplicationsParams} from "@/widgets/project-action-panel";
@@ -6,7 +6,9 @@ import {FreeCompetencies} from "@/widgets/free-competencies/FreeCompetencies.tsx
 import {Drawer} from "@/features/drawer/Drawer.tsx";
 import {useApplications} from "@/entities/application";
 import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
-import {useIsProfileFilled, useUserById} from "@/entities/user";
+import { usePlatforms } from "@/entities/platforms/api/queries.ts";
+import {useUserById} from "@/entities/user";
+import {useIsProfileFilled} from "@/entities/user/lib";
 import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import {FloatingPanel} from "@/shared/ui/floating-panel";
 import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
@@ -52,10 +54,40 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { name: 'Яра', role: 'Frontend', avatarSrc: '' }
   ];
 
-  const linksMock = [
-    { title: 'Репозиторий', service: 'GitHub', link: 'https://github.com' }
-  ];
+  const { data: platformsData } = usePlatforms();
 
+  const links = useMemo(() => {
+    const result: { title: string; link: string; service: string }[] = [];
+    if (!platformsData) return result;
+
+    const findPlatformName = (id: string) => {
+      for (const group of platformsData) {
+        const found = group.platforms.find(p => p.platformId === id);
+        if (found) return found.name;
+      }
+      return 'Unknown';
+    };
+
+    if (project.repository) {
+      project.repository.forEach(item => {
+        result.push({ title: 'Репозиторий', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    if (project.taskTracker) {
+      project.taskTracker.forEach(item => {
+        result.push({ title: 'Таск-трекер', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    if (project.designEnvironment) {
+      project.designEnvironment.forEach(item => {
+        result.push({ title: 'Дизайн-среда', service: findPlatformName(item.platformId), link: item.url });
+      });
+    }
+
+    return result;
+  }, [project, platformsData]);
 
   const checkpointsMock = [
     { title: 'Старт работ', deadline: '25-05-2026', status: true },
@@ -127,7 +159,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
                 <KeyPoints
                   checkpoints={checkpointsMock}
                 />
-                <LinkContainer links={linksMock} />
+                {links.length > 0 && <LinkContainer links={links} />}
               </>
             )
           }
