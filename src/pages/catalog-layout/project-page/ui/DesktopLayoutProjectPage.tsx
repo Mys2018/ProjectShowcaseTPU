@@ -9,34 +9,27 @@ import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.t
 import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import IdIcon from '@/shared/ui/icons/id.svg?react';
-import BackIcon from '@/shared/ui/icons/back.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
 // TODO
 import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
-import { useNavigate } from "react-router-dom";
 import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
 import { usePlatforms } from "@/entities/platforms/api/queries.ts";
 import { useMemo } from "react";
+import { BackLink } from "@/shared/ui/back-link";
+import { ROUTES } from "@/shared";
 
 interface ProjectPageProps {
   project: ProjectCardData
 }
 
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
-  usePageTitle('проекту');
-  const backTitle = usePreviousPageTitle('Назад к списку проектов');
-
-  const navigate = useNavigate();
-
   // TODO
-  const { data: owner } = useUserById(
-    project?.ownerId?.toString() || ''
-  )
+  const { data: owner } = useUserById(project.ownerId)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);
@@ -146,12 +139,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.headerLeft} onClick={() => {
-        navigate(-1)
-      }}>
-        <BackIcon className={styles.backIcon} />
-        <p className={styles.back}>{backTitle}</p>
-      </div>
+      <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
 

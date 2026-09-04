@@ -6,11 +6,9 @@ import { ProjectsHeader } from "@/widgets/ProjectsHeader";
 import { MobileSearchBar } from "@/widgets/mobile-search-bar";
 import { Filter } from "@/features/filter";
 import { SearchField } from "@/shared/ui";
-import { usePageTitle } from "@/shared/model";
 import { MOBILE_BREAKPOINT } from "@/shared/lib";
 
 export const Catalog = () => {
-  usePageTitle('каталогу');
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
   const filterRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);

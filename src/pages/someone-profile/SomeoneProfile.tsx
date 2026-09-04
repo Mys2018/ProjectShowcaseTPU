@@ -7,24 +7,21 @@ import { Portfolio } from "@/features/portfolio/Portfolio.tsx";
 import { useUserById } from "@/entities/user";
 import { CONTACTS_ANCHOR_ID, SomeoneProfileHeader } from "@/shared/ui/someone-profile-header/SomeoneProfileHeader.tsx";
 import { FloatingPanel } from "@/shared/ui/floating-panel";
+import { BackLink } from "@/shared/ui/back-link";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { MOBILE_BREAKPOINT, useMobileChrome } from "@/shared/lib";
-import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
-import BackIcon from '@/shared/ui/icons/back.svg?react';
+import { ROUTES } from "@/shared";
 import FlagIcon from '@/shared/ui/icons/flag.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 
 export function SomeoneProfile() {
-  usePageTitle('профилю пользователя');
-  const backTitle = usePreviousPageTitle('Назад к списку проектов');
-
   const navigate = useNavigate();
   const params = useParams<{ id: string }>()
-  const uid = params.id || ''
+  const uid = Number(params.id)
   const { data: user } = useUserById(uid)
 
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-  const { panelHidden } = useMobileChrome(isMobile)
+  const { panelTransform, panelAnimate, panelHidden } = useMobileChrome(isMobile)
   const [highlight, setHighlight] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -48,10 +45,7 @@ export function SomeoneProfile() {
 
   return (
     <div className={styles.mainContent}>
-      <section className={styles.headerLeft} onClick={() => void navigate(-1)} style={{ cursor: 'pointer' }}>
-        <BackIcon className={styles.backIcon} />
-        <p className={styles.back}>{backTitle}</p>
-      </section>
+      <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
 
       <section className={styles.title}>
         Профиль студентика
@@ -82,8 +76,8 @@ export function SomeoneProfile() {
       </section>
 
       {isMobile && (
-        <FloatingPanel hidden={panelHidden}>
-          <FloatingPanel.Back />
+        <FloatingPanel transform={panelTransform} animate={panelAnimate} hidden={panelHidden}>
+          <FloatingPanel.Back fallback={ROUTES.PROJECTS.RECRUITMENT} />
           <FloatingPanel.Action tone="violet" onClick={showContacts}>
             Связаться
           </FloatingPanel.Action>

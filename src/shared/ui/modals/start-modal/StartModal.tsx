@@ -2,8 +2,7 @@ import styles from './StartModal.module.css'
 import {Modal} from "@/shared/ui/modals/modal/Modal.tsx";
 import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
 import {FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
-import {useMe} from "@/entities/user";
-import {getAvatarRoleInfo} from "@/shared";
+import {getAvatarRoleInfo, useMe} from "@/entities/user";
 
 interface StartModalProps {
   isOpen: boolean;

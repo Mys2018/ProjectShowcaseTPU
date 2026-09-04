@@ -1,0 +1,33 @@
+.users {
+  display: flex;
+  height: 36px;
+}
+
+.avatar {
+  flex-shrink: 0;
+  object-fit: cover;
+
+  height: 100%;
+  aspect-ratio: 1;
+
+  border: 2px solid var(--color-white);
+
+	border-radius: 50%;
+  background-color: var(--color-white);
+
+	&:not(:first-child) {
+		margin-left: -18px;
+	}
+
+  &.remaining {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font: var(--inter-11-300);
+    color: var(--color-gray-500);
+
+    border-style: dashed;
+    border-color: var(--color-gray-250);
+  }
+}

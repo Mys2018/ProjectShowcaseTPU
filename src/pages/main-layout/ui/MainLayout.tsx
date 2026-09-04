@@ -4,8 +4,7 @@ import {useMediaQuery} from "usehooks-ts";
 import styles from './MainLayout.module.css'
 import { Header } from '@/widgets/header'
 import { MobileNavBar } from '@/widgets/mobile-nav-bar'
-import {useIsProfileFilled} from "@/entities/user/lib";
-import {useMe} from "@/entities/user";
+import {useMe, useIsProfileFilled} from "@/entities/user";
 import {useModalStore} from "@/shared/model";
 import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import {ROUTES} from "@/shared";

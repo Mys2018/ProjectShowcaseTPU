@@ -6,8 +6,8 @@ import { LinkBlock } from '@/shared/ui/link-block/LinkBlock';
 import styles from './ProfileHeader.module.css';
 
 import { useModalStore } from '@/shared/model';
-import { getAvatarRoleInfo } from '@/shared/lib';
 import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
+import { getAvatarRoleInfo } from '@/entities/user';
 
 interface ProfileHeaderProps {
   data: User;

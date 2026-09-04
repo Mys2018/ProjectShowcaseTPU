@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import styles from './FloatingPanel.module.css'
 import ShareIcon from '../icons/share.svg?react'
@@ -7,17 +6,28 @@ import HeartOutlineIcon from '../icons/heart-outlined.svg?react'
 import HeartSolidIcon from '../icons/heart.svg?react'
 import ChevronLeftIcon from '../icons/chevron-left.svg?react'
 import { ROUTES } from '../../config'
+import { useBack } from '../../model/usePageHistory'
 
 interface PanelProps {
   children: ReactNode
   className?: string
-  /** Панель уезжает вниз вместе с хедером; у конца страницы всегда видна. */
+  /** Сдвиг вниз из useMobileChrome: панель уезжает синхронно с хедером. */
+  transform?: string
+  animate?: boolean
+  /** Панель полностью за экраном — снимаем клики. */
   hidden?: boolean
 }
 
 /** Каркас: круглый слот — центр — круглый слот. Три ребёнка, порядок фиксирован. */
-export function FloatingPanel({ children, className, hidden }: PanelProps) {
-  return <div className={clsx(styles.panel, hidden && styles.hidden, className)}>{children}</div>
+export function FloatingPanel({ children, className, transform, animate, hidden }: PanelProps) {
+  return (
+    <div
+      className={clsx(styles.panel, hidden && styles.hidden, className)}
+      style={{ transform, transition: animate ? 'transform .3s ease' : 'none' }}
+    >
+      {children}
+    </div>
+  )
 }
 
 /* ── Круглые слоты ──────────────────────────────────────────────────── */
@@ -37,25 +47,29 @@ function Round({ children, label, onClick, accent }: RoundProps) {
       aria-label={label}
       onClick={onClick}
     >
-      {children}
+      <span className={styles.iconBox}>{children}</span>
     </button>
   )
 }
 
-function Back({ onClick }: { onClick?: () => void }) {
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  // При заходе по прямой ссылке истории нет и navigate(-1) увёл бы из приложения.
-  // Ключ 'default' у роутера означает, что это первая запись в истории.
-  const goBack = () => {
-    if (location.key === 'default') void navigate(ROUTES.MAIN)
-    else void navigate(-1)
-  }
+/**
+ * Подписи здесь нет — в мобильной панели только стрелка. Но переход берётся
+ * из того же useBack, что и десктопная ссылка, поэтому «назад» на телефоне
+ * и на компьютере ведёт в одно место.
+ */
+function Back({ onClick, fallback = ROUTES.MAIN }: { onClick?: () => void; fallback?: string }) {
+  const { label, go } = useBack(fallback)
 
   return (
-    <button type="button" className={clsx(styles.round, styles.back)} aria-label="Назад" onClick={onClick ?? goBack}>
-      <ChevronLeftIcon />
+    <button
+      type="button"
+      className={clsx(styles.round, styles.back)}
+      aria-label={label ? `Назад: ${label}` : 'Назад'}
+      onClick={onClick ?? go}
+    >
+      <span className={styles.iconBox}>
+        <ChevronLeftIcon />
+      </span>
     </button>
   )
 }

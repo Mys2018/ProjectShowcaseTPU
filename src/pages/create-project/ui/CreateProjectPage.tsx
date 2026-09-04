@@ -17,16 +17,14 @@ import { CreateProjectProgressWidget } from "@/shared/ui/create-project-progress
 import { getSaveStatus } from "@/shared/constants/save-status-drafts/getSaveStatus.tsx";
 import { useProjectDraft, useSaveDraft, useDeleteDraft } from '@/entities/project/api/queries';
 import type { StatusType } from '@/shared/constants/save-status-drafts/getSaveStatus.tsx';
-import { usePageTitle, usePreviousPageTitle } from '@/shared/model';
+import { BackLink } from '@/shared/ui/back-link';
+import { ROUTES } from '@/shared';
 
 type PageStep = 'type-select' | 'fill';
 
 const AUTOSAVE_DELAY_MS = 3000;
 
 export function CreateProjectPage() {
-  usePageTitle('созданию проекта');
-  const backTitle = usePreviousPageTitle('Назад к списку проектов');
-
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
@@ -204,12 +202,7 @@ export function CreateProjectPage() {
   if (pageStep === 'type-select') {
     return (
       <main className={styles.mainContent}>
-        <div className={styles.headerLeft} onClick={() => {
-          navigate(-1)
-        }}>
-          <BackIcon />
-          <p>{backTitle}</p>
-        </div>
+        <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
 
         <h1 className={styles.title}>Новый проект</h1>
 
@@ -241,7 +234,9 @@ export function CreateProjectPage() {
           onClick={() => setPageStep('type-select')}
         >
           <BackIcon />
-          <p>Назад к выбору типа проекта</p>
+          {/* Шаг мастера, а не страница, поэтому мимо словаря — но подпись
+              по тому же правилу: стрелка плюс название, куда ведёт. */}
+          <p>Выбор типа проекта</p>
         </div>
 
         <h1 className={styles.title}>Новый проект — «{typeLabel}»</h1>

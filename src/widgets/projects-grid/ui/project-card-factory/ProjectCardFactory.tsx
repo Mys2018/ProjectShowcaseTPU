@@ -16,7 +16,7 @@ export const ProjectCardFactory = ({ project }: ProjectCardFactoryProps) => {
   const navigate = useNavigate()
   const { data: partner } = usePartnerById(project.partnerId)
 
-  const {id, liked, tags, primaryTag, roles} = project
+  const { id, liked, tags, primaryTag, roles } = project
   const competencies = roles.map(r => ({ id: r.roleId, name: r.meta.name }))
 
   const handleNavigate = () => {

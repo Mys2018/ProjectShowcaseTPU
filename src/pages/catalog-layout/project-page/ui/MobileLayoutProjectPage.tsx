@@ -33,9 +33,7 @@ interface ProjectPageProps {
 export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   // TODO
-  const { data: owner } = useUserById(
-    project?.ownerId?.toString() || ''
-  )
+  const { data: owner } = useUserById(project.ownerId)
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
