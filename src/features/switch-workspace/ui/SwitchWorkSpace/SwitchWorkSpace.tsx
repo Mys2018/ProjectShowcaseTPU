@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import styles from './SwitchWorkSpace.module.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/shared';
+import {useAuthStore} from "@/entities/user";
+import type {AuthStatus} from "@/entities/user/model/store/useAuthStore.ts";
 
 export default function SwitchWorkSpace() {
   type Tab = 'projects' | 'mySpace' | null;
@@ -10,6 +12,7 @@ export default function SwitchWorkSpace() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const status = useAuthStore(state => state.status)
 
   const refs = {
     projects: useRef<HTMLDivElement>(null),
@@ -57,6 +60,15 @@ export default function SwitchWorkSpace() {
     </svg>
   );
 
+  const handleClick = (active: Tab, routes: string, status: AuthStatus) => {
+    setActive(active)
+    if (status !== 'authenticated') {
+      navigate(ROUTES.LOGIN)
+    } else {
+      navigate(routes)
+    }
+  }
+
   return (
     <nav className={styles.body}>
       <div
@@ -67,10 +79,7 @@ export default function SwitchWorkSpace() {
         className={`${styles.button} ${styles.catalog} ${active === 'projects' ? styles.active : ''}`}
         ref={refs.projects}
         onClick={
-          () => {
-            setActive('projects')
-            navigate(ROUTES.PROJECTS.BASE)
-          }
+          () => handleClick('projects', ROUTES.PROJECTS.BASE, status)
         }
       >
         {square}Проекты
@@ -79,10 +88,7 @@ export default function SwitchWorkSpace() {
         className={`${styles.button} ${styles.mySpace} ${active === 'mySpace' ? styles.active : ''}`}
         ref={refs.mySpace}
         onClick={
-          () => {
-            setActive('mySpace')
-            navigate(ROUTES.MAIN)
-          }
+          () => handleClick('mySpace', ROUTES.MAIN, status)
         }
       >
         {square}Моя Платформа
