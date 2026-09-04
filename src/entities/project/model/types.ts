@@ -165,6 +165,11 @@ export interface GetProjectsQueryParams {
   limit?: number;
 }
 
+export interface GetLikedProjectsParams { 
+  offset?: number; 
+  limit?: number 
+}
+
 export interface CreateProjectRolePayload {
   roleTypeId: string;
   placesCount: number;

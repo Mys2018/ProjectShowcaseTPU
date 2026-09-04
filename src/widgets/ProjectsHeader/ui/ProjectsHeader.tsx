@@ -4,10 +4,9 @@ import { MagicToggle } from '@/shared/ui/magic-checkbox/MagicToggle'
 import { useFilterStore } from '@/features/filter/model/useFilterStore'
 import type { SortKey } from '@/features/filter/model/types'
 import { getProjectPlural, useProjects } from '@/entities/project'
-import { useIsProfileFilled } from "@/entities/user/lib";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared";
-import { useAuthStore } from "@/entities/user";
+import { useAuthStore, useIsProfileFilled } from "@/entities/user";
 
 const SORT_OPTIONS: { key: Exclude<SortKey, 'relevance'>; label: string }[] = [
   { key: 'created_desc', label: 'Новые' },
