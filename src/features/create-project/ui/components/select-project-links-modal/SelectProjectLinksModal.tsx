@@ -24,7 +24,7 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
   const [showErrors, setShowErrors] = useState(false);
 
-  const { data: platformsData } = usePlatforms();
+  const { data: platformsData, isLoading, isError } = usePlatforms();
 
   const projectLinks = useMemo(() => {
     if (!platformsData) return [];
@@ -96,42 +96,56 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
       <Modal.Header title={title} subtitle={subtitle} />
 
       <Modal.Body>
-        <div className={styles.list}>
-          {projectLinks.map((group) => (
-            <div key={group.categoryKey} className={`${styles.group} ${isGroupMissing(group.category) ? styles.groupError : ''}`}>
-              <h4 className={styles.groupTitle}>
-                {group.category}
-                {group.required && <span className={styles.required}>*</span>}
-              </h4>
-              <div className={styles.groupLinks}>
-                {group.links.map((link) => {
-                  const isChecked = selectedPlatforms.some(sp => sp.platformId === link.platformId);
-                  const isDisabled = !isChecked && selectedPlatforms.length >= limit;
-                  return (
-                    <Checkbox
-                      className={styles.checkbox}
-                      key={link.platformId}
-                      label={link.name}
-                      checked={isChecked}
-                      disabled={isDisabled}
-                      onChange={() => handleToggle(link)}
-                    />
-                  );
-                })}
+        {isLoading ? (
+          <p className={styles.statusMessage}>
+            Загрузка сервисов...
+          </p>
+        ) : isError ? (
+          <p className={styles.statusError}>
+            Не удалось загрузить список сервисов
+          </p>
+        ) : projectLinks.length === 0 ? (
+          <p className={styles.statusMessage}>
+            Список сервисов пуст
+          </p>
+        ) : (
+          <div className={styles.list}>
+            {projectLinks.map((group) => (
+              <div key={group.categoryKey} className={`${styles.group} ${isGroupMissing(group.category) ? styles.groupError : ''}`}>
+                <h4 className={styles.groupTitle}>
+                  {group.category}
+                  {group.required && <span className={styles.required}>*</span>}
+                </h4>
+                <div className={styles.groupLinks}>
+                  {group.links.map((link) => {
+                    const isChecked = selectedPlatforms.some(sp => sp.platformId === link.platformId);
+                    const isDisabled = !isChecked && selectedPlatforms.length >= limit;
+                    return (
+                      <Checkbox
+                        className={styles.checkbox}
+                        key={link.platformId}
+                        label={link.name}
+                        checked={isChecked}
+                        disabled={isDisabled}
+                        onChange={() => handleToggle(link)}
+                      />
+                    );
+                  })}
+                </div>
+                {isGroupMissing(group.category) && (
+                  <span className={styles.groupErrorText}>Выберите хотя бы одну ссылку</span>
+                )}
               </div>
-              {isGroupMissing(group.category) && (
-                <span className={styles.groupErrorText}>Выберите хотя бы одну ссылку</span>
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </Modal.Body>
 
       <Modal.Footer>
         <ModalFooter
           onClose={onClose}
           handleSubmit={handleSubmit}
-          disabled={selectedPlatforms.length === 0}
+          disabled={selectedPlatforms.length === 0 || isLoading || isError}
           error={errorMessage}
         />
       </Modal.Footer>

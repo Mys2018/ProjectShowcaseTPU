@@ -55,3 +55,17 @@
   font: var(--inter-11-400);
   color: var(--color-red);
 }
+
+.statusMessage {
+  font: var(--inter-13-400);
+  color: var(--color-gray-500);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.statusError {
+  font: var(--inter-13-400);
+  color: var(--color-red);
+  text-align: center;
+  padding: 20px 0;
+}
