@@ -1,25 +1,25 @@
-import {useState, useMemo} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from './MobileLayoutProjectPage.module.css'
-import {MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplicationsParams} from "@/widgets/project-action-panel";
-import {FreeCompetencies} from "@/widgets/free-competencies/FreeCompetencies.tsx";
-import {Drawer} from "@/features/drawer/Drawer.tsx";
-import {useApplications} from "@/entities/application";
-import {type ProjectCardData, typeProjectsLabel} from "@/entities/project";
+import { MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplicationsParams } from "@/widgets/project-action-panel";
+import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
+import { Drawer } from "@/features/drawer/Drawer.tsx";
+import { useApplications } from "@/entities/application";
+import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
 import { usePlatforms } from "@/entities/platforms/api/queries.ts";
-import {useIsProfileFilled} from "@/entities/user";
-import {useUserById} from "@/entities/user";
-import {ProjectStatusLabel} from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
-import {FloatingPanel} from "@/shared/ui/floating-panel";
-import {ProjectInfo} from "@/shared/ui/project-info/ProjectInfo.tsx";
-import {SegmentedSwitch} from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
-import {ProfileWidget} from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
-import {ProjectTeam} from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
-import {KeyPoints} from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
-import {LinkContainer} from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
-import {ProjectPrd} from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
-import {ROUTES} from "@/shared";
+import { useIsProfileFilled } from "@/entities/user";
+import { useUserById } from "@/entities/user";
+import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
+import { FloatingPanel } from "@/shared/ui/floating-panel";
+import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
+import { SegmentedSwitch } from "@/shared/ui/segmented-tabs/SegmentedSwitch.tsx";
+import { ProfileWidget } from "@/shared/ui/small-widgets/profile-widget/ProfileWidget.tsx";
+import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
+import { KeyPoints } from "@/shared/ui/small-widgets/key-points/KeyPoints.tsx";
+import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContainer.tsx";
+import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
+import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { ROUTES } from "@/shared";
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
@@ -106,7 +106,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
       <section className={styles.topBlock} >
         <div className={styles.leftTopBlock}>
           {typeProjectsLabel(project.type)}
-          <ProjectStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={project.status} />
         </div>
 
         <div className={styles.rightTopBlock}>
@@ -178,9 +178,9 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
         onOpenApplications={() => setApplicationsOpen(true)}
         onBlocked={setBlockedBy}
         // TODO: экрана баллов и формы отзыва ещё нет — бэк не готов
-        onShowPoints={() => {}}
-        onLeaveReview={() => {}}
-        onShare={() => {}}
+        onShowPoints={() => { }}
+        onLeaveReview={() => { }}
+        onShare={() => { }}
       />
 
       {blockedBy && (

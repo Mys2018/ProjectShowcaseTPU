@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import { useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
-import { ProjectsGrid } from '@/widgets/projects-grid'
 import {
   getSwitchableRoles,
   ROLES_TRANSLATIONS,
@@ -20,6 +19,7 @@ import {
   type ClosingDiscipline,
   type FloatingTabItem
 } from '@/shared'
+import {MyPlatformProjectsWidgets} from "@/widgets/my-platform-widgets";
 
 export const MyPlatformPage = () => {
   const { data: user } = useMe()
@@ -159,8 +159,9 @@ export const MyPlatformPage = () => {
           </section>
         </div>
         <section className={styles.projects}>
-          <h3 className={styles.title}>Проекты для вас</h3>
-          <ProjectsGrid />
+          {/*<h3 className={styles.title}>Проекты для вас</h3>*/}
+          {/*<ProjectsGrid />*/}
+          <MyPlatformProjectsWidgets/>
         </section>
       </div>
     </main>

@@ -28,9 +28,9 @@ export type User = UserBase & {
 }
 
 export type Messengers = {
-  element: string
-  telegram: string,
-  vk: string,
+  element?: string
+  telegram?: string,
+  vk?: string,
 }
 
 export type MessengerType = keyof Messengers;

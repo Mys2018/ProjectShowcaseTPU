@@ -11,7 +11,7 @@ const { prd, lists, audience } = PROJECT_LIMITS;
 export const createProjectRoleSchema = z.object({
   roleTypeId: z.string(),
   placesCount: z.number().min(1, 'Минимум мест должен быть не менее 1'),
-  minPlacesCount: z.number().min(1, 'Минимум мест должен быть не менее 1'),
+  minPlacesCount: z.number().min(0, 'Минимум мест должен быть не менее 0'),
   meta: z.object({
     name: z.string(),
     description: z.string(),
@@ -152,13 +152,20 @@ const STEP_SCHEMAS: Record<number, z.ZodTypeAny> = {
   4: step4Schema,
 };
 
+import { calculateProjectWizardProgress, type WizardProgress, type WizardStepProgress } from './wizardProgress'
+export { calculateProjectWizardProgress, type WizardProgress, type WizardStepProgress }
+
 const TOTAL_STEPS = 5;
 
 export type StepErrors = Record<string, string[]>;
 
 interface UseProjectWizardProps {
   onSubmit: (values: CreateProjectDto) => void | Promise<void>;
-  defaultValues?: Partial<CreateProjectFormValues> & { currentStep?: number; highestStep?: number };
+  defaultValues?: Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  };
 }
 
 const STUDY_DEFAULTS = {
@@ -199,7 +206,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   }, [defaultValues, isRestored]);
 
   // Extract non-form fields so they don't get passed to useForm
-  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {});
+  const { currentStep: _currentStep, highestStep: _highestStep, progress: _progress, ...formDefaultValues } = (defaultValues || {});
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
@@ -360,5 +367,23 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     setCurrentStep(step);
   };
 
-  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields };
+  const calculateProgress = (values?: Partial<CreateProjectFormValues>) =>
+    calculateProjectWizardProgress(values || form.state.values);
+
+  const getProgress = () => calculateProgress();
+
+  return {
+    form,
+    currentStep,
+    stepErrors,
+    highestStep,
+    nextStep,
+    prevStep,
+    setStep,
+    blinkFields,
+    setBlinkFields,
+    progress: getProgress(),
+    getProgress,
+    calculateProgress,
+  };
 };

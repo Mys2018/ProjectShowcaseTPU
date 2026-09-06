@@ -1,7 +1,7 @@
 import styles from './LinkModal.module.css'
 import { useEffect, useState } from "react";
 import { Modal } from "@/shared/ui/modals/modal/Modal.tsx";
-import {DeleteButton, FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
+import { DeleteButton, FilledButton, GreyButton } from "@/shared/ui/elements/buttons";
 
 type LinkModalProps = {
   isOpen: boolean,
@@ -74,10 +74,10 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
             {typeLink}
           </h3>
           {
-            firstValue === '' ? <DeleteButton
+            <DeleteButton
               onClick={handleDelete}
               textButton={'Удалить'}
-            /> : ''
+            />
           }
 
         </div>
@@ -102,7 +102,7 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
           />
           <FilledButton
             onClick={handleSubmit}
-            disabled={ firstValue === value}
+            disabled={firstValue === value}
             textButton={'Сохранить изменения'}
           />
         </div>

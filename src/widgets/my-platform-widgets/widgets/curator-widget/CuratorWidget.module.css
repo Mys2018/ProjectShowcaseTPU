@@ -1,0 +1,51 @@
+.bodyContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+}
+
+.bigBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.loadingContainer,
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background-color: var(--color-white);
+  border: 1px dashed var(--color-gray-200);
+  border-radius: 20px;
+  gap: 16px;
+}
+
+.loadingText,
+.emptyText {
+  font: var(--inter-13-400);
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+.projectList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

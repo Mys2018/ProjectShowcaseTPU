@@ -90,6 +90,8 @@
   gap: 12px;
   font: var(--label-interface);
   color: var(--color-gray-500);
+  cursor: pointer;
+  user-select: none;
 }
 
 .body {

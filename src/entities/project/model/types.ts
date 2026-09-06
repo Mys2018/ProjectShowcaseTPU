@@ -1,12 +1,12 @@
-/* eslint-disable fsd/no-cross-slice-dependency */
-/* eslint-disable fsd/forbidden-imports */
 import type { PROJECT_FORMATS } from "./constants";
 import type { CheckpointGroup } from "@/entities/checkpoint";
 import type { Tag } from "@/entities/tag";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
-export type ProjectStatus = Lowercase<ProjectDto['status']>;
+// TODO Убрать лишнее
+export type ProjectStatus = 'Active' | 'Approved' | 'Pending' | 'NeedsRework' | 'Recruiting'  | 'RecruitmentCompleted' | 'InProgress' | 'Completed' | 'NotImplemented' | 'Rejected';
+export type ProjectStatusOld = 'Active' | 'Approved' | 'Archived' | 'Completed' | 'NeedsRework' | 'Pending' | 'Rejected';
 export type CreateProjectRequestType =
   | 'Case'
   | 'Real'
@@ -131,7 +131,7 @@ export interface ProjectDto {
   tags: TagItem[];
   primaryTag: TagItem;
   partnerId: string;
-  status: 'Active' | 'Approved' | 'Archived' | 'Completed' | 'NeedsRework' | 'Pending' | 'Rejected';
+  status: ProjectStatus;
   meta: {
     title: string;
     description: string;
@@ -171,10 +171,16 @@ export interface GetProjectsQueryParams {
   limit?: number;
 }
 
-export interface GetLikedProjectsParams { 
-  offset?: number; 
-  limit?: number 
+export interface GetUserProjectsParams {
+  offset?: number;
+  limit?: number;
 }
+
+export type GetLikedProjectsParams = GetUserProjectsParams;
+export type GetManagedProjectsParams = GetUserProjectsParams;
+export type GetCuratedProjectsParams = GetUserProjectsParams;
+export type GetParticipatingProjectsParams = GetUserProjectsParams;
+export type GetAppliedProjectsParams = GetUserProjectsParams;
 
 export interface CreateProjectRolePayload {
   roleTypeId: string;

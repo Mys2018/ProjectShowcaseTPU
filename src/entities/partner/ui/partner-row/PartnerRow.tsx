@@ -10,7 +10,7 @@ interface PartnerRowProps extends ComponentPropsWithoutRef<'div'> {
 export function PartnerRow({ partner, className, children, onClick, ...props }: PartnerRowProps) {
   return (
     <div className={clsx(styles.partner, onClick && styles.clickable, className)} onClick={onClick} {...props}>
-      <img className={styles.picture} src={partner.profilePicture} loading='lazy' />
+      <img className={styles.picture} src={partner.profilePicture} loading='lazy'  alt={partner.name}/>
       <div className={styles.info}>
         <span className={styles.name}>{partner.name}</span>
         <span className={styles.sub}>публикационная активность</span> {/* TODO заменить или убрать */}

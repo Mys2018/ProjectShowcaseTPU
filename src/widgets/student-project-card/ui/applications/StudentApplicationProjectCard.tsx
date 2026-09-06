@@ -27,7 +27,7 @@ export function StudentApplicationProjectCard({ projectId, className }: StudentA
       className={clsx(styles.card, className)}
       project={project}
       headerSlot={
-        project.status === 'active' ? (
+        (project.status === 'Active' || project.status === 'Recruiting') ? (
           <div className={styles.header}>
             <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
             <span>{/* TODO application status */}</span>
@@ -63,7 +63,7 @@ export function StudentApplicationProjectCard({ projectId, className }: StudentA
         </>
       }
       footerSlot={
-        project.status === 'active' ? (
+        (project.status === 'Active' || project.status === 'Recruiting') ? (
           <div className={styles.footer}>
             <span>{/* TODO application cancel */}</span>
             <p className={styles.applicationDate}>Отклик от {/* TODO application createdAt */}</p>

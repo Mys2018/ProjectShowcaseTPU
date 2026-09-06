@@ -1,6 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { projectApi } from './requests'
-import type { GetProjectsQueryParams, CreateProjectDto, GetLikedProjectsParams } from '../model/types'
+import type {
+  GetProjectsQueryParams,
+  CreateProjectDto,
+  GetLikedProjectsParams,
+  GetManagedProjectsParams,
+  GetParticipatingProjectsParams,
+  GetAppliedProjectsParams,
+} from '../model/types'
 import { projectKeys } from './queryKeys'
 
 export const useProjects = (params?: GetProjectsQueryParams, enabled?: boolean) => {
@@ -64,6 +71,38 @@ export const useLikedProjects = (params?: GetLikedProjectsParams, enabled?: bool
   return useQuery({
     queryKey: projectKeys.likedList(params),
     queryFn: () => projectApi.getLikedProjects(params),
+    enabled: enabled
+  })
+}
+
+export const useManagedProjects = (params?: GetManagedProjectsParams, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.managedList(params),
+    queryFn: () => projectApi.getManagedProjects(params),
+    enabled: enabled
+  })
+}
+
+export const useCuratedProjects = (params?: GetManagedProjectsParams, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.curatedList(params),
+    queryFn: () => projectApi.getCuratedProjects(params),
+    enabled: enabled
+  })
+}
+
+export const useParticipatingProjects = (params?: GetParticipatingProjectsParams, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.participatingList(params),
+    queryFn: () => projectApi.getParticipatingProjects(params),
+    enabled: enabled
+  })
+}
+
+export const useAppliedProjects = (params?: GetAppliedProjectsParams, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.appliedList(params),
+    queryFn: () => projectApi.getAppliedProjects(params),
     enabled: enabled
   })
 }
