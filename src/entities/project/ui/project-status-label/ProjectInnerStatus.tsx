@@ -39,7 +39,7 @@ const getStatusData = (status: InnerStatuses) => {
     default:
       return {
         icon: <PublishedIcon />,
-        tooltipText: '',
+        tooltipText: 'Некорректный статус',
       }
   }
 }
@@ -64,6 +64,7 @@ export const ProjectInnerStatus = ({ status, children }: ProjectInnerStatusProps
       body={[{ text: [tooltipText] }]}
       size="large"
       pointer="topRight"
+
     >
       {children ?? icon}
     </InfoTooltip>

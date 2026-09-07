@@ -6,7 +6,7 @@ import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.t
 import { Drawer } from "@/features/drawer/Drawer.tsx";
 import { useApplications } from "@/entities/application";
 import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
-import { usePlatforms } from "@/entities/platforms/api/queries.ts";
+import { usePlatformFinder } from "@/entities/platforms";
 import { useIsProfileFilled } from "@/entities/user";
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
@@ -54,19 +54,11 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { name: 'Яра', role: 'Frontend', avatarSrc: '' }
   ];
 
-  const { data: platformsData } = usePlatforms();
+  const { platformsData, findPlatformName } = usePlatformFinder();
 
   const links = useMemo(() => {
     const result: { title: string; link: string; service: string }[] = [];
     if (!platformsData) return result;
-
-    const findPlatformName = (id: string) => {
-      for (const group of platformsData) {
-        const found = group.platforms.find(p => p.platformId === id);
-        if (found) return found.name;
-      }
-      return 'Unknown';
-    };
 
     if (project.repository) {
       project.repository.forEach(item => {
@@ -87,7 +79,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }
 
     return result;
-  }, [project, platformsData]);
+  }, [project, platformsData, findPlatformName]);
 
   const checkpointsMock = [
     { title: 'Старт работ', deadline: '25-05-2026', status: true },

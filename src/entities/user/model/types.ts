@@ -40,8 +40,12 @@ export type UserBase = {
   email: string
   roles: UserRole[]
   profilePicture: string
+  competencies?: string[]
+  grade?: string
   meta: {
     name: string
+    firstName?: string
+    lastName?: string
   }
 }
 

@@ -6,7 +6,7 @@
 
 .statusContainer {
   display: flex;
-  gap: 24px;
+  gap: 12px;
   align-items: center;
 }
 
@@ -19,4 +19,37 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.bodyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bodyBlock p {
+  font: var(--inter-12-300);
+  color: var(--color-gray-500)
+}
+
+.teamList {
+  display: flex;
+  align-items: center;
+}
+
+.teamList > *:not(:first-child) {
+  margin-left: -12px;
+}
+
+.resourceList {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
