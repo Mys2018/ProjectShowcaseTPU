@@ -49,12 +49,33 @@
   gap: 12px;
 
   grid-column: 1 / 5;
+  grid-row: 0;
+}
+
+.separatorContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 5;
+  grid-row: 0;
+}
+
+.separatop {
+  height: 100%;
+  width: 1px;
+  background-color: var(--color-gray-150);
 }
 
 .short {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.sideSlotContainer {
+  display: flex;
+  grid-column: 6 / 12;
+  grid-row: 0;
 }
 
 .id {

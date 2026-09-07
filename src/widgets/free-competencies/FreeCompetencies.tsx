@@ -28,7 +28,7 @@ const useUpdateApplicationStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ applicationId, status }: { applicationId: string; status: ProjectRoleApplicationStatus }) => 
+    mutationFn: ({ applicationId, status }: { applicationId: string; status: ProjectRoleApplicationStatus }) =>
       applicationApi.updateApplicationStatus(applicationId, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: applicationKeys.lists() });

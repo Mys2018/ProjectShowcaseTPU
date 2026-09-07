@@ -6,6 +6,9 @@ import type {
   ProjectDto,
   GetProjectsResponse,
   GetLikedProjectsParams,
+  GetManagedProjectsParams,
+  GetParticipatingProjectsParams,
+  GetAppliedProjectsParams,
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
 import { api, ENDPOINTS } from '@/shared'
@@ -17,8 +20,8 @@ export interface ProjectDraftResponse {
 
 export const projectApi = {
   getDraft: async (): Promise<ProjectDraftResponse> => {
-    const response = await api.get<ProjectDraftResponse>(ENDPOINTS.PROJECT_DRAFT)
-    return response.data
+    const { data } = await api.get<ProjectDraftResponse>(ENDPOINTS.PROJECT_DRAFT)
+    return data
   },
 
   saveDraft: async (data: Record<string, unknown>): Promise<void> => {
@@ -63,6 +66,25 @@ export const projectApi = {
 
   getLikedProjects: async (params?: GetLikedProjectsParams): Promise<GetProjectsResponse> => {
     const { data } = await api.get<ProjectsResponseDto>(ENDPOINTS.LIKED_PROJECTS, { params })
+    return { total: data.total, projects: data.hits.map(mapProjectDtoToEntity) }
+  },
+
+  getManagedProjects: async (params?: GetManagedProjectsParams): Promise<GetProjectsResponse> => {
+    const { data } = await api.get<ProjectsResponseDto>(ENDPOINTS.MANAGED_PROJECTS, { params })
+    return { total: data.total, projects: data.hits.map(mapProjectDtoToEntity) }
+  },
+
+  getCuratedProjects: async (params?: GetManagedProjectsParams): Promise<GetProjectsResponse> => {
+    return projectApi.getManagedProjects(params)
+  },
+
+  getParticipatingProjects: async (params?: GetParticipatingProjectsParams): Promise<GetProjectsResponse> => {
+    const { data } = await api.get<ProjectsResponseDto>(ENDPOINTS.PARTICIPATING_PROJECTS, { params })
+    return { total: data.total, projects: data.hits.map(mapProjectDtoToEntity) }
+  },
+
+  getAppliedProjects: async (params?: GetAppliedProjectsParams): Promise<GetProjectsResponse> => {
+    const { data } = await api.get<ProjectsResponseDto>(ENDPOINTS.APPLIED_PROJECTS, { params })
     return { total: data.total, projects: data.hits.map(mapProjectDtoToEntity) }
   }
 }

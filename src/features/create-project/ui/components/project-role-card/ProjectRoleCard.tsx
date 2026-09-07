@@ -81,10 +81,28 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                 </p>
               </div>
               <div className={styles.moreMenuContainer}>
-                <label className={styles.checkboxLabel}>
-                  Обязательная компетенция
-                  <Checkbox/>
-                </label>
+                <form.Field name={`roles[${index}].minPlacesCount`}>
+                  {(field) => {
+                    const isChecked = Boolean(field.state.value && field.state.value > 0);
+                    return (
+                      <div className={styles.checkboxLabel}>
+                        <span
+                          onClick={() => {
+                            field.handleChange(isChecked ? 0 : 1);
+                          }}
+                        >
+                          Обязательная компетенция
+                        </span>
+                        <Checkbox
+                          checked={isChecked}
+                          onChange={(e) => {
+                            field.handleChange(e.target.checked ? 1 : 0);
+                          }}
+                        />
+                      </div>
+                    );
+                  }}
+                </form.Field>
                 <PopupMenu
                   trigger={<button
                     type="button"

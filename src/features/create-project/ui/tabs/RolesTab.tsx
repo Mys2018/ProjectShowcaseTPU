@@ -33,7 +33,7 @@ export function RolesTab({ form, stepErrors, blinkFields }: TabProps) {
           .map(sr => ({
             roleTypeId: sr.id,
             placesCount: 1,
-            minPlacesCount: 1,
+            minPlacesCount: 0,
             meta: { name: sr.name, description: '' },
             skills: [],
           }));

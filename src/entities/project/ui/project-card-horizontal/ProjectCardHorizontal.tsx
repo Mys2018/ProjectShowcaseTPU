@@ -10,6 +10,7 @@ interface ProjectCardHorizontalProps {
   mainSlot?: ReactElement
   headerSlot?: ReactElement
   sideSlot?: ReactElement
+  partnerSlot?: ReactElement
   footerSlot?: ReactElement
   className?: string
   onClick?: MouseEventHandler<HTMLDivElement>
@@ -20,6 +21,7 @@ export function ProjectCardHorizontal({
   mainSlot,
   headerSlot,
   sideSlot,
+  partnerSlot,
   footerSlot,
   className,
   onClick
@@ -37,16 +39,36 @@ export function ProjectCardHorizontal({
             <div className={styles.short}>
               <ProjectFormatBadge format={type} />
               <div className={styles.id}>
-                <span className={styles.label}>ID</span>
-                <span className={`${styles.value} ellipsis`}>{id}</span>
+                {
+                  id && <>
+                    <span className={styles.label}>ID</span>
+                    <span className={`${styles.value} ellipsis`}>{id}</span>
+                  </>
+                }
               </div>
             </div>
             <div className={styles.meta}>
               <h3 className={styles.title}>{title}</h3>
               {mainSlot}
             </div>
+            {
+              partnerSlot
+            }
           </div>
-          {sideSlot}
+          {
+            sideSlot ? (
+              <>
+                <div className={styles.separatorContainer}>
+                  <div className={styles.separatop}/>
+                </div>
+                <div className={styles.sideSlotContainer}>
+                  {sideSlot}
+                </div>
+              </>
+
+            ) : null
+          }
+
         </div>
         {footerSlot && <div className={styles.footer}>{footerSlot}</div>}
       </div>

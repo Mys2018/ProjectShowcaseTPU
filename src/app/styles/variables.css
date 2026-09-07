@@ -11,6 +11,7 @@
   --color-red-error-bg: rgba(255, 51, 68, 0.03);
   --color-dark-red: #D72836;
   --color-yellow: #FFB600;
+  --color-orange: #FA6E45;
   --transparent-yellow: rgba(255, 182, 0, 0.03);
 
   --color-light-green: #17CF3C;
@@ -140,6 +141,7 @@
   --ALS-10-400: 400 10px/1 var(--font-ALS);
   --ALS-10-700: 700 10px/1 var(--font-ALS);
   --ALS-14-700: 700 14px/1 var(--font-ALS);
+  --ALS-18-700: 700 18px/1 var(--font-ALS);
 
   --small-11-light: 300 11px/1.1 var(--font-inter);
 

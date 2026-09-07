@@ -49,6 +49,13 @@
 
 .checkbox {
   padding: 12px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.checkbox[class*="active"] {
+  border-color: var(--color-brand-violet);
 }
 
 .groupErrorText {

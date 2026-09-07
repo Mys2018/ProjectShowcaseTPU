@@ -6,8 +6,9 @@ import { CreateProjectCard } from '@/shared/ui/create-project-card/CreateProject
 import { ProjectInfoStep } from '@/features/create-project/ui/ProjectInfoStep';
 import {
   useProjectWizard,
+  calculateProjectWizardProgress,
   type CreateProjectFormValues,
-} from '@/features/create-project/model/useProjectWizard';
+} from '@/features/create-project';
 import { useCreateProject } from '@/entities/project/api/queries';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
 import { getProjectFormatTranslation } from '@/entities/project';
@@ -77,7 +78,8 @@ export function CreateProjectPage() {
 
   const performAutoSave = useCallback(() => {
     const currentValues = form.state.values;
-    const draftPayload = { ...currentValues, currentStep, highestStep };
+    const progress = calculateProjectWizardProgress(currentValues);
+    const draftPayload = { ...currentValues, currentStep, highestStep, progress };
     const serialized = JSON.stringify(draftPayload);
 
     // Skip save if nothing changed
@@ -103,7 +105,7 @@ export function CreateProjectPage() {
         }
       },
     });
-  }, [form.state.values, saveDraft]);
+  }, [form.state.values, currentStep, highestStep, saveDraft]);
 
   // Subscribe to form changes for auto-save (only in fill mode)
   useEffect(() => {
@@ -182,7 +184,9 @@ export function CreateProjectPage() {
   const handleDeleteDraft = () => {
     // Save current state as draft and navigate back
     const currentValues = form.state.values;
-    saveDraft(currentValues, {
+    const progress = calculateProjectWizardProgress(currentValues);
+    const draftPayload = { ...currentValues, currentStep, highestStep, progress };
+    saveDraft(draftPayload, {
       onSuccess: () => navigate(-1),
     });
   };

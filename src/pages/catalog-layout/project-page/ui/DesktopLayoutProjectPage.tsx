@@ -15,7 +15,7 @@ import type { ProjectCardData } from "@/entities/project";
 // TODO
 import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
-import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { usePlatforms } from "@/entities/platforms/api/queries.ts";
 import { useMemo } from "react";
@@ -215,7 +215,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
         <div className={styles.projectStatus}>
           <span className={styles.statusLabel}>Статус:</span>
-          <ProjectStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={project.status} />
         </div>
 
         <FreeCompetencies roles={project.roles} />

@@ -1,0 +1,22 @@
+.header {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  width: 100%;
+}
+
+.statusContainer {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.badges {
+  grid-column: 1 / 5;
+}
+
+.statusContainer {
+  grid-column: 6 / 13;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

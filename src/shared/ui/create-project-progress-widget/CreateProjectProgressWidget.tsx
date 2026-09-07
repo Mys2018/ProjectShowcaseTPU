@@ -3,7 +3,7 @@ import type {CreateProjectForm} from "@/features/create-project/model/useProject
 import CheckIcon from '@/shared/ui/icons/check.svg?react'
 import clsx from "clsx";
 import {useStore} from "@tanstack/react-form";
-import {calculateProgress} from "@/shared/utils/progress/calculateProgress.ts";
+import {calculateProjectWizardProgress} from "@/features/create-project";
 
 interface CreateProjectProgressWidgetProps {
   form: CreateProjectForm;
@@ -13,52 +13,12 @@ interface CreateProjectProgressWidgetProps {
 export const CreateProjectProgressWidget = ({form, onStepClick}: CreateProjectProgressWidgetProps) => {
   const formValues = useStore(form.store, (state) => state.values)
 
-  const step1Progress = calculateProgress([
-    formValues.type
-  ])
-
-  const step2Progress = calculateProgress([
-    formValues.meta?.title,
-    formValues.meta?.description,
-    formValues.primaryTag,
-    formValues.tags,
-    formValues.partnerId
-  ])
-
-  const step3Progress = calculateProgress([
-    ...(formValues.type === 'Study' ? [
-      formValues.prdMeta.prerequisites,
-      formValues.prdMeta.projectGoal,
-      formValues.prdMeta.keyFunctionality
-    ] : []),
-
-    ...(formValues.type === 'Case' ? [
-      formValues.prdMeta.prerequisites,
-      formValues.prdMeta.audience,
-      formValues.prdMeta.functional,
-      formValues.prdMeta.problemStatement
-    ] : []),
-
-    ...(formValues.type === 'Real' ? [
-
-      formValues.prdMeta.productVision,
-      formValues.prdMeta.audience,
-      formValues.prdMeta.projectGoal,
-      formValues.prdMeta.businessGoal,
-      formValues.prdMeta.functional,
-      formValues.prdMeta.nonFunctional,
-      formValues.prdMeta.businessMetrics,
-      formValues.prdMeta.projectPlan
-    ] : [])
-  ])
-
-  const step4Progress = calculateProgress([
-    formValues.roles,
-  ])
-
-  const step5Progress = calculateProgress([
-    formValues.links
-  ])
+  const { steps } = calculateProjectWizardProgress(formValues)
+  const step1Progress = steps[1]
+  const step2Progress = steps[2]
+  const step3Progress = steps[3]
+  const step4Progress = steps[4]
+  const step5Progress = steps[5]
 
   const progresses = [step1Progress, step2Progress, step3Progress, step4Progress, step5Progress];
   const currentStepIndex = progresses.findIndex(p => p < 100);

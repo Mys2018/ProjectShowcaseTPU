@@ -1,3 +1,15 @@
 export { projectKeys as projectQueryKeys } from './queryKeys'
 export { projectApi } from './requests'
-export { useProjects, useProjectDetails, useCreateProject, useProjectDraft, useSaveDraft, useDeleteDraft, useLikedProjects } from './queries'
+export {
+  useProjects,
+  useProjectDetails,
+  useCreateProject,
+  useProjectDraft,
+  useSaveDraft,
+  useDeleteDraft,
+  useLikedProjects,
+  useManagedProjects,
+  useCuratedProjects,
+  useParticipatingProjects,
+  useAppliedProjects,
+} from './queries'

@@ -23,23 +23,15 @@ interface ProjectActionPanelProps {
   isProfileFilled: boolean
 }
 
-/* Статусы приходят из API в CamelCase, но mapProjectDtoToEntity приводит их
-   к нижнему регистру — сравниваем с тем, что реально лежит в сущности. */
-
 /** Набор идёт. Единственный статус, где можно откликнуться. */
-const RECRUITING = 'active'
+const isRecruitingStatus = (status: string) => status === 'Active' || status === 'Recruiting'
 /** Проект закончен: участник может оставить отзыв. */
-const COMPLETED = 'completed'
+const isCompletedStatus = (status: string) => status === 'Completed'
 /**
- * Работа идёт — набор закрыт. Сверяемся с одним статусом, а не «всё кроме набора»:
- * иначе проект на модерации или отклонённый тоже показал бы «В работе».
- * TODO: сверить с бэкендом, какой статус означает «в работе» — approved или вычисляемое.
+ * Работа идёт — набор закрыт.
  */
-const IN_PROGRESS = 'approved'
-/** Модерация не пропустила проект. */
-const REJECTED = 'rejected'
-/** TODO: сверить с бэкендом — предполагаем, что «не реализован» это archived. */
-const UNREALIZED = 'archived'
+const isInProgressStatus = (status: string) => status === 'InProgress' || status === 'Approved'
+
 
 /**
  * Центр панели считается одной цепочкой приоритетов: завершён → идёт работа →
@@ -64,9 +56,9 @@ export function ProjectActionPanel({
   const { data: me } = useMe()
   const isGuest = status !== 'authenticated' && status !== 'loading'
 
-  const isRecruiting = project.status === RECRUITING
-  const isCompleted = project.status === COMPLETED
-  const isInProgress = project.status === IN_PROGRESS
+  const isRecruiting = isRecruitingStatus(project.status)
+  const isCompleted = isCompletedStatus(project.status)
+  const isInProgress = isInProgressStatus(project.status)
 
   const { data: applications } = useApplications(myApplicationsParams(project.id))
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)
@@ -107,11 +99,11 @@ export function ProjectActionPanel({
       )
     }
 
-    if (project.status === REJECTED) {
+    if (project.status === 'Rejected') {
       return <FloatingPanel.Status>Отклонён модератором</FloatingPanel.Status>
     }
 
-    if (project.status === UNREALIZED) {
+    if (project.status === 'NotImplemented') {
       return <FloatingPanel.Status>Не реализован</FloatingPanel.Status>
     }
 

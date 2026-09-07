@@ -5,9 +5,9 @@ import VkLogo from '@/shared/ui/icons/vk.svg?react'
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import EditIcon from '@/shared/ui/icons/edit.svg?react'
 import clsx from "clsx";
-import type {Messengers, MessengerType} from "@/entities/user/model/types.ts";
-import {useModalStore} from "@/shared/model";
-import {useUpdateProfileMeta} from "@/entities/user/api/queries.ts";
+import type { Messengers, MessengerType } from "@/entities/user/model/types.ts";
+import { useModalStore } from "@/shared/model";
+import { useUpdateProfileMeta } from "@/entities/user/api/queries.ts";
 
 type LinkBlockProps = {
   linksObj: Messengers
@@ -16,11 +16,11 @@ type LinkBlockProps = {
 const getLogo = (type: MessengerType, link?: string) => {
   switch (type) {
     case 'telegram':
-      return <TgLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`}/>
+      return <TgLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`} />
     case 'vk':
-      return <VkLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`}/>
+      return <VkLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`} />
     case 'element':
-      return <ElementLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`}/>
+      return <ElementLogo className={`${styles.logo} ${link ? '' : styles.smallLogo}`} />
     default:
       return
   }
@@ -41,9 +41,9 @@ const getLabel = (type: MessengerType) => {
 
 export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
 
-  const { openModal, closeModal} = useModalStore();
+  const { openModal, closeModal } = useModalStore();
 
-  const { mutate: updateProfileMeta} = useUpdateProfileMeta();
+  const { mutate: updateProfileMeta } = useUpdateProfileMeta();
 
   const links: Array<{ type: MessengerType; link?: string }> = [
     {
@@ -67,9 +67,6 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
       onSubmit: (newValue: string) => {
         updateProfileMeta({
           messengers: {
-            element: linksObj.element || "",
-            telegram: linksObj.telegram || "",
-            vk: linksObj.vk || "",
             [type]: newValue
           }
         })
@@ -77,9 +74,6 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
       onDelete: () => {
         updateProfileMeta({
           messengers: {
-            element: linksObj.element || "",
-            telegram: linksObj.telegram || "",
-            vk: linksObj.vk || "",
             [type]: ""
           }
         })
@@ -92,11 +86,11 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
     <div className={styles.linkList}>
       {
         links.map((link, index) => (
-          <div key={index} className={clsx(styles.container, (link.link ? styles.active : ''),  (link.type === 'element' && styles.special))}>
+          <div key={index} className={clsx(styles.container, (link.link ? styles.active : ''), (link.type === 'element' && styles.special))}>
             {
               link.link && link.type !== 'element' ?
                 <button className={styles.editButton} onClick={() => handleOpenModal(link.type, link.link)}>
-                  <EditIcon className={styles.editIcon}/>
+                  <EditIcon className={styles.editIcon} />
                 </button> : ''
             }
             {
@@ -123,7 +117,7 @@ export const LinkBlock = ({ linksObj }: LinkBlockProps) => {
                   </div>
                   {
                     link.type !== 'element' && <button onClick={() => handleOpenModal(link.type, link.link)}>
-                      <Plus/>
+                      <Plus />
                       Добавить
                     </button>
                   }
