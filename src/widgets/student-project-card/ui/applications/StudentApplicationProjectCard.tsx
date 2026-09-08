@@ -1,12 +1,13 @@
 import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
+import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
-import { ClockIcon, ImageSkeleton, TextSkeleton } from '@/shared'
+import { ClockIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
 
 interface StudentApplicationProjectCardProps {
   application: Application
@@ -73,7 +74,9 @@ export function StudentApplicationProjectCard({ application, className }: Studen
           {!isExtended && (
             <>
               {statusBadge}
-              <p className={clsx(styles.applicationDate, styles.bottomRight)}>{/* TODO application createdAt */}</p>
+              <p className={clsx(styles.applicationDate, styles.bottomRight)}>
+                {mapDateToLocalString(application.createdAt, { time: true })}
+              </p>
             </>
           )}
         </div>
@@ -81,8 +84,8 @@ export function StudentApplicationProjectCard({ application, className }: Studen
       footerSlot={
         isExtended ? (
           <div className={styles.footer}>
-            <span>{/* TODO application cancel */}</span>
-            <p className={styles.applicationDate}>Отклик от {/* TODO application createdAt */}</p>
+            <CancelApplicationButton applicationId={application.applicationID} />
+            <p className={styles.applicationDate}>Отклик от {mapDateToLocalString(application.createdAt, { year: true })}</p>
           </div>
         ) : undefined
       }
