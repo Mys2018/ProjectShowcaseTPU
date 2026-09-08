@@ -13,7 +13,6 @@ import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
 // TODO
-import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
@@ -142,7 +141,10 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
         />
 
         <KeyPoints
-          checkpoints={project.checkpoints?.checkpoints.map(c => ({ title: c.title, deadline: mapDateToLocalString(c.deadline) }))}
+          checkpoints={project.checkpoints?.checkpoints.map(c => ({
+            title: c.title,
+            deadline: c.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          }))}
         />
 
         {links.length > 0 && <LinkContainer links={links} />}

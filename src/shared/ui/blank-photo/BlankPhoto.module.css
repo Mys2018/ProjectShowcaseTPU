@@ -1,0 +1,18 @@
+.blank {
+  width: 315px;
+  height: 180px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: 28px;
+  background-color: var(--color-gray-50);
+}
+
+.icon {
+  width: 28%;
+  height: 55%;
+}

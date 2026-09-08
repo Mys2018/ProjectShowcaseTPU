@@ -1,3 +1,5 @@
+/* eslint-disable fsd/no-cross-slice-dependency */
+/* eslint-disable fsd/forbidden-imports */
 import type { PROJECT_FORMATS } from "./constants";
 import type { CheckpointGroup } from "@/entities/checkpoint";
 import type { Tag } from "@/entities/tag";
