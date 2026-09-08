@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './ProjectActivitiesLayout.module.css'
 import { LikedProjectsPage } from '../liked-projects/LikedProjectsPage'
-import { MyApplicationsPage } from '../my-applications/MyApplicationsPage'
+import { MyApplicationsPage } from '../my-applications/ui/MyApplicationsPage'
 import { ProjectActivitiesTabs } from '@/widgets/project-activities-tabs'
 import { BackLink } from '@/shared/ui/back-link'
 import { ROUTES } from '@/shared'
@@ -38,11 +38,13 @@ export function ProjectActivitiesLayout() {
   }
 
   return (
-    <div className={styles.container}>
-      <BackLink fallback={ROUTES.MAIN} className={styles.back} />
-      <h1 className={styles.title}>Проектная деятельность</h1>
-      <ProjectActivitiesTabs className={styles.tabs} />
-      <div className={styles.outlet}>{renderContent()}</div>
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <BackLink fallback={ROUTES.MAIN} className={styles.back} />
+        <h1 className={styles.title}>Проектная деятельность</h1>
+        <ProjectActivitiesTabs className={styles.tabs} />
+        <div className={styles.outlet}>{renderContent()}</div>
+      </div>
     </div>
   )
 }
