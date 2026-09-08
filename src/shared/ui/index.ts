@@ -20,6 +20,7 @@ export { Modal } from './modals/modal/Modal.tsx'
 export { ModalFooter } from './modals/modal-footer/ModalFooter.tsx'
 export { PopupMenu } from './popup-menu/PopupMenu.tsx'
 export { BlankPhoto } from './blank-photo/BlankPhoto.tsx'
+export * from './elements/buttons'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
@@ -30,4 +31,5 @@ import CodeIcon from './icons/code.svg?react'
 import StudyIcon from './icons/studyIcon.svg?react'
 import ChevronRightIcon from '../assets/chevron_right.svg?react'
 import CrossIcon from './icons/cross.svg?react'
-export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon, CrossIcon }
+import ClockIcon from './icons/clock.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon, CrossIcon, ClockIcon }
