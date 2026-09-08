@@ -1,9 +1,12 @@
-export const mapDateToLocalString = (date: Date) => {
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const year = date.getFullYear().toString()
-  return `${day}.${month}.${year}`
-}
+export const mapDateToLocalString = (date: Date, params?: { year?: boolean; time?: boolean }) =>
+  date
+    .toLocaleString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      ...(params?.time && { hour: '2-digit', minute: '2-digit' }),
+      ...(params?.year && { year: 'numeric' })
+    })
+    .replace(' в ', ' в ')
 
 export const mapDateToBackendString = (date: Date) => {
   const day = date.getDate().toString().padStart(2, '0')

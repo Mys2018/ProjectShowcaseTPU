@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import styles from '../CompetencyRow.module.css'
+import styles from './CompetencyRow.module.css'
 import { ImageSkeleton, TextSkeleton } from '@/shared'
 
 interface CompetencyRowSkeletonProps {
