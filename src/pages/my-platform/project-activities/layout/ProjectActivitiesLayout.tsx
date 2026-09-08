@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styles from './ProjectActivitiesLayout.module.css'
 import { LikedProjectsPage } from '../liked-projects/LikedProjectsPage'
+import { MyApplicationsPage } from '../my-applications/MyApplicationsPage'
 import { ProjectActivitiesTabs } from '@/widgets/project-activities-tabs'
 import { BackLink } from '@/shared/ui/back-link'
 import { ROUTES } from '@/shared'
@@ -29,7 +30,10 @@ export function ProjectActivitiesLayout() {
     switch (fullLocation) {
       case ROUTES.ACTIVITY.FAVORITES:
         return <LikedProjectsPage />
-      default: return location.hash 
+      case ROUTES.ACTIVITY.MY_APPLICATIONS:
+        return <MyApplicationsPage />
+      default:
+        return location.hash
     }
   }
 
@@ -38,9 +42,7 @@ export function ProjectActivitiesLayout() {
       <BackLink fallback={ROUTES.MAIN} className={styles.back} />
       <h1 className={styles.title}>Проектная деятельность</h1>
       <ProjectActivitiesTabs className={styles.tabs} />
-      <div className={styles.outlet}>
-        {renderContent()}
-      </div>
+      <div className={styles.outlet}>{renderContent()}</div>
     </div>
   )
 }
