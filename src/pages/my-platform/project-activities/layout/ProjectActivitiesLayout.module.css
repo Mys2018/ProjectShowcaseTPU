@@ -6,11 +6,12 @@
   justify-items: start;
 
   grid-template-columns: 300px 1fr;
-  grid-template-rows: 48px 54px 1fr;
+  grid-template-rows: 48px 54px repeat(3, auto);
 
   padding: 50px 20px 0;
   max-width: 1560px;
 
+  background-color: var(--color-white);
 }
 
 .back,
@@ -20,8 +21,8 @@
 }
 
 .back {
-  grid-row: 1;
   grid-column: 1;
+  order: 1;
 
   display: flex;
   align-items: center;
@@ -41,19 +42,21 @@
 }
 
 .title {
-  grid-row: 1;
   grid-column: 2;
+  order: 2;
 
   font: var(--hero-title-platform);
   color: var(--color-brand-black);
 }
 
 .tabs {
-  grid-row: 2;
   grid-column: 2;
+  order: 3;
 }
 
 .outlet {
-  grid-row: 3;
   grid-column: 2;
+  order: 4;
+
+  width: 100%;
 }
