@@ -17,7 +17,7 @@ import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
-import { usePlatforms } from "@/entities/platforms/api/queries.ts";
+import { usePlatformFinder } from "@/entities/platforms";
 import { useMemo } from "react";
 import { BackLink } from "@/shared/ui/back-link";
 import { ROUTES } from "@/shared";
@@ -64,19 +64,11 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { name: 'Яра', role: 'Frontend', avatarSrc: '' }
   ];
 
-  const { data: platformsData } = usePlatforms();
+  const { platformsData, findPlatformName } = usePlatformFinder();
 
   const links = useMemo(() => {
     const result: { title: string; link: string; service: string }[] = [];
     if (!platformsData) return result;
-
-    const findPlatformName = (id: string) => {
-      for (const group of platformsData) {
-        const found = group.platforms.find(p => p.platformId === id);
-        if (found) return found.name;
-      }
-      return 'Unknown';
-    };
 
     if (project.repository) {
       project.repository.forEach(item => {
@@ -97,7 +89,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }
 
     return result;
-  }, [project, platformsData]);
+  }, [project, platformsData, findPlatformName]);
 
   const programmaticScrolls = useRef(new WeakSet<HTMLElement>());
 

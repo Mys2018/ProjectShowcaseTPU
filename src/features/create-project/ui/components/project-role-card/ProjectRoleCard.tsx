@@ -73,9 +73,15 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                 <h4 className={styles.cardTitle}>
                   {index + 1}. {roleName}
                 </h4>
-                <p className={styles.required}>
-                  *
-                </p>
+                <form.Field name={`roles[${index}].minPlacesCount`}>
+                  {(field) =>
+                    Boolean(field.state.value && field.state.value > 0) ? (
+                      <p className={styles.required}>
+                        *
+                      </p>
+                    ) : null
+                  }
+                </form.Field>
                 <p className={styles.occurrenceIndex}>
                   {occurrenceIndex !== 1 && `(${occurrenceIndex})`}
                 </p>

@@ -14,8 +14,8 @@ export function TagBadgeList({ tags, visibleCount, className }: TagBadgeListProp
   const remaining = tags.length - visibleTags.length
   return (
     <div className={clsx(styles.tags, className)}>
-      {visibleTags.map(tag => (
-        <TagBadge key={tag.id} tag={tag} />
+      {visibleTags.map((tag, i) => (
+        <TagBadge key={tag.id ? `${tag.id}-${i}` : i} tag={tag} />
       ))}
       {remaining > 0 && <p className={styles.label}>Ещё +{remaining}</p>}
     </div>

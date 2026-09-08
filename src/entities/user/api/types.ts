@@ -1,4 +1,4 @@
-import type {Messengers, UserDto} from "../model/types.ts";
+import type { Messengers, UserBaseDto, UserDto } from "../model/types.ts";
 
 export interface OAuthExchangeParams {
   code: string;
@@ -26,11 +26,14 @@ export interface UpdateProfileMetaRequest {
 }
 
 export interface GetUsersRequest {
-  query: string;
+  query?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface GetUsersResponse {
-  users: UserDto[]
+  users: (UserBaseDto | UserDto)[];
+  total?: number;
+  offset?: number;
+  limit?: number;
 }

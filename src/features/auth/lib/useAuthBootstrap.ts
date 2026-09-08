@@ -10,7 +10,7 @@ import {
   usePreferencesStore,
   type OAuthExchangeParams,
 } from "@/entities/user";
-import { ROUTES } from "@/shared";
+import { ROUTES, queryClient } from "@/shared";
 
 export const useAuthBootstrap = () => {
   const navigate = useNavigate();
@@ -26,6 +26,25 @@ export const useAuthBootstrap = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const hasOAuthCallback =
     searchParams.has("code") && searchParams.has("state");
+
+  useEffect(() => {
+    const handleRefreshed = () => {
+      setStatus("authenticated");
+    };
+
+    const handleUnauthorized = () => {
+      setStatus("unauthenticated");
+      queryClient.clear();
+    };
+
+    window.addEventListener("auth:refreshed", handleRefreshed);
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("auth:refreshed", handleRefreshed);
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
+  }, [setStatus]);
 
   useEffect(() => {
     if (userData?.roles) {

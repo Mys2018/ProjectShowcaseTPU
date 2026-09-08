@@ -6,8 +6,8 @@
 
 .picture {
   flex-shrink: 0;
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   background-color: var(--color-brand-green);
   object-fit: cover;
@@ -17,13 +17,15 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  color: var(--color-gray-900);
+  justify-content: center;
 }
 
 .name {
   font: var(--OS-14-550);
+  color: var(--color-brand-black);
 }
 
 .sub {
-  font: var(--OS-11-400);
+  font: var(--OS-12-400);
+  color: var(--color-brand-black);
 }

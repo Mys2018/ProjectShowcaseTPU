@@ -33,9 +33,26 @@ export async function getUserById(uid: number): Promise<User> {
   return mapUserDto(data)
 }
 
-export async function getUsers(params: GetUsersRequest): Promise<{ users: User[] }> {
-  const { data } = await api.post<GetUsersResponse>(ENDPOINTS.USERS, params)
-  return { users: data.users.map(mapUserDto) }
+export async function getUsers(params?: GetUsersRequest): Promise<{ users: User[]; total: number }> {
+  const { data } = await api.get<GetUsersResponse>(ENDPOINTS.USERS, {
+    params: {
+      query: params?.query,
+      limit: params?.limit ?? 20,
+      offset: params?.offset ?? 0
+    }
+  })
+
+  const rawUsers = data?.users ?? []
+  const total = data?.total ?? rawUsers.length
+
+  const enrichedUsers = await Promise.all(
+    rawUsers.map((u) => getUserById(u.userId))
+  )
+
+  return {
+    users: enrichedUsers,
+    total
+  }
 }
 
 export async function updateProfileMeta(payload: UpdateProfileMetaRequest): Promise<void> {

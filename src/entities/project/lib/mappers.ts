@@ -5,7 +5,7 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     id: dto.id,
     type: dto.type || 'Case',
 
-    tags: dto.tags.map(t => ({ id: t.groupId, name: t.tagName, groupId: t.groupId })) ?? [],
+    tags: dto.tags.map(t => ({ id: t.tagId, name: t.tagName, groupId: t.groupId })) ?? [],
     primaryTag: { id: dto.primaryTag.tagId, name: dto.primaryTag.tagName, groupId: dto.primaryTag.groupId },
 
     ownerId: dto.ownerId,
