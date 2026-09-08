@@ -5,7 +5,7 @@ import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
-import { CompetencyBadge, useCompetencies } from '@/entities/competency'
+import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
 import { ClockIcon, ImageSkeleton, TextSkeleton } from '@/shared'
 
 interface StudentApplicationProjectCardProps {
@@ -49,15 +49,14 @@ export function StudentApplicationProjectCard({ application, className }: Studen
       mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
       sideSlot={
         <div className={styles.side}>
-          {targetCompetency && (
-            <div className={styles.competency}>
-              <p className={styles.label}>Компетенция:</p>
-              <CompetencyBadge competency={targetCompetency} />
-            </div>
-          )}
+          <div className={styles.competency}>
+            <p className={styles.label}>Компетенция:</p>
+            {targetCompetency ? <CompetencyBadge competency={targetCompetency} /> : <CompetencyRowSkeleton className={styles.skeleton} />}
+          </div>
+
           <div className={styles.curator}>
             <p className={styles.label}>Наставник:</p>
-            <div className={styles.userRow}>
+            <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
               {curator ? (
                 <>
                   <img className={styles.image} src={curator.profilePicture} loading='lazy' />
