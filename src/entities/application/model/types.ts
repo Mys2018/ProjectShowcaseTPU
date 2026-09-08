@@ -4,6 +4,7 @@ export interface Application {
   applicationID: string
   studentID: number
   roleID: string
+  projectId: string
   createdAt: Date
   status: ApplicationStatus
 }
@@ -19,6 +20,7 @@ export interface ApplicationDto {
   applicationID: string
   studentID: number
   roleID: string
+  projectID?: string // TODO required
   createdAt: string
   status: Capitalize<ApplicationStatus>
 }

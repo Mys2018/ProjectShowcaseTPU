@@ -3,6 +3,7 @@ import type { Application, ApplicationDto, ListApplicationsResponse, ListApplica
 export const mapProjectApplication = (dto: ApplicationDto): Application => {
   return {
     ...dto,
+    projectId: dto.projectID ?? '' // TODO required,
     status: dto.status.toLowerCase() as ApplicationStatus,
     createdAt: new Date(dto.createdAt)
   }
