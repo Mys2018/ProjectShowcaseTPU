@@ -6,29 +6,12 @@
   border-radius: 12px;
   gap: 6px;
   border: 1px solid var(--color-gray-200);
-  font: var(--inter-11-600);
-  color: var(--color-brand-green);
   width: fit-content;
 }
 
-.green {
-  color: var(--color-brand-green);
-}
-
-.orange {
-  color: var(--color-orange);
-}
-
-.violet {
-  color: var(--color-brand-violet);
-}
-
-.grey {
+.label {
+  font: var(--inter-11-600);
   color: var(--color-gray-650);
-}
-
-.red {
-  color: var(--color-red);
 }
 
 @media (max-width: 768px) {
@@ -37,3 +20,26 @@
     border-radius: 8px;
   }
 }
+
+.Recruiting,
+.NotImplemented {
+  color: var(--color-brand-green);
+}
+
+.RecruitmentCompleted {
+  color: var(--color-orange);
+}
+
+.InProgress {
+  color: var(--color-brand-violet);
+}
+
+.Completed {
+  color: var(--color-gray-650);
+}
+
+.Rejected {
+  color: var(--color-red);
+}
+
+
