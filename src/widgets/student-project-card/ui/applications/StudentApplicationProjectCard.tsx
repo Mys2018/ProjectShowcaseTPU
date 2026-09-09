@@ -4,7 +4,7 @@ import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { useUserById } from '@/entities/user'
+import { useUserById, TeamUserCard } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
 import { ClockIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
@@ -59,10 +59,14 @@ export function StudentApplicationProjectCard({ application, className }: Studen
             <p className={styles.label}>Наставник:</p>
             <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
               {curator ? (
-                <>
-                  <img className={styles.image} src={curator.profilePicture} loading='lazy' />
-                  <p className={styles.name}>{curator.meta.name}</p>
-                </>
+                <TeamUserCard
+                  avatar={curator.profilePicture}
+                  firstName={curator.meta.firstName}
+                  lastName={curator.meta.lastName}
+                  nameStyle='normal'
+                  nameTextStyle='bodySmall'
+                  nameSubtextStyle='OS-10-400'
+                />
               ) : (
                 <>
                   <ImageSkeleton className={styles.image} />

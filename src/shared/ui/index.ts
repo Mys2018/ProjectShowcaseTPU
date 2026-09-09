@@ -32,4 +32,5 @@ import StudyIcon from './icons/studyIcon.svg?react'
 import ChevronRightIcon from '../assets/chevron_right.svg?react'
 import CrossIcon from './icons/cross.svg?react'
 import ClockIcon from './icons/clock.svg?react'
-export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon, CrossIcon, ClockIcon }
+import CalendarIcon from './icons/calendar.svg?react'
+export { userIconUrl, FeedbackIcon, FolderIcon, LikeIcon, BackArrowIcon, CodeIcon, StudyIcon, ChevronRightIcon, CrossIcon, ClockIcon, CalendarIcon }
