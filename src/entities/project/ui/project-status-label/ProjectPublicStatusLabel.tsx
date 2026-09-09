@@ -1,70 +1,28 @@
-import styles from "./ProjectPublicStatusLabel.module.css";
-import type {ProjectStatus} from "../../model/types.ts";
+import clsx from 'clsx'
+import styles from './ProjectPublicStatusLabel.module.css'
+import type { ProjectStatus } from '../../model/types.ts'
+import { getProjectStatusTranslation } from '../../lib/translations.ts'
 import TargetIcon from '@/shared/ui/icons/target.svg?react'
-import clsx from "clsx";
 
 interface ProjectStatusLabelProps {
   status: ProjectStatus
 }
 
-const getStatusData = (status: ProjectStatus) => {
+export const ProjectPublicStatusLabel = ({ status }: ProjectStatusLabelProps) => {
+  let Icon
   switch (status) {
-    case "Recruiting":
-      return {
-        label: "Набор на проект",
-        className: styles.green,
-        target: true
-      };
-    case "RecruitmentCompleted":
-      return {
-        label: "Набор завершен",
-        className: styles.orange,
-        target: true
-      };
-    case "InProgress":
-      return {
-        label: "В работе",
-        className: styles.violet,
-        target: true
-      };
-    case "Completed":
-      return {
-        label: "Завершен",
-        className: styles.grey,
-        target: false
-      };
-    case "NotImplemented":
-      return {
-        label: "Не реализован",
-        className: styles.green,
-        target: false
-      };
-    case "Rejected":
-      return {
-        label: "Отклонён модератором",
-        className: styles.green,
-        target: true
-      };
-    default:
-      return {
-        label: "Нет статуса",
-        className: styles.grey,
-        target: false
-      };
+    case 'InProgress':
+    case 'Rejected':
+    case 'Recruiting':
+    case 'RecruitmentCompleted': {
+      Icon = TargetIcon
+    }
   }
-}
-
-export const ProjectPublicStatusLabel = ({status}: ProjectStatusLabelProps) => {
-  const { label, className, target } = getStatusData(status);
 
   return (
-    <span className={clsx(styles.status, className)}>
-      {
-        target && <TargetIcon className={className}/>
-      }
-      {
-        label
-      }
+    <span className={styles.status}>
+      {Icon && <Icon className={styles.className} />}
+      <p className={clsx(styles.label, styles[status])}>{getProjectStatusTranslation(status)}</p>
     </span>
   )
 }
