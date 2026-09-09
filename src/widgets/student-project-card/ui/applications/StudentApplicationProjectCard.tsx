@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
-import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
+import { PartnerRow } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById } from '@/entities/user'
@@ -14,7 +14,7 @@ interface StudentApplicationProjectCardProps {
 
 export function StudentApplicationProjectCard({ projectId, className }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(projectId)
-  const { data: partner } = usePartnerById(project!.partnerId, project !== undefined)
+  const partner = project?.partner
   const { data: curator } = useUserById(project!.ownerId, project !== undefined)
   // const { data: competencies } = useCompetencies()
 	
@@ -34,7 +34,7 @@ export function StudentApplicationProjectCard({ projectId, className }: StudentA
           </div>
         ) : undefined
       }
-      mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
+      mainSlot={partner ? <PartnerRow partner={partner} /> : undefined}
       sideSlot={
         <>
           <span className={styles.divider} />

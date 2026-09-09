@@ -88,6 +88,12 @@
   padding: 0 16px;
 }
 
+.userRowContainer {
+  background-color: white;
+  padding: 4px 16px 4px 4px;
+  border-radius: 45px;
+}
+
 .switchContainer {
   padding: 0px 16px 2px 0;
   display: flex;

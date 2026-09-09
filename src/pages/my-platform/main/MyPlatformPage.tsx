@@ -1,15 +1,17 @@
 import clsx from 'clsx'
 import { useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
+import {MyPlatformProjectsWidgets} from "@/widgets/my-platform-widgets";
 import {
+  Avatar,
   getSwitchableRoles,
   ROLES_TRANSLATIONS,
   useMe,
   usePreferencesStore,
-  UserRow,
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
+import {TeamUserCard} from "@/entities/user/ui";
 import {
   FloatingTabs,
   StagesWidget,
@@ -19,7 +21,6 @@ import {
   type ClosingDiscipline,
   type FloatingTabItem
 } from '@/shared'
-import {MyPlatformProjectsWidgets} from "@/widgets/my-platform-widgets";
 
 export const MyPlatformPage = () => {
   const { data: user } = useMe()
@@ -127,13 +128,33 @@ export const MyPlatformPage = () => {
     if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
   }
 
+  console.log(user?.roles)
+
   return (
     <main className={`${styles.container} ${preferredRoleType ? styles[preferredRoleType.toLowerCase()] : ''}`} onScroll={handleScroll}>
       <span className={`${styles.background} ${styles.fixed}`} />
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
 
-      <aside className={styles.userRow}>{user ? <UserRow user={user} /> : <UserRowSkeleton />}</aside>
+      <aside className={styles.userRow}>{user ?
+        <div className={styles.userRowContainer}>
+          <TeamUserCard
+            avatar={
+              <Avatar
+                fallbackType={'user'}
+                size={"40px"}
+                strokeColor={"grey"}
+              />
+            }
+            firstName={user.meta.firstName}
+            lastName={user.meta.lastName}
+            nameTextStyle={"ALS"}
+            nameSubtextStyle={"OS-10-400"}
+            nameStyle={"normal"}
+            roles={user.competencies}
+          />
+        </div>
+          :<UserRowSkeleton />}</aside>
 
       <div className={styles.titleContainer}>
         {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}

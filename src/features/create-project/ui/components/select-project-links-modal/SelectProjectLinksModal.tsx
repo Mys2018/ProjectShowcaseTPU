@@ -14,10 +14,11 @@ interface SelectProjectLinksModalProps {
   onConfirm: (selectedLinks: Platform[]) => void;
 }
 
-const CATEGORY_CONFIG: Record<Category, { title: string; required: boolean }> = {
+const CATEGORY_CONFIG: Record<string, { title: string; required: boolean }> = {
   Repository: { title: 'Репозиторий', required: true },
   TaskTracker: { title: 'Таск-трекеры', required: true },
-  DesignEnvironment: { title: 'Дизайн-среда', required: false },
+  OtherPlatforms: { title: 'Прочее', required: false },
+  DesignEnvironment: { title: 'Прочее', required: false },
 };
 
 export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initialSelected = [], onConfirm }: SelectProjectLinksModalProps) => {
@@ -30,12 +31,18 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
     if (!platformsData) return [];
     
     return platformsData.map(group => {
-      const config = CATEGORY_CONFIG[group.category] || { title: group.category, required: false };
+      const isOther = group.category === 'OtherPlatforms' || (group.category as string) === 'DesignEnvironment';
+      const config = isOther
+        ? CATEGORY_CONFIG.OtherPlatforms
+        : CATEGORY_CONFIG[group.category] || { title: group.category, required: false };
       return {
-        categoryKey: group.category,
+        categoryKey: isOther ? 'OtherPlatforms' : group.category,
         category: config.title,
         required: config.required,
-        links: group.platforms
+        links: (group.platforms || []).map(p => ({
+          ...p,
+          category: (p.category === 'OtherPlatforms' || (p.category as string) === 'DesignEnvironment') ? 'OtherPlatforms' as Category : p.category
+        }))
       };
     });
   }, [platformsData]);

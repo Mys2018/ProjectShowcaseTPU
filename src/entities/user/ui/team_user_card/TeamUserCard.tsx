@@ -1,5 +1,5 @@
 import styles from './TeamUserCard.module.css'
-import type {ReactNode} from "react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 
 type TeamUserCardTextStyle = 'ALS' | 'bodyText' | 'OS-12-500' | 'bodySmall'
@@ -91,15 +91,15 @@ export const TeamUserCard = ({
         }
         <div className={styles.moreInfo}>
           {course && (
-            <p className={getTeamUserCardSubtextStyle(nameSubtextStyle)}>
+            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {course} курс
             </p>
           )}
           {course && roles && roles.length > 0 && (
-            <div className={styles.verticalSeparator}/>
+            <div className={styles.verticalSeparator} />
           )}
           {roles && roles.length > 0 && (
-            <p className={getTeamUserCardSubtextStyle(nameSubtextStyle)}>
+            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {roles.join(', ')}
             </p>
           )}

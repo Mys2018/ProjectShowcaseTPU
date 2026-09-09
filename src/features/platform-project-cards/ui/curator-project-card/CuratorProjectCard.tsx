@@ -6,40 +6,40 @@ import {
   ProjectInnerStatus,
   ProjectPublicStatusLabel
 } from "@/entities/project";
-import {PartnerRow, PartnerRowSkeleton, usePartnerById} from "@/entities/partner";
-import {TagBadgeList} from "@/entities/tag";
-import {Avatar} from "@/entities/user";
-import {PlatformBadgeSmall, usePlatformFinder} from "@/entities/platforms";
+import {PartnerRow, PartnerRowSkeleton} from "@/entities/partner";
+import { TagBadgeList } from "@/entities/tag";
+import { Avatar } from "@/entities/user";
+import { PlatformBadgeSmall } from "@/entities/platforms";
+import { ArchiveButton } from "@/shared/ui/elements/buttons";
+import {ApplicationBlock} from "@/entities/application/ui/application-block/ApplicationBlock.tsx";
 
 interface CuratorProjectCardProps {
   project: ProjectCardData
 }
 
-export const CuratorProjectCard = ({project}: CuratorProjectCardProps) => {
+export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
-  const partnerId = project?.partnerId || ''
-  const { data: partner } = usePartnerById(partnerId, Boolean(partnerId))
-  const { findPlatformName } = usePlatformFinder()
+  const partner = project?.partner
 
   const resources = useMemo(() => [
     ...(project.repository || []),
     ...(project.taskTracker || []),
-    ...(project.designEnvironment || [])
-  ], [project.repository, project.taskTracker, project.designEnvironment]);
+    ...(project.otherPlatforms || project.designEnvironment || [])
+  ], [project.repository, project.taskTracker, project.otherPlatforms, project.designEnvironment]);
 
   return (
     <ProjectCardHorizontal
       project={project}
-      partnerSlot={partner ? <PartnerRow partner={partner}/> : <PartnerRowSkeleton/>}
+      partnerSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
       headerSlot={
         <div className={styles.header}>
           <div className={styles.badges}>
-            <TagBadgeList  tags={project.tags}/>
+            <TagBadgeList tags={project.tags} />
           </div>
 
           <div className={styles.statusContainer}>
-            <ProjectPublicStatusLabel status={project.status}/>
-            <ProjectInnerStatus status={project.status}/>
+            <ProjectPublicStatusLabel status={project.status} />
+            <ProjectInnerStatus status={project.status} />
           </div>
         </div>
       }
@@ -50,11 +50,11 @@ export const CuratorProjectCard = ({project}: CuratorProjectCardProps) => {
               Команда:
             </p>
             <div className={styles.teamList}>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'}/>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'}/>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'}/>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'}/>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'}/>
+              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
+              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
+              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
+              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
+              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
             </div>
           </div>
           {resources.length > 0 && (
@@ -64,18 +64,23 @@ export const CuratorProjectCard = ({project}: CuratorProjectCardProps) => {
               </p>
               <div className={styles.resourceList}>
                 {resources.map((platform, idx) => {
-                  const platformName = findPlatformName(platform.platformId)
                   return (
                     <PlatformBadgeSmall
                       key={`${platform.platformId}-${idx}`}
                       link={platform.url}
-                      platformName={platformName}
+                      platformName={platform.name}
                     />
                   )
                 })}
               </div>
             </div>
           )}
+        </div>
+      }
+      footerSlot={
+        <div className={styles.footer}>
+          <ArchiveButton color='grey' />
+          <ApplicationBlock applicationCount={67} notification={true} onClick={() => {}} buttonText={"Смотреть"}/>
         </div>
       }
     />

@@ -58,23 +58,29 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   const links = useMemo(() => {
     const result: { title: string; link: string; service: string }[] = [];
-    if (!platformsData) return result;
+
+    const getServiceName = (item: { platformId: string; name?: string }) => {
+      const found = findPlatformName(item.platformId);
+      if (found && found !== 'Unknown') return found;
+      return item.name || 'Платформа';
+    };
 
     if (project.repository) {
       project.repository.forEach(item => {
-        result.push({ title: 'Репозиторий', service: findPlatformName(item.platformId), link: item.url });
+        result.push({ title: 'Репозиторий', service: getServiceName(item), link: item.url });
       });
     }
 
     if (project.taskTracker) {
       project.taskTracker.forEach(item => {
-        result.push({ title: 'Таск-трекер', service: findPlatformName(item.platformId), link: item.url });
+        result.push({ title: 'Таск-трекер', service: getServiceName(item), link: item.url });
       });
     }
 
-    if (project.designEnvironment) {
-      project.designEnvironment.forEach(item => {
-        result.push({ title: 'Дизайн-среда', service: findPlatformName(item.platformId), link: item.url });
+    const otherLinks = project.otherPlatforms || project.designEnvironment;
+    if (otherLinks) {
+      otherLinks.forEach(item => {
+        result.push({ title: 'Прочее', service: getServiceName(item), link: item.url });
       });
     }
 

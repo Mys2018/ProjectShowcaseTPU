@@ -33,7 +33,8 @@ export const DraftProjectCard = ({ draft, className, onContinue }: DraftProjectC
   }, [draft])
 
   const partnerId = draftProject?.partnerId || ''
-  const { data: partner } = usePartnerById(partnerId, Boolean(partnerId))
+  const { data: fetchedPartner } = usePartnerById(partnerId, !draftProject?.partner && Boolean(partnerId))
+  const partner = draftProject?.partner || fetchedPartner
 
   const handleContinue = () => {
     if (onContinue) {

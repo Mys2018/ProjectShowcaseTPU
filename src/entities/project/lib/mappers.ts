@@ -1,6 +1,15 @@
 import type { ProjectDto, ProjectCardData } from '../model/types'
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
+  const partnerId = dto.partner?.projectPartnerId || dto.partner?.id || dto.partnerId || ''
+  const partner = dto.partner
+    ? {
+        id: dto.partner.projectPartnerId || dto.partner.id || partnerId,
+        name: dto.partner.name,
+        profilePicture: dto.partner.profilePicture || '',
+      }
+    : undefined
+
   return {
     id: dto.id,
     type: dto.type || 'Case',
@@ -9,7 +18,8 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     primaryTag: { id: dto.primaryTag.tagId, name: dto.primaryTag.tagName, groupId: dto.primaryTag.groupId },
 
     ownerId: dto.ownerId,
-    partnerId: dto.partnerId,
+    partnerId,
+    partner,
     status: dto.status,
     meta: {
       title: dto.meta?.title || '',
@@ -55,6 +65,7 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     repository: dto.repository,
     taskTracker: dto.taskTracker,
-    designEnvironment: dto.designEnvironment
+    designEnvironment: dto.designEnvironment || dto.otherPlatforms,
+    otherPlatforms: dto.otherPlatforms || dto.designEnvironment
   }
 }

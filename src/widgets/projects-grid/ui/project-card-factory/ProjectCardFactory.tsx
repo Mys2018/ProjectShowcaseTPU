@@ -4,7 +4,7 @@ import { LikeProjectButton } from '@/features/like-project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { ProjectCardVertical, type ProjectCardData } from '@/entities/project'
 import { CompetencyBadgeList } from '@/entities/competency'
-import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
+import { PartnerRow } from '@/entities/partner'
 import { buildRoute } from '@/shared'
 import clsx from "clsx";
 
@@ -14,7 +14,7 @@ interface ProjectCardFactoryProps {
 
 export const ProjectCardFactory = ({ project }: ProjectCardFactoryProps) => {
   const navigate = useNavigate()
-  const { data: partner } = usePartnerById(project.partnerId)
+  const partner = project.partner
 
   const { id, liked, tags, primaryTag, roles } = project
   const competencies = roles.map(r => ({ id: r.roleId, name: r.meta.name }))
@@ -36,10 +36,12 @@ export const ProjectCardFactory = ({ project }: ProjectCardFactoryProps) => {
       }
       bodySlot={<CompetencyBadgeList row competencies={competencies} />}
       footerSlot={
-        <div className={styles.footer}>
-          <span className={styles.divider} />
-          {partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
-        </div>
+        partner ? (
+          <div className={styles.footer}>
+            <span className={styles.divider} />
+            <PartnerRow partner={partner} />
+          </div>
+        ) : undefined
       }
     />
   )
