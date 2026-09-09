@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './ParticipatingProjectsPage.module.css'
 import { getFilteredProjects } from './lib/getFIlteredProjects'
-import { StudentParticipateProjectCard } from '@/widgets/student-project-card'
+import { StudentParticipatingProjectCard } from '@/widgets/student-project-card'
 import { useMe } from '@/entities/user'
 import { useParticipatingProjects } from '@/entities/project'
 import { BlankPhoto, FilledButton, ROUTES } from '@/shared'
@@ -35,7 +35,7 @@ export function ParticipatingProjectsPage() {
         <div className={styles.list}>
           {hasActiveProjects ? (
             activeProjects.map(({ project, competencyId }) => (
-              <StudentParticipateProjectCard key={project.id} project={project} competencyId={competencyId} />
+              <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
             ))
           ) : (
             <div className={styles.empty}>
@@ -62,7 +62,12 @@ export function ParticipatingProjectsPage() {
           <h3 className={styles.title}>История откликов</h3>
           <div className={styles.buttonList}>
             {Array.from({ length: myGrade }, (_, i) => (
-              <button className={clsx(styles.gradeButton, myGrade - i === selectedArchiveGrade && styles.active)} onClick={() => setSelectedArchiveGrade(myGrade - i)} type='button' key={i}>
+              <button
+                className={clsx(styles.gradeButton, myGrade - i === selectedArchiveGrade && styles.active)}
+                onClick={() => setSelectedArchiveGrade(myGrade - i)}
+                type='button'
+                key={i}
+              >
                 {myGrade - i} курс
               </button>
             ))}
@@ -71,7 +76,7 @@ export function ParticipatingProjectsPage() {
         <div className={styles.list}>
           {hasArchivedProjects ? (
             archivedProjects.map(({ project, competencyId }) => (
-              <StudentParticipateProjectCard key={project.id} project={project} competencyId={competencyId} />
+              <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
             ))
           ) : (
             <div className={styles.description}>

@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
-import styles from './StudentParticipateProjectCard.module.css'
+import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
 import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
 import { getProjectDates, ProjectCardHorizontal, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
@@ -8,13 +8,13 @@ import { TeamUserCard, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { CalendarIcon, ChevronRightIcon, ImageSkeleton, mapDateToLocalString, ROUTES, TextSkeleton } from '@/shared'
 
-interface StudentParticipateProjectCardProps {
+interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
   competencyId: string
   className?: string
 }
 
-export function StudentParticipateProjectCard({ project, competencyId, className }: StudentParticipateProjectCardProps) {
+export function StudentParticipatingProjectCard({ project, competencyId, className }: StudentParticipatingProjectCardProps) {
   const { data: partner } = usePartnerById(project.partnerId)
   const { data: curator } = useUserById(project.ownerId)
   const { data: competencies } = useCompetencies()
