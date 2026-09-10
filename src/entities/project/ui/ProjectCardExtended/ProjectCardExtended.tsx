@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function ProjectCardExtended({ project }: Props) {
-  const { id, type, tags, primaryTag, partnerId, partner, meta, roles, brandColor } = project;
+  const { id, type, tags, primaryTag, partner, meta, roles, brandColor } = project;
 
   const visibleDirections = tags.slice(0, 3);
   const remainCount = tags.length - 3;
@@ -44,13 +44,13 @@ export default function ProjectCardExtended({ project }: Props) {
 
 
             <div className={styles.org}>
-              {partner?.profilePicture ? (
+              {partner.profilePicture ? (
                 <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name} />
               ) : (
-                <div className={styles.orgAvatar}>{(partner?.name || (partnerId as any)?.verbose || partnerId || 'Т')[0]}</div>
+                <div className={styles.orgAvatar}>{partner.name.at(0)}</div>
               )}
               <div className={styles.orgInfo}>
-                <span className={styles.orgName}>{partner?.name || (partnerId as any)?.verbose || partnerId}</span>
+                <span className={styles.orgName}>{partner.name}</span>
                 <span className={styles.orgSub}>публикационная активность</span>
               </div>
             </div>
