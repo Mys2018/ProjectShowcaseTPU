@@ -5,8 +5,7 @@ import styles from './ParticipatingProjectsPage.module.css'
 import { getFilteredProjects } from './lib/getFIlteredProjects'
 import { StudentParticipatingProjectCard } from '@/widgets/student-project-card'
 import { useMe } from '@/entities/user'
-import { useParticipatingProjects } from '@/entities/project'
-import { BlankPhoto, FilledButton, ROUTES } from '@/shared'
+import { NoProjectsFallback, useParticipatingProjects } from '@/entities/project'
 
 export function ParticipatingProjectsPage() {
   const navigate = useNavigate()
@@ -38,22 +37,10 @@ export function ParticipatingProjectsPage() {
               <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
             ))
           ) : (
-            <div className={styles.empty}>
-              <BlankPhoto />
-              <div className={styles.content}>
-                <div className={styles.description}>
-                  <h5 className={styles.heading}>Активного проекта пока нет</h5>
-                  <p className={styles.paragraph}>
-                    Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!
-                  </p>
-                </div>
-                <FilledButton
-                  className={styles.catalogButton}
-                  onClick={() => void navigate(ROUTES.PROJECTS.BASE)}
-                  textButton='Выбрать проект'
-                />
-              </div>
-            </div>
+            <NoProjectsFallback
+              title='Активного проекта пока нет'
+              description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+            />
           )}
         </div>
       </div>

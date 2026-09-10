@@ -1,13 +1,12 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './MyApplicationsPage.module.css'
 import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
-import { BlankPhoto, CrossIcon, FilledButton, ROUTES } from '@/shared'
+import { NoProjectsFallback } from '@/entities/project'
+import { BlankPhoto, CrossIcon } from '@/shared'
 
 export function MyApplicationsPage() {
-  const navigate = useNavigate()
   const { data } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
   const applications = data?.applications || []
 
@@ -48,22 +47,11 @@ export function MyApplicationsPage() {
               <StudentApplicationProjectCard key={application.applicationID} application={application} />
             ))
           ) : (
-            <div className={styles.empty}>
-              <BlankPhoto />
-              <div className={styles.content}>
-                <div className={styles.description}>
-                  <h5 className={styles.heading}>Откликов пока нет</h5>
-                  <p className={styles.paragraph}>
-                    Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!
-                  </p>
-                </div>
-                <FilledButton
-                  className={styles.catalogButton}
-                  onClick={() => void navigate(ROUTES.PROJECTS.BASE)}
-                  textButton='Выбрать проект'
-                />
-              </div>
-            </div>
+            <NoProjectsFallback
+              className={styles.empty}
+              title='Откликов пока нет'
+              description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+            />
           )}
         </div>
       </div>
