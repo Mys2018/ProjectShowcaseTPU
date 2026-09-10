@@ -16,7 +16,7 @@ const useCreateApplication = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (roleId: string) => createApplication({ roleId }),
+    mutationFn: (roleId: string) => createApplication({ roleId, type: 'Application' }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
     }
@@ -80,7 +80,7 @@ export const FreeCompetencies = ({ roles }: FreeCompetenciesProps) => {
       try {
         await Promise.all(
           currentApplications.map(app =>
-            updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'closed' })
+            updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'cancelled' })
           )
         );
         setSelectedCompetencies([]);
@@ -174,9 +174,9 @@ export const FreeCompetencies = ({ roles }: FreeCompetenciesProps) => {
                     role.skills.length !== 0 ? (
                       <ul className={styles.skillsList}>
                         {
-                          role.skills.map((skill) => (
+                          role.skills.map((skill, skillIdx) => (
                             <li className={`${styles.skill} ${skill.requireSkill ? styles.required : ''}`}
-                              key={skill.skillName}>
+                              key={skill.skillId || `${skill.skillName}-${skillIdx}`}>
                               {skill.skillName}
                               {skill.requireSkill && (
                                 <>

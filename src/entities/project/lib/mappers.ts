@@ -41,9 +41,10 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
         name: r.roleType?.name || 'Без названия',
         description: r.meta?.description || ''
       },
-      skills: (r.skills || []).map(s => ({
-        skillId: s.skillId,
-        skillName: s.skillName
+      skills: (r.skills || []).map((s: any) => ({
+        skillId: s.skillId || s.id || '',
+        skillName: s.skillName || s.name || s.title || (typeof s === 'string' ? s : ''),
+        requireSkill: s.requireSkill ?? false,
       }))
     })),
 

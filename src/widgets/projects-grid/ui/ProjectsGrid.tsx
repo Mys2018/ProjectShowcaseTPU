@@ -3,6 +3,7 @@ import { ProjectCardFactory } from './project-card-factory/ProjectCardFactory'
 import { useFilterStore } from '@/features/filter'
 import { useLikedProjects, useProjects } from '@/entities/project'
 import { NoSuitableProjects } from '@/entities/project/ui/no-suitable-projects'
+import {ProjectSkeleton} from "@/shared";
 
 const fallbackProjectsData = { projects: [], total: 0 }
 
@@ -33,7 +34,13 @@ export default function ProjectsGrid({ type = 'all' }: ProjectsGridProps) {
   const isLoading = type === 'all' ? isAllLoading : isLikedLoading
   const isError = type === 'all' ? isAllError : isLikedError
 
-  if (isLoading) return <h2>Загрузка проектов...</h2>
+  if (isLoading) {
+    return (
+      <div className={styles.body}>
+        {Array.from({ length: 16 }, (_, i) => <ProjectSkeleton key={i} className={styles.skeleton}/>)}
+      </div>
+    )
+  }
   if (isError) return <h2>Ошибка при загрузке проектов</h2>
   if (!total && projectTypes.size !== 0 && tags.size !== 0 && competencies.size !== 0)
     return (

@@ -27,6 +27,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
     ...(project.otherPlatforms || project.designEnvironment || [])
   ], [project.repository, project.taskTracker, project.otherPlatforms, project.designEnvironment]);
 
+  console.log(project);
   return (
     <ProjectCardHorizontal
       project={project}

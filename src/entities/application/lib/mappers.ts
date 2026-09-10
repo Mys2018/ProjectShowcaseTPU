@@ -5,6 +5,7 @@ export const mapProjectApplication = (dto: ApplicationDto): Application => {
     ...dto,
     projectId: dto.projectID ?? '', // TODO required,
     status: dto.status.toLowerCase() as ApplicationStatus,
+    applicationType: dto.applicationType || 'Application',
     createdAt: new Date(dto.createdAt)
   }
 }

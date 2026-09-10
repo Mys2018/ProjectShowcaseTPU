@@ -4,11 +4,11 @@ import styles from './MyApplicationsPage.module.css'
 import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
-import { BlankPhoto, CrossIcon, FilledButton, ROUTES } from '@/shared'
+import {BlankPhoto, CrossIcon, FilledButton, ProjectSkeleton, ROUTES} from '@/shared'
 
 export function MyApplicationsPage() {
   const navigate = useNavigate()
-  const { data } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
+  const { data, isLoading: ApplicationLoading } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
   const applications = data?.applications || []
 
   const thisYear = new Date().getFullYear()
@@ -43,9 +43,18 @@ export function MyApplicationsPage() {
       <div className={styles.active}>
         <h3 className={styles.title}>Мои отклики</h3>
         <div className={styles.list}>
-          {hasActiveApplications ? (
+          {ApplicationLoading ? (
+            <>
+              <ProjectSkeleton className={styles.skeletonBig} />
+              <ProjectSkeleton className={styles.skeletonBig} />
+            </>
+          ) : hasActiveApplications ? (
             activeApplications.map(application => (
-              <StudentApplicationProjectCard key={application.applicationID} application={application} />
+              <StudentApplicationProjectCard
+                key={application.applicationID}
+                application={application}
+                skeletonClassName={styles.skeletonBig}
+              />
             ))
           ) : (
             <div className={styles.empty}>
@@ -70,9 +79,15 @@ export function MyApplicationsPage() {
       <div className={styles.archived}>
         <h3 className={styles.title}>История откликов</h3>
         <div className={styles.list}>
-          {hasArchivedApplications ? (
+          {ApplicationLoading ? (
+            <ProjectSkeleton className={styles.skeletonSmall} />
+          ) : hasArchivedApplications ? (
             archivedApplications.map(application => (
-              <StudentApplicationProjectCard key={application.applicationID} application={application} />
+              <StudentApplicationProjectCard
+                key={application.applicationID}
+                application={application}
+                skeletonClassName={styles.skeletonSmall}
+              />
             ))
           ) : (
             <div className={styles.description}>

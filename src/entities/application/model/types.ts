@@ -1,4 +1,5 @@
-export type ApplicationStatus = 'approved' | 'closed' | 'pending' | 'rejected'
+export type ApplicationStatus = 'approved' | 'closed' | 'pending' | 'rejected' | 'cancelled'
+export type ApplicationType = 'Application' | 'Invitation'
 
 export interface Application {
   applicationID: string
@@ -7,6 +8,7 @@ export interface Application {
   projectId: string
   createdAt: Date
   status: ApplicationStatus
+  applicationType?: ApplicationType
 }
 
 export interface ListApplicationsResponse {
@@ -22,7 +24,8 @@ export interface ApplicationDto {
   roleID: string
   projectID?: string // TODO required
   createdAt: string
-  status: Capitalize<ApplicationStatus>
+  status: Capitalize<ApplicationStatus> | ApplicationStatus
+  applicationType?: ApplicationType
 }
 
 export interface ListApplicationsResponseDto extends Omit<ListApplicationsResponse, 'applications'> {
@@ -31,6 +34,8 @@ export interface ListApplicationsResponseDto extends Omit<ListApplicationsRespon
 
 export interface CreateApplicationRequest {
   roleId: string
+  type: ApplicationType
+  studentId?: number
 }
 
 export interface CreateApplicationResponse {
@@ -39,6 +44,7 @@ export interface CreateApplicationResponse {
 
 export interface GetApplicationsQueryParams {
   mode: 'AsStudent' | 'AsOwner'
+  type?: ApplicationType
   status?: ApplicationStatus
   projectId?: string
   offset: number

@@ -46,17 +46,27 @@ const getStatusData = (status: InnerStatuses) => {
 
 const STATUS_MAP: Record<string, InnerStatuses> = {
   Recruiting: 'published',
+  recruiting: 'published',
   RecruitmentCompleted: 'published',
+  recruitmentcompleted: 'published',
+  recruitment_completed: 'published',
   InProgress: 'published',
   Completed: 'published',
   NotImplemented: 'published',
+  not_implemented: 'published',
   Pending: 'moderation',
+  pending: 'moderation',
   NeedsRework: 'report',
+  needsrework: 'report',
+  needs_rework: 'report',
 }
 
 export const ProjectInnerStatus = ({ status, children }: ProjectInnerStatusProps) => {
-  
-  const innerStatus = useMemo(() => STATUS_MAP[status], [status])
+  const innerStatus = useMemo(() => {
+    if (!status) return 'published';
+    const key = typeof status === 'string' ? status.trim().toLowerCase().replace(/_/g, '') : '';
+    return STATUS_MAP[key] || STATUS_MAP[status] || 'published';
+  }, [status]);
   const { icon, tooltipText } = getStatusData(innerStatus);
 
   return (
