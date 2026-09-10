@@ -1,6 +1,7 @@
 import styles from './ApplicationStatusBadge.module.css'
 import type { ApplicationStatus } from '../../model/types'
 import clsx from 'clsx'
+import {assertNever} from "@/shared";
 
 interface ApplicationStatusBadgeProps {
   status: ApplicationStatus
@@ -24,6 +25,6 @@ export function ApplicationStatusBadge({ status, className }: ApplicationStatusB
         </div>
       )
     default:
-      return <p className={clsx(styles.label, className)}>Отклик отменён</p>
+      return assertNever(status)
   }
 }

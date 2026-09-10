@@ -1,6 +1,6 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import './ProjectInnerStatus.module.css'
-import type {ProjectStatus} from "@/entities/project";
+import type {ProjectStatus} from "../../model/types.ts";
 import PublishedIcon from '@/shared/ui/icons/published_inner_status.svg?react'
 import ChangesIcon from '@/shared/ui/icons/changes_inner_status.svg?react'
 import ModerationIcon from '@/shared/ui/icons/moderation_inner_status.svg?react'
@@ -44,29 +44,20 @@ const getStatusData = (status: InnerStatuses) => {
   }
 }
 
-const STATUS_MAP: Record<string, InnerStatuses> = {
+const STATUS_MAP: Record<ProjectStatus, InnerStatuses> = {
   Recruiting: 'published',
-  recruiting: 'published',
   RecruitmentCompleted: 'published',
-  recruitmentcompleted: 'published',
-  recruitment_completed: 'published',
   InProgress: 'published',
   Completed: 'published',
   NotImplemented: 'published',
-  not_implemented: 'published',
+  // TODO Rejected Что-то придумать потом
+  Rejected: 'report',
   Pending: 'moderation',
-  pending: 'moderation',
-  NeedsRework: 'report',
-  needsrework: 'report',
-  needs_rework: 'report',
+  NeedsRework: 'report'
 }
 
 export const ProjectInnerStatus = ({ status, children }: ProjectInnerStatusProps) => {
-  const innerStatus = useMemo(() => {
-    if (!status) return 'published';
-    const key = typeof status === 'string' ? status.trim().toLowerCase().replace(/_/g, '') : '';
-    return STATUS_MAP[key] || STATUS_MAP[status] || 'published';
-  }, [status]);
+  const innerStatus: InnerStatuses = STATUS_MAP[status];
   const { icon, tooltipText } = getStatusData(innerStatus);
 
   return (

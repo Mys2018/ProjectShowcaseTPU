@@ -1,4 +1,5 @@
 import type { ProjectFormat, ProjectStatus } from '../model/types'
+import {assertNever} from "@/shared";
 
 export const getProjectFormatTranslation = (format: ProjectFormat) => {
   switch (format) {
@@ -34,6 +35,6 @@ export const getProjectStatusTranslation = (status: ProjectStatus) => {
     case 'Rejected':
       return 'Отклонён модератором'
     default:
-      return 'Нет статуса'
+      return assertNever(status)
   }
 }

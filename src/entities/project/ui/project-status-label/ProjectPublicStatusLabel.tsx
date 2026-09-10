@@ -22,7 +22,7 @@ export const ProjectPublicStatusLabel = ({ status }: ProjectStatusLabelProps) =>
   return (
     <span className={clsx(styles.status, styles[status])}>
       {Icon && <Icon className={styles.className} />}
-      <p className={clsx(styles.label, styles[status])}>{getProjectStatusTranslation(status)}</p>
+      <p className={styles.label}>{getProjectStatusTranslation(status)}</p>
     </span>
   )
 }

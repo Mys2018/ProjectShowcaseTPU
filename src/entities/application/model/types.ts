@@ -24,7 +24,7 @@ export interface ApplicationDto {
   roleID: string
   projectID?: string // TODO required
   createdAt: string
-  status: Capitalize<ApplicationStatus> | ApplicationStatus
+  status: Capitalize<ApplicationStatus>
   applicationType?: ApplicationType
 }
 
