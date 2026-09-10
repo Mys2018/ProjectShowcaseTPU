@@ -9,7 +9,6 @@ import { MyProfile } from '@/pages/my-profile'
 import { CreateProjectPage } from '@/pages/create-project'
 import { NotFoundPage } from '@/pages/not-found-page'
 import { SomeoneProfile } from '@/pages/someone-profile'
-import { ProjectsGrid } from '@/widgets/projects-grid'
 import { ROUTES } from '@/shared'
 
 export const router = createBrowserRouter([
@@ -58,17 +57,12 @@ export const router = createBrowserRouter([
                 element: <Navigate to={ROUTES.PROJECTS.RECRUITMENT} replace />
               },
               {
-                element: <Catalog />,
-                children: [
-                  {
-                    path: ROUTES.PROJECTS.RECRUITMENT,
-                    element: <ProjectsGrid />
-                  },
-                  {
-                    path: ROUTES.PROJECTS.IN_PROGRESS,
-                    element: <ProjectsGrid />
-                  }
-                ]
+                path: ROUTES.PROJECTS.RECRUITMENT,
+                element: <Catalog />
+              },
+              {
+                path: ROUTES.PROJECTS.IN_PROGRESS,
+                element: <Catalog />
               },
               {
                 path: ROUTES.PROJECTS.PROJECT,

@@ -1,14 +1,18 @@
 import { useRef } from 'react';
-import { Outlet } from "react-router-dom";
 import { useMediaQuery } from "usehooks-ts";
+import { useLocation } from "react-router-dom";
 import styles from './Catalog.module.css'
 import { ProjectsHeader } from "@/widgets/ProjectsHeader";
 import { MobileSearchBar } from "@/widgets/mobile-search-bar";
+import { ProjectsGrid } from '@/widgets/projects-grid';
 import { Filter } from "@/features/filter";
 import { SearchField } from "@/shared/ui";
 import { MOBILE_BREAKPOINT } from "@/shared/lib";
+import { ROUTES } from '@/shared';
 
 export const Catalog = () => {
+  const location = useLocation();
+
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
   const filterRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -40,6 +44,19 @@ export const Catalog = () => {
     }
   };
 
+  const renderProjectGrid = () => {
+    switch (location.pathname) {
+      case ROUTES.PROJECTS.RECRUITMENT: {
+        return <ProjectsGrid type='recruiting' />
+      }
+      case ROUTES.PROJECTS.IN_PROGRESS: {
+        return <ProjectsGrid type='in-progress' />
+      }
+      default:
+        return undefined
+    }
+  }
+
   return (
     <main className={styles.mainContent}>
       {isMobile ? (
@@ -56,7 +73,7 @@ export const Catalog = () => {
         <ProjectsHeader />
       </section>
       <section className={styles.projectsPart} ref={projectsRef} onScroll={handleScroll}>
-        <Outlet />
+        {renderProjectGrid()}
       </section>
     </main>
   );
