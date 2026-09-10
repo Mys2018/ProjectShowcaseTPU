@@ -2,4 +2,4 @@ export { ProjectCardHorizontal } from './project-card-horizontal/ProjectCardHori
 export { ProjectCardVertical } from './project-card-vertical/ProjectCardVertical'
 export { ProjectInnerStatus, type InnerStatuses } from './project-status-label/ProjectInnerStatus'
 export { ProjectPublicStatusLabel } from './project-status-label/ProjectPublicStatusLabel'
-
+export { NoProjectsFallback } from './no-projects-fallback/NoProjectsFallback'

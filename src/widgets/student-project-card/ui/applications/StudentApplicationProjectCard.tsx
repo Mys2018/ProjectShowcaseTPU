@@ -16,7 +16,6 @@ interface StudentApplicationProjectCardProps {
 
 export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
-  const partner = project?.partner
   const { data: curator } = useUserById(project!.ownerId, project !== undefined)
   const { data: competencies } = useCompetencies()
 
@@ -47,7 +46,7 @@ export function StudentApplicationProjectCard({ application, className }: Studen
           </div>
         ) : undefined
       }
-      mainSlot={partner ? <PartnerRow partner={partner} /> : undefined}
+      mainSlot={<PartnerRow partner={project.partner} />}
       sideSlot={
         <div className={styles.side}>
           <div className={styles.competency}>

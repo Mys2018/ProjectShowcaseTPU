@@ -1,17 +1,12 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './ParticipatingProjectsPage.module.css'
 import { getFilteredProjects } from './lib/getFIlteredProjects'
 import { StudentParticipatingProjectCard } from '@/widgets/student-project-card'
 import { useMe } from '@/entities/user'
-import { useParticipatingProjects } from '@/entities/project'
-import { BlankPhoto, FilledButton, ROUTES } from '@/shared'
+import { NoProjectsFallback, useParticipatingProjects } from '@/entities/project'
 
 export function ParticipatingProjectsPage() {
-  const navigate = useNavigate()
-  const thisYear = new Date().getFullYear()
-
   const { data } = useParticipatingProjects()
   const projects = data?.projects || []
 
@@ -38,22 +33,10 @@ export function ParticipatingProjectsPage() {
               <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
             ))
           ) : (
-            <div className={styles.empty}>
-              <BlankPhoto />
-              <div className={styles.content}>
-                <div className={styles.description}>
-                  <h5 className={styles.heading}>Активного проекта пока нет</h5>
-                  <p className={styles.paragraph}>
-                    Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!
-                  </p>
-                </div>
-                <FilledButton
-                  className={styles.catalogButton}
-                  onClick={() => void navigate(ROUTES.PROJECTS.BASE)}
-                  textButton='Выбрать проект'
-                />
-              </div>
-            </div>
+            <NoProjectsFallback
+              title='Активного проекта пока нет'
+              description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+            />
           )}
         </div>
       </div>
@@ -63,12 +46,12 @@ export function ParticipatingProjectsPage() {
           <div className={styles.buttonList}>
             {Array.from({ length: myGrade }, (_, i) => (
               <button
-                className={clsx(styles.gradeButton, myGrade - i === selectedArchiveGrade && styles.active)}
-                onClick={() => setSelectedArchiveGrade(myGrade - i)}
+                className={clsx(styles.gradeButton, i + 1 === selectedArchiveGrade && styles.active)}
+                onClick={() => setSelectedArchiveGrade(i + 1)}
                 type='button'
-                key={i}
+                key={i + 1}
               >
-                {myGrade - i} курс
+                {i + 1} курс
               </button>
             ))}
           </div>
@@ -80,7 +63,7 @@ export function ParticipatingProjectsPage() {
             ))
           ) : (
             <div className={styles.description}>
-              <h5 className={styles.heading}>В {thisYear} году вы не участвовали в проектах</h5>
+              <h5 className={styles.heading}>На {selectedArchiveGrade} курсе вы не участвовали в проектах</h5>
               <p className={styles.paragraph}>
                 Выбирайте подходящие проекты из каталога. Все проекты, в которых вы участвовали, будут храниться здесь вместе со
                 статистикой.

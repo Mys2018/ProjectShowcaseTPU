@@ -2,11 +2,11 @@ import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
-import { PartnerRow, PartnerRowSkeleton } from '@/entities/partner'
+import { PartnerRow } from '@/entities/partner'
 import { getProjectDates, ProjectCardHorizontal, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
 import { TeamUserCard, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { CalendarIcon, ChevronRightIcon, ImageSkeleton, mapDateToLocalString, ROUTES, TextSkeleton } from '@/shared'
+import { buildRoute, CalendarIcon, ChevronRightIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
@@ -38,7 +38,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
         </div>
       }
-      mainSlot={project.partner ? <PartnerRow partner={project.partner} /> : <PartnerRowSkeleton />}
+      mainSlot={<PartnerRow partner={project.partner} />}
       sideSlot={
         <>
           <div className={styles.side}>
@@ -94,7 +94,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
             </div>
           )}
           <div className={styles.summary}>
-            <Link className={styles.link} to={ROUTES.PROJECTS.PROJECT.replace(':id', project.id)}>
+            <Link className={styles.link} to={buildRoute.project(project.id)}>
               Перейти к проекту <ChevronRightIcon />
             </Link>
             <div className={clsx(styles.results, isClosed && styles.closed)}>
