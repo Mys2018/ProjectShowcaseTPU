@@ -7,9 +7,9 @@ import { CatalogLayout, Catalog, ProjectPage } from '@/pages/catalog-layout'
 import { MyPlatformPage, ProjectActivitiesLayout } from '@/pages/my-platform'
 import { MyProfile } from '@/pages/my-profile'
 import { CreateProjectPage } from '@/pages/create-project'
+import { NotFoundPage } from '@/pages/not-found-page'
 import { SomeoneProfile } from '@/pages/someone-profile'
 import { ProjectsGrid } from '@/widgets/projects-grid'
-import { NotFoundPage } from '@/pages/not-found-page'
 import { ROUTES } from '@/shared'
 
 export const router = createBrowserRouter([

@@ -1,0 +1,39 @@
+.list {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: var(--statusColor, --color-gray-350);
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+	color: var(--statusColor, --color-gray-350);
+}
+
+.label {
+  font: var(--inter-13-600);
+	color: var(--statusColor, --color-gray-350);
+}
+
+.approved {
+  --statusColor: var(--color-brand-green);
+}
+
+.rejected {
+  --statusColor: var(--color-red);
+}
+
+.closed {
+  --statusColor: var(--color-gray-350);
+}
+
+.pending {
+  --statusColor: var(--color-yellow);
+}

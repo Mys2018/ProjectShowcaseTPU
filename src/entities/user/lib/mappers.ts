@@ -23,7 +23,7 @@ export const mapUserDto = (dto: UserDto): User => {
     email: dto.email,
     profilePicture: dto.profilePicture || userIconUrl,
     group,
-    grade,
+    grade: Number(grade),
     competencies,
     meta: {
       name: `${dto.meta.firstName} ${dto.meta.lastName}`.trim(),
@@ -90,7 +90,7 @@ export const mapUserBaseDto = (dto: UserBaseDto | UserDto): UserBase => {
       } as UserRole
     }),
     competencies,
-    grade,
+    grade: Number(grade),
     meta: {
       name,
       firstName,

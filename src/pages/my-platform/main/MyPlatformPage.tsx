@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
-import {MyPlatformProjectsWidgets} from "@/widgets/my-platform-widgets";
+import { MyPlatformProjectsWidgets } from '@/widgets/my-platform-widgets'
 import {
   Avatar,
   getSwitchableRoles,
@@ -83,7 +83,7 @@ export const MyPlatformPage = () => {
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget
-    
+
     if (programmaticScrolls.current.has(target)) {
       programmaticScrolls.current.delete(target)
       return
@@ -101,6 +101,10 @@ export const MyPlatformPage = () => {
         programmaticScrolls.current.add(activitiesElement)
         activitiesElement.scrollTop = scrollTop
       }
+      if (contentElement) {
+        if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
+        if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
+      }
     }
     if (contentElement && contentElement !== target) {
       if (contentElement.scrollTop !== scrollTop) {
@@ -108,9 +112,6 @@ export const MyPlatformPage = () => {
         contentElement.scrollTop = scrollTop
       }
     }
-
-    if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
-    if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
   }
 
   return (
@@ -165,7 +166,7 @@ export const MyPlatformPage = () => {
         <section className={styles.projects}>
           {/*<h3 className={styles.title}>Проекты для вас</h3>*/}
           {/*<ProjectsGrid />*/}
-          <MyPlatformProjectsWidgets/>
+          <MyPlatformProjectsWidgets />
         </section>
       </div>
     </main>

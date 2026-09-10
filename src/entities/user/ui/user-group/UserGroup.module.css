@@ -4,17 +4,6 @@
 }
 
 .avatar {
-  flex-shrink: 0;
-  object-fit: cover;
-
-  height: 100%;
-  aspect-ratio: 1;
-
-  border: 2px solid var(--color-white);
-
-	border-radius: 50%;
-  background-color: var(--color-white);
-
 	&:not(:first-child) {
 		margin-left: -18px;
 	}

@@ -1,6 +1,7 @@
 import styles from './UserGroup.module.css'
 import type { UserBase } from '../../model/types'
 import clsx from 'clsx'
+import { Avatar } from '../avatar'
 
 interface UserGroupProps {
   users: UserBase[]
@@ -14,7 +15,7 @@ export function UserGroup({ users, visibleCount, className }: UserGroupProps) {
   return (
     <div className={clsx(styles.users, className)}>
       {visibleUsers.map(user => (
-        <img key={user.id} className={styles.avatar} src={user.profilePicture} loading='lazy'></img>
+        <Avatar key={user.id} className={styles.avatar} picture={user.profilePicture} fallbackType='user' size='36px' strokeColor='white' />
       ))}
       {remaining > 0 && <div className={clsx(styles.avatar, styles.remaining)}>+{remaining}</div>}
     </div>

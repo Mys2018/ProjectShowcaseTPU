@@ -361,6 +361,16 @@
   cursor: not-allowed;
 }
 
+@media (max-width: 1200px) {
+  .background {
+    top: 196px;
+
+    &.fixed {
+      top: 66px;
+    }
+  }
+}
+
 
 @media (max-width: 768px) {
   .container {
@@ -377,7 +387,7 @@
   }
 
   .background {
-    top: 0;
+    top: 66px;
     height: 694px;
 
     &.fixed,
