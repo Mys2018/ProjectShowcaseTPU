@@ -50,7 +50,7 @@ export function StudentApplicationProjectCard({ application, className, skeleton
           </div>
         ) : undefined
       }
-      mainSlot={partner ? <PartnerRow partner={partner} /> : undefined}
+      mainSlot={<PartnerRow partner={project.partner} />}
       sideSlot={
         <div className={styles.side}>
           <div className={styles.competency}>

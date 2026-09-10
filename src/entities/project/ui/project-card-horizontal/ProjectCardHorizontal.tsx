@@ -21,7 +21,6 @@ export function ProjectCardHorizontal({
   mainSlot,
   headerSlot,
   sideSlot,
-  partnerSlot,
   footerSlot,
   className,
   onClick
@@ -39,36 +38,27 @@ export function ProjectCardHorizontal({
             <div className={styles.short}>
               <ProjectFormatBadge format={type} />
               <div className={styles.id}>
-                {
-                  id && <>
+                {id && (
+                  <>
                     <span className={styles.label}>ID</span>
                     <span className={`${styles.value} ellipsis`}>{id}</span>
                   </>
-                }
+                )}
               </div>
             </div>
             <div className={styles.meta}>
               <h3 className={styles.title}>{title}</h3>
               {mainSlot}
             </div>
-            {
-              partnerSlot
-            }
           </div>
-          {
-            sideSlot ? (
-              <>
-                <div className={styles.separatorContainer}>
-                  <div className={styles.separatop}/>
-                </div>
-                <div className={styles.sideSlotContainer}>
-                  {sideSlot}
-                </div>
-              </>
-
-            ) : null
-          }
-
+          {sideSlot ? (
+            <>
+              <div className={styles.separatorContainer}>
+                <div className={styles.separator} />
+              </div>
+              <div className={styles.sideSlotContainer}>{sideSlot}</div>
+            </>
+          ) : null}
         </div>
         {footerSlot && <div className={styles.footer}>{footerSlot}</div>}
       </div>

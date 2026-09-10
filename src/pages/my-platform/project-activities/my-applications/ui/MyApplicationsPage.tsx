@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styles from './MyApplicationsPage.module.css'
 import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
@@ -57,22 +56,11 @@ export function MyApplicationsPage() {
               />
             ))
           ) : (
-            <div className={styles.empty}>
-              <BlankPhoto />
-              <div className={styles.content}>
-                <div className={styles.description}>
-                  <h5 className={styles.heading}>Откликов пока нет</h5>
-                  <p className={styles.paragraph}>
-                    Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!
-                  </p>
-                </div>
-                <FilledButton
-                  className={styles.catalogButton}
-                  onClick={() => void navigate(ROUTES.PROJECTS.BASE)}
-                  textButton='Выбрать проект'
-                />
-              </div>
-            </div>
+            <NoProjectsFallback
+              className={styles.empty}
+              title='Откликов пока нет'
+              description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+            />
           )}
         </div>
       </div>

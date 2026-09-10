@@ -27,8 +27,7 @@ interface TagItem {
 }
 
 export interface ProjectPartnerDto {
-  projectPartnerId?: string;
-  id?: string;
+  projectPartnerId: string;
   name: string;
   profilePicture?: string;
 }
@@ -46,8 +45,7 @@ export interface ProjectCardData {
   tags: Tag[];
   primaryTag: Tag;
   ownerId: number;
-  partnerId?: string;
-  partner?: Partner;
+  partner: Partner;
   status: ProjectStatus;
   meta: {
     title: string;

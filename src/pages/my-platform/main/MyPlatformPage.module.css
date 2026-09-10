@@ -368,9 +368,12 @@
     &.fixed {
       top: 66px;
     }
+
+    &.shaped {
+      top: 534px;
+    }
   }
 }
-
 
 @media (max-width: 768px) {
   .container {

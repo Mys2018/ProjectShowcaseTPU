@@ -10,9 +10,9 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     ownerId: dto.ownerId,
     partner: {
-      id: dto.partner.id || '',
-      name: dto.partner.name|| '',
-      profilePicture: dto.partner.profilePicture || '',
+      id: dto.partner.projectPartnerId,
+      name: dto.partner.name,
+      profilePicture: dto.partner.profilePicture ?? ''
     },
     status: dto.status,
     meta: {

@@ -31,8 +31,12 @@ export const mapDraftToProjectCardData = (
       groupId: 'draft-group-primary',
     },
     ownerId: 0,
-    partnerId: draftValues.partnerId || '',
     status: 'Pending' as ProjectStatus,
+    partner: {
+      id: draftValues.partnerId || '',
+      name: '',
+      profilePicture: ''
+    }, // TODO добавить partner в модель драфта
     meta: {
       title: draftValues.meta?.title || 'Черновик проекта',
       description: draftValues.meta?.description || '',
