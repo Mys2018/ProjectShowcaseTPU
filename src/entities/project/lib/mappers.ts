@@ -1,15 +1,6 @@
 import type { ProjectDto, ProjectCardData } from '../model/types'
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
-  const partnerId = dto.partner?.projectPartnerId || dto.partner?.id || dto.partnerId || ''
-  const partner = dto.partner
-    ? {
-        id: dto.partner.projectPartnerId || dto.partner.id || partnerId,
-        name: dto.partner.name,
-        profilePicture: dto.partner.profilePicture || '',
-      }
-    : undefined
-
   return {
     id: dto.id,
     type: dto.type || 'Case',
@@ -18,8 +9,11 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     primaryTag: { id: dto.primaryTag.tagId, name: dto.primaryTag.tagName, groupId: dto.primaryTag.groupId },
 
     ownerId: dto.ownerId,
-    partnerId,
-    partner,
+    partner: {
+      id: dto.partner.id || '',
+      name: dto.partner.name|| '',
+      profilePicture: dto.partner.profilePicture || '',
+    },
     status: dto.status,
     meta: {
       title: dto.meta?.title || '',

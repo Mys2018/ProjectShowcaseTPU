@@ -92,6 +92,7 @@
   background-color: white;
   padding: 4px 16px 4px 4px;
   border-radius: 45px;
+  cursor: pointer;
 }
 
 .switchContainer {

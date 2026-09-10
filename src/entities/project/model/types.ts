@@ -31,13 +31,20 @@ export interface ProjectPartnerDto {
   profilePicture?: string;
 }
 
+/** Ссылка проекта на внешнюю платформу. По api.yaml: ProjectPlatformLink. */
+export interface ProjectPlatformLink {
+  platformId: string;
+  url: string;
+  name: string;
+}
+
 export interface ProjectCardData {
   id: string;
   type: ProjectFormat;
   tags: Tag[];
   primaryTag: Tag;
   ownerId: number;
-  partnerId: string;
+  partnerId?: string;
   partner?: Partner;
   status: ProjectStatus;
   meta: {
@@ -68,10 +75,10 @@ export interface ProjectCardData {
   extended?: boolean;
   brandColor?: string;
   liked: boolean;
-  repository?: { platformId: string, url: string, name: string }[];
-  taskTracker?: { platformId: string, url: string, name: string  }[];
-  designEnvironment?: { platformId: string, url: string, name: string  }[];
-  otherPlatforms?: { platformId: string, url: string, name: string  }[];
+  repository?: ProjectPlatformLink[];
+  taskTracker?: ProjectPlatformLink[];
+  designEnvironment?: ProjectPlatformLink[];
+  otherPlatforms?: ProjectPlatformLink[];
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -140,8 +147,7 @@ export interface ProjectDto {
   ownerId: number;
   tags: TagItem[];
   primaryTag: TagItem;
-  partnerId?: string;
-  partner?: ProjectPartnerDto;
+  partner: ProjectPartnerDto;
   status: ProjectStatus;
   meta: {
     title: string;
@@ -152,10 +158,10 @@ export interface ProjectDto {
   prdMeta: PrdMeta;
   type?: ProjectFormat;
   isLikedByMe?: boolean;
-  repository?: { platformId: string, url: string }[];
-  taskTracker?: { platformId: string, url: string }[];
-  designEnvironment?: { platformId: string, url: string }[];
-  otherPlatforms?: { platformId: string, url: string }[];
+  repository?: ProjectPlatformLink[];
+  taskTracker?: ProjectPlatformLink[];
+  designEnvironment?: ProjectPlatformLink[];
+  otherPlatforms?: ProjectPlatformLink[];
 }
 
 export interface ProjectsResponseDto {

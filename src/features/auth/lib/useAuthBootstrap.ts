@@ -10,7 +10,7 @@ import {
   usePreferencesStore,
   type OAuthExchangeParams,
 } from "@/entities/user";
-import { ROUTES, queryClient } from "@/shared";
+import { ROUTES, queryClient, recordAuthSuccess, resetRefreshDeadCoolOff } from "@/shared";
 
 export const useAuthBootstrap = () => {
   const navigate = useNavigate();
@@ -87,6 +87,8 @@ export const useAuthBootstrap = () => {
     }
 
     if (authStatusQuery.isSuccess) {
+      recordAuthSuccess();
+      resetRefreshDeadCoolOff();
       setStatus("authenticated");
       return;
     }

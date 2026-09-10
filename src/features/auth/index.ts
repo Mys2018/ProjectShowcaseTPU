@@ -1,4 +1,5 @@
 export { useLogin, useLogout } from './api/mutations'
 export { pkceService } from './lib/pkce'
 export { useAuthBootstrap } from './lib/useAuthBootstrap'
+export { useProactiveTokenRefresh } from './lib/useProactiveTokenRefresh'
 export { AuthBootstrapper } from './ui/AuthBootstrapper'

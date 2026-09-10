@@ -16,6 +16,7 @@ interface TeamUserCardProps {
   nameTextStyle: TeamUserCardTextStyle
   nameSubtextStyle: TeamUserCardSubtextStyle
   nameStyle: TeamUserCardNameStyle
+  anotherText?: string,
 }
 
 const getTeamUserCardTextStyle = (style: TeamUserCardTextStyle) => {
@@ -76,7 +77,8 @@ export const TeamUserCard = ({
   avatar,
   nameTextStyle,
   nameSubtextStyle,
-  nameStyle
+  nameStyle,
+  anotherText
 }: TeamUserCardProps) => {
 
   return (
@@ -90,6 +92,11 @@ export const TeamUserCard = ({
           getTeamUserCardNameComponent(nameStyle, firstName, lastName, getTeamUserCardTextStyle(nameTextStyle))
         }
         <div className={styles.moreInfo}>
+          {
+            anotherText && <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
+              {anotherText}
+            </p>
+          }
           {course && (
             <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {course} курс

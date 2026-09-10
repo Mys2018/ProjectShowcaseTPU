@@ -19,29 +19,14 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem
+  type FloatingTabItem, ROUTES
 } from '@/shared'
+import {useNavigate} from "react-router-dom";
 
 export const MyPlatformPage = () => {
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
-
-  // const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
-  // const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
-  //
-  // const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
-  // const draftTitle = draftValues?.meta?.title || 'Без названия'
-  // const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
-  // const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
-  // const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
-  //
-  // const handleContinueDraft = () => {
-  //   navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
-  // }
-  //
-  // const handleDeleteDraft = () => {
-  //   deleteDraft()
-  // }
+  const navigate = useNavigate()
 
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
@@ -128,8 +113,6 @@ export const MyPlatformPage = () => {
     if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
   }
 
-  console.log(user?.roles)
-
   return (
     <main className={`${styles.container} ${preferredRoleType ? styles[preferredRoleType.toLowerCase()] : ''}`} onScroll={handleScroll}>
       <span className={`${styles.background} ${styles.fixed}`} />
@@ -137,7 +120,7 @@ export const MyPlatformPage = () => {
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
 
       <aside className={styles.userRow}>{user ?
-        <div className={styles.userRowContainer}>
+        <div className={styles.userRowContainer} onClick={() => {navigate(ROUTES.PROFILE.BASE)}}>
           <TeamUserCard
             avatar={
               <Avatar
