@@ -8,7 +8,7 @@ import { ProjectCardVertical, useLikedProjects, useProjects } from '@/entities/p
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { CompetencyBadgeList } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { BlankPhoto, buildRoute } from '@/shared'
+import {BlankPhoto, buildRoute, ProjectSkeleton} from '@/shared'
 
 const fallbackProjectsData = { projects: [], total: 0 }
 
