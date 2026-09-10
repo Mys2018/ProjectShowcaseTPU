@@ -8,7 +8,7 @@ import { ProjectCardVertical, useLikedProjects, useProjects } from '@/entities/p
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { CompetencyBadgeList } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { BlankPhoto, buildRoute } from '@/shared'
+import {BlankPhoto, buildRoute, ProjectSkeleton} from '@/shared'
 
 const fallbackProjectsData = { projects: [], total: 0 }
 
@@ -43,7 +43,13 @@ export default function ProjectsGrid({ type = 'all', emptyFallback }: ProjectsGr
   const isLoading = type !== 'liked' ? isAllLoading : isLikedLoading
   const isError = type !== 'liked' ? isAllError : isLikedError
 
-  if (isLoading) return <h2>Загрузка проектов...</h2>
+  if (isLoading) {
+    return (
+      <div className={styles.body}>
+        {Array.from({ length: 16 }, (_, i) => <ProjectSkeleton key={i} className={styles.skeleton}/>)}
+      </div>
+    )
+  }
   if (isError) return <h2>Ошибка при загрузке проектов</h2>
   if (!total)
     return (

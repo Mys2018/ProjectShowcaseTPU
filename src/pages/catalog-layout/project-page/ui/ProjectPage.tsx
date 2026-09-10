@@ -17,7 +17,6 @@ export function ProjectPage() {
   if (isLoading) return <div style={{ padding: 40 }}>Загрузка проекта...</div>;
   if (isError || !project) return <div style={{ padding: 40 }}>Проект не найден</div>;
 
-  console.log(project)
   return (
     isMobile ? (
       <MobileLayoutProjectPage project={project} />

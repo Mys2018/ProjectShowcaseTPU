@@ -1,5 +1,5 @@
 import type { ProjectFormat, ProjectStatus } from '../model/types'
-import { assertNever } from '@/shared'
+import {assertNever} from "@/shared";
 
 export const getProjectFormatTranslation = (format: ProjectFormat) => {
   switch (format) {

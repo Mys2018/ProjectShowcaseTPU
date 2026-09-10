@@ -8,7 +8,7 @@ import type { Partner } from "@/entities/partner";
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
 // TODO Убрать лишнее
-export type ProjectStatus = 'Active' | 'Approved' | 'Pending' | 'NeedsRework' | 'Recruiting'  | 'RecruitmentCompleted' | 'InProgress' | 'Completed' | 'NotImplemented' | 'Rejected';
+export type ProjectStatus = 'Pending' | 'NeedsRework' | 'Recruiting'  | 'RecruitmentCompleted' | 'InProgress' | 'Completed' | 'NotImplemented' | 'Rejected';
 export type ProjectStatusOld = 'Active' | 'Approved' | 'Archived' | 'Completed' | 'NeedsRework' | 'Pending' | 'Rejected';
 export type CreateProjectRequestType =
   | 'Case'

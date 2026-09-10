@@ -1,7 +1,7 @@
 import styles from './ApplicationStatusBadge.module.css'
 import type { ApplicationStatus } from '../../model/types'
 import clsx from 'clsx'
-import { assertNever } from '@/shared'
+import {assertNever} from "@/shared";
 
 interface ApplicationStatusBadgeProps {
   status: ApplicationStatus
@@ -15,6 +15,7 @@ export function ApplicationStatusBadge({ status, className }: ApplicationStatusB
     case 'rejected':
       return <p className={clsx(styles.label, styles.rejected, className)}>Заявка отклонена</p>
     case 'closed':
+    case 'cancelled':
       return <p className={clsx(styles.label, styles.closed, className)}>Отклик отменён</p>
     case 'pending':
       return (

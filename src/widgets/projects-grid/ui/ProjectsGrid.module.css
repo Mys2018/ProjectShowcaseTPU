@@ -9,6 +9,10 @@
   align-content: start;
 }
 
+.skeleton {
+  height: 352px;
+}
+
 .emptyContainer {
   display: flex;
   align-items: center;

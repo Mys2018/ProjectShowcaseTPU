@@ -24,6 +24,10 @@
   margin: 0;
 }
 
+.skeleton {
+  height: 312px;
+}
+
 .loadingContainer,
 .emptyContainer {
   display: flex;

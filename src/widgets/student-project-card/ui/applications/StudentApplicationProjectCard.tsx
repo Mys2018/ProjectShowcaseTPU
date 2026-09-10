@@ -4,28 +4,31 @@ import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { useUserById, TeamUserCard } from '@/entities/user'
+import {useUserById, TeamUserCard, Avatar, getAvatarRoleInfo} from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
-import { ClockIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
+import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSkeleton } from '@/shared'
 
 interface StudentApplicationProjectCardProps {
   application: Application
   className?: string
+  skeletonClassName?: string
 }
 
-export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
+export function StudentApplicationProjectCard({ application, className, skeletonClassName }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
-  const { data: curator } = useUserById(project!.ownerId, project !== undefined)
+  const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
   const { data: competencies } = useCompetencies()
 
-  if (!project) return
+  if (!project) {
+    return <ProjectSkeleton className={clsx(styles.card, skeletonClassName, className)} />
+  }
 
   const targetCompetency = competencies?.find(c => c.id === application.roleID)
-  const isExtended = project.status === 'Recruiting' || project.status === 'Pending'
+  const isExtended = application.status === 'pending'
 
   const statusBadge =
-    project.status === 'Recruiting' ? (
+    project.status === 'Recruiting' && application.status === 'pending' ? (
       <div className={clsx(styles.statusBadge, !isExtended && styles.topRight)}>
         <ClockIcon />
         <p>Ожидает окончания набора</p>
@@ -59,7 +62,14 @@ export function StudentApplicationProjectCard({ application, className }: Studen
             <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
               {curator ? (
                 <TeamUserCard
-                  avatar={curator.profilePicture}
+                  avatar={
+                  <Avatar
+                    picture={curator.profilePicture}
+                    fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
+                    size={"36px"}
+                    strokeColor={"grey"}
+                  />
+                  }
                   firstName={curator.meta.firstName}
                   lastName={curator.meta.lastName}
                   nameStyle='normal'

@@ -5,7 +5,7 @@ import {
   refreshSession,
 } from "@/shared";
 
-const DEFAULT_REFRESH_INTERVAL_MS = 5 * 1000;
+const DEFAULT_REFRESH_INTERVAL_MS = 6 * 60 * 1000;
 
 const getRefreshInterval = (): number => {
   const raw = Number(import.meta.env.VITE_AUTH_REFRESH_INTERVAL_MS);

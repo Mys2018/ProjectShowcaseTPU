@@ -15,7 +15,7 @@ export const getFilteredApplications = (applications: Application[]): FilteredAp
 
     if (status === 'pending') {
       activeApplications.push(application)
-    } else if (status === 'closed' || status === 'rejected') {
+    } else if (status === 'closed' || status === 'cancelled' || status === 'rejected') {
       if (createdAt.getFullYear() === thisYear) {
         archivedApplications.push(application)
       }

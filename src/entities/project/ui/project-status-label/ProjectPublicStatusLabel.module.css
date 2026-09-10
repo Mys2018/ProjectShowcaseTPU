@@ -7,18 +7,12 @@
   gap: 6px;
   border: 1px solid var(--color-gray-200);
   width: fit-content;
-}
-
-.label {
   font: var(--inter-11-600);
   color: var(--color-gray-650);
 }
 
-@media (max-width: 768px) {
-  .status {
-    padding: 8px 10px;
-    border-radius: 8px;
-  }
+.label {
+  font: var(--inter-11-600);
 }
 
 .Recruiting,
@@ -40,6 +34,14 @@
 
 .Rejected {
   color: var(--color-red);
+}
+
+
+@media (max-width: 768px) {
+  .status {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
 }
 
 
