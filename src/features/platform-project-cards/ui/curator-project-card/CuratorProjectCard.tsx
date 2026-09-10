@@ -30,7 +30,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   return (
     <ProjectCardHorizontal
       project={project}
-      partnerSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
+      mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
       headerSlot={
         <div className={styles.header}>
           <div className={styles.badges}>

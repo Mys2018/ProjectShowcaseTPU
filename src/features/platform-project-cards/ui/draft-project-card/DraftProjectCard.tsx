@@ -32,9 +32,9 @@ export const DraftProjectCard = ({ draft, className, onContinue }: DraftProjectC
     return getDraftProgress(draft)
   }, [draft])
 
-  const partnerId = draftProject?.partner.id || ''
-  const { data: fetchedPartner } = usePartnerById(partnerId, !draftProject?.partner && Boolean(partnerId))
-  const partner = draftProject?.partner || fetchedPartner
+  const partnerId = draftProject?.partner?.id || ''
+  const { data: fetchedPartner, isLoading: isPartnerLoading } = usePartnerById(partnerId, Boolean(partnerId))
+  const partner = fetchedPartner || (draftProject?.partner?.name ? draftProject.partner : undefined)
 
   const handleContinue = () => {
     if (onContinue) {
@@ -50,7 +50,13 @@ export const DraftProjectCard = ({ draft, className, onContinue }: DraftProjectC
     <ProjectCardHorizontal
       className={clsx(styles.card, className)}
       project={draftProject}
-      mainSlot={partner ? <PartnerRow partner={partner}/> : <PartnerRowSkeleton/>}
+      mainSlot={
+        isPartnerLoading && partnerId && !partner ? (
+          <PartnerRowSkeleton />
+        ) : partner && partner.name ? (
+          <PartnerRow partner={partner} />
+        ) : undefined
+      }
       headerSlot={
         draftProject.tags.length > 0 ? (
           <div className={styles.headerSlot}>
