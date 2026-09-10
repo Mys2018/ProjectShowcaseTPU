@@ -1,0 +1,15 @@
+.archiveButton {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+
+  font: var(--inter-12-300)
+}
+
+.grey {
+  color: var(--color-gray-500)
+}
+
+.red {
+  color: var(--color-red);
+}

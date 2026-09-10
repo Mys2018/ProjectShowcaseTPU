@@ -21,6 +21,7 @@ export const LinkBlock = ({title, service, link} : LinkBlockProps) => {
       >
         <p className={styles.service}>{service}</p>
         <OpenIcon className={styles.openIcon} />
+
       </a>
     </div>
   )

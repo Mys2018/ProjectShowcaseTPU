@@ -30,6 +30,7 @@
   gap: 4px;
   justify-content: start;
   min-width: 0;
+  overflow: hidden;
 }
 
 .name {
@@ -45,6 +46,8 @@
   gap: 8px;
   min-width: 0;
   align-items: center;
+  overflow: hidden;
+  width: 100%;
 }
 
 .moreInfo p {
@@ -100,9 +103,10 @@
 }
 
 .text {
-  text-wrap: wrap;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  width: 100%;
 }
 
 .twoLinesContainer {

@@ -9,8 +9,8 @@ import {
 } from "@/features/create-project/ui/components/all-info-fields/AllInfoFields.tsx";
 import type { PrdMeta } from "@/entities/project";
 import { getProjectFormatTranslation } from "@/entities/project";
-import ArchiveIcon from '@/shared/ui/icons/archive.svg?react'
 import {EditProjectType} from "@/shared/ui/edit-project-type";
+import {ArchiveButton} from "@/shared/ui/elements/buttons";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -294,9 +294,7 @@ export function AllTab({ form, setStep, setBlinkFields, onEditType }: TabProps) 
 
       </BigBlock>
 
-      {
-        <button className={styles.archiveButton}> <ArchiveIcon/> Архивировать проект </button>
-      }
+      <ArchiveButton color='red'/>
     </div>
 
   );

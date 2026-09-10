@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { pkceService } from "../lib/pkce";
+import { recordAuthSuccess, resetRefreshDeadCoolOff } from "@/shared";
 import {
   login,
   logout,
@@ -23,6 +24,8 @@ export const useLogin = (): UseMutationResult<
   return useMutation({
     mutationFn: login,
     onSuccess: () => {
+      recordAuthSuccess();
+      resetRefreshDeadCoolOff();
       setLoggedOut(false);
       setStatus("authenticated");
       pkceService.clear();

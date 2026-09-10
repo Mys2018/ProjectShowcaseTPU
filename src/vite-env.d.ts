@@ -24,6 +24,7 @@ interface ImportMetaEnv {
   readonly VITE_API_CHECKPOINTS_URL: string
   readonly VITE_APPLICATIONS_URL: string
   readonly VITE_PLATFORMS_URL: string
+  readonly VITE_AUTH_REFRESH_INTERVAL_MS?: string
 }
 
 interface ImportMeta {

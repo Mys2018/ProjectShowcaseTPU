@@ -1,7 +1,7 @@
 import styles from './ProjectInfo.module.css'
 import {InfoTooltip} from "..";
 import { typeProjectsLabel, getProjectTagBackground, type ProjectCardData } from '@/entities/project';
-import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner';
+import { PartnerRow } from '@/entities/partner';
 
 type ProjectInfoProps = {
   data: ProjectCardData
@@ -11,7 +11,7 @@ type ProjectInfoProps = {
 
 export const ProjectInfo = ({ data }: ProjectInfoProps) => {
 
-  const { data: partner, isLoading } = usePartnerById(data.partnerId, Boolean(data.partnerId));
+  const partner = data.partner;
 
   return (
     <div className={styles.projectMain} style={{ background: getProjectTagBackground(data.primaryTag.name) }}>
@@ -59,8 +59,6 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
       <div className={styles.mainBlock}>
         {partner ? (
           <PartnerRow partner={partner} />
-        ) : isLoading ? (
-          <PartnerRowSkeleton />
         ) : null}
 
         <p className={styles.description}>{data.meta.description}</p>

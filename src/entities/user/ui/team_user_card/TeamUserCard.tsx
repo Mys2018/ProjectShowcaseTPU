@@ -1,5 +1,5 @@
 import styles from './TeamUserCard.module.css'
-import type {ReactNode} from "react";
+import type { ReactNode } from "react";
 import clsx from "clsx";
 
 type TeamUserCardTextStyle = 'ALS' | 'bodyText' | 'OS-12-500' | 'bodySmall'
@@ -16,6 +16,7 @@ interface TeamUserCardProps {
   nameTextStyle: TeamUserCardTextStyle
   nameSubtextStyle: TeamUserCardSubtextStyle
   nameStyle: TeamUserCardNameStyle
+  anotherText?: string,
 }
 
 const getTeamUserCardTextStyle = (style: TeamUserCardTextStyle) => {
@@ -76,7 +77,8 @@ export const TeamUserCard = ({
   avatar,
   nameTextStyle,
   nameSubtextStyle,
-  nameStyle
+  nameStyle,
+  anotherText
 }: TeamUserCardProps) => {
 
   return (
@@ -90,16 +92,21 @@ export const TeamUserCard = ({
           getTeamUserCardNameComponent(nameStyle, firstName, lastName, getTeamUserCardTextStyle(nameTextStyle))
         }
         <div className={styles.moreInfo}>
+          {
+            anotherText && <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
+              {anotherText}
+            </p>
+          }
           {course && (
-            <p className={getTeamUserCardSubtextStyle(nameSubtextStyle)}>
+            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {course} курс
             </p>
           )}
           {course && roles && roles.length > 0 && (
-            <div className={styles.verticalSeparator}/>
+            <div className={styles.verticalSeparator} />
           )}
           {roles && roles.length > 0 && (
-            <p className={getTeamUserCardSubtextStyle(nameSubtextStyle)}>
+            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {roles.join(', ')}
             </p>
           )}

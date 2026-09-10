@@ -9,7 +9,11 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     primaryTag: { id: dto.primaryTag.tagId, name: dto.primaryTag.tagName, groupId: dto.primaryTag.groupId },
 
     ownerId: dto.ownerId,
-    partnerId: dto.partnerId,
+    partner: {
+      id: dto.partner.id || '',
+      name: dto.partner.name|| '',
+      profilePicture: dto.partner.profilePicture || '',
+    },
     status: dto.status,
     meta: {
       title: dto.meta?.title || '',
@@ -55,6 +59,7 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     repository: dto.repository,
     taskTracker: dto.taskTracker,
-    designEnvironment: dto.designEnvironment
+    designEnvironment: dto.designEnvironment || dto.otherPlatforms,
+    otherPlatforms: dto.otherPlatforms || dto.designEnvironment
   }
 }

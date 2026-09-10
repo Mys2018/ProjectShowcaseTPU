@@ -1,0 +1,43 @@
+.body {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: var(--color-gray-900);
+  border-radius: 12px;
+}
+
+.body > div {
+  display: flex;
+  gap: 3px;
+  position: relative;
+}
+
+.body > div p{
+
+  &:nth-child(1) {
+    font: var(--inter-12-300);
+    color: white;
+  }
+
+  &:nth-child(2) {
+    font: var(--inter-13-600);
+    color: white;
+  }
+}
+
+.notification {
+  position: absolute;
+  top: -3px;
+  right: -8px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-blue);
+  border-radius: 3px;
+}
+
+.body > button {
+  font: var(--inter-13-600);
+  color: var(--color-blue);
+}
+
+

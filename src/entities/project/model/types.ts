@@ -3,6 +3,7 @@
 import type { PROJECT_FORMATS } from "./constants";
 import type { CheckpointGroup } from "@/entities/checkpoint";
 import type { Tag } from "@/entities/tag";
+import type { Partner } from "@/entities/partner";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
@@ -25,13 +26,28 @@ interface TagItem {
   groupId: string;
 }
 
+export interface ProjectPartnerDto {
+  projectPartnerId?: string;
+  id?: string;
+  name: string;
+  profilePicture?: string;
+}
+
+/** Ссылка проекта на внешнюю платформу. По api.yaml: ProjectPlatformLink. */
+export interface ProjectPlatformLink {
+  platformId: string;
+  url: string;
+  name: string;
+}
+
 export interface ProjectCardData {
   id: string;
   type: ProjectFormat;
   tags: Tag[];
   primaryTag: Tag;
   ownerId: number;
-  partnerId: string;
+  partnerId?: string;
+  partner?: Partner;
   status: ProjectStatus;
   meta: {
     title: string;
@@ -61,9 +77,10 @@ export interface ProjectCardData {
   extended?: boolean;
   brandColor?: string;
   liked: boolean;
-  repository?: { platformId: string, url: string }[];
-  taskTracker?: { platformId: string, url: string }[];
-  designEnvironment?: { platformId: string, url: string }[];
+  repository?: ProjectPlatformLink[];
+  taskTracker?: ProjectPlatformLink[];
+  designEnvironment?: ProjectPlatformLink[];
+  otherPlatforms?: ProjectPlatformLink[];
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -132,7 +149,7 @@ export interface ProjectDto {
   ownerId: number;
   tags: TagItem[];
   primaryTag: TagItem;
-  partnerId: string;
+  partner: ProjectPartnerDto;
   status: ProjectStatus;
   meta: {
     title: string;
@@ -143,9 +160,10 @@ export interface ProjectDto {
   prdMeta: PrdMeta;
   type?: ProjectFormat;
   isLikedByMe?: boolean;
-  repository?: { platformId: string, url: string }[];
-  taskTracker?: { platformId: string, url: string }[];
-  designEnvironment?: { platformId: string, url: string }[];
+  repository?: ProjectPlatformLink[];
+  taskTracker?: ProjectPlatformLink[];
+  designEnvironment?: ProjectPlatformLink[];
+  otherPlatforms?: ProjectPlatformLink[];
 }
 
 export interface ProjectsResponseDto {
@@ -202,9 +220,9 @@ export interface BaseCreateProjectDto {
   roles: CreateProjectRolePayload[];
   tagIds: string[];
   primaryTagId: string;
-  repository?: { platformId: string, url: string }[];
-  taskTracker?: { platformId: string, url: string }[];
-  designEnvironment?: { platformId: string, url: string }[];
+  repository?: { platformId: string; name: string; url: string }[];
+  taskTracker?: { platformId: string; name: string; url: string }[];
+  otherPlatforms?: { platformId: string; name: string; url: string }[];
 }
 
 export interface CreateStudyProjectDto extends BaseCreateProjectDto {

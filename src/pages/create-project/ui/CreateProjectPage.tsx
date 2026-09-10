@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useMediaQuery } from 'usehooks-ts';
 import styles from './CreateProjectPage.module.css';
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import { CreateProjectCard } from '@/shared/ui/create-project-card/CreateProjectCard.tsx';
@@ -19,6 +20,8 @@ import { getSaveStatus } from "@/shared/constants/save-status-drafts/getSaveStat
 import { useProjectDraft, useSaveDraft, useDeleteDraft } from '@/entities/project/api/queries';
 import type { StatusType } from '@/shared/constants/save-status-drafts/getSaveStatus.tsx';
 import { BackLink } from '@/shared/ui/back-link';
+import { DesktopOnlyStub } from '@/shared/ui';
+import { MOBILE_BREAKPOINT } from '@/shared/lib';
 import { ROUTES } from '@/shared';
 
 type PageStep = 'type-select' | 'fill';
@@ -29,6 +32,7 @@ export function CreateProjectPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
+  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
   const [pageStep, setPageStep] = useState<PageStep>(isDraftMode ? 'fill' : 'type-select');
   const [selectedType, setSelectedType] = useState<CreateProjectRequestType>('Study');
@@ -194,6 +198,12 @@ export function CreateProjectPage() {
   const handleSubmit = () => {
     form.handleSubmit();
   };
+
+  // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
+  // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.
+  if (isMobile) {
+    return <DesktopOnlyStub />;
+  }
 
   if (isDraftMode && isDraftLoading) {
     return (

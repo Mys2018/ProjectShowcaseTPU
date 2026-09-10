@@ -3,14 +3,15 @@ import { useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
 import { MyPlatformProjectsWidgets } from '@/widgets/my-platform-widgets'
 import {
+  Avatar,
   getSwitchableRoles,
   ROLES_TRANSLATIONS,
   useMe,
   usePreferencesStore,
-  UserRow,
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
+import {TeamUserCard} from "@/entities/user/ui";
 import {
   FloatingTabs,
   StagesWidget,
@@ -18,29 +19,14 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem
+  type FloatingTabItem, ROUTES
 } from '@/shared'
+import {useNavigate} from "react-router-dom";
 
 export const MyPlatformPage = () => {
   const { data: user } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
-
-  // const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
-  // const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
-  //
-  // const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
-  // const draftTitle = draftValues?.meta?.title || 'Без названия'
-  // const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
-  // const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
-  // const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
-  //
-  // const handleContinueDraft = () => {
-  //   navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
-  // }
-  //
-  // const handleDeleteDraft = () => {
-  //   deleteDraft()
-  // }
+  const navigate = useNavigate()
 
   const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
     activities: [
@@ -134,7 +120,25 @@ export const MyPlatformPage = () => {
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
 
-      <aside className={styles.userRow}>{user ? <UserRow user={user} /> : <UserRowSkeleton />}</aside>
+      <aside className={styles.userRow}>{user ?
+        <div className={styles.userRowContainer} onClick={() => {navigate(ROUTES.PROFILE.BASE)}}>
+          <TeamUserCard
+            avatar={
+              <Avatar
+                fallbackType={'user'}
+                size={"40px"}
+                strokeColor={"grey"}
+              />
+            }
+            firstName={user.meta.firstName}
+            lastName={user.meta.lastName}
+            nameTextStyle={"ALS"}
+            nameSubtextStyle={"OS-10-400"}
+            nameStyle={"normal"}
+            roles={user.competencies}
+          />
+        </div>
+          :<UserRowSkeleton />}</aside>
 
       <div className={styles.titleContainer}>
         {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}

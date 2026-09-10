@@ -246,13 +246,13 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
         })),
         repository: value.links
           .filter(l => l.category === 'Repository')
-          .map(l => ({ platformId: l.platformId, url: l.link })),
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link })),
         taskTracker: value.links
           .filter(l => l.category === 'TaskTracker')
-          .map(l => ({ platformId: l.platformId, url: l.link })),
-        designEnvironment: value.links
-          .filter(l => l.category === 'DesignEnvironment')
-          .map(l => ({ platformId: l.platformId, url: l.link }))
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link })),
+        otherPlatforms: value.links
+          .filter(l => l.category === 'OtherPlatforms' || (l.category as string) === 'DesignEnvironment')
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link }))
       } as CreateProjectDto;
 
       console.log('payload:', payload)

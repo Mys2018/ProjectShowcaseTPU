@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './InviteUserModal.module.css';
 import { TeamUserCard } from "@/entities/user/ui/team_user_card/TeamUserCard.tsx";
 import { useSearchUsers } from "@/entities/user";
+import {Avatar} from "@/entities/user/ui/avatar";
 import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import SadIcon from '@/shared/ui/icons/sad_face.svg?react';
 import CrossIcon from '@/shared/ui/icons/cross.svg?react';
 import { InviteActionButton } from "@/shared/ui/elements/buttons";
 import { SmallSearchField } from "@/shared/ui/small-search-field";
 import { useDebounce } from "@/shared/lib";
-import {Avatar} from "@/entities/user/ui/avatar";
 
 interface InviteUserModalProps {
   isOpen: boolean;

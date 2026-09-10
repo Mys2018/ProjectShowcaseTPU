@@ -1,0 +1,61 @@
+.stub {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+}
+
+.icon {
+  margin-bottom: 12px;
+}
+
+.title {
+  font: var(--field-title-big-interface);
+  color: var(--color-gray-900);
+}
+
+.description {
+  font: var(--body-small-platform);
+  color: var(--color-gray-600);
+  max-width: 420px;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.closeButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 12px 8px;
+  font: var(--inter-14-500);
+  color: var(--color-gray-500);
+}
+
+.sendButton {
+  padding: 15px 28px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  background-color: var(--color-brand-green);
+  font: var(--inter-14-500);
+  color: var(--color-white);
+  transition: background-color 0.5s ease;
+}
+
+.sendButton:hover {
+  background-color: var(--color-light-green);
+}
+
+.sendButton:active {
+  background-color: var(--color-dark-green);
+}

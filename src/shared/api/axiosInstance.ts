@@ -1,6 +1,7 @@
 import type { InternalAxiosRequestConfig } from "axios";
 import axios, { AxiosError } from "axios";
 import { ENDPOINTS } from "../config/endpoints";
+import { isTerminalRefreshFailure, refreshSession } from "./refreshSession";
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -48,9 +49,20 @@ const isAuthEndpoint = (url?: string): boolean => {
   return (
     url.includes(ENDPOINTS.REFRESH) ||
     url.includes(ENDPOINTS.LOGIN) ||
-    url.includes(ENDPOINTS.LOGOUT)
+    url.includes(ENDPOINTS.LOGOUT) ||
+    url.includes(ENDPOINTS.STATUS)
   );
 };
+
+const SESSION_DEAD_COOL_OFF_MS = 30_000;
+
+let refreshDeadUntil = 0;
+
+export const resetRefreshDeadCoolOff = (): void => {
+  refreshDeadUntil = 0;
+};
+
+const isSessionDeadCoolOff = (): boolean => Date.now() < refreshDeadUntil;
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -68,6 +80,10 @@ axiosInstance.interceptors.response.use(
     }
 
     if (isAuthFailure(error)) {
+      if (isSessionDeadCoolOff()) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise<void>((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -83,19 +99,21 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshUrl = `${axiosInstance.defaults.baseURL || import.meta.env.VITE_API_BASE_URL || ""}${ENDPOINTS.REFRESH}`;
-        await axios.post(
-          refreshUrl,
-          {},
-          { withCredentials: true },
-        );
+        await refreshSession();
 
+        refreshDeadUntil = 0;
         window.dispatchEvent(new CustomEvent("auth:refreshed"));
         processQueue(null);
         return axiosInstance(originalRequest);
       } catch (refreshError) {
-        processQueue(refreshError);
-        window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+        if (isTerminalRefreshFailure(refreshError)) {
+          refreshDeadUntil = Date.now() + SESSION_DEAD_COOL_OFF_MS;
+          processQueue(refreshError);
+          window.dispatchEvent(new CustomEvent("auth:unauthorized"));
+        } else {
+          // Сетевая ошибка/таймаут/5xx: сессия не мертва, ре-логин не нужен.
+          processQueue(refreshError);
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

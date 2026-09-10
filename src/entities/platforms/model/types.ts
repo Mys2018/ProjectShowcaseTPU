@@ -1,5 +1,5 @@
 
-export type Category = 'Repository' | 'TaskTracker' | 'DesignEnvironment'
+export type Category = 'Repository' | 'TaskTracker' | 'OtherPlatforms'
 
 export interface Platform {
   platformId: string,
