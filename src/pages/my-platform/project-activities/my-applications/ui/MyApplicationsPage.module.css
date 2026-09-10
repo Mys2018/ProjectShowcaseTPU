@@ -1,0 +1,169 @@
+.banner {
+  position: relative;
+  order: 4;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+
+  margin: 24px 16px;
+  padding: 48px 24px;
+
+  border-radius: 20px;
+  background-color: var(--color-gray-50);
+
+  & .closeButton {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+
+    width: 16px;
+    height: 16px;
+
+    color: var(--color-gray-400);
+
+    & svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  & .blank {
+    width: 224px;
+    height: 128px;
+
+    border-radius: 20px;
+    background-color: var(--color-white);
+  }
+
+  & .description {
+    max-width: 750px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--color-gray-900);
+
+    & .heading {
+      font: var(--field-title-big-interface);
+    }
+
+    & .paragraph {
+      font: var(--body-text-platform);
+    }
+  }
+
+  & .timer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--color-gray-650);
+
+    & .paragraph {
+      font: var(--field-label-interface);
+    }
+
+    & .badge {
+      font: var(--OS-12-600);
+      padding: 8px 12px 9px;
+
+      border-radius: 10px;
+      background-color: var(--color-white);
+    }
+  }
+}
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black);
+}
+
+.active {
+  order: 5;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  padding: 24px 16px;
+}
+
+.archived {
+  order: 6;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  margin: 24px 16px;
+  padding: 24px;
+
+  border-radius: 24px;
+  background-color: var(--color-gray-100);
+
+  & .description {
+    padding: 48px 24px;
+    
+    border-radius: 20px;
+    background-color: var(--color-white);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  width: 100%;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+
+  padding: 54px 24px 24px;
+
+  & .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .catalogButton {
+    padding: 15px 28px;
+  }
+}
+
+.empty,
+.archived {
+  & .description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    color: var(--color-gray-900);
+
+    & .heading {
+      font: var(--field-title-big-interface);
+    }
+
+    & .paragraph {
+      max-width: 550px;
+
+      font: var(--body-text-platform);
+      text-align: center;
+    }
+  }
+}

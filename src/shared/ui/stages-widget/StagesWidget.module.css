@@ -78,7 +78,7 @@
 }
 
 .arrowIcon {
-  height: 100%;
+  height: 16px;
   aspect-ratio: 1;
   color: var(--color-gray-400);
 }
@@ -103,6 +103,10 @@
   .cardBody {
     padding: 12px;
     gap: 30px;
+  }
+
+  .arrowIcon {
+    display: none;
   }
 }
 

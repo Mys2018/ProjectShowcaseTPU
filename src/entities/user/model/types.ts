@@ -13,7 +13,6 @@ export type CompetenceDto = {
 export type User = UserBase & {
   profilePicture: string
   group?: string
-  grade?: string
   meta: {
     firstName: string
     lastName: string
@@ -41,7 +40,7 @@ export type UserBase = {
   roles: UserRole[]
   profilePicture: string
   competencies?: string[]
-  grade?: string
+  grade?: number
   meta: {
     name: string
     firstName?: string

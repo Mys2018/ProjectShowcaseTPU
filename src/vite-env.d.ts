@@ -13,6 +13,9 @@ interface ImportMetaEnv {
   readonly VITE_API_USERS_URL: string
   readonly VITE_API_PROJECTS_URL: string
   readonly VITE_API_LIKED_PROJECTS_URL: string
+  readonly VITE_API_MANAGED_PROJECTS_URL: string
+  readonly VITE_API_PARTICIPATING_PROJECTS_URL: string
+  readonly VITE_API_APPLIED_PROJECTS_URL: string
   readonly VITE_API_PROJECT_DRAFT_URL: string
   readonly VITE_API_TAGS_URL: string
   readonly VITE_API_PARTNERS_URL: string

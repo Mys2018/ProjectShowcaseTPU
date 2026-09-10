@@ -1,72 +1,95 @@
 import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
-import { PartnerRow } from '@/entities/partner'
+import { CancelApplicationButton } from '@/features/cancel-application'
+import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { useUserById } from '@/entities/user'
-import { ImageSkeleton, TextSkeleton } from '@/shared'
+import { useUserById, TeamUserCard } from '@/entities/user'
+import { ApplicationStatusBadge, type Application } from '@/entities/application'
+import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
+import { ClockIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
 
 interface StudentApplicationProjectCardProps {
-  projectId: string
-	className?: string
-  // application: Application
+  application: Application
+  className?: string
 }
 
-export function StudentApplicationProjectCard({ projectId, className }: StudentApplicationProjectCardProps) {
-  const { data: project } = useProjectDetails(projectId)
+export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
+  const { data: project } = useProjectDetails(application.projectId)
   const partner = project?.partner
   const { data: curator } = useUserById(project!.ownerId, project !== undefined)
-  // const { data: competencies } = useCompetencies()
-	
-	console.log(project?.status)
-	
+  const { data: competencies } = useCompetencies()
+
   if (!project) return
+
+  const targetCompetency = competencies?.find(c => c.id === application.roleID)
+  const isExtended = project.status === 'Recruiting' || project.status === 'Pending'
+
+  const statusBadge =
+    project.status === 'Recruiting' ? (
+      <div className={clsx(styles.statusBadge, !isExtended && styles.topRight)}>
+        <ClockIcon />
+        <p>Ожидает окончания набора</p>
+      </div>
+    ) : (
+      <ApplicationStatusBadge className={clsx(!isExtended && styles.topRight)} status={application.status} />
+    )
 
   return (
     <ProjectCardHorizontal
       className={clsx(styles.card, className)}
       project={project}
       headerSlot={
-        (project.status === 'Active' || project.status === 'Recruiting') ? (
+        isExtended ? (
           <div className={styles.header}>
             <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
-            <span>{/* TODO application status */}</span>
+            {statusBadge}
           </div>
         ) : undefined
       }
       mainSlot={partner ? <PartnerRow partner={partner} /> : undefined}
       sideSlot={
-        <>
-          <span className={styles.divider} />
-          <div className={styles.side}>
-            {/* <div className={styles.competency}>
-              <p className={styles.label}>Компетенция:</p>
-              <CompetencyBadge competency={competencies.find(c => c.id === application.id)} />
-            </div> */}
-            <div className={styles.curator}>
-              <p className={styles.label}>Наставник:</p>
-              <div className={styles.userRow}>
-                {curator ? (
-                  <>
-                    <img className={styles.image} src={curator.profilePicture} loading='lazy' />
-                    <p className={styles.name}>{curator.meta.name}</p>
-                  </>
-                ) : (
-                  <>
-                    <ImageSkeleton className={styles.image} />
-                    <TextSkeleton className={styles.name} />
-                  </>
-                )}
-              </div>
+        <div className={styles.side}>
+          <div className={styles.competency}>
+            <p className={styles.label}>Компетенция:</p>
+            {targetCompetency ? <CompetencyBadge competency={targetCompetency} /> : <CompetencyRowSkeleton className={styles.skeleton} />}
+          </div>
+
+          <div className={styles.curator}>
+            <p className={styles.label}>Наставник:</p>
+            <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
+              {curator ? (
+                <TeamUserCard
+                  avatar={curator.profilePicture}
+                  firstName={curator.meta.firstName}
+                  lastName={curator.meta.lastName}
+                  nameStyle='normal'
+                  nameTextStyle='bodySmall'
+                  nameSubtextStyle='OS-10-400'
+                />
+              ) : (
+                <>
+                  <ImageSkeleton className={styles.image} />
+                  <TextSkeleton className={styles.name} />
+                </>
+              )}
             </div>
           </div>
-        </>
+          {!isExtended && (
+            <>
+              {statusBadge}
+              <p className={clsx(styles.applicationDate, styles.bottomRight)}>
+                {mapDateToLocalString(application.createdAt, { time: true })}
+              </p>
+            </>
+          )}
+        </div>
       }
       footerSlot={
-        (project.status === 'Active' || project.status === 'Recruiting') ? (
+        isExtended ? (
           <div className={styles.footer}>
-            <span>{/* TODO application cancel */}</span>
-            <p className={styles.applicationDate}>Отклик от {/* TODO application createdAt */}</p>
+            <CancelApplicationButton applicationId={application.applicationID} />
+            <p className={styles.applicationDate}>Отклик от {mapDateToLocalString(application.createdAt, { year: true })}</p>
           </div>
         ) : undefined
       }

@@ -4,4 +4,5 @@ export { UserGroup } from './user-group/UserGroup'
 export { UserGroupSkeleton } from './user-group/UserGroupSkeleton'
 export { TeamUserCard } from './team_user_card/TeamUserCard.tsx'
 export * from './avatar'
+export { TeamUserCard } from './team_user_card/TeamUserCard'
 
