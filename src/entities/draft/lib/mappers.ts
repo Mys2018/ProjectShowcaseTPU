@@ -2,7 +2,7 @@
 /* eslint-disable fsd/forbidden-imports */
 import type { DraftProgress, ProjectDraftResponse } from '../model/types'
 import { calculateProjectWizardProgress, type CreateProjectFormValues } from '@/features/create-project'
-import type { ProjectCardData, ProjectFormat, ProjectStatus, PrdMeta } from '@/entities/project'
+import type { ProjectCardData, ProjectFormat, PrdMeta } from '@/entities/project'
 
 export const mapDraftToProjectCardData = (
   draft: ProjectDraftResponse | Partial<CreateProjectFormValues> | null | undefined
@@ -31,12 +31,12 @@ export const mapDraftToProjectCardData = (
       groupId: 'draft-group-primary',
     },
     ownerId: 0,
-    status: 'Pending' as ProjectStatus,
+    status: 'Pending',
     partner: {
       id: draftValues.partnerId || '',
-      name: '',
-      profilePicture: ''
-    }, // TODO добавить partner в модель драфта
+      name: draftValues.extraFieldsForAll?.partnerName || '',
+      profilePicture: '',
+    },
     meta: {
       title: draftValues.meta?.title || 'Черновик проекта',
       description: draftValues.meta?.description || '',

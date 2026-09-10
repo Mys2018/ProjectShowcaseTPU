@@ -14,10 +14,6 @@ export const getProjectFormatTranslation = (format: ProjectFormat) => {
 
 export const getProjectStatusTranslation = (status: ProjectStatus) => {
   switch (status) {
-    case 'Active':
-      return 'Активен'
-    case 'Approved':
-      return 'Утверждён'
     case 'Completed':
       return 'Завершён'
     case 'InProgress':
