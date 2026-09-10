@@ -9,7 +9,7 @@ type TeamUserCardNameStyle = 'normal' | 'short' | 'twoLines'
 interface TeamUserCardProps {
   firstName: string,
   lastName: string,
-  course?: string,
+  course?: string | number,
   roles?: string[],
   avatar?: ReactNode,
 

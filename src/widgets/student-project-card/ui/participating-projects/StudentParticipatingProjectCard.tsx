@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
-import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
+import { PartnerRow, PartnerRowSkeleton } from '@/entities/partner'
 import { getProjectDates, ProjectCardHorizontal, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
 import { TeamUserCard, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
@@ -15,7 +15,6 @@ interface StudentParticipatingProjectCardProps {
 }
 
 export function StudentParticipatingProjectCard({ project, competencyId, className }: StudentParticipatingProjectCardProps) {
-  const { data: partner } = usePartnerById(project.partnerId)
   const { data: curator } = useUserById(project.ownerId)
   const { data: competencies } = useCompetencies()
 
@@ -39,7 +38,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
         </div>
       }
-      mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
+      mainSlot={project.partner ? <PartnerRow partner={project.partner} /> : <PartnerRowSkeleton />}
       sideSlot={
         <>
           <div className={styles.side}>

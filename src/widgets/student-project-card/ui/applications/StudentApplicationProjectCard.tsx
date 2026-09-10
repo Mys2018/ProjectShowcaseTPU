@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
 import { CancelApplicationButton } from '@/features/cancel-application'
-import { PartnerRow, PartnerRowSkeleton, usePartnerById } from '@/entities/partner'
+import { PartnerRow } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById, TeamUserCard } from '@/entities/user'
