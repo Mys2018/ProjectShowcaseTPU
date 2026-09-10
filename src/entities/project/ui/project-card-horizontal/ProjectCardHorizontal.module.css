@@ -60,7 +60,7 @@
   grid-row: 0;
 }
 
-.separatop {
+.separator {
   height: 100%;
   width: 1px;
   background-color: var(--color-gray-150);
