@@ -17,7 +17,6 @@ interface StudentApplicationProjectCardProps {
 
 export function StudentApplicationProjectCard({ application, className, skeletonClassName }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
-  const partner = project?.partner
   const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
   const { data: competencies } = useCompetencies()
 
