@@ -8,16 +8,17 @@ import { ProjectCardVertical, useLikedProjects, useProjects } from '@/entities/p
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { CompetencyBadgeList } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import {BlankPhoto, buildRoute, ProjectSkeleton} from '@/shared'
+import { BlankPhoto, buildRoute, ProjectSkeleton } from '@/shared'
 
 const fallbackProjectsData = { projects: [], total: 0 }
 
 interface ProjectsGridProps {
   type?: 'liked' | 'recruiting' | 'in-progress' | 'all'
+  filters?: boolean
   emptyFallback?: ReactElement
 }
 
-export default function ProjectsGrid({ type = 'all', emptyFallback }: ProjectsGridProps) {
+export default function ProjectsGrid({ type = 'all', filters = false, emptyFallback }: ProjectsGridProps) {
   const navigate = useNavigate()
 
   const { tags, competencies, projectTypes, sort, isRelevanceSort, query, limit, page, reset } = useFilterStore()
@@ -27,14 +28,14 @@ export default function ProjectsGrid({ type = 'all', emptyFallback }: ProjectsGr
     isError: isAllError
   } = useProjects(
     {
-      q: query,
-      projectType: Array.from(projectTypes),
-      tagId: Array.from(tags),
+      q: filters ? query : undefined,
+      projectType: filters ? Array.from(projectTypes) : undefined,
+      tagId: filters ? Array.from(tags) : undefined,
       status: type === 'recruiting' ? ['Recruiting'] : type === 'in-progress' ? ['InProgress'] : undefined,
-      roleTypeId: Array.from(competencies),
-      sort: isRelevanceSort ? 'relevance' : sort,
-      limit: limit,
-      offset: (page - 1) * limit
+      roleTypeId: filters ? Array.from(competencies) : undefined,
+      sort: filters ? (isRelevanceSort ? 'relevance' : sort) : undefined,
+      limit: filters ? limit : undefined,
+      offset: filters ? (page - 1) * limit : undefined
     },
     type !== 'liked'
   )
@@ -46,7 +47,9 @@ export default function ProjectsGrid({ type = 'all', emptyFallback }: ProjectsGr
   if (isLoading) {
     return (
       <div className={styles.body}>
-        {Array.from({ length: 16 }, (_, i) => <ProjectSkeleton key={i} className={styles.skeleton}/>)}
+        {Array.from({ length: 16 }, (_, i) => (
+          <ProjectSkeleton key={i} className={styles.skeleton} />
+        ))}
       </div>
     )
   }

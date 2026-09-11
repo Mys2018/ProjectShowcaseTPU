@@ -47,10 +47,10 @@ export const Catalog = () => {
   const renderProjectGrid = () => {
     switch (location.pathname) {
       case ROUTES.PROJECTS.RECRUITMENT: {
-        return <ProjectsGrid type='recruiting' />
+        return <ProjectsGrid type='recruiting' filters />
       }
       case ROUTES.PROJECTS.IN_PROGRESS: {
-        return <ProjectsGrid type='in-progress' />
+        return <ProjectsGrid type='in-progress' filters />
       }
       default:
         return undefined
