@@ -38,7 +38,9 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
           </div>
 
           <div className={styles.statusContainer}>
-            <ProjectPublicStatusLabel status={project.status} />
+            {
+              !(project.status === 'Pending' || project.status === 'NeedsRework') && <ProjectPublicStatusLabel status={project.status} />
+            }
             <ProjectInnerStatus status={project.status} />
           </div>
         </div>

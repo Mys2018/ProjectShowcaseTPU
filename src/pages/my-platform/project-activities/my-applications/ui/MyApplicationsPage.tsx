@@ -3,12 +3,14 @@ import styles from './MyApplicationsPage.module.css'
 import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
-import {NoProjectsFallback} from "@/entities/project";
-import {BlankPhoto, CrossIcon} from '@/shared'
+import { NoProjectsFallback, CompletedProjects } from "@/entities/project"
+import {BlankPhoto, CrossIcon, ROUTES} from '@/shared'
+import {useNavigate} from "react-router-dom";
 
 
 export function MyApplicationsPage() {
   const { data } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
+  const navigate = useNavigate()
   const applications = data?.applications || []
 
   const thisYear = new Date().getFullYear()
@@ -56,31 +58,29 @@ export function MyApplicationsPage() {
               className={styles.empty}
               title='Откликов пока нет'
               description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+              buttonText={'Выбрать проект'}
+              buttonType={'green'}
+              onClick={() => {
+                navigate(ROUTES.PROJECTS.BASE)
+              }}
             />
           )}
         </div>
       </div>
-      <div className={styles.archived}>
-        <h3 className={styles.title}>История откликов</h3>
-        <div className={styles.list}>
-          { hasArchivedApplications ? (
-            archivedApplications.map(application => (
-              <StudentApplicationProjectCard
-                key={application.applicationID}
-                application={application}
-                skeletonClassName={styles.skeletonSmall}
-              />
-            ))
-          ) : (
-            <div className={styles.description}>
-              <h5 className={styles.heading}>У вас ещё не было откликов в {thisYear} году</h5>
-              <p className={styles.paragraph}>
-                Выбирайте подходящие проекты из каталога. Все проекты, на которые вы подали заявки, будут храниться здесь.
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
+      <CompletedProjects
+        title="История откликов"
+        isEmpty={!hasArchivedApplications}
+        emptyTitle={`У вас ещё не было откликов в ${thisYear} году`}
+        emptySubtitle="Выбирайте подходящие проекты из каталога. Все проекты, на которые вы подали заявки, будут храниться здесь."
+      >
+        {archivedApplications.map(application => (
+          <StudentApplicationProjectCard
+            key={application.applicationID}
+            application={application}
+            skeletonClassName={styles.skeletonSmall}
+          />
+        ))}
+      </CompletedProjects>
     </>
   )
 }

@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px
+}
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black)
+}
+
+.activeContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 16px;
+}

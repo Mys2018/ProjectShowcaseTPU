@@ -13,72 +13,27 @@
   padding: 24px 16px;
 }
 
-.archived {
-  order: 5;
-
+.buttonList {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  gap: 8px;
 
-  margin: 24px 16px;
-  padding: 24px;
+  & .gradeButton {
+    font: var(--font-ALS);
+    font-size: 12px;
+    line-height: 100%;
 
-  border-radius: 24px;
-  background-color: var(--color-gray-100);
+    color: var(--color-gray-650);
 
-  & .description {
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    
-    padding: 48px 24px;
+    border: 1px solid var(--color-gray-350);
+    padding: 7px 12px;
+
     border-radius: 20px;
-
-    color: var(--color-gray-900);
     background-color: var(--color-white);
 
-    & .heading {
-      font: var(--field-title-big-interface);
-    }
-
-    & .paragraph {
-      max-width: 550px;
-
-      font: var(--body-text-platform);
-      text-align: center;
-    }
-  }
-
-  & .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  & .buttonList {
-    display: flex;
-    gap: 8px;
-
-    & .gradeButton {
-      font: var(--font-ALS);
-      font-size: 12px;
-      line-height: 100%;
-
-      color: var(--color-gray-650);
-
-      border: 1px solid var(--color-gray-350);
-      padding: 7px 12px;
-
-      border-radius: 20px;
-      background-color: var(--color-white);
-
-      &.active {
-        border: none;
-        color: var(--color-white);
-        background-color: var(--color-gray-900);
-      }
+    &.active {
+      border: none;
+      color: var(--color-white);
+      background-color: var(--color-gray-900);
     }
   }
 }

@@ -3,6 +3,7 @@ export { projectApi } from './requests'
 export {
   useProjects,
   useProjectDetails,
+  useProjectTeam,
   useCreateProject,
   useProjectDraft,
   useSaveDraft,

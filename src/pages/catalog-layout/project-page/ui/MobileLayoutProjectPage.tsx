@@ -5,7 +5,7 @@ import { MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplica
 import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { Drawer } from "@/features/drawer/Drawer.tsx";
 import { useApplications } from "@/entities/application";
-import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
+import { type ProjectCardData, typeProjectsLabel, useProjectTeam } from "@/entities/project";
 import { usePlatformFinder } from "@/entities/platforms";
 import { useIsProfileFilled } from "@/entities/user";
 import { useUserById } from "@/entities/user";
@@ -34,6 +34,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   // TODO
   const { data: owner } = useUserById(project.ownerId)
+  const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -49,10 +50,17 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { value: 'team', label: 'Трек и команда' }
   ] as const;
 
-  const teamMock = [
-    { name: 'Фадеев', role: 'Backend', avatarSrc: '' },
-    { name: 'Яра', role: 'Frontend', avatarSrc: '' }
-  ];
+  const teamList = useMemo(() => {
+    return (teamMembers ?? []).map((member) => {
+      const fullName = `${member.meta?.firstName ?? ''} ${member.meta?.lastName ?? ''}`.trim();
+      return {
+        id: member.userId,
+        name: fullName || member.email || `Участник #${member.userId}`,
+        role: member.roles && member.roles.length > 0 ? member.roles.join(', ') : 'Участник',
+        avatarSrc: member.profilePicture,
+      };
+    });
+  }, [teamMembers]);
 
   const { platformsData, findPlatformName } = usePlatformFinder();
 
@@ -145,13 +153,14 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
             ) : (
               <>
                 <ProfileWidget
-                  last_name={owner.meta.lastName}
-                  first_name={owner.meta.firstName}
+                  last_name={owner?.meta?.lastName ?? ''}
+                  first_name={owner?.meta?.firstName ?? ''}
                   role="Менеджер данного проекта"
                   avatarSrc=""
                 />
                 <ProjectTeam
-                  list={teamMock}
+                  list={teamList}
+                  isLoading={isTeamLoading}
                   openFreeCompetency={() => setDrawerOpen(true)}
                 />
                 <KeyPoints

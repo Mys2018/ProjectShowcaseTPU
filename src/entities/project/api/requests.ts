@@ -9,6 +9,7 @@ import type {
   GetManagedProjectsParams,
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
+  ProjectTeamMember,
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
 import { api, ENDPOINTS } from '@/shared'
@@ -49,6 +50,11 @@ export const projectApi = {
   getProjectById: async (id: string): Promise<ProjectCardData> => {
     const { data } = await api.get<ProjectDto>(ENDPOINTS.PROJECT_BY_ID(id))
     return mapProjectDtoToEntity(data)
+  },
+
+  getProjectTeam: async (projectId: string): Promise<ProjectTeamMember[]> => {
+    const { data } = await api.get<ProjectTeamMember[]>(ENDPOINTS.PROJECT_TEAM(projectId))
+    return data
   },
 
   createProject: async (payload: CreateProjectDto): Promise<string> => {

@@ -1,14 +1,15 @@
-import styles from './FilledButton.module.css'
+import styles from './BluePlusVioletButton.module.css'
 import clsx from "clsx";
+import PlusIcon from '@/shared/ui/icons/plus.svg?react'
 
-interface FilledButtonProps {
+interface BluePlusVioletButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   textButton?: string;
   className?: string;
 }
 
-export const FilledButton = ({onClick, textButton, className, disabled}: FilledButtonProps) => {
+export const BluePlusVioletButton = ({onClick, textButton, className, disabled}: BluePlusVioletButtonProps) => {
   return (
     <button
       type="button"
@@ -16,7 +17,7 @@ export const FilledButton = ({onClick, textButton, className, disabled}: FilledB
       disabled={disabled}
       className={clsx(styles.button, className)}
     >
-
+      <PlusIcon className={styles.icon}/>
       {textButton}
     </button>
   )

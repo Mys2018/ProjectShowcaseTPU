@@ -1,16 +1,30 @@
 import clsx from 'clsx'
-import { useNavigate } from 'react-router-dom'
 import styles from './NoProjectsFallback.module.css'
-import { BlankPhoto, FilledButton, ROUTES } from '@/shared'
+import { BlankPhoto, FilledButton } from '@/shared'
+import {BluePlusVioletButton} from "@/shared/ui/elements/buttons/blue-plus-violet-button/BluePlusVioletButton.tsx";
+
+type buttonType = 'green' | 'blue'
 
 interface NoProjectsFallbackProps {
   title?: string
   description?: string
+  buttonText?: string
+  buttonType?: buttonType
   className?: string
+  onClick?: () => void
 }
 
-export function NoProjectsFallback({ title, description, className }: NoProjectsFallbackProps) {
-  const navigate = useNavigate()
+const getButton = (type?: buttonType, onClick?: () => void, buttonText: string = 'Выбрать проект') => {
+  if (!type || !onClick) return null
+  switch (type) {
+    case 'green':
+      return <FilledButton className={styles.catalogButton} onClick={onClick} textButton={buttonText} />
+    case 'blue':
+      return <BluePlusVioletButton className={styles.catalogButton} onClick={onClick} textButton={buttonText} />
+  }
+}
+
+export function NoProjectsFallback({ title, description, className, buttonText = 'Выбрать проект', buttonType, onClick }: NoProjectsFallbackProps) {
   const isTextBlockVisible = title || description
   return (
     <div className={clsx(styles.empty, className)}>
@@ -22,7 +36,9 @@ export function NoProjectsFallback({ title, description, className }: NoProjects
             {description && <p className={styles.paragraph}>{description}</p>}
           </div>
         )}
-        <FilledButton className={styles.catalogButton} onClick={() => void navigate(ROUTES.PROJECTS.BASE)} textButton='Выбрать проект' />
+        {
+          getButton(buttonType, onClick, buttonText)
+        }
       </div>
     </div>
   )
