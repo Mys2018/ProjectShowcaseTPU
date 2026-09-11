@@ -1,4 +1,6 @@
 .image {
+	flex-shrink: 0;
+
 	height: 50px;
 	aspect-ratio: 1;
 
