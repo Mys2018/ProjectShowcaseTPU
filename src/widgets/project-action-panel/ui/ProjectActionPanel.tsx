@@ -1,8 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import { isActiveApplication, myApplicationsParams } from '../model/applications'
+import { useIsInOtherProject, useProjectLimitReached } from '../model/participation'
 import { useToggleLikeProject } from '@/features/like-project'
 import { useApplications } from '@/entities/application'
-import { type ProjectCardData } from '@/entities/project'
+import { getPublicProjectStatus, hasFreePlaces, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
 import { useAuthStore, useMe } from '@/entities/user'
 import { FloatingPanel } from '@/shared/ui/floating-panel'
 import { useMobileChrome } from '@/shared/lib'
@@ -12,7 +13,7 @@ interface ProjectActionPanelProps {
   project: ProjectCardData
   /** Открыть шторку выбора компетенции — податься ещё на одну роль. */
   onOpenCompetencies: () => void
-  /** Открыть шторку со своими заявками, где роли снимаются по одной. */
+  /** Открыть шторку со своими заявками. Её содержимое делают отдельно. */
   onOpenApplications: () => void
   /** Гость или незаполненный профиль: вместо шторки показываем подсказку. */
   onBlocked: (reason: 'guest' | 'profile') => void
@@ -23,20 +24,19 @@ interface ProjectActionPanelProps {
   isProfileFilled: boolean
 }
 
-/** Набор идёт. Единственный статус, где можно откликнуться. */
-const isRecruitingStatus = (status: string) => status === 'Active' || status === 'Recruiting'
-/** Проект закончен: участник может оставить отзыв. */
-const isCompletedStatus = (status: string) => status === 'Completed'
 /**
- * Работа идёт — набор закрыт.
+ * Сколько компетенций одного проекта можно занять одновременно — столько же,
+ * сколько разрешает выбрать шторка отклика (MAX_SELECTIONS в FreeCompetencies).
  */
-const isInProgressStatus = (status: string) => status === 'InProgress' || status === 'Approved'
-
+const MAX_ROLES_PER_PROJECT = 2
 
 /**
- * Центр панели считается одной цепочкой приоритетов: завершён → идёт работа →
- * набор открыт. Первое совпадение выигрывает. Владелец отдельной ветки не имеет —
- * он такой же участник и может откликнуться на собственный проект.
+ * Центр панели — одна цепочка приоритетов, первое совпадение выигрывает.
+ *
+ * Порядок не случаен. Сначала идут фазы проекта: если проект завершён или
+ * отклонён, никакие мои заявки уже ничего не значат. Дальше личные состояния,
+ * и внутри них нерассмотренная заявка бьёт участие — пока хоть одна висит
+ * без ответа, человеку важнее «чем закончилось», чем «я уже в команде».
  */
 export function ProjectActionPanel({
   project,
@@ -56,14 +56,24 @@ export function ProjectActionPanel({
   const { data: me } = useMe()
   const isGuest = status !== 'authenticated' && status !== 'loading'
 
-  const isRecruiting = isRecruitingStatus(project.status)
-  const isCompleted = isCompletedStatus(project.status)
-  const isInProgress = isInProgressStatus(project.status)
+  const publicStatus = getPublicProjectStatus(project)
+  const isRecruitmentPhase = publicStatus === 'Recruiting' || publicStatus === 'RecruitmentCompleted'
 
   const { data: applications } = useApplications(myApplicationsParams(project.id))
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)
+  const hasPending = myActive.some(a => a.status === 'pending')
 
   const isMember = !!me && project.roles.some(role => role.placeUserIds.includes(Number(me.id)))
+
+  // Запрашиваем только когда ответ может на что-то повлиять: гостю и на завершённом
+  // проекте эти состояния всё равно не покажутся.
+  const crossProjectMatters = !isGuest && isRecruitmentPhase
+  const isInOtherProject = useIsInOtherProject(project.id, crossProjectMatters && !isMember)
+  const limitReached = useProjectLimitReached(project.id, crossProjectMatters && !isMember)
+
+  // Свободное место — то, которое ещё никем не занято; подавался я на него или нет,
+  // значения не имеет (решение дизайнера).
+  const canTakeMore = hasFreePlaces(project) && myActive.length < MAX_ROLES_PER_PROJECT
 
   // TODO: отзывов нет в API. Пока читаем флаг из ответа проекта, чтобы состояние
   // можно было проверить на моках; когда появится эндпоинт — заменить на запрос.
@@ -75,9 +85,13 @@ export function ProjectActionPanel({
     onOpenCompetencies()
   }
 
+  const projectStatus = <ProjectPublicStatusLabel status={publicStatus} variant="panel" />
+
   const center = (() => {
-    if (isCompleted) {
-      if (!isMember) return <FloatingPanel.Status>{completedLabel(project)}</FloatingPanel.Status>
+    /* ── Фазы проекта ────────────────────────────────────────────────── */
+
+    if (publicStatus === 'Completed') {
+      if (!isMember) return projectStatus
       return hasReview ? (
         <FloatingPanel.Action tone="muted">Отзыв оставлен</FloatingPanel.Action>
       ) : (
@@ -87,39 +101,55 @@ export function ProjectActionPanel({
       )
     }
 
-    if (isInProgress) {
+    if (publicStatus === 'InProgress') {
       return isMember ? (
         <FloatingPanel.Action tone="green" onClick={onShowPoints}>
           Смотреть баллы
         </FloatingPanel.Action>
       ) : (
-        <FloatingPanel.Status tone="violet" dot>
-          В работе
-        </FloatingPanel.Status>
+        projectStatus
       )
     }
 
-    if (project.status === 'Rejected') {
-      return <FloatingPanel.Status>Отклонён модератором</FloatingPanel.Status>
-    }
+    // Отклонён модератором, не реализован, на модерации, на доработке —
+    // откликаться некуда, показываем сквозной статус проекта.
+    if (!isRecruitmentPhase) return projectStatus
 
-    if (project.status === 'NotImplemented') {
-      return <FloatingPanel.Status>Не реализован</FloatingPanel.Status>
-    }
+    /* ── Личные состояния внутри набора ──────────────────────────────── */
 
-    // Остальное («на модерации», «на доработке») дизайном пока не покрыто —
-    // нейтральный центр честнее, чем чужая подпись.
-    if (!isRecruiting) return <FloatingPanel.Status>Проект недоступен</FloatingPanel.Status>
-
-    if (myActive.length > 0) {
+    // Хоть одна заявка без ответа — даже если остальные уже приняли.
+    if (hasPending) {
       return (
-        <FloatingPanel.Applied
-          count={myActive.length}
-          onOpen={handleApply}
-          onCancel={onOpenApplications}
-        />
+        <FloatingPanel.Applied actionText="Посмотреть" onAction={onOpenApplications}>
+          Вы откликнулись
+        </FloatingPanel.Applied>
       )
     }
+
+    if (isMember) {
+      return canTakeMore ? (
+        <FloatingPanel.Applied actionText="Выбрать ещё" tone="outline" onAction={handleApply}>
+          Вы в команде
+        </FloatingPanel.Applied>
+      ) : (
+        <FloatingPanel.Note>Вы в команде</FloatingPanel.Note>
+      )
+    }
+
+    // Взяли в другой проект — второй параллельно вести нельзя.
+    if (isInOtherProject) return <FloatingPanel.Note>Вы уже в другом проекте</FloatingPanel.Note>
+
+    // Лимит проектов исчерпан: компетенции показать можно, откликнуться — нет.
+    if (limitReached) {
+      return (
+        <FloatingPanel.Action tone="locked" onClick={onOpenCompetencies}>
+          Посмотреть компетенции
+        </FloatingPanel.Action>
+      )
+    }
+
+    // Мест не осталось — это и есть «Набор завершён».
+    if (publicStatus === 'RecruitmentCompleted') return projectStatus
 
     return (
       <FloatingPanel.Action tone="violet" onClick={handleApply}>
@@ -128,25 +158,21 @@ export function ProjectActionPanel({
     )
   })()
 
+  // Сердце — только пока я никак не связан с проектом. Откликнулся или уже
+  // в команде — вместо него «поделиться» (решение дизайнера).
+  const canFavorite = isRecruitmentPhase && !isMember && myActive.length === 0
+
   return (
     <FloatingPanel transform={panelTransform} animate={panelAnimate} hidden={panelHidden}>
       {/* Фолбэк тот же, что у десктопной ссылки на этой странице, — иначе
           «назад» с телефона и с компьютера уводило бы в разные места. */}
       <FloatingPanel.Back fallback={ROUTES.PROJECTS.RECRUITMENT} />
       {center}
-      {isRecruiting ? (
+      {canFavorite ? (
         <FloatingPanel.Favorite active={project.liked} onClick={() => toggleLike(project.id)} />
       ) : (
         <FloatingPanel.Share onClick={onShare} />
       )}
     </FloatingPanel>
   )
-}
-
-// TODO: даты завершения в API пока нет — придёт полем проекта, тогда подставим сюда
-const completedLabel = (project: ProjectCardData) => {
-  const last = project.checkpoints?.checkpoints?.at(-1)?.deadline
-  if (!last) return 'Завершён'
-  // ru-RU уже добавляет «г.» к году — своё дописывать не надо
-  return `Завершен ${last.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })}`
 }
