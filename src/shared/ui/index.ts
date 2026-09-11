@@ -21,6 +21,7 @@ export { Modal } from './modals/modal/Modal.tsx'
 export { ModalFooter } from './modals/modal-footer/ModalFooter.tsx'
 export { PopupMenu } from './popup-menu/PopupMenu.tsx'
 export { BlankPhoto } from './blank-photo/BlankPhoto.tsx'
+export { Banner } from './banner/Banner.tsx'
 export * from './elements/buttons'
 
 import userIconUrl from './icons/fallback_personal.svg'
