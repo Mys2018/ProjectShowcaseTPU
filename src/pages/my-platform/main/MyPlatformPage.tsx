@@ -1,7 +1,9 @@
 import clsx from 'clsx'
+import { useNavigate } from 'react-router-dom'
 import { useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
-import { MyPlatformProjectsWidgets } from '@/widgets/my-platform-widgets'
+import { ProjectsGrid } from '@/widgets/projects-grid'
+import { CuratorWidget } from '@/widgets/my-platform-widgets'
 import {
   Avatar,
   getSwitchableRoles,
@@ -11,7 +13,7 @@ import {
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
-import {TeamUserCard} from "@/entities/user/ui";
+import { TeamUserCard } from '@/entities/user/ui'
 import {
   FloatingTabs,
   StagesWidget,
@@ -19,9 +21,10 @@ import {
   YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
-  type FloatingTabItem, ROUTES
+  type FloatingTabItem,
+  ROUTES,
+  assertNever
 } from '@/shared'
-import {useNavigate} from "react-router-dom";
 
 export const MyPlatformPage = () => {
   const { data: user } = useMe()
@@ -114,31 +117,53 @@ export const MyPlatformPage = () => {
     }
   }
 
+  const renderContent = () => {
+    switch (preferredRoleType) {
+      case 'Student':
+        return (
+          <>
+            <h3 className={styles.title}>Проекты для вас</h3>
+            <ProjectsGrid />
+          </>
+        )
+      case 'Curator':
+        return <CuratorWidget />
+      case 'Moderator':
+      case null:
+        return <></>
+      default:
+        return assertNever(preferredRoleType)
+    }
+  }
+
   return (
     <main className={`${styles.container} ${preferredRoleType ? styles[preferredRoleType.toLowerCase()] : ''}`} onScroll={handleScroll}>
       <span className={`${styles.background} ${styles.fixed}`} />
       <span className={styles.background} ref={bgRef} />
       <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
 
-      <aside className={styles.userRow}>{user ?
-        <div className={styles.userRowContainer} onClick={() => {navigate(ROUTES.PROFILE.BASE)}}>
-          <TeamUserCard
-            avatar={
-              <Avatar
-                fallbackType={'user'}
-                size={"40px"}
-                strokeColor={"grey"}
-              />
-            }
-            firstName={user.meta.firstName}
-            lastName={user.meta.lastName}
-            nameTextStyle={"ALS"}
-            nameSubtextStyle={"OS-10-400"}
-            nameStyle={"normal"}
-            roles={user.competencies}
-          />
-        </div>
-          :<UserRowSkeleton />}</aside>
+      <aside className={styles.userRow}>
+        {user ? (
+          <div
+            className={styles.userRowContainer}
+            onClick={() => {
+              navigate(ROUTES.PROFILE.BASE)
+            }}
+          >
+            <TeamUserCard
+              avatar={<Avatar fallbackType={'user'} size={'40px'} strokeColor={'grey'} />}
+              firstName={user.meta.firstName}
+              lastName={user.meta.lastName}
+              nameTextStyle={'ALS'}
+              nameSubtextStyle={'OS-10-400'}
+              nameStyle={'normal'}
+              roles={user.competencies}
+            />
+          </div>
+        ) : (
+          <UserRowSkeleton />
+        )}
+      </aside>
 
       <div className={styles.titleContainer}>
         {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}
@@ -163,11 +188,7 @@ export const MyPlatformPage = () => {
             <StagesWidget />
           </section>
         </div>
-        <section className={styles.projects}>
-          {/*<h3 className={styles.title}>Проекты для вас</h3>*/}
-          {/*<ProjectsGrid />*/}
-          <MyPlatformProjectsWidgets />
-        </section>
+        <section className={styles.projects}>{renderContent()}</section>
       </div>
     </main>
   )
