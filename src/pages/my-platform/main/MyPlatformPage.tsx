@@ -104,16 +104,16 @@ export const MyPlatformPage = () => {
         programmaticScrolls.current.add(activitiesElement)
         activitiesElement.scrollTop = scrollTop
       }
-      if (contentElement) {
-        if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
-        if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
-      }
     }
     if (contentElement && contentElement !== target) {
       if (contentElement.scrollTop !== scrollTop) {
         programmaticScrolls.current.add(contentElement)
         contentElement.scrollTop = scrollTop
       }
+    }
+    if (contentElement) {
+      if (bgElement) bgElement.style.transform = `translateY(-${contentElement.scrollTop}px)`
+      if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, contentElement.scrollTop)}px)`
     }
   }
 
