@@ -4,7 +4,7 @@ import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow } from '@/entities/partner'
 import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import {useUserById, TeamUserCard, Avatar, getAvatarRoleInfo} from '@/entities/user'
+import { useUserById, TeamUserCard, Avatar, getAvatarRoleInfo } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
 import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSkeleton } from '@/shared'
@@ -12,20 +12,20 @@ import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSk
 interface StudentApplicationProjectCardProps {
   application: Application
   className?: string
-  skeletonClassName?: string
 }
 
-export function StudentApplicationProjectCard({ application, className, skeletonClassName }: StudentApplicationProjectCardProps) {
+export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
   const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
   const { data: competencies } = useCompetencies()
 
+  const isExtended = application.status === 'pending'
+
   if (!project) {
-    return <ProjectSkeleton className={clsx(styles.card, skeletonClassName, className)} />
+    return <ProjectSkeleton className={clsx(styles.card, styles.skeleton, isExtended && styles.big, className)} />
   }
 
   const targetCompetency = competencies?.find(c => c.id === application.roleID)
-  const isExtended = application.status === 'pending'
 
   const statusBadge =
     project.status === 'Recruiting' && application.status === 'pending' ? (
@@ -63,12 +63,12 @@ export function StudentApplicationProjectCard({ application, className, skeleton
               {curator ? (
                 <TeamUserCard
                   avatar={
-                  <Avatar
-                    picture={curator.profilePicture}
-                    fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
-                    size={"36px"}
-                    strokeColor={"grey"}
-                  />
+                    <Avatar
+                      picture={curator.profilePicture}
+                      fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
+                      size={'36px'}
+                      strokeColor={'grey'}
+                    />
                   }
                   firstName={curator.meta.firstName}
                   lastName={curator.meta.lastName}

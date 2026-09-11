@@ -109,7 +109,7 @@
 
   & .description {
     padding: 48px 24px;
-    
+
     border-radius: 20px;
     background-color: var(--color-white);
   }
@@ -145,12 +145,4 @@
       text-align: center;
     }
   }
-}
-
-.skeletonBig {
-  min-height: 280px;
-}
-
-.skeletonSmall {
-  min-height: 190px;
 }

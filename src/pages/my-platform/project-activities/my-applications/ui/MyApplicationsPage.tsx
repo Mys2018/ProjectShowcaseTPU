@@ -3,9 +3,8 @@ import styles from './MyApplicationsPage.module.css'
 import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
-import {NoProjectsFallback} from "@/entities/project";
-import {BlankPhoto, CrossIcon} from '@/shared'
-
+import { NoProjectsFallback } from '@/entities/project'
+import { BlankPhoto, CrossIcon } from '@/shared'
 
 export function MyApplicationsPage() {
   const { data } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
@@ -45,11 +44,7 @@ export function MyApplicationsPage() {
         <div className={styles.list}>
           {hasActiveApplications ? (
             activeApplications.map(application => (
-              <StudentApplicationProjectCard
-                key={application.applicationID}
-                application={application}
-                skeletonClassName={styles.skeletonBig}
-              />
+              <StudentApplicationProjectCard key={application.applicationID} application={application} />
             ))
           ) : (
             <NoProjectsFallback
@@ -63,13 +58,9 @@ export function MyApplicationsPage() {
       <div className={styles.archived}>
         <h3 className={styles.title}>История откликов</h3>
         <div className={styles.list}>
-          { hasArchivedApplications ? (
+          {hasArchivedApplications ? (
             archivedApplications.map(application => (
-              <StudentApplicationProjectCard
-                key={application.applicationID}
-                application={application}
-                skeletonClassName={styles.skeletonSmall}
-              />
+              <StudentApplicationProjectCard key={application.applicationID} application={application} />
             ))
           ) : (
             <div className={styles.description}>
