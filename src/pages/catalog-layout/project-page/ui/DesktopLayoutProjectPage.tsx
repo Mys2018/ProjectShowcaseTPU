@@ -13,7 +13,7 @@ import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
 import { useProjectTeam } from "@/entities/project";
-import { getPublicProjectStatus, type ProjectCardData } from "@/entities/project";
+import { getPublicProjectStatus } from "@/entities/project";
 // TODO
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
