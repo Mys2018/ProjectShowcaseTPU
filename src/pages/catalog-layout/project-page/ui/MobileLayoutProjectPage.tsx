@@ -5,7 +5,7 @@ import { MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplica
 import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { Drawer } from "@/features/drawer/Drawer.tsx";
 import { useApplications } from "@/entities/application";
-import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
+import { getPublicProjectStatus, type ProjectCardData, typeProjectsLabel } from "@/entities/project";
 import { usePlatformFinder } from "@/entities/platforms";
 import { useIsProfileFilled } from "@/entities/user";
 import { useUserById } from "@/entities/user";
@@ -104,7 +104,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
       <section className={styles.topBlock} >
         <div className={styles.leftTopBlock}>
           {typeProjectsLabel(project.type)}
-          <ProjectPublicStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
 
         <div className={styles.rightTopBlock}>

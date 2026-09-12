@@ -103,8 +103,11 @@ function Favorite({ active, onClick }: { active?: boolean; onClick?: () => void 
 interface ActionProps {
   children: ReactNode
   onClick?: () => void
-  /** violet и green — цветное кольцо с белой сердцевиной, filled и muted — наоборот. */
-  tone?: 'violet' | 'green' | 'filled' | 'muted'
+  /**
+   * violet и green — цветное кольцо с белой сердцевиной, filled и muted — наоборот.
+   * locked — серое кольцо: кнопка нажимается, но откликнуться уже нельзя.
+   */
+  tone?: 'violet' | 'green' | 'filled' | 'muted' | 'locked'
   disabled?: boolean
 }
 
@@ -112,7 +115,8 @@ const ACTION_TONE = {
   violet: styles.actionViolet,
   green: styles.actionGreen,
   filled: styles.actionFilled,
-  muted: styles.actionMuted
+  muted: styles.actionMuted,
+  locked: styles.actionLocked
 } as const
 
 function Action({ children, onClick, tone, disabled }: ActionProps) {
@@ -128,51 +132,43 @@ function Action({ children, onClick, tone, disabled }: ActionProps) {
   )
 }
 
-interface StatusProps {
-  children: ReactNode
-  /** Точка слева от подписи; она же задаёт цвет текста. */
-  tone?: 'violet' | 'green' | 'gray'
-  dot?: boolean
-}
-
-function Status({ children, tone = 'gray', dot }: StatusProps) {
-  const toneClass =
-    tone === 'violet' ? styles.toneViolet : tone === 'green' ? styles.toneGreen : styles.toneGray
+/**
+ * Личный статус без действия: «Вы в команде», «Вы уже в другом проекте».
+ * Отличается от статуса проекта тем, что зависит от пользователя, а не от проекта,
+ * — поэтому и живёт здесь, а не в общем компоненте статусов.
+ */
+function Note({ children }: { children: ReactNode }) {
   return (
-    <div className={styles.status}>
-      <span className={clsx(styles.statusInner, toneClass)}>
-        {dot && <span className={styles.statusDot} />}
-        {children}
-      </span>
+    <div className={styles.note}>
+      <span className={styles.noteText}>{children}</span>
     </div>
   )
 }
 
 interface AppliedProps {
-  /** Всегда количество, а не название роли: подпись должна быть одной ширины. */
-  count: number
-  /** Тап по подписи — податься ещё на одну роль. */
-  onOpen?: () => void
-  /** Тап по «Отменить» — шторка со списком заявок, где роли снимаются по одной. */
-  onCancel?: () => void
+  /** Левая половина: что со мной уже произошло. */
+  children: ReactNode
+  /** Правая половина: единственное доступное отсюда действие. */
+  actionText: string
+  onAction?: () => void
+  /**
+   * `filled` — серая заливка, действие вторично («Посмотреть»).
+   * `outline` — фиолетовая обводка и зелёная подпись, действие поощряется («Выбрать ещё»).
+   */
+  tone?: 'filled' | 'outline'
 }
 
-const rolePlural = (n: number) => (n === 1 ? 'роль' : n % 10 >= 2 && n % 10 <= 4 && (n < 12 || n > 14) ? 'роли' : 'ролей')
-
-function Applied({ count, onOpen, onCancel }: AppliedProps) {
-  const label = `${count} ${rolePlural(count)}`
+/** Составной центр: подпись слева, кнопка справа. Высота 56, как у действия. */
+function Applied({ children, actionText, onAction, tone = 'filled' }: AppliedProps) {
   return (
     <div className={styles.applied}>
+      <span className={styles.appliedLabel}>{children}</span>
       <button
         type="button"
-        className={styles.appliedLabel}
-        onClick={onOpen}
-        title={`Вы откликнулись на ${label}. Нажмите, чтобы податься ещё`}
+        className={clsx(styles.appliedAction, tone === 'outline' && styles.appliedActionOutline)}
+        onClick={onAction}
       >
-        {label}
-      </button>
-      <button type="button" className={styles.appliedCancel} onClick={onCancel}>
-        Отменить
+        {actionText}
       </button>
     </div>
   )
@@ -199,10 +195,10 @@ function Hint({ title, text, actionText, onAction, onClose }: HintProps) {
 }
 
 FloatingPanel.Hint = Hint
+FloatingPanel.Note = Note
 FloatingPanel.Round = Round
 FloatingPanel.Back = Back
 FloatingPanel.Share = Share
 FloatingPanel.Favorite = Favorite
 FloatingPanel.Action = Action
-FloatingPanel.Status = Status
 FloatingPanel.Applied = Applied
