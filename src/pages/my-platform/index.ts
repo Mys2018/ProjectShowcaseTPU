@@ -1,3 +1,4 @@
 export { MyPlatformPage } from './main/MyPlatformPage'
 export { ProjectActivitiesLayout } from './project-activities/layout/ProjectActivitiesLayout'
 export { AllCuratingProjects } from './project-activities/all-curating-projects/AllCuratingProjects.tsx'
+export { ApplicationsAndTeam } from './project-activities/applications-and-team/ApplicationsAndTeam.tsx'

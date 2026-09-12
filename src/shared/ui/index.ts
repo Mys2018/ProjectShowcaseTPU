@@ -22,6 +22,8 @@ export { ModalFooter } from './modals/modal-footer/ModalFooter.tsx'
 export { PopupMenu } from './popup-menu/PopupMenu.tsx'
 export { BlankPhoto } from './blank-photo/BlankPhoto.tsx'
 export * from './elements/buttons'
+export { CompetencyCard } from './competency-card/CompetencyCard.tsx'
+export { SkillTagList } from './skill-tag-list/SkillTagList.tsx'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'

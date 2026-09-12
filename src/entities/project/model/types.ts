@@ -92,6 +92,7 @@ export interface ProjectCardData {
   taskTracker?: ProjectPlatformLink[];
   designEnvironment?: ProjectPlatformLink[];
   otherPlatforms?: ProjectPlatformLink[];
+  team?: ProjectTeamMember[];
 }
 
 export interface ProjectResponseCheckpointDto {

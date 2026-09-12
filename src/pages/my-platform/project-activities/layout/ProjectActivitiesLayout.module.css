@@ -11,18 +11,19 @@
 }
 
 .container {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 
   display: grid;
   justify-items: start;
 
-  grid-template-columns: 300px 1fr;
-  grid-template-rows: 48px 1fr repeat(3, auto);
+  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-rows: 48px auto 1fr;
 
   padding: 50px 20px 0;
   max-width: 1560px;
-  overflow-y: auto;
+  overflow: hidden;
 
   background-color: var(--color-white);
 }
@@ -35,6 +36,7 @@
 
 .back {
   grid-column: 1;
+  grid-row: 1;
   order: 1;
 
   display: flex;
@@ -56,6 +58,7 @@
 
 .title {
   grid-column: 2;
+  grid-row: 1;
   order: 2;
 
   font: var(--hero-title-platform);
@@ -64,6 +67,7 @@
 
 .tabsContainer {
   grid-column: 2;
+  grid-row: 2;
   order: 3;
 
   width: 100%;
@@ -74,9 +78,3 @@
   z-index: 0;
 }
 
-.outlet {
-  grid-column: 2;
-  order: 4;
-
-  width: 100%;
-}

@@ -75,6 +75,7 @@ export function CreateProjectCard({type, onClick}: CreateProjectCardProps) {
           <SmallGreenButton
             onClick={onClick}
             textButton={'Выбрать'}
+            type={'choice'}
           />
         </div>
 

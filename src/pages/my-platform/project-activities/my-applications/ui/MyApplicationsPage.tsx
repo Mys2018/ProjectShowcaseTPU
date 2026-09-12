@@ -21,7 +21,7 @@ export function MyApplicationsPage() {
   const [isBannerVisible, setIsBannerVisible] = useState(hasActiveApplications) // TODO показывать баннер только до начала рассмотрения
 
   return (
-    <>
+    <div className={styles.container}>
       {isBannerVisible && (
         <div className={styles.banner}>
           <button className={styles.closeButton} onClick={() => setIsBannerVisible(false)}>
@@ -81,6 +81,6 @@ export function MyApplicationsPage() {
           />
         ))}
       </CompletedProjects>
-    </>
+    </div>
   )
 }

@@ -27,7 +27,7 @@ export function ParticipatingProjectsPage() {
   const hasArchivedProjects = archivedProjects.length > 0
 
   return (
-    <>
+    <div className={styles.container}>
       <div className={styles.activeBlock}>
         <h3 className={styles.title}>Активные проекты</h3>
         <div className={styles.list}>
@@ -72,6 +72,6 @@ export function ParticipatingProjectsPage() {
           <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
         ))}
       </CompletedProjects>
-    </>
+    </div>
   )
 }

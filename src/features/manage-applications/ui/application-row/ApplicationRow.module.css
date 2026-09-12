@@ -1,0 +1,57 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-gray-100);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-grow: 1;
+}
+
+.avatarLink {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.userName {
+  font: var(--body-text-platform);
+  color: var(--color-gray-750);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
+.date {
+  font: var(--inter-12-300);
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.loadingText {
+  font: var(--inter-12-300);
+  color: var(--color-gray-500);
+}
