@@ -3,3 +3,8 @@ export { ProjectCardVertical } from './project-card-vertical/ProjectCardVertical
 export { ProjectInnerStatus, type InnerStatuses } from './project-status-label/ProjectInnerStatus'
 export { ProjectPublicStatusLabel } from './project-status-label/ProjectPublicStatusLabel'
 export { NoProjectsFallback } from './no-projects-fallback/NoProjectsFallback'
+export { AddProjectElement } from './add-project-element/AddProjectElement.tsx'
+export { CompletedProjects, CompletedProjectsBlock, ArchivedProjects, type CompletedProjectsProps } from './completed-projects/CompletedProjects'
+export { ProjectCardTeam, ProjectTeamMemberRow, type ProjectTeamMemberItem, type ProjectCardTeamProps } from './project-card-team/ProjectCardTeam'
+export { ProjectTeamPopup, type ProjectTeamPopupProps } from './project-team-popup/ProjectTeamPopup'
+export { MiniProjectCard } from './mini-project-card/MiniProjectCard.tsx'

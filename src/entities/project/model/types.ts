@@ -32,6 +32,19 @@ export interface ProjectPartnerDto {
   profilePicture?: string;
 }
 
+export interface ProjectTeamMember {
+  userId: number;
+  email: string;
+  profilePicture?: string;
+  roles?: string[];
+  meta: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+export type ProjectTeamMemberDto = ProjectTeamMember;
+
 /** Ссылка проекта на внешнюю платформу. По api.yaml: ProjectPlatformLink. */
 export interface ProjectPlatformLink {
   platformId: string;
@@ -79,6 +92,7 @@ export interface ProjectCardData {
   taskTracker?: ProjectPlatformLink[];
   designEnvironment?: ProjectPlatformLink[];
   otherPlatforms?: ProjectPlatformLink[];
+  team?: ProjectTeamMember[];
 }
 
 export interface ProjectResponseCheckpointDto {

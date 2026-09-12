@@ -23,10 +23,8 @@ export function RolesTab({ form, stepErrors, blinkFields }: TabProps) {
         const currentRolesForSubmit = form.state.values.roles || [];
         const selectedIds = new Set(selectedRoles.map(r => r.id));
 
-        // Keep all existing roles whose roleTypeId is still selected
         const keptRoles = currentRolesForSubmit.filter(r => selectedIds.has(r.roleTypeId));
 
-        // Find which selected roles are completely new (no existing role with that ID)
         const existingIds = new Set(currentRolesForSubmit.map(r => r.roleTypeId));
         const brandNewRoles = selectedRoles
           .filter(sr => !existingIds.has(sr.id))

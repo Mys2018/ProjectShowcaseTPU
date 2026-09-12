@@ -38,14 +38,6 @@
   color: var(--color-gray-500)
 }
 
-.teamList {
-  display: flex;
-  align-items: center;
-}
-
-.teamList > *:not(:first-child) {
-  margin-left: -12px;
-}
 
 .resourceList {
   display: flex;

@@ -1,13 +1,13 @@
 import styles from './SmallGreenButton.module.css'
 import clsx from "clsx";
-import BackIcon from '@/shared/ui/icons/back.svg?react';
-
+import BackIcon from '@/shared/ui/icons/arrow_right.svg?react';
 
 interface SmallGreenButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   textButton?: string;
   className?: string;
+  type?: string;
 }
 
 export const SmallGreenButton = ({onClick, textButton, disabled, className}: SmallGreenButtonProps) => {
@@ -18,7 +18,7 @@ export const SmallGreenButton = ({onClick, textButton, disabled, className}: Sma
       disabled={disabled}
     >
       {textButton}
-      <BackIcon className={styles.icon}/>
+      <BackIcon className={styles.backIcon}/>
     </button>
   )
 }

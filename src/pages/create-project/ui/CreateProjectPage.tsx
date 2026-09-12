@@ -23,6 +23,7 @@ import { BackLink } from '@/shared/ui/back-link';
 import { DesktopOnlyStub } from '@/shared/ui';
 import { MOBILE_BREAKPOINT } from '@/shared/lib';
 import { ROUTES } from '@/shared';
+import {useMe} from "@/entities/user";
 
 type PageStep = 'type-select' | 'fill';
 
@@ -30,6 +31,7 @@ const AUTOSAVE_DELAY_MS = 3000;
 
 export function CreateProjectPage() {
   const navigate = useNavigate();
+  const { data: me} = useMe()
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
@@ -198,6 +200,12 @@ export function CreateProjectPage() {
   const handleSubmit = () => {
     form.handleSubmit();
   };
+
+  const isCurator = me?.roles?.some((role) => role.type === 'Curator');
+
+  if (!isCurator) {
+    return null;
+  }
 
   // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
   // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.

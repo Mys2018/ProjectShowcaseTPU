@@ -1,0 +1,65 @@
+.triggerWrapper {
+  display: inline-flex;
+  width: fit-content;
+}
+
+.popup {
+  background: var(--color-white, #ffffff);
+  border: 1px solid var(--color-gray-200, #eef0f2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: 20px;
+  padding: 20px 24px;
+  min-width: 320px;
+  max-width: 380px;
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  animation: popupFadeIn 0.15s ease-out;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  margin: 0 0 16px 0;
+  font-family: var(--font-als-sirius), var(--font-inter), sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  color: var(--color-gray-900, #1f2937);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300, #d1d5db);
+  border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400, #9ca3af);
+}

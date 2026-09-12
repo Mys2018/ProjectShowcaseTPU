@@ -1,0 +1,82 @@
+.cardWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.cardTitle {
+  font: var(--subhead-interface);
+  color: var(--color-gray-750);
+}
+
+.required {
+  font: var(--subhead-interface);
+  color: var(--color-red);
+}
+
+.occurrenceIndex {
+  font: var(--field-title-small-interface);
+  color: var(--color-gray-750);
+}
+
+.cardBody {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+}
+
+.skillsBlock {
+  position: relative;
+  height: fit-content;
+  grid-column: 1 / 5;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  border-radius: 16px;
+  border: 1px solid var(--color-gray-250);
+}
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 6px 8px 8px;
+  gap: 12px;
+  width: 100%;
+}
+
+.skillsLabel {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+.requestBlock {
+  grid-column: 5 / 13;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--color-gray-250);
+  border-radius: 16px;
+  background-color: white;
+}
+
+.innerContainer {
+  padding: 6px 6px 8px 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

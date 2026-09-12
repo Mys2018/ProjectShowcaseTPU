@@ -6,7 +6,7 @@
   grid-template-columns: 300px 1fr;
   grid-template-rows: auto 1fr;
   max-width: 1560px;
-  padding: 76px 20px 0;
+  padding: 48px 20px 0;
   overflow: hidden;
   position: relative;
 }

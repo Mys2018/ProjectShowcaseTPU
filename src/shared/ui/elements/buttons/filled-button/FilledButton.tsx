@@ -16,6 +16,7 @@ export const FilledButton = ({onClick, textButton, className, disabled}: FilledB
       disabled={disabled}
       className={clsx(styles.button, className)}
     >
+
       {textButton}
     </button>
   )

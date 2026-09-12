@@ -1,0 +1,33 @@
+.inviteUserBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-brand-green);
+  font: var(--inter-12-300);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.inviteIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-brand-green);
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.inviteIconOnly {
+  width: 16px;
+  height: 16px;
+  color: var(--color-brand-green);
+}

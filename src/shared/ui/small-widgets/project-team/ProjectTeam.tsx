@@ -1,15 +1,20 @@
+/* eslint-disable fsd/forbidden-imports */
 import styles from './ProjectTeam.module.css'
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import PersonFallbackIcon from '@/shared/ui/icons/fallback_personal.svg?react';
 
 
+export type ProjectTeamItem = {
+  id?: number | string,
+  name: string,
+  role: string,
+  avatarSrc?: string,
+};
+
 type ProjectTeamProps = {
-  list: {
-    name: string,
-    role: string,
-    avatarSrc?: string,
-  }[],
-  openFreeCompetency?: () => void
+  list: ProjectTeamItem[],
+  openFreeCompetency?: () => void,
+  isLoading?: boolean,
 };
 
 export const ProjectTeam = (props: ProjectTeamProps) => {
@@ -23,29 +28,35 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
       </div>
 
       <div className={styles.listWrap}>
-        <ul className={styles.teamList}>
-          {
-            props.list.map((item, i) => {
-              return (
-                <li key={i} className={styles.item}>
-                  <p className={styles.role}>
-                    {item.role}
-                  </p>
-                  <div className={styles.info}>
-                    {item.avatarSrc ?
-                      <img className={styles.avatar} src={item.avatarSrc} alt={item.name} /> :
-                      <PersonFallbackIcon className={styles.fallbackIcon}/>
-                    }
-                    <p className={styles.name}>
-                      {item.name}
+        {props.isLoading ? (
+          <div className={styles.empty}>Загрузка участников...</div>
+        ) : props.list.length === 0 ? (
+          <div className={styles.empty}>Команда пока формируется</div>
+        ) : (
+          <ul className={styles.teamList}>
+            {
+              props.list.map((item, i) => {
+                return (
+                  <li key={item.id ?? i} className={styles.item}>
+                    <p className={styles.role}>
+                      {item.role}
                     </p>
-                  </div>
-                  <CheckIcon className={styles.checkIcon}/>
-                </li>
-              )
-            })
-          }
-        </ul>
+                    <div className={styles.info}>
+                      {item.avatarSrc ?
+                        <img className={styles.avatar} src={item.avatarSrc} alt={item.name} /> :
+                        <PersonFallbackIcon className={styles.fallbackIcon}/>
+                      }
+                      <p className={styles.name}>
+                        {item.name}
+                      </p>
+                    </div>
+                    <CheckIcon className={styles.checkIcon}/>
+                  </li>
+                )
+              })
+            }
+          </ul>
+        )}
         <div className={styles.addBlock}>
           <p>
             Места в команде ещё свободны. Выберите свою компетенцию!

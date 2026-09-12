@@ -3,12 +3,12 @@ import styles from './CuratorProjectCard.module.css'
 import {
   type ProjectCardData,
   ProjectCardHorizontal,
+  ProjectCardTeam,
   ProjectInnerStatus,
   ProjectPublicStatusLabel
 } from "@/entities/project";
 import {PartnerRow, PartnerRowSkeleton} from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
-import { Avatar } from "@/entities/user";
 import { PlatformBadgeSmall } from "@/entities/platforms";
 import { ArchiveButton } from "@/shared/ui/elements/buttons";
 import {ApplicationBlock} from "@/entities/application/ui/application-block/ApplicationBlock.tsx";
@@ -38,25 +38,25 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
           </div>
 
           <div className={styles.statusContainer}>
-            <ProjectPublicStatusLabel status={project.status} />
+            {
+              !(project.status === 'Pending' || project.status === 'NeedsRework') && <ProjectPublicStatusLabel status={project.status} />
+            }
             <ProjectInnerStatus status={project.status} />
           </div>
         </div>
       }
       sideSlot={
         <div className={styles.cardBody}>
-          <div className={styles.bodyBlock}>
-            <p>
-              Команда:
-            </p>
-            <div className={styles.teamList}>
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
-              <Avatar fallbackType={'user'} size={'36px'} strokeColor={'white'} />
-            </div>
-          </div>
+          <ProjectCardTeam
+            members={project.team ? project.team.map(m => ({
+              id: m.userId,
+              firstName: m.meta?.firstName || '',
+              lastName: m.meta?.lastName || '',
+              profilePicture: m.profilePicture,
+              roles: m.roles,
+            })) : undefined}
+            max={3}
+          />
           {resources.length > 0 && (
             <div className={styles.bodyBlock}>
               <p>

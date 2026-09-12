@@ -1,0 +1,53 @@
+.freeBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.fieldText {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+.applicationsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.applicationsHeader {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+  margin-bottom: 4px;
+}
+
+.invitedInfo {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invitedName {
+  font: var(--inter-12-400);
+  color: var(--color-gray-750);
+}
+
+.invitedName div {
+  display: flex;
+  gap: 2px;
+}
+
+.invitedName span {
+  color: var(--color-gray-500);
+}
+
+.cancelInviteBtn {
+  font: var(--inter-12-300);
+  color: var(--color-red);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}

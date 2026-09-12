@@ -1,0 +1,57 @@
+.container {
+  width: 100%;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.skill {
+  display: flex;
+  padding: 8px 12px;
+  gap: 10px;
+  background-color: var(--color-gray-100);
+  border-radius: 8px;
+  align-items: center;
+  color: var(--color-gray-750);
+  font: var(--OS-14-500);
+  white-space: nowrap;
+}
+
+.remainingBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  background-color: var(--color-gray-100);
+  border-radius: 8px;
+  color: var(--color-gray-600);
+  font: var(--OS-14-500);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.remainingBadge:hover {
+  background-color: var(--color-gray-200);
+}
+
+.popupSkillList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popupSkill {
+  display: flex;
+  padding: 8px 12px;
+  background-color: var(--color-gray-100);
+  border-radius: 8px;
+  align-items: center;
+  color: var(--color-gray-750);
+  font: var(--OS-14-500);
+}
+
+.noSkills {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
