@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styles from './ApplicationRoleCard.module.css'
 import { CompetencyCard } from '@/shared/ui/competency-card/CompetencyCard'
-import { SkillTagList } from '@/shared/ui/skill-tag-list/SkillTagList'
+import { SkillTagList } from '@/entities/skill/ui/skill-tag-list/SkillTagList'
 import { InviteUserButton } from '@/shared/ui/elements/buttons/invite-user-button/InviteUserButton'
 import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'

@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import styles from './ApplicationsPanel.module.css'
-import { ApplicationRoleCard } from '../application-role-card/ApplicationRoleCard'
+import { ApplicationRoleCard } from '../../features/manage-applications/ui/application-role-card/ApplicationRoleCard.tsx'
 import {
   useApplications,
   updateApplicationStatus,

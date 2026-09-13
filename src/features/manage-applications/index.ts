@@ -1,1 +1,1 @@
-export { ApplicationsPanel } from './ui/applications-panel/ApplicationsPanel'
+export { ApplicationsPanel } from '@/widgets/applications-panel/ApplicationsPanel'

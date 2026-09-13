@@ -5,7 +5,7 @@ import {
   ProjectCardHorizontal,
   ProjectCardTeam,
   ProjectInnerStatus,
-  ProjectPublicStatusLabel
+  ProjectPublicStatusLabel, useProjectTeam
 } from "@/entities/project";
 import {PartnerRow, PartnerRowSkeleton} from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
@@ -20,6 +20,8 @@ interface CuratorProjectCardProps {
 export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
   const partner = project?.partner
+
+  const {data: team} = useProjectTeam(project.id)
 
   const resources = useMemo(() => [
     ...(project.repository || []),
@@ -48,13 +50,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
       sideSlot={
         <div className={styles.cardBody}>
           <ProjectCardTeam
-            members={project.team ? project.team.map(m => ({
-              id: m.userId,
-              firstName: m.meta?.firstName || '',
-              lastName: m.meta?.lastName || '',
-              profilePicture: m.profilePicture,
-              roles: m.roles,
-            })) : undefined}
+            members={team}
             max={3}
           />
           {resources.length > 0 && (

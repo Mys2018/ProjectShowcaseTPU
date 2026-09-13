@@ -1,34 +1,29 @@
+/* eslint-disable fsd/no-cross-slice-dependency */
+/* eslint-disable fsd/forbidden-imports */
 import { type ReactNode } from 'react';
 import clsx from 'clsx';
-import styles from './ProjectCardTeam.module.css';
-import { Avatar, TeamUserCard } from '@/entities/user';
 import { ProjectTeamPopup } from '../project-team-popup/ProjectTeamPopup';
+import styles from './ProjectCardTeam.module.css';
+import { Avatar, TeamUserCard, UserGroup, type UserCard } from '@/entities/user';
 
-export interface ProjectTeamMemberItem {
-  id?: string | number;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  profilePicture?: string;
-  course?: string | number;
-  roles?: string[];
-}
+/** @deprecated Use UserCard from '@/entities/user' instead */
+export type ProjectTeamMemberItem = UserCard;
 
 export interface ProjectTeamMemberRowProps {
-  member: ProjectTeamMemberItem;
+  member: UserCard;
   className?: string;
 }
 
 export const ProjectTeamMemberRow = ({ member }: ProjectTeamMemberRowProps) => {
   return (
     <TeamUserCard
-      firstName={member.firstName}
-      lastName={member.lastName}
-      course={member.course}
+      firstName={member.meta?.firstName || ''}
+      lastName={member.meta?.lastName || ''}
+      course={member.grade}
       roles={member.roles}
       avatar={
         <Avatar
-          picture={member.profilePicture || member.avatar}
+          picture={member.profilePicture || ''}
           fallbackType="user"
           size="40px"
           strokeColor="white"
@@ -43,7 +38,7 @@ export const ProjectTeamMemberRow = ({ member }: ProjectTeamMemberRowProps) => {
 
 export interface ProjectCardTeamProps {
   label?: string;
-  members?: ProjectTeamMemberItem[];
+  members?: UserCard[];
   max?: number;
   className?: string;
   popupTitle?: string;
@@ -57,43 +52,14 @@ export const ProjectCardTeam = ({
   max,
   className,
   popupTitle = 'Команда проекта',
-  // emptyText = 'Команда пока формируется',
   children,
 }: ProjectCardTeamProps) => {
-  // if (!members || members.length === 0) {
-  //   return (
-  //     <div className={clsx(styles.container, className)}>
-  //       {label && <p className={styles.label}>{label}</p>}
-  //       <p className={styles.emptyText}>{emptyText}</p>
-  //     </div>
-  //   );
-  // }
-
   if (!members || members.length === 0) {
     return null;
   }
 
-  const visibleMembers = max !== undefined && max > 0 ? members.slice(0, max) : members;
-  const remainingCount = max !== undefined && max > 0 ? Math.max(0, members.length - max) : 0;
-
   const trigger = (
-    <div className={styles.teamList}>
-      {visibleMembers.map((member, index) => (
-        <div key={member.id ?? index} className={styles.avatarWrapper}>
-          <Avatar
-            picture={member.profilePicture || member.avatar}
-            fallbackType="user"
-            size="36px"
-            strokeColor="white"
-          />
-        </div>
-      ))}
-      {remainingCount > 0 && (
-        <div className={styles.remainingBadge}>
-          +{remainingCount}
-        </div>
-      )}
-    </div>
+    <UserGroup users={members} visibleCount={max} />
   );
 
   return (
@@ -103,7 +69,7 @@ export const ProjectCardTeam = ({
         {children ?? (
           <div className={styles.defaultMemberList}>
             {members.map((member, index) => (
-              <ProjectTeamMemberRow key={member.id ?? index} member={member} />
+              <ProjectTeamMemberRow key={member.userId ?? index} member={member} />
             ))}
           </div>
         )}

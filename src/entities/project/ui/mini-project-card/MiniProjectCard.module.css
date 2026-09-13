@@ -43,3 +43,10 @@
   font: var(--inter-11-300);
   color: var(--color-gray-500);
 }
+
+.footer {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: flex-end;
+}

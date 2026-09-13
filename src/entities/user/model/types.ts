@@ -48,16 +48,21 @@ export type UserBase = {
   }
 }
 
-export type UserBaseDto = {
+export type UserCard = {
   userId: number
   email: string
   roles?: string[]
   profilePicture?: string
+  // TODO Бек должен обавить
+  grade?: string
   meta: {
     firstName: string
     lastName: string
   }
 }
+
+export type UserCardDto = UserCard
+export type UserBaseDto = UserCard
 
 export type UserDto = {
   userId: number

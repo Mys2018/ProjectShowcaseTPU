@@ -70,6 +70,3 @@ export function CompletedProjects({
     </div>
   )
 }
-
-export const CompletedProjectsBlock = CompletedProjects
-export const ArchivedProjects = CompletedProjects

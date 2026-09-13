@@ -4,15 +4,15 @@
 }
 
 .popup {
-  background: var(--color-white, #ffffff);
-  border: 1px solid var(--color-gray-200, #eef0f2);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
-  border-radius: 20px;
-  padding: 20px 24px;
+  background: var(--color-white);
+  box-shadow: var(--tooltop-shadow);
+  border-radius: 2px 16px 16px 16px;
+  padding: 16px;
   min-width: 320px;
-  max-width: 380px;
+  max-width: 300px;
   width: max-content;
   display: flex;
+  gap: 12px;
   flex-direction: column;
   box-sizing: border-box;
   animation: popupFadeIn 0.15s ease-out;
@@ -30,12 +30,8 @@
 }
 
 .title {
-  margin: 0 0 16px 0;
-  font-family: var(--font-als-sirius), var(--font-inter), sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 20px;
-  color: var(--color-gray-900, #1f2937);
+  font: var(--OS-13-600);
+  color: var(--color-brand-black);
 }
 
 .content {

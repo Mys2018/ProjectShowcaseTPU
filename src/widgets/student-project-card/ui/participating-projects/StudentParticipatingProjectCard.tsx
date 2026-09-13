@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { getProjectDates, ProjectCardHorizontal, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
+import { getProjectDates, ProjectCardHorizontal, ProjectCardTeam, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
 import { TeamUserCard, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { buildRoute, CalendarIcon, ChevronRightIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
@@ -42,11 +42,9 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
       sideSlot={
         <>
           <div className={styles.side}>
-            {/* <div className={styles.team}>
-            <p className={styles.label}>Команда:</p>
-						<UserGroup users={project.team} />
-          </div> */}
-            {/* TODO вернуть когда в ответе будет приходить команда */}
+            {project.team && project.team.length > 0 && (
+              <ProjectCardTeam members={project.team} max={3} />
+            )}
             <div className={styles.competency}>
               <p className={styles.label}>Компетенция:</p>
               {targetCompetency ? <CompetencyBadge competency={targetCompetency} /> : <CompetencyRowSkeleton className={styles.skeleton} />}

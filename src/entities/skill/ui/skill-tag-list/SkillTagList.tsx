@@ -1,5 +1,5 @@
 import styles from './SkillTagList.module.css'
-import { ProjectTeamPopup } from '@/entities/project/ui/project-team-popup/ProjectTeamPopup'
+import { ProjectTeamPopup } from '@/entities/project/ui/project-team-popup/ProjectTeamPopup.tsx'
 
 interface SkillItem {
   id: string

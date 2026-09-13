@@ -1,6 +1,6 @@
 import styles from './MiniProjectCard.module.css';
 import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader';
-import { type ProjectCardData, ProjectCardTeam } from '@/entities/project';
+import {type ProjectCardData, ProjectCardTeam, useProjectTeam} from '@/entities/project';
 import { type Application, useApplications } from "@/entities/application";
 
 type MiniProjectCardType = 'applications' | 'rating'
@@ -18,6 +18,8 @@ export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
     offset: 0,
     limit: 10,
   })
+
+  const {data: team} = useProjectTeam(project.id)
 
   return (
     <div className={styles.container}>
@@ -37,14 +39,8 @@ export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
             )}
           </div>
           <ProjectCardTeam
-            members={project.team ? project.team.map(m => ({
-              id: m.userId,
-              firstName: m.meta?.firstName || '',
-              lastName: m.meta?.lastName || '',
-              profilePicture: m.profilePicture,
-              roles: m.roles,
-            })) : undefined}
-            max={3}
+            members={team}
+            max={4}
           />
         </div>
       </div>
