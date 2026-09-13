@@ -11,7 +11,9 @@ import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
-import { getPublicProjectStatus, type ProjectCardData } from "@/entities/project";
+import type { ProjectCardData } from "@/entities/project";
+import { useProjectTeam } from "@/entities/project";
+import { getPublicProjectStatus } from "@/entities/project";
 // TODO
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
@@ -28,6 +30,7 @@ interface ProjectPageProps {
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   // TODO
   const { data: owner } = useUserById(project.ownerId)
+  const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);
@@ -58,10 +61,17 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return resizeObserver.disconnect()
   }, [project]);
 
-  const teamMock = [
-    { name: 'Фадеев', role: 'Backend', avatarSrc: '' },
-    { name: 'Яра', role: 'Frontend', avatarSrc: '' }
-  ];
+  const teamList = useMemo(() => {
+    return (teamMembers ?? []).map((member) => {
+      const fullName = `${member.meta?.firstName ?? ''} ${member.meta?.lastName ?? ''}`.trim();
+      return {
+        id: member.userId,
+        name: fullName || member.email || `Участник #${member.userId}`,
+        role: member.roles && member.roles.length > 0 ? member.roles.join(', ') : 'Участник',
+        avatarSrc: member.profilePicture,
+      };
+    });
+  }, [teamMembers]);
 
   const { platformsData, findPlatformName } = usePlatformFinder();
 
@@ -220,7 +230,7 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
         <FreeCompetencies roles={project.roles} />
 
-        <ProjectTeam list={teamMock} />
+        <ProjectTeam list={teamList} isLoading={isTeamLoading} />
 
       </aside>
     </main>

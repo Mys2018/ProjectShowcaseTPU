@@ -1,0 +1,19 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: transparent;
+  color: var(--color-red);
+  font: var(--inter-10-400);
+  padding: 6px 8px;
+  transition: all 0.5s ease;
+
+  &:hover {
+    color: #BF2633;
+  }
+
+  &:active {
+    color: #8C1C25;
+  }
+}
+

@@ -1,3 +1,5 @@
+/* eslint-disable fsd/no-cross-slice-dependency */
+/* eslint-disable fsd/forbidden-imports */
 import type {
   ProjectCardData,
   ProjectsResponseDto,
@@ -11,7 +13,8 @@ import type {
   GetAppliedProjectsParams,
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
-import { api, ENDPOINTS } from '@/shared'
+import type { UserCard } from "@/entities/user";
+import { api, ENDPOINTS } from '@/shared';
 
 export interface ProjectDraftResponse {
   data: Record<string, unknown>
@@ -49,6 +52,11 @@ export const projectApi = {
   getProjectById: async (id: string): Promise<ProjectCardData> => {
     const { data } = await api.get<ProjectDto>(ENDPOINTS.PROJECT_BY_ID(id))
     return mapProjectDtoToEntity(data)
+  },
+
+  getProjectTeam: async (projectId: string): Promise<UserCard[]> => {
+    const { data } = await api.get<UserCard[]>(ENDPOINTS.PROJECT_TEAM(projectId))
+    return data
   },
 
   createProject: async (payload: CreateProjectDto): Promise<string> => {

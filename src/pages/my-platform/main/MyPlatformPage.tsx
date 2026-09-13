@@ -152,7 +152,7 @@ export const MyPlatformPage = () => {
 
       <aside className={styles.activities} ref={activitiesRef} onScroll={handleScroll}>
         <YourTasksWidget data={mockedData.activities} />
-        <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
+        <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={0} />
       </aside>
       <div className={styles.content} ref={contentRef} onScroll={handleScroll}>
         <div className={clsx(styles.heroWrapper, isHeroWrapperVisible && styles.visible)}>

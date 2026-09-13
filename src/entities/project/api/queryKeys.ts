@@ -16,5 +16,6 @@ export const projectKeys = {
   participatingList: (params?: GetParticipatingProjectsParams) => [...projectKeys.all, 'list', 'participating', { ...params }] as const,
   appliedList: (params?: GetAppliedProjectsParams) => [...projectKeys.all, 'list', 'applied', { ...params }] as const,
   details: (id: string) => [...projectKeys.all, 'detail', id] as const,
+  team: (id: string) => [...projectKeys.details(id), 'team'] as const,
   draft: () => [...projectKeys.all, 'draft'] as const
 }

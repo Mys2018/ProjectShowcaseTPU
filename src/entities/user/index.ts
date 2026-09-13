@@ -4,7 +4,7 @@ export { useAuthStatus, useMe, useUserById, useSearchUsers } from './api/queries
 export { type AuthStatusResponse, type OAuthExchangeParams, type GetUsersRequest, type GetUsersResponse } from './api/types'
 export { useAuthStore } from './model/store/useAuthStore'
 export { usePreferencesStore } from './model/store/usePreferencesStore'
-export { type User, type UserBase, type UserRole, type UserSwitchableRole } from './model/types'
+export { type User, type UserBase, type UserBaseDto, type UserCard, type UserCardDto, type UserDto, type UserRole, type UserSwitchableRole } from './model/types'
 export * from './lib/roles'
 export { useIsProfileFilled } from './lib/useIsProfileFilled.ts'
 export { getAvatarRoleInfo } from './lib/getAvatarRoleInfo.ts'

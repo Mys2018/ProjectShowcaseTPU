@@ -1,0 +1,61 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: fit-content;
+}
+
+.label {
+  margin: 0;
+  font: var(--inter-12-300);
+  color: var(--color-gray-500);
+}
+
+.emptyText {
+  margin: 0;
+  font: var(--inter-12-400);
+  color: var(--color-gray-500);
+  line-height: 16px;
+}
+
+.teamList {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  user-select: none;
+}
+
+.avatarWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.avatarWrapper:not(:first-child) {
+  margin-left: -12px;
+}
+
+.remainingBadge {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  border: 1.5px dashed #bdc3d4;
+  background-color: var(--color-white, #ffffff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: var(--inter-12-400);
+  color: var(--color-gray-500);
+  margin-left: -12px;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.defaultMemberList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

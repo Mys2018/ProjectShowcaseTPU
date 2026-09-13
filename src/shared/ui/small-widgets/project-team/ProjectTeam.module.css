@@ -132,6 +132,15 @@
   border-radius: 59px;
 }
 
+.empty {
+  font: var(--body-small-platform);
+  color: var(--color-gray-650);
+  background-color: white;
+  padding: 14px 12px;
+  border-radius: 12px;
+  text-align: center;
+}
+
 @media (max-width: 768px) {
   .addBlock {
     display: flex;
