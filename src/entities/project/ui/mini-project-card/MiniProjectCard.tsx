@@ -41,6 +41,7 @@ export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
           <ProjectCardTeam
             members={team}
             max={4}
+            project={project}
           />
         </div>
       </div>

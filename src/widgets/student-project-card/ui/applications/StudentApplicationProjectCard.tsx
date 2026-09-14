@@ -2,11 +2,11 @@ import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
 import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow } from '@/entities/partner'
-import { ProjectCardHorizontal, useProjectDetails } from '@/entities/project'
+import { ProjectCardHorizontal, ProjectCardTeam, useProjectDetails, useProjectTeam } from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import {useUserById, TeamUserCard, Avatar, getAvatarRoleInfo} from '@/entities/user'
+import { useUserById, TeamUserCard, Avatar, getAvatarRoleInfo, useMe, getMemberRoleName } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
-import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
+import { CompetencyRow, useCompetencies } from '@/entities/competency'
 import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSkeleton } from '@/shared'
 
 interface StudentApplicationProjectCardProps {
@@ -18,13 +18,24 @@ interface StudentApplicationProjectCardProps {
 export function StudentApplicationProjectCard({ application, className, skeletonClassName }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
   const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
+  const { data: team = [] } = useProjectTeam(project?.id ?? '', Boolean(project?.id))
   const { data: competencies } = useCompetencies()
+  const { data: me } = useMe()
 
   if (!project) {
     return <ProjectSkeleton className={clsx(styles.card, skeletonClassName, className)} />
   }
 
-  const targetCompetency = competencies?.find(c => c.id === application.roleID)
+  const roleForApplication = project.roles?.find(r => r.roleId === application.roleID || r.roleTypeId === application.roleID)
+  const targetCompetency = competencies?.find(c => c.id === application.roleID || (roleForApplication && c.id === roleForApplication.roleTypeId))
+  const studentUserId = application.studentID || (me?.id ? Number(me.id) : undefined)
+  const memberRole = studentUserId ? getMemberRoleName(studentUserId, project) : undefined
+  const roleName = (memberRole && memberRole !== 'Участник' ? memberRole : undefined) || roleForApplication?.meta?.name || targetCompetency?.name || 'Участник'
+
+  const displayCompetency = {
+    id: targetCompetency?.id || roleForApplication?.roleTypeId || application.roleID || '',
+    name: roleName,
+  }
   const isExtended = application.status === 'pending'
 
   const statusBadge =
@@ -51,39 +62,52 @@ export function StudentApplicationProjectCard({ application, className, skeleton
       }
       mainSlot={<PartnerRow partner={project.partner} />}
       sideSlot={
-        <div className={styles.side}>
-          <div className={styles.competency}>
-            <p className={styles.label}>Компетенция:</p>
-            {targetCompetency ? <CompetencyBadge competency={targetCompetency} /> : <CompetencyRowSkeleton className={styles.skeleton} />}
+        <div className={styles.sideSlot}>
+          <div className={styles.headerSide}>
+            {team.length > 0 && (
+              <div className={styles.block}>
+                <p>Команда:</p>
+                <ProjectCardTeam members={team} max={3} label="" project={project} />
+              </div>
+            )}
+            {displayCompetency && (
+              <div className={styles.block}>
+                <p>Компетенция:</p>
+                <CompetencyRow
+                  competency={displayCompetency}
+                  className={styles.competencyText}
+                  />
+              </div>
+            )}
           </div>
-
-          <div className={styles.curator}>
-            <p className={styles.label}>Наставник:</p>
-            <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
-              {curator ? (
-                <TeamUserCard
-                  avatar={
+          {curator ? (
+            <div className={styles.block}>
+              <p>Наставник:</p>
+              <TeamUserCard
+                avatar={
                   <Avatar
                     picture={curator.profilePicture}
                     fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
-                    size={"36px"}
-                    strokeColor={"grey"}
+                    size="36px"
+                    strokeColor="grey"
                   />
-                  }
-                  firstName={curator.meta.firstName}
-                  lastName={curator.meta.lastName}
-                  nameStyle='normal'
-                  nameTextStyle='bodySmall'
-                  nameSubtextStyle='OS-10-400'
-                />
-              ) : (
-                <>
-                  <ImageSkeleton className={styles.image} />
-                  <TextSkeleton className={styles.name} />
-                </>
-              )}
+                }
+                firstName={curator.meta.firstName}
+                lastName={curator.meta.lastName}
+                nameStyle="normal"
+                nameTextStyle="bodySmall"
+                nameSubtextStyle="OS-12-350"
+              />
             </div>
-          </div>
+          ) : (
+            <div className={styles.block}>
+              <p>Наставник:</p>
+              <div className={clsx(styles.userRow, styles.skeleton)}>
+                <ImageSkeleton className={styles.image} />
+                <TextSkeleton className={styles.name} />
+              </div>
+            </div>
+          )}
           {!isExtended && (
             <>
               {statusBadge}

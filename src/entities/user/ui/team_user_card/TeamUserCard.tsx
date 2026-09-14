@@ -11,6 +11,7 @@ interface TeamUserCardProps {
   lastName: string,
   course?: string | number,
   roles?: string[],
+  competency?: string | string[],
   avatar?: ReactNode,
 
   nameTextStyle: TeamUserCardTextStyle
@@ -45,19 +46,19 @@ const getTeamUserCardNameComponent = (style: TeamUserCardNameStyle, firstName: s
   switch (style) {
     case 'normal':
       return (
-        <p className={clsx(styles.text, className)}>
+        <p className={clsx(styles.text, className)} title={`${firstName} ${lastName}`}>
           {firstName} {lastName}
         </p>
       )
     case 'short':
       return (
-        <p className={clsx(styles.text, className)}>
+        <p className={clsx(styles.text, className)} title={`${firstName} ${lastName}`}>
           {firstName} {lastName.charAt(0).toUpperCase()}
         </p>
       )
     case 'twoLines':
       return (
-        <div className={styles.twoLinesContainer}>
+        <div className={styles.twoLinesContainer} title={`${firstName} ${lastName}`}>
           <p className={clsx(styles.text, className)}>
             {firstName}
           </p>
@@ -74,12 +75,14 @@ export const TeamUserCard = ({
   firstName,
   lastName,
   roles,
+  competency,
   avatar,
   nameTextStyle,
   nameSubtextStyle,
   nameStyle,
   anotherText
 }: TeamUserCardProps) => {
+  const displayRoles = competency ? [competency] : roles;
 
   return (
     <div className={styles.leftHalf}>
@@ -102,12 +105,15 @@ export const TeamUserCard = ({
               {course} курс
             </p>
           )}
-          {course && roles && roles.length > 0 && (
+          {(course && displayRoles && displayRoles.length > 0) && (
             <div className={styles.verticalSeparator} />
           )}
-          {roles && roles.length > 0 && (
-            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
-              {roles.join(', ')}
+          {displayRoles && displayRoles.length > 0 && (
+            <p
+              className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}
+              title={displayRoles.join(',  ')}
+            >
+              {displayRoles.join(', ')}
             </p>
           )}
         </div>

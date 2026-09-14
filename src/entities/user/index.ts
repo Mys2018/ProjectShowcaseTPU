@@ -8,5 +8,7 @@ export { type User, type UserBase, type UserBaseDto, type UserCard, type UserCar
 export * from './lib/roles'
 export { useIsProfileFilled } from './lib/useIsProfileFilled.ts'
 export { getAvatarRoleInfo } from './lib/getAvatarRoleInfo.ts'
+export { getMemberRoleName, type ProjectRoleLike, type ProjectLike } from './lib/getMemberRoleName.ts'
 export { placeholderUser, ROLES_TRANSLATIONS } from './config/constants'
+export { TeamMemberCard } from './ui/team-member-card/TeamMemberCard.tsx'
 export * from './ui'

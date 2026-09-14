@@ -23,7 +23,7 @@ export { PopupMenu } from './popup-menu/PopupMenu.tsx'
 export { BlankPhoto } from './blank-photo/BlankPhoto.tsx'
 export * from './elements/buttons'
 export { CompetencyCard } from './competency-card/CompetencyCard.tsx'
-export { SkillTagList } from '@/entities/skill/ui/skill-tag-list/SkillTagList.tsx'
+export { SkillTagList, SkillList } from '@/entities/skill'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'

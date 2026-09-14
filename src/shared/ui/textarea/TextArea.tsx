@@ -29,6 +29,7 @@ export function TextArea({ value, maxLength, handleChange, isDisable, isValid, i
           onChange={handleChange}
           disabled={isDisable}
           placeholder={placeholder}
+          maxLength={maxLength}
         />
       </div>
       {isEditing && <p className={isValid ? styles.valid : styles.error}>

@@ -11,6 +11,8 @@ import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
 import { getAvatarRoleInfo } from "@/entities/user";
+import { useLogout } from "@/features/auth";
+import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 
 export default function Header() {
 
@@ -18,6 +20,7 @@ export default function Header() {
   const status = useAuthStore(state => state.status);
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+  const { mutate: logout, isPending: isLogoutPending } = useLogout()
 
   const handleLogoClick = () => {
     if (status == 'authenticated') {
@@ -44,17 +47,34 @@ export default function Header() {
           {
             status !== 'authenticated' && status !== 'loading' ?
               <EnterButton/> :
-              <Avatar
-                picture={data?.profilePicture}
-                onClick={() => {
-                  navigate(ROUTES.PROFILE.BASE);
-                }}
-                label={getAvatarRoleInfo(data?.roles)?.label}
-                labelColor={'black'}
-                fallbackType={getAvatarRoleInfo(data?.roles)?.fallback || 'user'}
-                size={"48px"}
-                strokeColor={"grad"}
-              />
+              <PopupMenu
+                trigger={
+                  <Avatar
+                    picture={data?.profilePicture}
+                    label={getAvatarRoleInfo(data?.roles)?.label}
+                    labelColor={'black'}
+                    fallbackType={getAvatarRoleInfo(data?.roles)?.fallback || 'user'}
+                    size={"48px"}
+                    strokeColor={"grad"}
+                  />
+                }
+              >
+                <PopupMenu.Row
+                  title={'Мой профиль'}
+                  onClick={() => {
+                    navigate(ROUTES.PROFILE.BASE);
+                  }}
+                />
+                <PopupMenu.Row
+                  title={isLogoutPending ? 'Выходим…' : 'Выйти'}
+                  onClick={() => {
+                    // Уходим на логин только по подтверждённому onSuccess —
+                    // при ошибке logout сессия жива, и тихий уход создал бы
+                    // «я вышел», под которым остаётся рабочий cookie.
+                    logout();
+                  }}
+                />
+              </PopupMenu>
           }
         </div>
       </header>

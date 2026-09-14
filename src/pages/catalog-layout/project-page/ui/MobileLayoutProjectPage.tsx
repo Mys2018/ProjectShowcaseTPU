@@ -51,18 +51,6 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { value: 'team', label: 'Трек и команда' }
   ] as const;
 
-  const teamList = useMemo(() => {
-    return (teamMembers ?? []).map((member) => {
-      const fullName = `${member.meta?.firstName ?? ''} ${member.meta?.lastName ?? ''}`.trim();
-      return {
-        id: member.userId,
-        name: fullName || member.email || `Участник #${member.userId}`,
-        role: member.roles && member.roles.length > 0 ? member.roles.join(', ') : 'Участник',
-        avatarSrc: member.profilePicture,
-      };
-    });
-  }, [teamMembers]);
-
   const { platformsData, findPlatformName } = usePlatformFinder();
 
   const links = useMemo(() => {
@@ -96,10 +84,14 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return result;
   }, [project, platformsData, findPlatformName]);
 
-  const checkpointsMock = [
-    { title: 'Старт работ', deadline: '25-05-2026', status: true },
-    { title: 'Постерная сессия', deadline: '29-05-2026', status: false }
-  ];
+  const checkpoints = useMemo(() => {
+    return (project.checkpoints?.checkpoints || []).map(c => ({
+      title: c.title,
+      deadline: c.deadline instanceof Date
+        ? c.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        : new Date(c.deadline).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    }));
+  }, [project.checkpoints]);
 
   if (!owner) {
     return null
@@ -160,13 +152,16 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
                   avatarSrc=""
                 />
                 <ProjectTeam
-                  list={teamList}
+                  project={project}
+                  list={teamMembers}
                   isLoading={isTeamLoading}
                   openFreeCompetency={() => setDrawerOpen(true)}
                 />
-                <KeyPoints
-                  checkpoints={checkpointsMock}
-                />
+                {checkpoints.length > 0 && (
+                  <KeyPoints
+                    checkpoints={checkpoints}
+                  />
+                )}
                 {links.length > 0 && <LinkContainer links={links} />}
               </>
             )
@@ -206,7 +201,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
       )}
 
       <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)}>
-        <FreeCompetencies roles={project.roles} />
+        <FreeCompetencies roles={project.roles} project={project} />
       </Drawer>
 
       <Drawer isOpen={isApplicationsOpen} onClose={() => setApplicationsOpen(false)}>

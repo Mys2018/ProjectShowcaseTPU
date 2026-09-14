@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { RootRoute } from './RootRoute'
 import { ProtectedRoute } from './ProtectedRoute'
+import { RoleRoute } from './RoleRoute'
 import { LoginPage } from '@/pages/login-page/ui/LoginPage'
 import { MainLayout } from '@/pages/main-layout/ui/MainLayout'
 import { CatalogLayout, Catalog, ProjectPage } from '@/pages/catalog-layout'
@@ -36,11 +37,27 @@ export const router = createBrowserRouter([
               },
               {
                 path: ROUTES.MANAGE.BASE,
-                element: <ProjectActivitiesLayout />
+                element: (
+                  <RoleRoute roles={["Curator"]} />
+                ),
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectActivitiesLayout />
+                  }
+                ]
               },
               {
                 path: ROUTES.MODERATION.BASE,
-                element: <ProjectActivitiesLayout />
+                element: (
+                  <RoleRoute roles={["Moderator"]} />
+                ),
+                children: [
+                  {
+                    index: true,
+                    element: <ProjectActivitiesLayout />
+                  }
+                ]
               },
               {
                 path: ROUTES.PROJECTS.CREATE,

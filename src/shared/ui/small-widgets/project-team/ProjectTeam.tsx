@@ -1,29 +1,40 @@
-/* eslint-disable fsd/forbidden-imports */
 import styles from './ProjectTeam.module.css'
-import CheckIcon from '@/shared/ui/icons/check.svg?react';
-import PersonFallbackIcon from '@/shared/ui/icons/fallback_personal.svg?react';
-
-
-export type ProjectTeamItem = {
-  id?: number | string,
-  name: string,
-  role: string,
-  avatarSrc?: string,
-};
+import {Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, type UserCard, useMe} from '@/entities/user'
+import  { type ProjectCardData } from '@/entities/project'
+import CheckIcon from '@/shared/ui/icons/check.svg?react'
 
 type ProjectTeamProps = {
-  list: ProjectTeamItem[],
-  openFreeCompetency?: () => void,
-  isLoading?: boolean,
-};
+  project?: ProjectCardData
+  list: UserCard[]
+  openFreeCompetency?: () => void
+  isLoading?: boolean
+}
 
 export const ProjectTeam = (props: ProjectTeamProps) => {
+  const { data: me } = useMe()
+  const myUserId = me ? Number(me.id) : null
+
+  const isInTeam = !!(myUserId && props.project && (
+    props.project.roles?.some(r => r.placeUserIds?.includes(myUserId)) ||
+    props.project.ownerId === myUserId ||
+    props.list.some(u => u.userId === myUserId)
+  ))
+
+  const hasFreePlaces = props.project?.roles
+    ? props.project.roles.some(r => {
+        const taken = r.placeUserIds?.length ?? r.places ?? 0
+        return r.placesCount - taken > 0
+      })
+    : true
+
+  const canShowAddBlock = !isInTeam && hasFreePlaces
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h3 className={styles.title}>Команда проекта</h3>
         <p className={styles.description}>
-          Текущий состав участников, которые реализуют этот проект
+          Утверждённый состав участников, реализующих проект
         </p>
       </div>
 
@@ -34,37 +45,43 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
           <div className={styles.empty}>Команда пока формируется</div>
         ) : (
           <ul className={styles.teamList}>
-            {
-              props.list.map((item, i) => {
-                return (
-                  <li key={item.id ?? i} className={styles.item}>
-                    <p className={styles.role}>
-                      {item.role}
-                    </p>
-                    <div className={styles.info}>
-                      {item.avatarSrc ?
-                        <img className={styles.avatar} src={item.avatarSrc} alt={item.name} /> :
-                        <PersonFallbackIcon className={styles.fallbackIcon}/>
-                      }
-                      <p className={styles.name}>
-                        {item.name}
-                      </p>
-                    </div>
-                    <CheckIcon className={styles.checkIcon}/>
-                  </li>
-                )
-              })
-            }
+            {props.list.map((item, i) => {
+              return (
+                <li key={item.userId ?? i} className={styles.item}>
+                  <p className={styles.role}>
+                    {getMemberRoleName(item.userId, props.project)}
+                  </p>
+                  <div className={styles.info}>
+                    <TeamUserCard
+                      avatar={<Avatar
+                        fallbackType={getAvatarRoleInfo(item.roles)?.fallback || 'user'}
+                        size={'36px'}
+                        strokeColor={'grey'}/>
+                    }
+                      firstName={item.meta.firstName}
+                      lastName={item.meta.lastName}
+                      nameTextStyle={"OS-12-500"}
+                      nameSubtextStyle={"OS-10-400"}
+                      nameStyle={"normal"}
+                      course={item.grade}
+                    />
+                  </div>
+                  <CheckIcon className={styles.checkIcon} />
+                </li>
+              )
+            })}
           </ul>
         )}
-        <div className={styles.addBlock}>
-          <p>
-            Места в команде ещё свободны. Выберите свою компетенцию!
-          </p>
-          <button onClick={props.openFreeCompetency}>
-            Выбрать
-          </button>
-        </div>
+        {canShowAddBlock && (
+          <div className={styles.addBlock}>
+            <p>
+              Места в команде ещё свободны. Выберите свою компетенцию!
+            </p>
+            <button onClick={props.openFreeCompetency}>
+              Выбрать
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

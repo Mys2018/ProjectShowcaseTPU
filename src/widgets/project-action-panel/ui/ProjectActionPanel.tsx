@@ -63,7 +63,11 @@ export function ProjectActionPanel({
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)
   const hasPending = myActive.some(a => a.status === 'pending')
 
-  const isMember = !!me && project.roles.some(role => role.placeUserIds.includes(Number(me.id)))
+  const isMember = !!me && (
+    project.roles.some(role => role.placeUserIds?.includes(Number(me.id))) ||
+    myActive.some(a => a.status === 'approved') ||
+    project.ownerId === Number(me.id)
+  )
 
   // Запрашиваем только когда ответ может на что-то повлиять: гостю и на завершённом
   // проекте эти состояния всё равно не покажутся.

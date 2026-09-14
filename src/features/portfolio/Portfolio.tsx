@@ -1,21 +1,13 @@
 import styles from './Portfolio.module.css'
 import BackIcon from '@/shared/ui/icons/back.svg?react';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 import {useUpdateProfileMeta} from "@/entities/user/api/queries.ts";
+import {normalizeExternalUrl} from "@/shared/lib";
 
 type PortfolioProps = {
   firstValue: string;
   readonly?: boolean;
-}
-
-const isValidUrl = (urlString: string) => {
-  try {
-    new URL(urlString);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 export function Portfolio({ readonly, firstValue }: PortfolioProps) {
@@ -25,19 +17,32 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
 
   const { mutate: updateProfileMeta } = useUpdateProfileMeta();
 
+  // useUpdateProfileMeta инвалидирует me()/user(id): после чужих правок
+  // профиля придёт новое firstValue — без синхронизации инпут жил бы
+  // своей жизнью относительно сервера.
+  useEffect(() => {
+    setValue(firstValue);
+    setSavedValue(firstValue);
+  }, [firstValue]);
+
   const isEdit = value !== savedValue;
 
   const handleSubmit = () => {
-    if (!value || !isValidUrl(value)) {
+    // Домен без схемы («github.com/user») — законный ввод: нормализуем
+    // сами, но javascript:/data: не пропускаем ни в каком виде.
+    const normalized = normalizeExternalUrl(value);
+
+    if (!normalized) {
       setIsError(true);
       return;
     }
 
     setIsError(false);
-    setSavedValue(value);
+    setValue(normalized);
+    setSavedValue(normalized);
 
     updateProfileMeta({
-      portfolioLink: value
+      portfolioLink: normalized
     });
   }
 
@@ -88,8 +93,11 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
               <button className={styles.saveButton}
                 disabled={!value}
                 onClick={ () => {
-                  if (value) {
-                    window.open(value, '_blank', 'noopener, noreferrer');
+                  // Значение хранится на бэкенде: не доверяем схеме на рендере.
+                  // Старые записи могли остаться без схемы — нормализуем.
+                  const normalized = normalizeExternalUrl(value);
+                  if (normalized) {
+                    window.open(normalized, '_blank', 'noopener, noreferrer');
                   }
                 }
                 }

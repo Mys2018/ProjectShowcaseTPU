@@ -30,7 +30,7 @@ export default function ProjectsGrid({ type = 'all', emptyFallback }: ProjectsGr
       q: query,
       projectType: Array.from(projectTypes),
       tagId: Array.from(tags),
-      status: type === 'recruiting' ? ['Recruiting'] : type === 'in-progress' ? ['InProgress'] : undefined,
+      status: type === 'recruiting' ? ['Recruiting', 'RecruitmentCompleted'] : type === 'in-progress' ? ['InProgress'] : undefined,
       roleTypeId: Array.from(competencies),
       sort: isRelevanceSort ? 'relevance' : sort,
       limit: limit,

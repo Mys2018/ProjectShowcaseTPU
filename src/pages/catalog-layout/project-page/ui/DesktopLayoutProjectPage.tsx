@@ -61,18 +61,6 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return resizeObserver.disconnect()
   }, [project]);
 
-  const teamList = useMemo(() => {
-    return (teamMembers ?? []).map((member) => {
-      const fullName = `${member.meta?.firstName ?? ''} ${member.meta?.lastName ?? ''}`.trim();
-      return {
-        id: member.userId,
-        name: fullName || member.email || `Участник #${member.userId}`,
-        role: member.roles && member.roles.length > 0 ? member.roles.join(', ') : 'Участник',
-        avatarSrc: member.profilePicture,
-      };
-    });
-  }, [teamMembers]);
-
   const { platformsData, findPlatformName } = usePlatformFinder();
 
   const links = useMemo(() => {
@@ -228,9 +216,16 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
           <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
 
-        <FreeCompetencies roles={project.roles} />
+        <FreeCompetencies roles={project.roles} project={project} />
 
-        <ProjectTeam list={teamList} isLoading={isTeamLoading} />
+        <ProjectTeam
+          project={project}
+          list={teamMembers}
+          isLoading={isTeamLoading}
+          openFreeCompetency={() => {
+            rightWidgetsRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
 
       </aside>
     </main>

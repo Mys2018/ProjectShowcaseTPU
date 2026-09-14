@@ -52,6 +52,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
           <ProjectCardTeam
             members={team}
             max={3}
+            project={project}
           />
           {resources.length > 0 && (
             <div className={styles.bodyBlock}>

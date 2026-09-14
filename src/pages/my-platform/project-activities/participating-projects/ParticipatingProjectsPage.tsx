@@ -6,14 +6,14 @@ import { StudentParticipatingProjectCard } from '@/widgets/student-project-card'
 import { useMe } from '@/entities/user'
 import { CompletedProjects, NoProjectsFallback, useParticipatingProjects } from '@/entities/project'
 import {useNavigate} from "react-router-dom";
-import {ROUTES} from "@/shared";
+import {ProjectSkeleton, ROUTES} from "@/shared";
 
 export function ParticipatingProjectsPage() {
-  const { data } = useParticipatingProjects()
+  const { data, isLoading } = useParticipatingProjects({ limit: 100 })
   const navigate = useNavigate()
   const projects = data?.projects || []
 
-  const { data: me } = useMe()
+  const { data: me, isLoading: isMeLoading } = useMe()
   const myGrade = me?.grade ?? 1
 
   const [selectedArchiveGrade, setSelectedArchiveGrade] = useState(myGrade)
@@ -31,7 +31,12 @@ export function ParticipatingProjectsPage() {
       <div className={styles.activeBlock}>
         <h3 className={styles.title}>Активные проекты</h3>
         <div className={styles.list}>
-          {hasActiveProjects ? (
+          {isLoading || isMeLoading ? (
+            <>
+              <ProjectSkeleton />
+              <ProjectSkeleton />
+            </>
+          ) : hasActiveProjects ? (
             activeProjects.map(({ project, competencyId }) => (
               <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
             ))

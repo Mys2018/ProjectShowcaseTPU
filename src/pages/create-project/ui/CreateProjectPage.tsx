@@ -9,6 +9,7 @@ import {
   useProjectWizard,
   calculateProjectWizardProgress,
   type CreateProjectFormValues,
+  type WizardProgress,
 } from '@/features/create-project';
 import { useCreateProject } from '@/entities/project/api/queries';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
@@ -29,18 +30,23 @@ type PageStep = 'type-select' | 'fill';
 
 const AUTOSAVE_DELAY_MS = 3000;
 
-export function CreateProjectPage() {
+interface CreateProjectWizardFormProps {
+  isDraftMode: boolean;
+  initialDraft: (Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  }) | null;
+}
+
+function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWizardFormProps) {
   const navigate = useNavigate();
-  const { data: me} = useMe()
-  const [searchParams] = useSearchParams();
-  const isDraftMode = searchParams.get('draft') === 'true';
-  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+  const initialType = (initialDraft?.type as CreateProjectRequestType) || 'Study';
 
   const [pageStep, setPageStep] = useState<PageStep>(isDraftMode ? 'fill' : 'type-select');
-  const [selectedType, setSelectedType] = useState<CreateProjectRequestType>('Study');
+  const [selectedType, setSelectedType] = useState<CreateProjectRequestType>(initialType);
   const [saveStatus, setSaveStatus] = useState<StatusType | 'idle'>('idle');
 
-  const { data: draftData, isLoading: isDraftLoading } = useProjectDraft();
   const { mutate: saveDraft } = useSaveDraft();
   const { mutate: deleteDraftMutation } = useDeleteDraft();
 
@@ -49,16 +55,9 @@ export function CreateProjectPage() {
 
   const { mutate: createProject, isPending } = useCreateProject();
 
-  const draftDefaultValues = isDraftMode && draftData?.data
-    ? (draftData.data as Partial<CreateProjectFormValues>)
-    : undefined;
-
-  const initialType = draftDefaultValues?.type || selectedType;
-
   const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
-    defaultValues: {
-      type: initialType,
-      ...draftDefaultValues,
+    defaultValues: initialDraft ?? {
+      type: selectedType,
     } as Partial<CreateProjectFormValues>,
     onSubmit: (values) => {
       createProject(values, {
@@ -71,36 +70,52 @@ export function CreateProjectPage() {
     },
   });
 
-  // Set selectedType from draft on load
-  useEffect(() => {
-    if (draftDefaultValues?.type) {
-      setSelectedType(draftDefaultValues.type);
-    }
-  }, [draftDefaultValues?.type]);
-
   // --- Auto-save logic ---
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const previousValuesRef = useRef<string>('');
+  const saveStatusRef = useRef<StatusType | 'idle'>('idle');
 
-  const performAutoSave = useCallback(() => {
+  // Initialize previousValuesRef on mount with initial draft payload
+  useEffect(() => {
     const currentValues = form.state.values;
     const progress = calculateProjectWizardProgress(currentValues);
-    const draftPayload = { ...currentValues, currentStep, highestStep, progress };
+    const initialPayload = { ...currentValues, currentStep, highestStep, progress };
+    previousValuesRef.current = JSON.stringify(initialPayload);
+  }, []);
+
+  useEffect(() => {
+    saveStatusRef.current = saveStatus;
+  }, [saveStatus]);
+
+  const latestDataRef = useRef({ form, currentStep, highestStep });
+  useEffect(() => {
+    latestDataRef.current = { form, currentStep, highestStep };
+  }, [form, currentStep, highestStep]);
+
+  const performAutoSave = useCallback(() => {
+    const { form: curForm, currentStep: curStep, highestStep: curHighest } = latestDataRef.current;
+
+    const currentValues = curForm.state.values;
+    const progress = calculateProjectWizardProgress(currentValues);
+    const draftPayload = { ...currentValues, currentStep: curStep, highestStep: curHighest, progress };
     const serialized = JSON.stringify(draftPayload);
 
     // Skip save if nothing changed
     if (serialized === previousValuesRef.current) return;
-    previousValuesRef.current = serialized;
 
     setSaveStatus('save');
 
     saveDraft(draftPayload, {
       onSuccess: () => {
+        previousValuesRef.current = serialized;
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
         setTimeout(() => setSaveStatus('idle'), 2000);
       },
       onError: (error) => {
+        // Прошлый payload не считаем сохранённым — иначе retry ниже
+        // увидит «ничего не изменилось» и не отправит ничего.
+        previousValuesRef.current = '';
         // Check if it's a network error
         if (error && 'code' in error && (error as { code?: string }).code === 'ERR_NETWORK') {
           setSaveStatus('errorNetwork');
@@ -111,7 +126,7 @@ export function CreateProjectPage() {
         }
       },
     });
-  }, [form.state.values, currentStep, highestStep, saveDraft]);
+  }, [saveDraft]);
 
   // Subscribe to form changes for auto-save (only in fill mode)
   useEffect(() => {
@@ -132,6 +147,8 @@ export function CreateProjectPage() {
     return () => {
       if (autoSaveTimerRef.current) {
         clearTimeout(autoSaveTimerRef.current);
+        // Незавершённый debounce не выбрасываем: флашим последнее изменение
+        performAutoSave();
       }
       if (typeof subscription === 'function') {
         (subscription as () => void)();
@@ -140,6 +157,31 @@ export function CreateProjectPage() {
       }
     };
   }, [pageStep, form.store, performAutoSave]);
+
+  // Save on step change
+  useEffect(() => {
+    if (pageStep !== 'fill') return;
+
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      performAutoSave();
+    }, AUTOSAVE_DELAY_MS);
+  }, [currentStep, highestStep, pageStep, performAutoSave]);
+
+  // F5/закрытие вкладки: если автосейв падал, последние правки существуют
+  // только в памяти — просим браузер показать диалог «есть несохранённые изменения»
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (saveStatusRef.current === 'failed' || saveStatusRef.current === 'errorNetwork') {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   // Scroll to top on step change
   useEffect(() => {
@@ -150,38 +192,41 @@ export function CreateProjectPage() {
   const handleTypeSelect = (type: CreateProjectRequestType) => {
     setSelectedType(type);
     form.setFieldValue('type', type);
-    
-    // Получаем текущие значения, чтобы сохранить совпадающие поля
+
+    // Мерджим, а не заменяем: переход Study → Case → Study не должен стирать
+    // поля, специфичные для типа (productVision, businessMetrics и т.д.).
+    // Zod-union всё равно читает только поля своего типа.
     const currentPrdMeta = (form.state.values.prdMeta as Partial<PrdMeta>) || {};
+    const basePrdMeta = {
+      prerequisites: currentPrdMeta.prerequisites ?? '',
+      projectGoal: currentPrdMeta.projectGoal ?? '',
+      keyFunctionality: currentPrdMeta.keyFunctionality ?? ['', ''],
+      audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }],
+      functional: currentPrdMeta.functional ?? ['', ''],
+      problemStatement: currentPrdMeta.problemStatement ?? '',
+      productVision: currentPrdMeta.productVision ?? '',
+      businessGoal: currentPrdMeta.businessGoal ?? '',
+      nonFunctional: currentPrdMeta.nonFunctional ?? ['', ''],
+      businessMetrics: currentPrdMeta.businessMetrics ?? ['', ''],
+      projectPlan: currentPrdMeta.projectPlan ?? ['', ''],
+    };
 
     if (type === 'Study') {
-      form.setFieldValue('prdMeta', { 
-        prerequisites: currentPrdMeta.prerequisites ?? '', 
-        projectGoal: currentPrdMeta.projectGoal ?? '', 
-        keyFunctionality: currentPrdMeta.keyFunctionality ?? ['', ''] 
+      form.setFieldValue('prdMeta', {
+        prerequisites: basePrdMeta.prerequisites,
+        projectGoal: basePrdMeta.projectGoal,
+        keyFunctionality: basePrdMeta.keyFunctionality,
       });
     } else if (type === 'Case') {
-      form.setFieldValue('prdMeta', { 
-        prerequisites: currentPrdMeta.prerequisites ?? '', 
-        projectGoal: currentPrdMeta.projectGoal ?? '', 
-        audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }], 
-        functional: currentPrdMeta.functional ?? ['', ''], 
-        problemStatement: currentPrdMeta.problemStatement ?? '' 
+      form.setFieldValue('prdMeta', {
+        prerequisites: basePrdMeta.prerequisites,
+        projectGoal: basePrdMeta.projectGoal,
+        audience: basePrdMeta.audience,
+        functional: basePrdMeta.functional,
+        problemStatement: basePrdMeta.problemStatement,
       });
     } else {
-      form.setFieldValue('prdMeta', { 
-        prerequisites: currentPrdMeta.prerequisites ?? '', 
-        productVision: currentPrdMeta.productVision ?? '', 
-        projectGoal: currentPrdMeta.projectGoal ?? '', 
-        businessGoal: currentPrdMeta.businessGoal ?? '', 
-        audience: currentPrdMeta.audience ?? [{ title: '', description: '', minAge: 18, maxAge: 35 }], 
-        keyFunctionality: currentPrdMeta.keyFunctionality ?? ['', ''], 
-        functional: currentPrdMeta.functional ?? ['', ''], 
-        nonFunctional: currentPrdMeta.nonFunctional ?? ['', ''], 
-        problemStatement: currentPrdMeta.problemStatement ?? '', 
-        businessMetrics: currentPrdMeta.businessMetrics ?? ['', ''], 
-        projectPlan: currentPrdMeta.projectPlan ?? ['', ''] 
-      });
+      form.setFieldValue('prdMeta', basePrdMeta);
     }
     setStep(1);
     setPageStep('fill');
@@ -200,26 +245,6 @@ export function CreateProjectPage() {
   const handleSubmit = () => {
     form.handleSubmit();
   };
-
-  const isCurator = me?.roles?.some((role) => role.type === 'Curator');
-
-  if (!isCurator) {
-    return null;
-  }
-
-  // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
-  // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.
-  if (isMobile) {
-    return <DesktopOnlyStub />;
-  }
-
-  if (isDraftMode && isDraftLoading) {
-    return (
-      <main className={styles.mainContent}>
-        <p>Загрузка черновика...</p>
-      </main>
-    );
-  }
 
   if (pageStep === 'type-select') {
     return (
@@ -246,6 +271,7 @@ export function CreateProjectPage() {
       </main>
     );
   }
+
   const typeLabel = getProjectFormatTranslation(selectedType);
 
   return (
@@ -299,5 +325,58 @@ export function CreateProjectPage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export function CreateProjectPage() {
+  const { data: me, isLoading: isMeLoading } = useMe();
+  const [searchParams] = useSearchParams();
+  const isDraftMode = searchParams.get('draft') === 'true';
+  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+  const { data: draftData, isLoading: isDraftLoading } = useProjectDraft();
+
+  if (isMeLoading) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Загрузка...</p>
+      </main>
+    );
+  }
+
+  const isCurator = me?.roles?.some((role) => role.type === 'Curator');
+
+  if (!isCurator) {
+    return null;
+  }
+
+  // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
+  // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.
+  if (isMobile) {
+    return <DesktopOnlyStub />;
+  }
+
+  if (isDraftMode && isDraftLoading) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Загрузка черновика...</p>
+      </main>
+    );
+  }
+
+  const draftPayload = isDraftMode && draftData?.data
+    ? (draftData.data as Partial<CreateProjectFormValues> & {
+        currentStep?: number;
+        highestStep?: number;
+        progress?: WizardProgress;
+      })
+    : null;
+
+  return (
+    <CreateProjectWizardForm
+      key={isDraftMode ? 'draft' : 'new'}
+      isDraftMode={isDraftMode}
+      initialDraft={draftPayload}
+    />
   );
 }

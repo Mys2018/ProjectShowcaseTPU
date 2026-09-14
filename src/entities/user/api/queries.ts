@@ -21,7 +21,9 @@ export const useMe = (enabled = true): UseQueryResult<User, AxiosError> => {
     queryFn: getMe,
     retry: false,
     enabled,
-    staleTime: Infinity,
+    // Infinity замораживал бы «меня» до F5: правки профиля из другой вкладки
+    // или смена аватки в ЛК никогда бы не подхватились.
+    staleTime: 5 * 60 * 1000,
   })
 }
 
@@ -31,7 +33,8 @@ export const useUserById = (uid?: number, enabled: boolean = true) => {
     queryFn: () => getUserById(uid!),
     retry: false,
     enabled: !!uid && enabled,
-    staleTime: Infinity
+    // Иначе чужой/свой профиль, открытый однажды, не обновлялся всю сессию.
+    staleTime: 5 * 60 * 1000
   })
 }
 
@@ -56,7 +59,11 @@ export const useUpdateProfileMeta = () => {
   return useMutation<void, AxiosError, UpdateProfileMetaRequest>({
     mutationFn: updateProfileMeta,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.me(), exact: true })
+      // exact: true оставлял кэш user(id) (свой публичный профиль, карточки
+      // куратора) со старыми данными до конца сессии. Подметаем весь
+      // by-id кэш вместе с me().
+      queryClient.invalidateQueries({ queryKey: queryKeys.me() })
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.all, 'user'] })
     }
   })
 }

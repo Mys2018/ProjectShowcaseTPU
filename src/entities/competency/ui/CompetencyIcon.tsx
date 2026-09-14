@@ -14,6 +14,9 @@ export function CompetencyIcon({ competency, className = '' }: CompetencyIconPro
       Icon = QAIcon
       break
     }
+    default:
+      Icon = QAIcon
+      break
   }
   return <Icon className={className} />
 }
