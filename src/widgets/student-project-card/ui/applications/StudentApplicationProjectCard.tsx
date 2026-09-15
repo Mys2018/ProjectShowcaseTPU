@@ -37,7 +37,6 @@ export function StudentApplicationProjectCard({ application, className }: Studen
     id: targetCompetency?.id || roleForApplication?.roleTypeId || application.roleID || '',
     name: roleName,
   }
-  const isExtended = application.status === 'pending'
 
   const statusBadge =
     project.status === 'Recruiting' && application.status === 'pending' ? (
