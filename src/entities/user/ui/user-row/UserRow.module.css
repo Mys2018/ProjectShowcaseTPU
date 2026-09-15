@@ -6,27 +6,27 @@
   gap: 6px;
 
   padding: 4px;
-  
-	border-radius: 24px;
+
+  border-radius: 24px;
   background-color: var(--color-white);
 
   cursor: pointer;
-}
 
-.avatar, .userIcon {
-	width: 40px;
-  height: 40px;
-  
-	min-width: 40px;
-  min-height: 40px;
-  
-	border-radius: 50%;
+  & .avatar {
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+    min-height: 40px;
+
+    border-radius: 50%;
+  }
 }
 
 .info {
   min-width: 0;
-  
-	display: flex;
+
+  display: flex;
   flex-direction: column;
   gap: 2px;
 
@@ -43,15 +43,15 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-	font: var(--meta-title-interface);
+  font: var(--meta-title-interface);
   color: var(--color-gray-900);
 }
 
-.role {
+.competencies {
   font: var(--ALS-10-400);
   color: var(--color-gray-900);
-  
-	text-overflow: ellipsis;
+
+  text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }

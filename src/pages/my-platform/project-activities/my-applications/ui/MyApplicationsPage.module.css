@@ -120,12 +120,3 @@
 .card {
   width: 100%;
 }
-
-
-.skeletonBig {
-  min-height: 280px;
-}
-
-.skeletonSmall {
-  min-height: 190px;
-}

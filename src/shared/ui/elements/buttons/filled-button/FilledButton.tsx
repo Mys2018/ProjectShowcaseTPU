@@ -1,8 +1,9 @@
+import type { MouseEventHandler } from 'react';
 import styles from './FilledButton.module.css'
 import clsx from "clsx";
 
 interface FilledButtonProps {
-  onClick?: () => void;
+  onClick?: MouseEventHandler;
   disabled?: boolean;
   textButton?: string;
   className?: string;

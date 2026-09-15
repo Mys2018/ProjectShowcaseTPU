@@ -4,8 +4,8 @@ import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
 import { NoProjectsFallback, CompletedProjects } from "@/entities/project"
-import {BlankPhoto, CrossIcon, ROUTES} from '@/shared'
-import {useNavigate} from "react-router-dom";
+import { BlankPhoto, CrossIcon, ROUTES } from '@/shared'
+import { useNavigate } from "react-router-dom";
 
 
 export function MyApplicationsPage() {
@@ -47,11 +47,7 @@ export function MyApplicationsPage() {
         <div className={styles.list}>
           {hasActiveApplications ? (
             activeApplications.map(application => (
-              <StudentApplicationProjectCard
-                key={application.applicationID}
-                application={application}
-                skeletonClassName={styles.skeletonBig}
-              />
+              <StudentApplicationProjectCard key={application.applicationID} application={application} />
             ))
           ) : (
             <NoProjectsFallback
@@ -77,7 +73,6 @@ export function MyApplicationsPage() {
           <StudentApplicationProjectCard
             key={application.applicationID}
             application={application}
-            skeletonClassName={styles.skeletonSmall}
           />
         ))}
       </CompletedProjects>

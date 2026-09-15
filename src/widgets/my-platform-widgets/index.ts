@@ -1,1 +1,1 @@
-export { MyPlatformProjectsWidgets } from './MyPlatformProjectsWidgets.tsx'
+export { CuratorWidget } from './widgets/curator-widget/CuratorWidget'

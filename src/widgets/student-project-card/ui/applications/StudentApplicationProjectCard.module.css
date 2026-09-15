@@ -1,47 +1,56 @@
+.skeleton {
+  min-height: 190px;
+
+  &.big {
+    min-height: 280px;
+  }
+}
+
 .card {
-	position: relative;
+  position: relative;
 }
 
 .topRight {
-	position: absolute;
-	top: 24px;
-	right: 24px;
+  position: absolute;
+  top: 24px;
+  right: 24px;
 }
 
 .bottomRight {
-	position: absolute;
-	bottom: 24px;
-	right: 24px;
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
 }
 
-.header, .footer {
-	width: 100%;
+.header,
+.footer {
+  width: 100%;
 
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .statusBadge {
-	display: flex;
-	align-items: center;
-	gap: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
-	color: var(--color-gray-350);
+  color: var(--color-gray-350);
 
-	& svg {
-		width: 14px;
-		height: 14px;
-	}
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
 
-	& p {
-		font: var(--inter-13-600);
-	}
+  & p {
+    font: var(--inter-13-600);
+  }
 }
 
 .applicationDate {
-	font: var(--inter-12-300);
-	color: var(--color-gray-500);
+  font: var(--inter-12-300);
+  color: var(--color-gray-500);
 }
 
 .sideSlot {
@@ -93,24 +102,25 @@
 }
 
 .side {
-	grid-column: 6 / 11;
+  grid-column: 6 / 11;
 
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 
-	width: 100%;
+  width: 100%;
 }
 
-.competency, .curator {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
+.competency,
+.curator {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
-	& .label {
-		font: var(--inter-12-300);
-		color: var(--color-gray-500);
-	}
+  & .label {
+    font: var(--inter-12-300);
+    color: var(--color-gray-500);
+  }
 
 	& .skeleton {
 		width: 35%;

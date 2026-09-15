@@ -12,18 +12,19 @@ import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSk
 interface StudentApplicationProjectCardProps {
   application: Application
   className?: string
-  skeletonClassName?: string
 }
 
-export function StudentApplicationProjectCard({ application, className, skeletonClassName }: StudentApplicationProjectCardProps) {
+export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
   const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
   const { data: team = [] } = useProjectTeam(project?.id ?? '', Boolean(project?.id))
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
 
+  const isExtended = application.status === 'pending'
+
   if (!project) {
-    return <ProjectSkeleton className={clsx(styles.card, skeletonClassName, className)} />
+    return <ProjectSkeleton className={clsx(styles.card, styles.skeleton, isExtended && styles.big, className)} />
   }
 
   const roleForApplication = project.roles?.find(r => r.roleId === application.roleID || r.roleTypeId === application.roleID)

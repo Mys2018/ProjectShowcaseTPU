@@ -1,0 +1,29 @@
+.callout {
+  max-width: 559px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+
+  padding: 16px;
+
+  border-radius: 16px;
+  border-bottom-left-radius: 0px;
+
+	color: var(--color-gray-650);
+  background-color: var(--color-white);
+}
+
+.icon {
+  flex-shrink: 0;
+
+	aspect-ratio: 26 / 36;
+	height: 100%;
+  
+	color: var(--color-gray-100);
+}
+
+.text {
+	font: var(--OS-12-500);
+}
