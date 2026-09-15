@@ -41,10 +41,6 @@
 			font: var(--OS-12-500);
     }
   }
-
-  & .button {
-		border: 1px solid var(--color-white);
-  }
 }
 
 .extra {
@@ -100,7 +96,7 @@
 			order: 2;
 		}
 
-		& .button {
+		& .action {
 			order: 3;
 		}
 	}
