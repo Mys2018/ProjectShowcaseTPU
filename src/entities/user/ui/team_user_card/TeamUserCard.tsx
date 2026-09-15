@@ -18,6 +18,10 @@ interface TeamUserCardProps {
   nameSubtextStyle: TeamUserCardSubtextStyle
   nameStyle: TeamUserCardNameStyle
   anotherText?: string,
+  /** Приписка сразу после фамилии, например «(Вы)». */
+  nameSuffix?: ReactNode,
+  /** Иконка перед ролями, например иконка компетенции. */
+  rolesIcon?: ReactNode,
 }
 
 const getTeamUserCardTextStyle = (style: TeamUserCardTextStyle) => {
@@ -42,18 +46,19 @@ const getTeamUserCardSubtextStyle = (style: TeamUserCardSubtextStyle) => {
   }
 }
 
-const getTeamUserCardNameComponent = (style: TeamUserCardNameStyle, firstName: string, lastName: string, className: string) => {
+const getTeamUserCardNameComponent = (style: TeamUserCardNameStyle, firstName: string, lastName: string, className: string, suffix?: ReactNode) => {
+  const tail = suffix && <> {suffix}</>
   switch (style) {
     case 'normal':
       return (
         <p className={clsx(styles.text, className)} title={`${firstName} ${lastName}`}>
-          {firstName} {lastName}
+          {firstName} {lastName}{tail}
         </p>
       )
     case 'short':
       return (
         <p className={clsx(styles.text, className)} title={`${firstName} ${lastName}`}>
-          {firstName} {lastName.charAt(0).toUpperCase()}
+          {firstName} {lastName.charAt(0).toUpperCase()}{tail}
         </p>
       )
     case 'twoLines':
@@ -63,7 +68,7 @@ const getTeamUserCardNameComponent = (style: TeamUserCardNameStyle, firstName: s
             {firstName}
           </p>
           <p className={clsx(styles.text, className)}>
-            {lastName}
+            {lastName}{tail}
           </p>
         </div>
       )
@@ -80,9 +85,19 @@ export const TeamUserCard = ({
   nameTextStyle,
   nameSubtextStyle,
   nameStyle,
-  anotherText
+  anotherText,
+  nameSuffix,
+  rolesIcon
 }: TeamUserCardProps) => {
   const displayRoles = competency ? [competency] : roles;
+  const rolesText = displayRoles && displayRoles.length > 0 && (
+    <p
+      className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}
+      title={displayRoles.join(',  ')}
+    >
+      {displayRoles.join(', ')}
+    </p>
+  );
 
   return (
     <div className={styles.leftHalf}>
@@ -92,7 +107,7 @@ export const TeamUserCard = ({
 
       <div className={styles.infoBlock}>
         {
-          getTeamUserCardNameComponent(nameStyle, firstName, lastName, getTeamUserCardTextStyle(nameTextStyle))
+          getTeamUserCardNameComponent(nameStyle, firstName, lastName, getTeamUserCardTextStyle(nameTextStyle), nameSuffix)
         }
         <div className={styles.moreInfo}>
           {
@@ -108,13 +123,13 @@ export const TeamUserCard = ({
           {(course && displayRoles && displayRoles.length > 0) && (
             <div className={styles.verticalSeparator} />
           )}
-          {displayRoles && displayRoles.length > 0 && (
-            <p
-              className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}
-              title={displayRoles.join(',  ')}
-            >
-              {displayRoles.join(', ')}
-            </p>
+          {rolesText && (
+            rolesIcon ? (
+              <div className={styles.rolesWithIcon}>
+                {rolesIcon}
+                {rolesText}
+              </div>
+            ) : rolesText
           )}
         </div>
       </div>

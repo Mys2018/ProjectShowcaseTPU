@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { projectApi } from './requests'
 import type {
   GetProjectsQueryParams,
@@ -7,6 +7,7 @@ import type {
   GetManagedProjectsParams,
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
+  SprintHoursBatch,
 } from '../model/types'
 import { projectKeys } from './queryKeys'
 
@@ -31,6 +32,41 @@ export const useProjectTeam = (projectId: string, enabled?: boolean) => {
     queryKey: projectKeys.team(projectId),
     queryFn: () => projectApi.getProjectTeam(projectId),
     enabled: enabled ?? !!projectId
+  })
+}
+
+export const useProjectSprints = (projectId: string) => {
+  return useQuery({
+    queryKey: projectKeys.sprints(projectId),
+    queryFn: () => projectApi.getProjectSprints(projectId),
+    enabled: !!projectId
+  })
+}
+
+/** Матрица часов отдаётся по одному спринту — грузим нужные спринты параллельно. */
+export const useSprintsGradingStatus = (projectId: string, sprintIds: string[]) => {
+  return useQueries({
+    queries: sprintIds.map(sprintId => ({
+      queryKey: projectKeys.sprintGrading(projectId, sprintId),
+      queryFn: () => projectApi.getSprintGradingStatus(projectId, sprintId)
+    })),
+    combine: results => ({
+      data: results.flatMap(r => (r.data ? [r.data] : [])),
+      isLoading: results.some(r => r.isLoading),
+      isError: results.some(r => r.isError)
+    })
+  })
+}
+
+/** Часы шлются по одному спринту — изменения из разных спринтов отправляем параллельно. */
+export const useSubmitSprintHours = (projectId: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (batches: SprintHoursBatch[]) =>
+      Promise.all(batches.map(batch => projectApi.submitSprintHours(projectId, batch))),
+    // префикс sprints накрывает и grading-status всех спринтов проекта
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: projectKeys.sprints(projectId) })
   })
 }
 

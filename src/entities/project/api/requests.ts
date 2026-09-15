@@ -11,6 +11,9 @@ import type {
   GetManagedProjectsParams,
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
+  ProjectSprint,
+  SprintGradingStatus,
+  SprintHoursBatch,
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
 import type { UserCard } from "@/entities/user";
@@ -57,6 +60,20 @@ export const projectApi = {
   getProjectTeam: async (projectId: string): Promise<UserCard[]> => {
     const { data } = await api.get<UserCard[]>(ENDPOINTS.PROJECT_TEAM(projectId))
     return data
+  },
+
+  getProjectSprints: async (projectId: string): Promise<ProjectSprint[]> => {
+    const { data } = await api.get<ProjectSprint[]>(ENDPOINTS.PROJECT_SPRINTS(projectId))
+    return data
+  },
+
+  getSprintGradingStatus: async (projectId: string, sprintId: string): Promise<SprintGradingStatus> => {
+    const { data } = await api.get<SprintGradingStatus>(ENDPOINTS.SPRINT_GRADING_STATUS(projectId, sprintId))
+    return data
+  },
+
+  submitSprintHours: async (projectId: string, { sprintId, records }: SprintHoursBatch): Promise<void> => {
+    await api.post(ENDPOINTS.SPRINT_HOURS(projectId, sprintId), { records })
   },
 
   createProject: async (payload: CreateProjectDto): Promise<string> => {
