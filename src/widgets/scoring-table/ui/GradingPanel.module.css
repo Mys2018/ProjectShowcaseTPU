@@ -1,0 +1,458 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  /* адаптив считаем от ширины самой панели, а не окна: слева ещё колонка карточек */
+  container-type: inline-size;
+}
+
+.state {
+  font: var(--body-text-platform);
+  color: var(--color-gray-600);
+}
+
+/* ── Шапка: название, этап, дедлайн ─────────────────────────────── */
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 24px;
+}
+
+.title {
+  font: 600 20px/1.3 var(--font-inter);
+  color: var(--color-brand-black);
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: end;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.label {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+.stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sprintName {
+  font: var(--card-title-platform);
+  color: var(--color-gray-650);
+}
+
+.divider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-gray-100);
+}
+
+.weekName {
+  font: var(--widget-title-platform);
+  color: var(--color-gray-600);
+}
+
+.deadline {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  /* строка по высоте как «Спринт N», чтобы значения стояли на одной линии */
+  min-height: 20px;
+}
+
+.daysLeft {
+  font: italic 500 12px/1 var(--font-open-sans);
+  color: var(--color-red);
+}
+
+.sheet {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-bottom: 2px;
+
+  font: var(--field-label-interface);
+  color: var(--color-brand-green);
+}
+
+/* ── Таблица часов ───────────────────────────────────────────────── */
+
+.board {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+
+  background: var(--color-gray-50);
+  border-radius: 24px;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* на совсем узкой панели строки не сжимаются дальше min-width, а прокручиваются */
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+/* строка = карточка студента + отдельная карточка итога */
+.row {
+  display: flex;
+  gap: 4px;
+  min-width: 480px;
+}
+
+/* колонки как в макете: био · неделя · неделя · пусто · статус */
+.grid {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 430fr) 96px 96px minmax(0, 207fr) 96px;
+  column-gap: 16px;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.head {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
+/* глобальный `*` ставит ALS Sirius каждому элементу — наследуем шрифт явно */
+.head > * {
+  font: inherit;
+}
+
+.rows > .row:first-child {
+  margin-bottom: 8px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.statusHead {
+  justify-self: end;
+  padding-right: 4px;
+}
+
+.resultHead {
+  width: 124px;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.card {
+  height: 72px;
+  background: var(--color-white);
+  border-radius: 16px;
+}
+
+.avatar {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.you {
+  font: inherit;
+  color: var(--color-gray-400);
+}
+
+.roleIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+/* в TeamUserCard `.moreInfo p` перебивает шрифт подписи из пропсов — по макету роль OS 350 12 */
+.card .roleIcon + p {
+  font: var(--OS-12-350);
+}
+
+.status {
+  justify-self: end;
+  display: flex;
+  padding-right: 12px;
+}
+
+.result {
+  width: 124px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font: 600 15px/1.5 var(--font-open-sans);
+  color: var(--color-gray-650);
+}
+
+/* Чуть уже макета: пустая колонка первой отдаёт место имени */
+@container (max-width: 1100px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) 96px 96px 96px;
+  }
+
+  .spacer {
+    display: none;
+  }
+}
+
+/* Заметно уже: ужимаем и служебные колонки */
+@container (max-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) 80px 80px 44px;
+    column-gap: 8px;
+  }
+
+  .spacer {
+    display: none;
+  }
+
+  .status {
+    padding-right: 8px;
+  }
+
+  .statusHead {
+    padding-right: 0;
+  }
+
+  /* «Общий результат» (~102px) ещё влезает в одну строку */
+  .result,
+  .resultHead {
+    width: 110px;
+  }
+
+  .meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 16px;
+  }
+
+  .sheet {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .footer {
+    flex-wrap: wrap;
+    row-gap: 16px;
+  }
+
+  .actions {
+    margin-left: auto;
+  }
+}
+
+/* Совсем узко: аватарки отдают место имени, а длинное имя переносится на вторую строку */
+@container (max-width: 600px) {
+  .avatar {
+    display: none;
+  }
+
+  .card p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+  }
+
+  .card .roleIcon + p {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
+/* ── Поле часов ──────────────────────────────────────────────────── */
+
+.field {
+  --tone: var(--color-gray-250);
+  --unit: var(--color-gray-600);
+
+  box-sizing: border-box;
+  width: 72px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 4px 0 7px;
+
+  background: var(--color-white);
+  border: 1px solid var(--tone);
+  border-radius: 8px;
+  cursor: text;
+}
+
+.warning {
+  --tone: var(--color-yellow);
+  --unit: var(--color-yellow);
+}
+
+.danger {
+  --tone: var(--color-red);
+  --unit: var(--color-red);
+}
+
+.input {
+  width: 24px;
+  height: 19px;
+  padding: 0;
+
+  font: 400 15px/19px var(--font-open-sans);
+  color: var(--color-gray-900);
+  text-align: center;
+  caret-color: var(--color-brand-violet);
+
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.input:disabled {
+  color: var(--color-gray-900);
+  cursor: default;
+}
+
+.field:has(.input:disabled) {
+  cursor: default;
+}
+
+/* пустое поле — линия под будущим числом */
+.empty .input {
+  border-bottom: 1px solid var(--tone);
+}
+
+.unit {
+  font: var(--description-platform);
+  color: var(--unit);
+}
+
+.field:focus-within {
+  --tone: var(--color-brand-violet);
+  --unit: var(--color-gray-600);
+}
+
+.field:focus-within .input {
+  border-bottom-color: transparent;
+}
+
+.locked {
+  cursor: default;
+}
+
+/* ── Низ: спринты и кнопки ───────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  min-height: 42px;
+}
+
+.sprints {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pages {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.page {
+  box-sizing: border-box;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+
+  font: 400 12px/1 var(--font-inter);
+  color: var(--color-gray-900);
+
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.page:hover:not(:disabled) {
+  background: var(--color-gray-100);
+}
+
+.page:disabled {
+  color: var(--color-gray-350);
+  cursor: default;
+}
+
+/* выбранный, но не текущий спринт — фоном, чтобы не спорить с красной рамкой */
+.pageSelected,
+.page.pageSelected:hover:not(:disabled) {
+  background: var(--color-gray-200);
+}
+
+.pageGaps {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.pageCurrent,
+.pageCurrent:hover:not(:disabled) {
+  color: var(--color-white);
+  background: var(--color-brand-green);
+  border-color: var(--color-brand-green);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.error {
+  font: var(--field-label-interface);
+  color: var(--color-red);
+}
+
+.cancel:disabled,
+.cancel:disabled:hover {
+  color: var(--color-gray-350);
+  cursor: default;
+}
+
+/* по макету: ховер — из OutlineButton, у нажатой рамка того же тёмно-зелёного, что и фон */
+.save:active:not(:disabled) {
+  border-color: var(--color-dark-green);
+}
+
+/* неактивная — та же зелёная кнопка на 25% */
+.save:disabled,
+.save:disabled:hover {
+  color: var(--color-brand-green);
+  background: transparent;
+  opacity: 0.25;
+  cursor: default;
+}

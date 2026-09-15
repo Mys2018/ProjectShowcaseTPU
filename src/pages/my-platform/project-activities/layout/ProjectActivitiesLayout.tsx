@@ -9,6 +9,7 @@ import { BackLink } from '@/shared/ui/back-link'
 import { ROUTES } from '@/shared'
 import { AllCuratingProjects } from '../all-curating-projects/AllCuratingProjects'
 import { ApplicationsAndTeam } from '../applications-and-team/ApplicationsAndTeam'
+import { ParticipantsGrading } from '../participants-grading/ParticipantsGrading'
 
 export function ProjectActivitiesLayout() {
   const location = useLocation()
@@ -43,6 +44,8 @@ export function ProjectActivitiesLayout() {
         return <AllCuratingProjects />
       case ROUTES.MANAGE.TEAMS:
         return <ApplicationsAndTeam />
+      case ROUTES.MANAGE.GRADES:
+        return <ParticipantsGrading />
       default:
         return location.hash
     }
