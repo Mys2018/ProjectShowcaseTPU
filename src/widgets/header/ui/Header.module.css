@@ -36,7 +36,7 @@
   flex-direction: column;
   width: 100%;
   background-color: var(--color-brand-black);
-  z-index: 2;
+  z-index: 4;
   padding: 0 36px;
 }
 
