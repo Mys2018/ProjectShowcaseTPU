@@ -4,16 +4,34 @@ interface FeedBackButtonProps {
   isActiveFeedBack: boolean
   toggleFeedBack: () => void;
   disabled: boolean;
+  isInTeam?: boolean;
+  customText?: string;
 }
 
-export const FeedBackButton = ({isActiveFeedBack, toggleFeedBack, disabled}: FeedBackButtonProps) => {
+export const FeedBackButton = ({
+  isActiveFeedBack,
+  toggleFeedBack,
+  disabled,
+  isInTeam,
+  customText
+}: FeedBackButtonProps) => {
+  const text = customText || (
+    isInTeam
+      ? 'Вы в команде'
+      : isActiveFeedBack
+        ? 'Отменить отклик'
+        : 'Откликнуться'
+  )
+
   return (
     <button
-      className={`${styles.button} ${isActiveFeedBack ? styles.activeButton : ''}`}
+      className={`${styles.button} ${
+        isInTeam ? styles.inTeamButton : isActiveFeedBack ? styles.activeButton : ''
+      }`}
       onClick={toggleFeedBack}
       disabled={disabled}
     >
-      {isActiveFeedBack ? 'Отменить отклик' : 'Откликнуться'}
+      {text}
     </button>
   )
 }

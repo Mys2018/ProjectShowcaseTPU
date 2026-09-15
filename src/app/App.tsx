@@ -1,15 +1,14 @@
 import { RouterProvider } from "react-router-dom";
 import { router } from "./router";
 import { AppProvider } from "./providers";
-import { ModalRoot } from "@/app/providers/modalRoot/ModalRoot.tsx";
-import { TestMenu } from "@/features/test-menu";
+import { ModalRoot } from "./providers/modalRoot/ModalRoot.tsx";
 
 function App() {
   return (
     <AppProvider>
       <RouterProvider router={router} />
       <ModalRoot/>
-      <TestMenu />
+      {/*<TestMenu />*/}
     </AppProvider>
   );
 }

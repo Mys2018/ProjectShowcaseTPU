@@ -12,6 +12,8 @@ import IdIcon from '@/shared/ui/icons/id.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
+import { useProjectTeam } from "@/entities/project";
+import { getPublicProjectStatus } from "@/entities/project";
 // TODO
 import { useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
@@ -28,6 +30,7 @@ interface ProjectPageProps {
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   // TODO
   const { data: owner } = useUserById(project.ownerId)
+  const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);
@@ -57,11 +60,6 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
     return resizeObserver.disconnect()
   }, [project]);
-
-  const teamMock = [
-    { name: 'Фадеев', role: 'Backend', avatarSrc: '' },
-    { name: 'Яра', role: 'Frontend', avatarSrc: '' }
-  ];
 
   const { platformsData, findPlatformName } = usePlatformFinder();
 
@@ -215,12 +213,19 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
         <div className={styles.projectStatus}>
           <span className={styles.statusLabel}>Статус:</span>
-          <ProjectPublicStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
 
-        <FreeCompetencies roles={project.roles} />
+        <FreeCompetencies roles={project.roles} project={project} />
 
-        <ProjectTeam list={teamMock} />
+        <ProjectTeam
+          project={project}
+          list={teamMembers}
+          isLoading={isTeamLoading}
+          openFreeCompetency={() => {
+            rightWidgetsRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
 
       </aside>
     </main>

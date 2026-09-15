@@ -5,7 +5,8 @@ import { MyApplicationsSheet, ProjectActionPanel, isActiveApplication, myApplica
 import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { Drawer } from "@/features/drawer/Drawer.tsx";
 import { useApplications } from "@/entities/application";
-import { type ProjectCardData, typeProjectsLabel } from "@/entities/project";
+import { type ProjectCardData, typeProjectsLabel, useProjectTeam } from "@/entities/project";
+import { getPublicProjectStatus } from "@/entities/project";
 import { usePlatformFinder } from "@/entities/platforms";
 import { useIsProfileFilled } from "@/entities/user";
 import { useUserById } from "@/entities/user";
@@ -34,6 +35,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   // TODO
   const { data: owner } = useUserById(project.ownerId)
+  const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -48,11 +50,6 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     { value: 'about', label: 'О проекте' },
     { value: 'team', label: 'Трек и команда' }
   ] as const;
-
-  const teamMock = [
-    { name: 'Фадеев', role: 'Backend', avatarSrc: '' },
-    { name: 'Яра', role: 'Frontend', avatarSrc: '' }
-  ];
 
   const { platformsData, findPlatformName } = usePlatformFinder();
 
@@ -87,10 +84,14 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return result;
   }, [project, platformsData, findPlatformName]);
 
-  const checkpointsMock = [
-    { title: 'Старт работ', deadline: '25-05-2026', status: true },
-    { title: 'Постерная сессия', deadline: '29-05-2026', status: false }
-  ];
+  const checkpoints = useMemo(() => {
+    return (project.checkpoints?.checkpoints || []).map(c => ({
+      title: c.title,
+      deadline: c.deadline instanceof Date
+        ? c.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        : new Date(c.deadline).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    }));
+  }, [project.checkpoints]);
 
   if (!owner) {
     return null
@@ -104,7 +105,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
       <section className={styles.topBlock} >
         <div className={styles.leftTopBlock}>
           {typeProjectsLabel(project.type)}
-          <ProjectPublicStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
 
         <div className={styles.rightTopBlock}>
@@ -145,18 +146,22 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
             ) : (
               <>
                 <ProfileWidget
-                  last_name={owner.meta.lastName}
-                  first_name={owner.meta.firstName}
+                  last_name={owner?.meta?.lastName ?? ''}
+                  first_name={owner?.meta?.firstName ?? ''}
                   role="Менеджер данного проекта"
                   avatarSrc=""
                 />
                 <ProjectTeam
-                  list={teamMock}
+                  project={project}
+                  list={teamMembers}
+                  isLoading={isTeamLoading}
                   openFreeCompetency={() => setDrawerOpen(true)}
                 />
-                <KeyPoints
-                  checkpoints={checkpointsMock}
-                />
+                {checkpoints.length > 0 && (
+                  <KeyPoints
+                    checkpoints={checkpoints}
+                  />
+                )}
                 {links.length > 0 && <LinkContainer links={links} />}
               </>
             )
@@ -196,7 +201,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
       )}
 
       <Drawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)}>
-        <FreeCompetencies roles={project.roles} />
+        <FreeCompetencies roles={project.roles} project={project} />
       </Drawer>
 
       <Drawer isOpen={isApplicationsOpen} onClose={() => setApplicationsOpen(false)}>

@@ -24,6 +24,8 @@ export { BlankPhoto } from './blank-photo/BlankPhoto.tsx'
 export { Banner } from './banner/Banner.tsx'
 export { Callout } from './callout/Callout.tsx'
 export * from './elements/buttons'
+export { CompetencyCard } from './competency-card/CompetencyCard.tsx'
+export { SkillTagList, SkillList } from '@/entities/skill'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'

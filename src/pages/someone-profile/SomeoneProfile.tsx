@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
 import { useMediaQuery } from 'usehooks-ts'
 import styles from './SomeoneProfile.module.css'
@@ -37,6 +37,12 @@ export function SomeoneProfile() {
     if (timer.current) clearTimeout(timer.current)
     setHighlight(true)
     timer.current = setTimeout(() => setHighlight(false), 700)
+  }, [])
+
+  // Уйти со страницы можно и во время подсветки — таймер надо снять,
+  // иначе он сработает на размонтированном компоненте.
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current)
   }, [])
 
   if (!user) {

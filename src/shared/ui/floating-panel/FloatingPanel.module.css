@@ -140,6 +140,7 @@
 .actionGreen  { background: var(--color-brand-green); }
 .actionFilled { background: var(--color-white); }
 .actionMuted  { background: var(--color-white); }
+.actionLocked { background: var(--color-gray-400); }
 
 .actionInner {
   display: flex;
@@ -171,66 +172,53 @@
   cursor: default;
 }
 
+.actionLocked .actionInner {
+  color: var(--color-gray-650);
+}
+
 .actionMuted .actionInner {
   background: var(--color-gray-100);
   color: var(--color-gray-500);
 }
 
-/* ── Центр: статус ──────────────────────────────────────────────────── */
+/* ── Центр: личный статус ───────────────────────────────────────────── */
 
-/* Ниже действия (42 против 56) и мельче по кеглю — статус не кнопка. */
-.status {
+/* «Вы в команде», «Вы уже в другом проекте» — 42px в тон боковым кнопкам. */
+.note {
   display: flex;
   align-items: center;
   justify-content: center;
 
   height: 42px;
   min-width: 0;
-  padding: 3px;
+  padding: 0 16px;
   border-radius: 65px;
   background: var(--color-white);
   box-shadow: var(--drop-down);
 }
 
-.statusInner {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  height: 36px;
+.noteText {
   min-width: 0;
-  padding: 12px 16px;
-  border-radius: 12px;
-
-  font: 500 11px/1.1 var(--font-inter);
-  color: var(--color-gray-650);
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
 }
 
-.statusDot {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border: 3px solid currentColor;
-}
+/* ── Центр: «вы откликнулись» / «вы в команде» с действием ──────────── */
 
-.toneViolet { color: var(--color-brand-violet); }
-.toneGreen  { color: var(--color-brand-green); }
-.toneGray   { color: var(--color-gray-650); }
-
-/* ── Центр: «вы откликнулись» ───────────────────────────────────────── */
-
-/* Составной вариант: слева подпись, справа вложенная кнопка отмены. */
+/* Подпись слева, кнопка справа. Отступы из макета: 16 слева у текста,
+   12 справа у кнопки, между ними 12. */
 .applied {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 
   height: 56px;
   min-width: 0;
-  padding: 3px;
-  padding-left: 16px;
+  padding: 0 12px 0 16px;
   border-radius: 65px;
   background: var(--color-white);
   box-shadow: var(--drop-down);
@@ -240,32 +228,35 @@
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0;
-  border: none;
-  background: none;
-  cursor: pointer;
+  white-space: nowrap;
 
   font: var(--inter-13-600);
   color: var(--color-gray-500);
-  white-space: nowrap;
 }
 
-.appliedCancel {
+.appliedAction {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  height: 50px;
+  height: 30px;
   flex-shrink: 0;
-  padding: 8px 20px;
-  border: 1px solid var(--color-gray-200);
-  border-radius: 59px;
-  background: none;
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-150);
+  border-radius: 35px;
+  background: var(--color-gray-150);
 
-  font: var(--inter-13-600);
-  color: var(--color-gray-500);
+  font: 500 11px/110% var(--font-inter);
+  color: var(--color-gray-900);
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* «Выбрать ещё»: обводка брендовая, подпись зелёная — действие поощряется. */
+.appliedActionOutline {
+  border-color: var(--color-brand-violet);
+  background: none;
+  color: var(--color-brand-green);
 }
 
 /* лёгкий отклик на нажатие — он же пауза перед открытием шторки */
@@ -281,7 +272,7 @@
   }
 }
 
-.appliedCancel:disabled {
+.appliedAction:disabled {
   cursor: default;
   opacity: 0.45;
 }
@@ -290,8 +281,7 @@
 
 .round:focus-visible,
 .action:focus-visible,
-.appliedLabel:focus-visible,
-.appliedCancel:focus-visible {
+.appliedAction:focus-visible {
   outline: 2px solid var(--color-brand-violet);
   outline-offset: 2px;
 }

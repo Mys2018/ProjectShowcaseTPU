@@ -91,7 +91,9 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
         </div>
 
         {/*Блок ссылок*/}
-        <div className={styles.linkBlock}>
+        {/* Якорь и подсветка — на всём блоке: заголовок, почта и мессенджеры
+            должны отзываться на «Связаться» вместе, а не по отдельности. */}
+        <div id={CONTACTS_ANCHOR_ID} className={clsx(styles.linkBlock, highlight && styles.highlight)}>
           <div className={styles.headerLink}>
             <p>
               Контакты
@@ -105,7 +107,7 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
               <OpenLogo className={styles.whiteShareLogo}/>
             </div>
           </div>
-          <div id={CONTACTS_ANCHOR_ID} className={clsx(styles.linkList, highlight && styles.highlight)}>
+          <div className={styles.linkList}>
             {
               links && ['element', 'telegram', 'vk'].map((type) => {
                 const link = links[type as keyof Messengers];

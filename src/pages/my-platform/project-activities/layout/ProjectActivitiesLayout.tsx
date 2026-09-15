@@ -7,6 +7,8 @@ import { ParticipatingProjectsPage } from '../participating-projects/Participati
 import { ProjectActivitiesTabs } from '@/widgets/project-activities-tabs'
 import { BackLink } from '@/shared/ui/back-link'
 import { ROUTES } from '@/shared'
+import { AllCuratingProjects } from '../all-curating-projects/AllCuratingProjects'
+import { ApplicationsAndTeam } from '../applications-and-team/ApplicationsAndTeam'
 
 export function ProjectActivitiesLayout() {
   const location = useLocation()
@@ -33,8 +35,14 @@ export function ProjectActivitiesLayout() {
         return <LikedProjectsPage />
       case ROUTES.ACTIVITY.MY_APPLICATIONS:
         return <MyApplicationsPage />
+      case ROUTES.ACTIVITY.BASE:
       case ROUTES.ACTIVITY.MY_PROJECTS:
         return <ParticipatingProjectsPage />
+      case ROUTES.MANAGE.BASE:
+      case ROUTES.MANAGE.PROJECTS:
+        return <AllCuratingProjects />
+      case ROUTES.MANAGE.TEAMS:
+        return <ApplicationsAndTeam />
       default:
         return location.hash
     }
@@ -45,8 +53,11 @@ export function ProjectActivitiesLayout() {
       <div className={styles.container}>
         <BackLink fallback={ROUTES.MAIN} className={styles.back} />
         <h1 className={styles.title}>Проектная деятельность</h1>
-        <ProjectActivitiesTabs className={styles.tabs} />
-        <div className={styles.outlet}>{renderContent()}</div>
+
+        <div className={styles.tabsContainer}>
+          <ProjectActivitiesTabs className={styles.tabs} />
+        </div>
+        {renderContent()}
       </div>
     </div>
   )

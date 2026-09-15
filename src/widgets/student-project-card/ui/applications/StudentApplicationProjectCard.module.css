@@ -53,6 +53,54 @@
   color: var(--color-gray-500);
 }
 
+.sideSlot {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	width: 100%;
+	flex-shrink: 0;
+}
+
+.headerSide {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+}
+
+.block {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.block p {
+	font: var(--inter-12-300);
+	color: var(--color-gray-500);
+}
+
+.competencyText p{
+	font: var(--subhead-interface) !important;
+	color: var(--color-gray-750) !important;
+}
+
+.competencyContent {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.competencyIcon {
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+}
+
+.competencyName {
+	font: var(--inter-13-500) !important;
+	color: var(--color-gray-800) !important;
+}
+
 .side {
   grid-column: 6 / 11;
 
@@ -74,7 +122,24 @@
     color: var(--color-gray-500);
   }
 
-  & .skeleton {
-    width: 35%;
-  }
+	& .skeleton {
+		width: 35%;
+	}
+}
+
+.userRow {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.image {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+}
+
+.name {
+	width: 120px;
+	height: 16px;
 }

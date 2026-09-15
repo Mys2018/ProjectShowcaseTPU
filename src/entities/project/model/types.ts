@@ -4,6 +4,7 @@ import type { PROJECT_FORMATS } from "./constants";
 import type { CheckpointGroup } from "@/entities/checkpoint";
 import type { Tag } from "@/entities/tag";
 import type { Partner } from "@/entities/partner";
+import type { UserCard } from "@/entities/user";
 
 export type ProjectDirection = 'web' | 'mobile' | 'engineering' | 'ml' | 'fintech' | 'design';
 export type ProjectFormat = typeof PROJECT_FORMATS[number];
@@ -32,6 +33,10 @@ export interface ProjectPartnerDto {
   profilePicture?: string;
 }
 
+/** @deprecated Use UserCard from @/entities/user instead according to OpenAPI spec */
+export type ProjectTeamMember = UserCard;
+export type ProjectTeamMemberDto = UserCard;
+
 /** Ссылка проекта на внешнюю платформу. По api.yaml: ProjectPlatformLink. */
 export interface ProjectPlatformLink {
   platformId: string;
@@ -54,6 +59,7 @@ export interface ProjectCardData {
   checkpoints: CheckpointGroup;
   roles: {
     roleId: string;
+    roleTypeId?: string;
     placesCount: number;
     minPlacesCount: number;
     places: number;
@@ -79,6 +85,7 @@ export interface ProjectCardData {
   taskTracker?: ProjectPlatformLink[];
   designEnvironment?: ProjectPlatformLink[];
   otherPlatforms?: ProjectPlatformLink[];
+  team?: UserCard[];
 }
 
 export interface ProjectResponseCheckpointDto {
@@ -187,6 +194,7 @@ export interface GetProjectsQueryParams {
   sort?: 'relevance' | 'created_asc' | 'created_desc';
   offset?: number;
   limit?: number;
+  onlyApplied?: boolean;
 }
 
 export interface GetUserProjectsParams {

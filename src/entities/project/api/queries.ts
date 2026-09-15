@@ -26,6 +26,14 @@ export const useProjectDetails = (id: string) => {
   })
 }
 
+export const useProjectTeam = (projectId: string, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.team(projectId),
+    queryFn: () => projectApi.getProjectTeam(projectId),
+    enabled: enabled ?? !!projectId
+  })
+}
+
 export const useCreateProject = () => {
   const queryClient = useQueryClient()
 

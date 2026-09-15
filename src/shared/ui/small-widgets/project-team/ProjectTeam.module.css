@@ -45,6 +45,7 @@
 .role {
   font: var(--widget-title-platform);
   color: var(--color-gray-900);
+  margin-right: 18px;
 }
 
 .info {
@@ -130,6 +131,15 @@
   color: var(--color-brand-green);
   padding: 12px 24px;
   border-radius: 59px;
+}
+
+.empty {
+  font: var(--body-small-platform);
+  color: var(--color-gray-650);
+  background-color: white;
+  padding: 14px 12px;
+  border-radius: 12px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

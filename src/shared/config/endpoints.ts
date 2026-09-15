@@ -12,6 +12,7 @@ export const ENDPOINTS = {
   PARTICIPATING_PROJECTS: import.meta.env.VITE_API_PARTICIPATING_PROJECTS_URL || '/me/projects/participating',
   APPLIED_PROJECTS: import.meta.env.VITE_API_APPLIED_PROJECTS_URL || '/me/projects/applied',
   PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}`,
+  PROJECT_TEAM: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team`,
   LIKE_PROJECT: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/like`,
   PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL || '/me/projects/draft',
   TAGS: import.meta.env.VITE_API_TAGS_URL || '/tags',

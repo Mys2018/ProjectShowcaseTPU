@@ -12,12 +12,16 @@ interface LikeProjectButtonProps {
 }
 
 export function LikeProjectButton({ projectId, liked, className, onClick }: LikeProjectButtonProps) {
-  const { mutate: toggleLikeProject } = useToggleLikeProject(liked)
+  const { mutate: toggleLikeProject, isPending } = useToggleLikeProject(liked)
   return (
     <button
       type='button'
       className={clsx(styles.button, liked && styles.active, className)}
+      disabled={isPending}
       onClick={e => {
+        // Двойной клик до ре-рендера дважды слал like (мутация выбирается из
+        // пропа liked) — блокируем кнопку, пока запрос в полёте.
+        if (isPending) return
         toggleLikeProject(projectId)
         onClick?.(e)
       }}

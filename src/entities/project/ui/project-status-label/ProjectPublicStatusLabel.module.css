@@ -7,12 +7,20 @@
   gap: 6px;
   border: 1px solid var(--color-gray-200);
   width: fit-content;
-  font: var(--inter-11-600);
   color: var(--color-gray-650);
 }
 
+/* Цвет живёт на .status (см. класс статуса), а .label наследует через currentColor —
+   иначе явный color на .label перебил бы статусный цвет каскадом. */
 .label {
   font: var(--inter-11-600);
+}
+
+@media (max-width: 768px) {
+  .status {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
 }
 
 .Recruiting,
@@ -37,11 +45,21 @@
 }
 
 
-@media (max-width: 768px) {
-  .status {
-    padding: 8px 10px;
-    border-radius: 8px;
-  }
+
+/* Вариант для мобильной плавающей панели: та же семантика, другая оправа —
+   пилюля 42px в тон боковым кнопкам, без рамки, с тенью панели.
+   Идёт после медиазапроса, поэтому его padding не перебивает эти размеры. */
+.status.panel {
+  height: 42px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 65px;
+  box-shadow: var(--drop-down);
+  white-space: nowrap;
 }
 
-
+.status.panel .label {
+  font: var(--inter-13-600);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

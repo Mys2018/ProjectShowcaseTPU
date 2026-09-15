@@ -1,10 +1,11 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
 import { createCheckpointGroup, getCheckpointGroups } from '@/entities/checkpoint/api/requests';
-import { mapDateToBackendString, parseDeadline } from '@/shared';
+import { useMe } from '@/entities/user';
+import { isSafeExternalUrl, mapDateToBackendString, parseDeadline } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
 
@@ -36,7 +37,9 @@ export const baseProjectSchema = z.object({
       platformId: z.string(),
       name: z.string(),
       category: z.string(),
+      // `.url()` пропускает javascript:/data: — дополнительно требуем http(s)
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
+        .refine(isSafeExternalUrl, 'Ссылка должна начинаться с http:// или https://')
     })
   ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
@@ -166,11 +169,20 @@ interface UseProjectWizardProps {
     highestStep?: number;
     progress?: WizardProgress;
   };
+  /** Значения черновика для явного восстановления. */
+  restoreValues?: (Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  }) | null;
+  isDraftLoading?: boolean;
 }
 
 const STUDY_DEFAULTS = {
   type: 'Study',
-  ownerId: 1,
+  // Владелец — создающий куратор, не константа: захардкоженный «1» был
+  // мёртвой валидацией сфабрикованного ID.
+  ownerId: 0,
   partnerId: '',
   checkpoints: [{ title: '', deadline: '' }, { title: '', deadline: '' }, { title: '', deadline: '' }],
   meta: { title: '', description: '' },
@@ -186,37 +198,53 @@ const STUDY_DEFAULTS = {
   extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
 } as CreateProjectFormValues;
 
-export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [highestStep, setHighestStep] = useState(1);
+export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDraftLoading }: UseProjectWizardProps) => {
+  const { data: me } = useMe();
+
+  const initialSource = defaultValues ?? restoreValues ?? null;
+  const initialStep = (typeof initialSource?.currentStep === 'number' && initialSource.currentStep >= 1)
+    ? initialSource.currentStep
+    : 1;
+  const initialHighest = (typeof initialSource?.highestStep === 'number' && initialSource.highestStep >= 1)
+    ? initialSource.highestStep
+    : 1;
+
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [highestStep, setHighestStep] = useState(initialHighest);
   const [stepErrors, setStepErrors] = useState<StepErrors>({});
   const [blinkFields, setBlinkFields] = useState<string[]>([]);
-  const [isRestored, setIsRestored] = useState(false);
+  const hasRestoredRef = useRef(false);
 
-  useEffect(() => {
-    if (defaultValues && !isRestored) {
-      const savedStep = defaultValues.currentStep;
-      const savedHighest = defaultValues.highestStep;
-      if (savedStep && savedHighest) {
-        setCurrentStep(savedStep);
-        setHighestStep(savedHighest);
-        setIsRestored(true);
-      }
-    }
-  }, [defaultValues, isRestored]);
-
-  // Extract non-form fields so they don't get passed to useForm
-  const { currentStep: _currentStep, highestStep: _highestStep, progress: _progress, ...formDefaultValues } = (defaultValues || {});
+  // Create stable defaultValues ref to prevent formApi.update from clobbering restored state on re-renders
+  const stableDefaultValuesRef = useRef<CreateProjectFormValues | null>(null);
+  if (!stableDefaultValuesRef.current) {
+    const src = defaultValues ?? restoreValues ?? {};
+    const { currentStep: _c, highestStep: _h, progress: _p, ...fields } = src;
+    stableDefaultValuesRef.current = {
+      ...STUDY_DEFAULTS,
+      ownerId: me ? Number(me.id) : 0,
+      ...fields,
+      meta: {
+        ...STUDY_DEFAULTS.meta,
+        ...(fields.meta || {}),
+      },
+      prdMeta: {
+        ...STUDY_DEFAULTS.prdMeta,
+        ...(fields.prdMeta || {}),
+      },
+      extraFieldsForAll: {
+        ...STUDY_DEFAULTS.extraFieldsForAll,
+        ...(fields.extraFieldsForAll || {}),
+      },
+    } as CreateProjectFormValues;
+  }
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
     validators: {
       onSubmit: createProjectSchema,
     },
-    defaultValues: {
-      ...STUDY_DEFAULTS,
-      ...formDefaultValues,
-    } as CreateProjectFormValues,
+    defaultValues: stableDefaultValuesRef.current,
 
     onSubmit: async ({ value }) => {
 
@@ -232,6 +260,7 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
 
       const payload: CreateProjectDto = {
         type: value.type,
+        ownerId: me ? Number(me.id) : 0,
         partnerId: value.partnerId,
         checkpoints: checkpointId,
         meta: value.meta,
@@ -261,22 +290,81 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   });
 
   useEffect(() => {
+    if (!restoreValues || hasRestoredRef.current) {
+      return;
+    }
+
+    hasRestoredRef.current = true;
+
+    const {
+      currentStep: savedStep,
+      highestStep: savedHighest,
+      progress: _progress,
+      ...formValues
+    } = restoreValues as Record<string, any>;
+
+    const merged = {
+      ...STUDY_DEFAULTS,
+      ownerId: me ? Number(me.id) : 0,
+      ...formValues,
+      meta: {
+        ...STUDY_DEFAULTS.meta,
+        ...(formValues.meta || {}),
+      },
+      prdMeta: {
+        ...STUDY_DEFAULTS.prdMeta,
+        ...(formValues.prdMeta || {}),
+      },
+      extraFieldsForAll: {
+        ...STUDY_DEFAULTS.extraFieldsForAll,
+        ...(formValues.extraFieldsForAll || {}),
+      },
+    } as CreateProjectFormValues;
+
+    // Update stableDefaultValuesRef and form.options so formApi.update cannot revert it
+    stableDefaultValuesRef.current = merged;
+    form.options.defaultValues = merged;
+
+    form.reset(merged);
+
+    // Also explicitly set all fields so mounted FieldApi instances update their stores
+    Object.entries(merged).forEach(([key, val]) => {
+      form.setFieldValue(key as any, val);
+    });
+
+    if (typeof savedStep === 'number' && savedStep >= 1) {
+      setCurrentStep(savedStep);
+    }
+    if (typeof savedHighest === 'number' && savedHighest >= 1) {
+      setHighestStep(savedHighest);
+    }
+  }, [restoreValues, form, me]);
+
+  useEffect(() => {
     const fetchDefaultCheckpoints = async () => {
-      const backCheckpoints = await getCheckpointGroups(10, 0)
-      const firstCheckpoints = backCheckpoints.checkpointGroups[0]?.checkpoints
+      // Пока загружается черновик, не подставляем дефолтные чекпоинты,
+      // иначе setFieldValue спровоцирует перезапись черновика до его восстановления.
+      if (isDraftLoading) return;
+
+      // Если в форме уже есть чекпоинты (в т.ч. восстановленные из черновика), не перезаписываем
+      if ((form.state.values.checkpoints ?? []).some(cp => cp.title)) return;
+      if ((initialSource?.checkpoints ?? []).some(cp => cp.title)) return;
+
+      const backCheckpoints = await getCheckpointGroups(10, 0);
+      const firstCheckpoints = backCheckpoints.checkpointGroups[0]?.checkpoints;
 
       if (firstCheckpoints && firstCheckpoints.length > 0) {
         const immutableCheckpoints = firstCheckpoints.map(cp => ({
           title: cp.title,
           deadline: mapDateToBackendString(cp.deadline),
           isImmutable: true
-        }))
-        form.setFieldValue('checkpoints', immutableCheckpoints)
+        }));
+        form.setFieldValue('checkpoints', immutableCheckpoints);
       }
-    }
+    };
 
-    fetchDefaultCheckpoints()
-  }, [form]);
+    fetchDefaultCheckpoints();
+  }, [form, isDraftLoading, initialSource]);
 
   useEffect(() => {
     const subscription = form.store.subscribe(() => {

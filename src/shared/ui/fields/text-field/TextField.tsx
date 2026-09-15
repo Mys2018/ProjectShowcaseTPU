@@ -30,6 +30,7 @@ export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          maxLength={maxLength}
         />
       </div>
       {maxLength && <p className={clsx(styles.value, validError ? styles.error : '', isFocused && styles.visible)}>
@@ -66,6 +67,7 @@ export const SmallTextField = ({ value, placeholder, maxLength, onChange, validE
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          maxLength={maxLength}
         />
       </div>
       {
