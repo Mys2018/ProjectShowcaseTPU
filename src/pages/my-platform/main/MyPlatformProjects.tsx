@@ -2,6 +2,7 @@ import styles from './MyPlatformPage.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
 import { usePreferencesStore } from '@/entities/user'
 import { assertNever } from '@/shared'
+import {CuratorWidget} from "@/widgets/my-platform-widgets";
 
 export function MyPlatformProjects() {
   const preferredRoleType = usePreferencesStore(s => s.preferredRoleType)
@@ -15,6 +16,7 @@ export function MyPlatformProjects() {
         </div>
       )
     case 'Curator':
+      return <CuratorWidget/>
     case 'Moderator':
     case null:
       return <></>

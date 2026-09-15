@@ -1,3 +1,7 @@
+.application {
+  margin: 16px 16px 18px 18px;
+}
+
 .freeBlock {
   display: flex;
   flex-direction: column;
@@ -13,13 +17,77 @@
 .applicationsBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
+  height: 100%;
+  min-height: 0;
 }
 
 .applicationsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.applicationsHeader p {
   font: var(--field-label-interface);
   color: var(--color-gray-500);
-  margin-bottom: 4px;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  padding: 4px;
+  margin: -4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.toggleButton:hover {
+  color: var(--color-gray-750);
+}
+
+.toggleIcon {
+  transition: transform 0.25s ease;
+}
+
+.iconDown {
+  transform: rotate(180deg);
+}
+
+.applicationList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.collapsedList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-250) transparent;
+}
+
+.collapsedList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.collapsedList::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-250);
+  border-radius: 2px;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-gray-50);
+  border-radius: 0.5px;
 }
 
 .invitedInfo {
