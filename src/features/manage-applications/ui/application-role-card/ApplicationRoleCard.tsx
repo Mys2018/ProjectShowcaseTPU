@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
+import clsx from 'clsx'
 import styles from './ApplicationRoleCard.module.css'
 import { CompetencyCard } from '@/shared/ui/competency-card/CompetencyCard'
 import { SkillTagList, type Skill } from '@/entities/skill'
 import { InviteUserButton } from '@/shared/ui/elements/buttons/invite-user-button/InviteUserButton'
 import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'
+import UpIcon from '@/shared/ui/icons/up_arrow.svg?react'
 import { useModalStore } from '@/shared/model'
 
 interface RoleData {
@@ -41,6 +43,7 @@ export const ApplicationRoleCard = ({
 }: ApplicationRoleCardProps) => {
   const { openModal } = useModalStore()
   const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const pendingApplications = applications.filter((a) => a.status === 'pending')
 
@@ -54,22 +57,44 @@ export const ApplicationRoleCard = ({
     })
   }
 
+  const toggleCollapse = () => {
+    setIsCollapsed((prev) => !prev)
+  }
+
   const requestContent = (
-    <>
+    <div className={clsx(styles.application, isCollapsed && styles.isCollapsedList)}>
       {pendingApplications.length > 0 ? (
         <div className={styles.applicationsBlock}>
-          <p className={styles.applicationsHeader}>
-            Откликов: {pendingApplications.length}
-          </p>
-          {pendingApplications.map((application) => (
-            <ApplicationRow
-              key={application.applicationID}
-              application={application}
-              isPending={pendingApplicationId === application.applicationID}
-              onAccept={onAccept}
-              onReject={onReject}
-            />
-          ))}
+          <div className={styles.applicationsHeader}>
+            <p>
+              Откликов: {pendingApplications.length}
+            </p>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              onClick={toggleCollapse}
+              aria-label={isCollapsed ? 'Развернуть отклики' : 'Свернуть отклики'}
+            >
+              <UpIcon className={clsx(styles.toggleIcon, isCollapsed && styles.iconDown)} />
+            </button>
+          </div>
+
+          <div className={clsx(styles.applicationList, isCollapsed && styles.collapsedList)}>
+            {pendingApplications.map((application, appIndex) => (
+              <Fragment key={application.applicationID}>
+                <ApplicationRow
+                  application={application}
+                  isPending={pendingApplicationId === application.applicationID}
+                  onAccept={onAccept}
+                  onReject={onReject}
+                />
+                {appIndex < pendingApplications.length - 1 && (
+                  <div className={styles.separator} />
+                )}
+              </Fragment>
+            ))}
+          </div>
+
         </div>
       ) : (
         <div className={styles.freeBlock}>
@@ -96,7 +121,7 @@ export const ApplicationRoleCard = ({
           )}
         </div>
       )}
-    </>
+    </div>
   )
 
   return (
@@ -113,6 +138,7 @@ export const ApplicationRoleCard = ({
         />
       }
       requestContent={requestContent}
+      isCollapsed={isCollapsed}
     />
   )
 }

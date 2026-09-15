@@ -47,7 +47,7 @@ export function ProjectCardHorizontal({
               </div>
             </div>
             <div className={styles.meta}>
-              <h3 className={styles.title}>{title}</h3>
+              <h3 className={styles.title} title={title}>{title}</h3>
               {mainSlot}
             </div>
           </div>

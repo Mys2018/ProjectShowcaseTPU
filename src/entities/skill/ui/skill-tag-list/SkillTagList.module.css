@@ -23,22 +23,20 @@
   align-items: center;
   justify-content: center;
   padding: 8px 12px;
-  background-color: var(--color-gray-100);
+  background-color: white;
   border-radius: 8px;
-  color: var(--color-gray-600);
+  border: 1px solid var(--color-gray-100);
+  color: var(--color-gray-750);
   font: var(--OS-14-500);
   cursor: pointer;
   white-space: nowrap;
 }
 
-.remainingBadge:hover {
-  background-color: var(--color-gray-200);
-}
 
 .popupSkillList {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 12px
 }
 
 .popupSkill {

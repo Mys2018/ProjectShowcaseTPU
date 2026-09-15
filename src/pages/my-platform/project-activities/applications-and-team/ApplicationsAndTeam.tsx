@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styles from './ApplicationsAndTeam.module.css'
-import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
 import { ApplicationsPanel } from '@/features/manage-applications'
+import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
 
 export const ApplicationsAndTeam = () => {
   const { data: projects } = useCuratedProjects({ limit: 100 })

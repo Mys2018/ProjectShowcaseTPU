@@ -5,7 +5,7 @@ import { RouterTabs, type TabItem } from '@/shared/ui';
 const MY_PLATFORMS_TABS: TabItem[] = [
     { label: 'Главная', to: ROUTES.MAIN },
     // { label: 'Проектная деятельность', to: ROUTES.ACTIVITY.BASE },
-    { label: 'Создание проекта', to: ROUTES.PROJECTS.CREATE },
+    // { label: 'Создание проекта', to: ROUTES.PROJECTS.CREATE },
     { label: 'Мой профиль', to: ROUTES.PROFILE.BASE },
 ];
 
