@@ -6,6 +6,7 @@ interface CompetencyCardProps {
   name: string
   isRequired: boolean
   occurrenceIndex: number
+  totalOccurrences?: number
   skillsContent: ReactNode
   requestContent: ReactNode
   headerActions?: ReactNode
@@ -16,10 +17,14 @@ export const CompetencyCard = ({
   name,
   isRequired,
   occurrenceIndex,
+  totalOccurrences,
   skillsContent,
   requestContent,
   headerActions,
 }: CompetencyCardProps) => {
+  const showOccurrence =
+    totalOccurrences !== undefined ? totalOccurrences > 1 : occurrenceIndex !== 1
+
   return (
     <div className={styles.cardWrapper}>
       <div className={styles.cardHeader}>
@@ -28,7 +33,7 @@ export const CompetencyCard = ({
             {index + 1}. {name}
           </h4>
           {isRequired && <p className={styles.required}>*</p>}
-          {occurrenceIndex !== 1 && (
+          {showOccurrence && (
             <p className={styles.occurrenceIndex}>({occurrenceIndex})</p>
           )}
         </div>

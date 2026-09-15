@@ -27,6 +27,19 @@ const processQueue = (error: unknown = null) => {
   failedQueue = [];
 };
 
+/**
+ * Сессия сменилась (login-обмен, logout). Запросы, ждавшие в очереди на рефреш,
+ * принадлежали прошлому пользователю — переигрывать их под новыми куками
+ * нельзя: мутация, задуманная A, исполнилась бы сессией B.
+ */
+export const rejectAuthQueue = (): void => {
+  if (failedQueue.length === 0 && !isRefreshing) {
+    return;
+  }
+  const queue = new Error("AUTH_SESSION_REPLACED");
+  processQueue(queue);
+};
+
 interface ErrorResponseData {
   code?: string;
   msg?: string;
@@ -38,8 +51,12 @@ const isAuthFailure = (error: AxiosError): boolean => {
     return true;
   }
   if (status === 403) {
+    // 403 без кода — это отказ в правах, а не смерть сессии: рефрешить
+    // сессию по нему нельзя (лишний POST /auth/refresh и «молча мёртвые»
+    // кнопки вместо честного «недостаточно прав»). Считаем сессию
+    // истёкшей только по явному коду от бэкенда.
     const data = error.response?.data as ErrorResponseData | undefined;
-    return !data?.code || data.code === "AUTHORIZATION_FAILED";
+    return data?.code === "AUTHORIZATION_FAILED";
   }
   return false;
 };

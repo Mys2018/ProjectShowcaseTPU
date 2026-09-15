@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateApplicationStatus, applicationKeys, type Application } from '@/entities/application'
+import { projectQueryKeys } from '@/entities/project'
 
 /** Активной считаем заявку, которую ещё рассматривают или уже одобрили. */
 export const isActiveApplication = (a: Application) => a.status === 'pending' || a.status === 'approved'
@@ -9,12 +10,18 @@ export const myApplicationsParams = (projectId: string) => ({ mode: 'AsStudent',
 
 /**
  * Студент снимает свою заявку. Cancelled — «отозвана» в терминах бэкенда.
- * Список перезапрашивается, поэтому панель обновится сама.
+ * Инвалидируем префикс списков заявок (страница «Мои отклики» использует
+ * другой набор параметров — точный ключ её бы не задел) и списки
+ * participating/applied, из которых панель выводит свои состояния.
  */
-export const useCancelApplication = (projectId: string) => {
+export const useCancelApplication = () => {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (applicationId: string) => updateApplicationStatus(applicationId, 'cancelled'),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: applicationKeys.list(myApplicationsParams(projectId)) })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.participatingList() })
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.appliedList() })
+    }
   })
 }

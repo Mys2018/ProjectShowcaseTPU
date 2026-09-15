@@ -45,6 +45,7 @@
 .role {
   font: var(--widget-title-platform);
   color: var(--color-gray-900);
+  margin-right: 18px;
 }
 
 .info {

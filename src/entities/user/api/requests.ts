@@ -45,12 +45,15 @@ export async function getUsers(params?: GetUsersRequest): Promise<{ users: User[
   const rawUsers = data?.users ?? []
   const total = data?.total ?? rawUsers.length
 
-  const enrichedUsers = await Promise.all(
+  // N+1-обогащение: один удалённый между листингом и enrich'ем пользователь
+  // не должен ронять весь поиск — раньше Promise.all превращал 19 найденных
+  // людей в «Пользователей с таким именем не найдено».
+  const enrichedUsers = await Promise.allSettled(
     rawUsers.map((u) => getUserById(u.userId))
   )
 
   return {
-    users: enrichedUsers,
+    users: enrichedUsers.flatMap((r) => (r.status === 'fulfilled' ? [r.value] : [])),
     total
   }
 }

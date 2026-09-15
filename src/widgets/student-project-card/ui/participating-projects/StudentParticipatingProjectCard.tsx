@@ -1,12 +1,12 @@
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
-import { CompetencyBadge, CompetencyRowSkeleton, useCompetencies } from '@/entities/competency'
+import { CompetencyRow, useCompetencies } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { getProjectDates, ProjectCardHorizontal, ProjectCardTeam, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
-import { TeamUserCard, useUserById } from '@/entities/user'
+import { getProjectDates, ProjectCardHorizontal, ProjectCardTeam, ProjectPublicStatusLabel, useProjectTeam, type ProjectCardData } from '@/entities/project'
+import { Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, useMe, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { buildRoute, CalendarIcon, ChevronRightIcon, ImageSkeleton, mapDateToLocalString, TextSkeleton } from '@/shared'
+import { buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString } from '@/shared'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
@@ -15,18 +15,25 @@ interface StudentParticipatingProjectCardProps {
 }
 
 export function StudentParticipatingProjectCard({ project, competencyId, className }: StudentParticipatingProjectCardProps) {
-  const { data: curator } = useUserById(project.ownerId)
+  const { data: curator } = useUserById(project?.ownerId)
+  const { data: team = [] } = useProjectTeam(project?.id, Boolean(project?.id))
   const { data: competencies } = useCompetencies()
+  const { data: me } = useMe()
 
-  if (!project) return
+  if (!project) return null
 
-  const targetCompetency = competencies?.find(c => c.id === competencyId)
+  const roleForCompetency = project.roles?.find(r => r.roleTypeId === competencyId || r.roleId === competencyId) || project.roles?.[0]
+  const targetCompetency = competencies?.find(c => c.id === competencyId || (roleForCompetency && c.id === roleForCompetency.roleTypeId))
+  const memberRole = me?.id ? getMemberRoleName(Number(me.id), project) : undefined
+  const roleName = (memberRole && memberRole !== 'Участник' ? memberRole : undefined) || targetCompetency?.name || roleForCompetency?.meta?.name || 'Участник'
+
+  const displayCompetency = {
+    id: targetCompetency?.id || competencyId || roleForCompetency?.roleId || '',
+    name: roleName,
+  }
+
   const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints.checkpoints)
-  const closureDateVerbal = closureDate?.toLocaleString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
+
   const isClosed = project.status === 'Completed' || project.status === 'NotImplemented'
 
   return (
@@ -36,50 +43,50 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
       headerSlot={
         <div className={styles.header}>
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
+          <ProjectPublicStatusLabel status={project.status} />
         </div>
       }
       mainSlot={<PartnerRow partner={project.partner} />}
       sideSlot={
-        <>
-          <div className={styles.side}>
-            {project.team && project.team.length > 0 && (
-              <ProjectCardTeam members={project.team} max={3} />
+        <div className={styles.sideSlot}>
+          <div className={styles.headerSide}>
+            {team.length > 0 && (
+              <div className={styles.block}>
+                <p>Команда:</p>
+                <ProjectCardTeam members={team} max={3} label="" project={project} />
+              </div>
             )}
-            <div className={styles.competency}>
-              <p className={styles.label}>Компетенция:</p>
-              {targetCompetency ? <CompetencyBadge competency={targetCompetency} /> : <CompetencyRowSkeleton className={styles.skeleton} />}
-              {(!isClosed || closureDateVerbal) && (
-                <div className={styles.badge}>
-                  {isClosed ? (
-                    <p className={styles.label}>Завершён {closureDateVerbal} г.</p>
-                  ) : (
-                    <ProjectPublicStatusLabel status={project.status} />
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className={styles.curator}>
-            <p className={styles.label}>Наставник:</p>
-            <div className={clsx(styles.userRow, !curator && styles.skeleton)}>
-              {curator ? (
-                <TeamUserCard
-                  avatar={curator.profilePicture}
-                  firstName={curator.meta.firstName}
-                  lastName={curator.meta.lastName}
-                  nameStyle='normal'
-                  nameTextStyle='bodySmall'
-                  nameSubtextStyle='OS-10-400'
+            {displayCompetency && (
+              <div className={styles.block}>
+                <p>Компетенция:</p>
+                <CompetencyRow
+                  competency={displayCompetency}
+                  className={styles.competencyText}
                 />
-              ) : (
-                <>
-                  <ImageSkeleton className={styles.image} />
-                  <TextSkeleton className={styles.name} />
-                </>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        </>
+          {curator && (
+            <div className={styles.block}>
+              <p>Наставник:</p>
+              <TeamUserCard
+                avatar={
+                  <Avatar
+                    picture={curator.profilePicture}
+                    fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
+                    size="36px"
+                    strokeColor="grey"
+                  />
+                }
+                firstName={curator.meta.firstName}
+                lastName={curator.meta.lastName}
+                nameTextStyle="bodySmall"
+                nameSubtextStyle="OS-12-350"
+                nameStyle="normal"
+              />
+            </div>
+          )}
+        </div>
       }
       footerSlot={
         <div className={styles.footer}>

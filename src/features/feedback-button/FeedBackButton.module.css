@@ -15,6 +15,17 @@
   border: 1px solid var(--color-gray-100);
 }
 
+.inTeamButton {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  cursor: default;
+}
+
 .button:disabled {
   opacity: 0.75;
+}
+
+.inTeamButton:disabled {
+  opacity: 1;
 }

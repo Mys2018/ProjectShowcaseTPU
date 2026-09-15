@@ -32,6 +32,7 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
 
     roles: (dto.roles || []).map(r => ({
       roleId: r.roleId,
+      roleTypeId: r.roleType?.id,
       placesCount: r.placesCount,
       minPlacesCount: r.minPlacesCount,
       places: r.places?.length || 0,

@@ -4,7 +4,7 @@ import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
 import { ApplicationsPanel } from '@/features/manage-applications'
 
 export const ApplicationsAndTeam = () => {
-  const { data: projects } = useCuratedProjects()
+  const { data: projects } = useCuratedProjects({ limit: 100 })
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
 
   const projectList = projects?.projects || []

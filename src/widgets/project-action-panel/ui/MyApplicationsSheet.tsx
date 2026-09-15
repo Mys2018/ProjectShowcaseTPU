@@ -14,7 +14,7 @@ interface MyApplicationsSheetProps {
  * потерять все отклики одним тапом.
  */
 export function MyApplicationsSheet({ project, applications }: MyApplicationsSheetProps) {
-  const cancel = useCancelApplication(project.id)
+  const cancel = useCancelApplication()
 
   return (
     <div className={styles.sheet}>

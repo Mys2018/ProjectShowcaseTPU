@@ -8,7 +8,14 @@
 
   display: flex;
   align-items: center;
-  justify-content: space-between;
+}
+
+.header {
+	justify-content: space-between;
+}
+
+.footer {
+	justify-content: flex-end;
 }
 
 .statusBadge {
@@ -31,6 +38,54 @@
 .applicationDate {
   font: var(--inter-12-300);
   color: var(--color-gray-500);
+}
+
+.sideSlot {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	width: 100%;
+	flex-shrink: 0;
+}
+
+.headerSide {
+	display: flex;
+	align-items: flex-start;
+	gap: 48px;
+}
+
+.block {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.block p {
+	font: var(--inter-12-300);
+	color: var(--color-gray-500);
+}
+
+.competencyText p{
+	font: var(--subhead-interface) !important;
+	color: var(--color-gray-750) !important;
+}
+
+.competencyContent {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.competencyIcon {
+	width: 24px;
+	height: 24px;
+	flex-shrink: 0;
+}
+
+.competencyName {
+	font: var(--subhead-interface);
+	color: var(--color-gray-750);
 }
 
 .side {
@@ -110,6 +165,8 @@
 	display: flex;
 	align-items: center;
 	gap: 2px;
+
+	text-decoration: none;
 
 	font: var(--inter-12-300);
 	color: var(--color-gray-400);

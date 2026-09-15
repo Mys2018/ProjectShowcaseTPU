@@ -59,6 +59,7 @@ export interface ProjectCardData {
   checkpoints: CheckpointGroup;
   roles: {
     roleId: string;
+    roleTypeId?: string;
     placesCount: number;
     minPlacesCount: number;
     places: number;
@@ -193,6 +194,7 @@ export interface GetProjectsQueryParams {
   sort?: 'relevance' | 'created_asc' | 'created_desc';
   offset?: number;
   limit?: number;
+  onlyApplied?: boolean;
 }
 
 export interface GetUserProjectsParams {

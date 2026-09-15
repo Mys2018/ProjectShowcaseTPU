@@ -11,8 +11,16 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
   const location = useLocation()
 
   const { preferredRoleType } = usePreferencesStore()
+
+  const roleType = ((): 'Curator' | 'Moderator' | 'Student' | null => {
+    if (location.pathname.startsWith(ROUTES.MANAGE.BASE)) return 'Curator'
+    if (location.pathname.startsWith(ROUTES.MODERATION.BASE)) return 'Moderator'
+    if (location.pathname.startsWith(ROUTES.ACTIVITY.BASE)) return 'Student'
+    return preferredRoleType
+  })()
+
   const getTabItems: () => HorizontalTabItem<string>[] = () => {
-    switch (preferredRoleType) {
+    switch (roleType) {
       case 'Student':
         return [
           { label: 'Мои проекты', value: ROUTES.ACTIVITY.MY_PROJECTS },
@@ -33,12 +41,19 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
       case null:
         return []
       default:
-        assertNever(preferredRoleType)
+        assertNever(roleType)
         return []
     }
   }
 
-  const currentValue = location.pathname + location.hash
+  const currentValue = (() => {
+    if (!location.hash) {
+      if (location.pathname === ROUTES.MANAGE.BASE) return ROUTES.MANAGE.PROJECTS
+      if (location.pathname === ROUTES.ACTIVITY.BASE) return ROUTES.ACTIVITY.MY_PROJECTS
+      if (location.pathname === ROUTES.MODERATION.BASE) return ROUTES.MODERATION.PROJECTS
+    }
+    return location.pathname + location.hash
+  })()
 
   return <HorizontalTabs className={className} items={getTabItems()} value={currentValue} onChange={value => void navigate(value, { replace: true })} />
 }

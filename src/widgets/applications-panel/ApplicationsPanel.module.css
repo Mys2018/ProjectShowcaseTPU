@@ -1,6 +1,12 @@
 .container {
   display: flex;
   flex-direction: column;
+  gap: 64px;
+}
+
+.bigBlock {
+  display: flex;
+  flex-direction: column;
   gap: 36px;
 }
 

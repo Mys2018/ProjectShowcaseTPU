@@ -7,11 +7,13 @@ import { SmallRejectButton, SmallAcceptButton, mapDateToLocalString } from '@/sh
 
 interface ApplicationRowProps {
   application: Application
+  /** Статус-запрос этой заявки в полёте — обе кнопки строки блокируются. */
+  isPending?: boolean
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
 }
 
-export const ApplicationRow = ({ application, onAccept, onReject }: ApplicationRowProps) => {
+export const ApplicationRow = ({ application, isPending, onAccept, onReject }: ApplicationRowProps) => {
   const navigate = useNavigate()
   const { data: user, isLoading } = useUserById(application.studentID)
 
@@ -61,10 +63,12 @@ export const ApplicationRow = ({ application, onAccept, onReject }: ApplicationR
           <SmallRejectButton
             textButton={'Отклонить'}
             onClick={() => onReject(application.applicationID)}
+            disabled={isPending}
           />
           <SmallAcceptButton
             textButton={'Принять'}
             onClick={() => onAccept(application.applicationID)}
+            disabled={isPending}
           />
         </div>
       </div>

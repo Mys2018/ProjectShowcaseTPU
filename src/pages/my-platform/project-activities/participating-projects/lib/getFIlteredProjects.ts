@@ -11,10 +11,13 @@ type FilteredProjects = {
   archivedProjects: ProjectInfo[]
 }
 
-const findCompetenceId = (project: ProjectCardData, studentId: string): string | undefined => {
+const findCompetenceId = (project: ProjectCardData, studentId: string): string => {
   for (const role of project.roles) {
-    if (role.placeUserIds.some(id => String(id) === studentId)) return role.roleId
+    if (role.placeUserIds.some(id => String(id) === studentId)) {
+      return role.roleTypeId || role.roleId
+    }
   }
+  return project.roles[0]?.roleTypeId || project.roles[0]?.roleId || ''
 }
 
 const getProjectGrade = (studyStartYear: number, openingDate: Date): number => {
@@ -31,15 +34,21 @@ export const getFilteredProjects = (projects: ProjectCardData[], student: User, 
 
   projects.forEach(project => {
     const { status } = project
-    if (status === 'InProgress') {
+    const isActive =
+      status === 'InProgress' ||
+      status === 'Recruiting' ||
+      status === 'RecruitmentCompleted' ||
+      (status as string) === 'Active'
+
+    if (isActive) {
       const competencyId = findCompetenceId(project, student.id)
-      if (competencyId) activeProjects.push({ project, competencyId })
+      activeProjects.push({ project, competencyId })
     } else if (studyStartYear) {
       const { opening } = getProjectDates(project.checkpoints.checkpoints)
       const projectGrade = opening && getProjectGrade(studyStartYear, opening)
       if (projectGrade && grade === projectGrade) {
         const competencyId = findCompetenceId(project, student.id)
-        if (competencyId) archivedProjects.push({ project, competencyId })
+        archivedProjects.push({ project, competencyId })
       }
     }
   })

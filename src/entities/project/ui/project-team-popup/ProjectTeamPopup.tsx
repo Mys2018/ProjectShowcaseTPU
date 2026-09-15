@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, type ReactNode } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 import styles from './ProjectTeamPopup.module.css';
@@ -14,7 +14,14 @@ export interface ProjectTeamPopupProps {
   popupClassName?: string;
   triggerOn?: 'hover' | 'click' | 'both';
   closeDelayMs?: number;
+  /** Отступ от триггера до попапа, px. */
+  gap?: number;
+  /** Минимальный отступ попапа от краёв окна, px. */
+  viewportPadding?: number;
 }
+
+const DEFAULT_GAP = 8;
+const DEFAULT_PADDING = 16;
 
 export const ProjectTeamPopup = ({
   title = 'Команда проекта',
@@ -27,6 +34,8 @@ export const ProjectTeamPopup = ({
   popupClassName,
   triggerOn = 'hover',
   closeDelayMs = 150,
+  gap = DEFAULT_GAP,
+  viewportPadding = DEFAULT_PADDING,
 }: ProjectTeamPopupProps) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const isControlled = controlledIsOpen !== undefined;
@@ -45,24 +54,45 @@ export const ProjectTeamPopup = ({
     }
   }, []);
 
+  /**
+   * Позиция считается ПОСЛЕ монтирования попапа — по его реальным размерам,
+   * а не по захардкоженной оценке. Раньше константы 340×350 врали в обе
+   * стороны: короткий список навыков «переворачивался» вверх без нужды,
+   * длинная команда улетала за низ экрана. Вызывается и при каждом рендере
+   * открытого попапа (useLayoutEffect), поэтому догрузка контента тоже
+   * пересчитывает позицию до отрисовки.
+   */
   const updateCoords = useCallback(() => {
-    if (!triggerRef.current) return;
-    const rect = triggerRef.current.getBoundingClientRect();
-    const popupEstimatedWidth = 340;
-    const popupEstimatedHeight = 350;
+    const triggerEl = triggerRef.current;
+    const popupEl = popupRef.current;
+    if (!triggerEl) return;
 
-    let left = rect.left;
-    if (left + popupEstimatedWidth > window.innerWidth - 16) {
-      left = Math.max(16, window.innerWidth - popupEstimatedWidth - 16);
+    const rect = triggerEl.getBoundingClientRect();
+    // До первого монтирования реального размера нет — берём консервативную
+    // оценку, чтобы первый кадр не выл за экран; следующий useLayoutEffect
+    // уточнит по фактическим размерам.
+    const popupWidth = popupEl?.offsetWidth ?? 320;
+    const popupHeight = popupEl?.offsetHeight ?? 200;
+
+    const maxLeft = window.innerWidth - viewportPadding - popupWidth;
+    const left = Math.min(Math.max(viewportPadding, rect.left), Math.max(viewportPadding, maxLeft));
+
+    let top = rect.bottom + gap;
+    const fitsBelow = top + popupHeight <= window.innerHeight - viewportPadding;
+    const fitsAbove = rect.top - gap - popupHeight >= viewportPadding;
+
+    if (!fitsBelow && fitsAbove) {
+      top = rect.top - gap - popupHeight;
+    } else if (!fitsBelow && !fitsAbove) {
+      // Не влезает ни вверх, ни вниз — прижимаем к видимой части окна,
+      // контент попапа скроллится внутри.
+      top = Math.max(viewportPadding, window.innerHeight - viewportPadding - popupHeight);
     }
 
-    let top = rect.bottom + 8;
-    if (top + popupEstimatedHeight > window.innerHeight - 16 && rect.top - popupEstimatedHeight - 8 > 16) {
-      top = rect.top - popupEstimatedHeight - 8;
-    }
-
-    setCoords({ top, left });
-  }, []);
+    // Без сравнения useLayoutEffect-цикл «update → рендер → update» не
+    // останавливался бы: новый объект coords всегда вызывает рендер.
+    setCoords(prev => (prev.top === top && prev.left === left ? prev : { top, left }));
+  }, [gap, viewportPadding]);
 
   const handleClose = useCallback(() => {
     if (onClose) {
@@ -76,11 +106,10 @@ export const ProjectTeamPopup = ({
   const handleMouseEnter = useCallback(() => {
     if (triggerOn === 'click') return;
     clearCloseTimeout();
-    updateCoords();
     if (!isControlled) {
       setInternalIsOpen(true);
     }
-  }, [triggerOn, clearCloseTimeout, updateCoords, isControlled]);
+  }, [triggerOn, clearCloseTimeout, isControlled]);
 
   const handleMouseLeave = useCallback(() => {
     if (triggerOn === 'click') return;
@@ -96,13 +125,17 @@ export const ProjectTeamPopup = ({
     if (onToggle) {
       onToggle();
     } else if (!isControlled) {
-      setInternalIsOpen(prev => {
-        const next = !prev;
-        if (next) updateCoords();
-        return next;
-      });
+      // Никаких побочных эффектов в апдейтере: координаты считает
+      // useLayoutEffect после монтирования.
+      setInternalIsOpen(prev => !prev);
     }
   };
+
+  // Позиция при каждом рендере открытого попапа: и первый кадр, и рост контента.
+  useLayoutEffect(() => {
+    if (!open) return;
+    updateCoords();
+  });
 
   useEffect(() => {
     return () => {
@@ -111,18 +144,19 @@ export const ProjectTeamPopup = ({
   }, [clearCloseTimeout]);
 
   useEffect(() => {
-    if (open) {
+    if (!open) return;
+    const handleScrollOrResize = (e: Event) => {
+      // Скролл внутри самого попапа (.content overflow-y) не должен
+      // дёргать позицию — раньше capture-слушатель ловил и его.
+      if (e.type === 'scroll' && popupRef.current?.contains(e.target as Node)) return;
       updateCoords();
-      const handleScrollOrResize = () => {
-        updateCoords();
-      };
-      window.addEventListener('scroll', handleScrollOrResize, true);
-      window.addEventListener('resize', handleScrollOrResize);
-      return () => {
-        window.removeEventListener('scroll', handleScrollOrResize, true);
-        window.removeEventListener('resize', handleScrollOrResize);
-      };
-    }
+    };
+    window.addEventListener('scroll', handleScrollOrResize, true);
+    window.addEventListener('resize', handleScrollOrResize);
+    return () => {
+      window.removeEventListener('scroll', handleScrollOrResize, true);
+      window.removeEventListener('resize', handleScrollOrResize);
+    };
   }, [open, updateCoords]);
 
   useEffect(() => {

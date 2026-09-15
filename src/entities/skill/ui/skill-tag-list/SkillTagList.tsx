@@ -1,19 +1,17 @@
 import styles from './SkillTagList.module.css'
 import { ProjectTeamPopup } from '@/entities/project/ui/project-team-popup/ProjectTeamPopup.tsx'
+import type { Skill } from '../../model/types'
+import clsx from 'clsx'
 
-interface SkillItem {
-  id: string
-  name: string
-}
-
-interface SkillTagListProps {
-  skills: SkillItem[]
+export interface SkillTagListProps {
+  skills: Skill[]
   maxVisible?: number
+  className?: string
 }
 
-export const SkillTagList = ({ skills, maxVisible = 3 }: SkillTagListProps) => {
-  if (skills.length === 0) {
-    return <p className={styles.noSkills}>Определённые навыки не требуются</p>
+export const SkillTagList = ({ skills, maxVisible = 3, className }: SkillTagListProps) => {
+  if (!skills || skills.length === 0) {
+    return <p className={clsx(styles.noSkills, className)}>Определённые навыки не требуются</p>
   }
 
   const visible = skills.slice(0, maxVisible)
@@ -49,3 +47,5 @@ export const SkillTagList = ({ skills, maxVisible = 3 }: SkillTagListProps) => {
     </div>
   )
 }
+
+export { SkillTagList as SkillList }

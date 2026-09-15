@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import styles from './ApplicationRoleCard.module.css'
 import { CompetencyCard } from '@/shared/ui/competency-card/CompetencyCard'
-import { SkillTagList } from '@/entities/skill/ui/skill-tag-list/SkillTagList'
+import { SkillTagList, type Skill } from '@/entities/skill'
 import { InviteUserButton } from '@/shared/ui/elements/buttons/invite-user-button/InviteUserButton'
 import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'
@@ -11,14 +11,18 @@ interface RoleData {
   roleId: string
   roleName: string
   minPlacesCount: number
-  skills: { id: string; name: string }[]
+  skills: Skill[]
+  totalOccurrences?: number
 }
 
 interface ApplicationRoleCardProps {
   role: RoleData
   index: number
   occurrenceIndex: number
+  totalOccurrences?: number
   applications: Application[]
+  /** Заявка, чей статус-запрос в полёте — блокирует кнопки этой строки. */
+  pendingApplicationId?: string
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
@@ -28,7 +32,9 @@ export const ApplicationRoleCard = ({
   role,
   index,
   occurrenceIndex,
+  totalOccurrences,
   applications,
+  pendingApplicationId,
   onAccept,
   onReject,
   onInvite,
@@ -59,6 +65,7 @@ export const ApplicationRoleCard = ({
             <ApplicationRow
               key={application.applicationID}
               application={application}
+              isPending={pendingApplicationId === application.applicationID}
               onAccept={onAccept}
               onReject={onReject}
             />
@@ -98,6 +105,7 @@ export const ApplicationRoleCard = ({
       name={role.roleName}
       isRequired={role.minPlacesCount > 0}
       occurrenceIndex={occurrenceIndex}
+      totalOccurrences={totalOccurrences ?? role.totalOccurrences}
       skillsContent={
         <SkillTagList
           skills={role.skills}
