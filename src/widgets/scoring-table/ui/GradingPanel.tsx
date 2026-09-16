@@ -237,7 +237,16 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                 )
               }
               return (
-                <label key={week} className={clsx(styles.field, styles[tone], value === '' && styles.empty)}>
+                <label
+                  key={week}
+                  className={clsx(
+                    styles.field,
+                    styles[tone],
+                    value === '' && styles.empty,
+                    // введено, но не сохранено — по макету («New value») число серее
+                    value !== '' && draft[draftKey(selected, student.id, week)] !== undefined && styles.unsaved
+                  )}
+                >
                   <input
                     className={styles.input}
                     inputMode="numeric"
