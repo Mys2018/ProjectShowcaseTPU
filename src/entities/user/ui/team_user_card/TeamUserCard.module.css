@@ -65,6 +65,13 @@
   text-overflow: ellipsis;
 }
 
+.rolesWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .verticalSeparator {
   width: 1px;
   height: 12px;

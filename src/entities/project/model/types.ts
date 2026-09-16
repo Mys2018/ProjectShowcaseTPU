@@ -269,3 +269,52 @@ export interface CreateRealProjectDto extends BaseCreateProjectDto {
 }
 
 export type CreateProjectDto = CreateCaseProjectDto | CreateRealProjectDto | CreateStudyProjectDto;
+/* ── Спринты и табель часов ───────────────────────────────────────── */
+
+export type GradingState =
+  | 'BlockedOverdue'
+  | 'Closed'
+  | 'DangerNeedsGrading'
+  | 'LockedBeforeMidweek'
+  | 'Open'
+  | 'WarningNeedsGrading'
+
+export interface ProjectSprint {
+  id: string
+  /** YYYY-MM-DD */
+  startDate: string
+  /** YYYY-MM-DD */
+  endDate: string
+  isCurrent: boolean
+}
+
+export interface WeekGradingStatus {
+  weekNumber: number
+  /** Нет поля — часы за неделю ещё не выставлены. */
+  hours?: number
+  state: GradingState
+}
+
+export interface StudentGradingStatus {
+  studentId: number
+  studentName: string
+  weeks?: WeekGradingStatus[]
+}
+
+export interface SprintGradingStatus {
+  sprintId: string
+  overallState: GradingState
+  students?: StudentGradingStatus[]
+}
+
+export interface StudentHoursInput {
+  studentId: number
+  /** Тот же weekNumber, что пришёл в grading-status. */
+  weekNumber: number
+  hours: number
+}
+
+export interface SprintHoursBatch {
+  sprintId: string
+  records: StudentHoursInput[]
+}

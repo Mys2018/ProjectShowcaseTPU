@@ -19,5 +19,7 @@ export const projectKeys = {
   appliedList: (params?: GetAppliedProjectsParams) => [...projectKeys.all, 'list', 'applied', { ...params }] as const,
   details: (id: string) => [...projectKeys.all, 'detail', id] as const,
   team: (id: string) => [...projectKeys.details(id), 'team'] as const,
+  sprints: (id: string) => [...projectKeys.details(id), 'sprints'] as const,
+  sprintGrading: (id: string, sprintId: string) => [...projectKeys.sprints(id), sprintId, 'grading'] as const,
   draft: () => [...projectKeys.all, 'draft'] as const
 }
