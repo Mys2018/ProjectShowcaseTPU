@@ -7,7 +7,9 @@ export const MAX_WEEK_HOURS = 168
 
 /** Подсветка поля: серое — выставлено, жёлтое/красное — ждёт оценки, замок — ещё закрыто. */
 export type CellTone = 'filled' | 'warning' | 'danger' | 'locked'
-export type RowStatus = 'done' | 'warning' | 'danger' | 'pending'
+export type RowStatus = 'changes' | 'done' | 'warning' | 'danger' | 'pending'
+/** Цвет номера спринта в пагинации. */
+export type SprintTone = 'normal' | 'attention' | 'danger'
 
 // GradingState по ответу бэка:
 //   LockedBeforeMidweek — середина недели не наступила, всё закрыто → замок;
@@ -30,21 +32,25 @@ export const isEditable = (state: GradingState | undefined): boolean =>
 export const isGradingBlocked = (students: StudentRow[]): boolean =>
   students.some(student => student.weeks.some(week => week?.state === 'BlockedOverdue'))
 
-export const rowStatus = (tones: CellTone[]): RowStatus => {
+export const rowStatus = (tones: CellTone[], hasUnsaved = false): RowStatus => {
+  if (hasUnsaved) return 'changes'
   if (tones.includes('danger')) return 'danger'
   if (tones.includes('warning')) return 'warning'
   if (tones.includes('locked')) return 'pending'
   return 'done'
 }
 
-/** Хотя бы у одного студента хотя бы одна начавшаяся неделя спринта без часов. */
-export const sprintHasGaps = (students: StudentRow[], sprintIndex: number): boolean =>
-  students.some(student =>
-    Array.from({ length: WEEKS_PER_SPRINT }, (_, w) => sprintIndex * WEEKS_PER_SPRINT + w).some(i => {
-      const tone = cellTone(student.weeks[i]?.state, student.hours[i] != null)
-      return tone === 'warning' || tone === 'danger'
+/** Спринт в пагинации: жёлтый — ждёт оценки, красный — просрочено, иначе обычный. */
+export const sprintTone = (students: StudentRow[], sprintIndex: number): SprintTone => {
+  const tones = students.flatMap(student =>
+    Array.from({ length: WEEKS_PER_SPRINT }, (_, w) => {
+      const i = sprintIndex * WEEKS_PER_SPRINT + w
+      return cellTone(student.weeks[i]?.state, student.hours[i] != null)
     })
   )
+  if (tones.includes('danger')) return 'danger'
+  return tones.includes('warning') ? 'attention' : 'normal'
+}
 
 /** Ключ черновика: спринт, студент и неделя внутри спринта. */
 export const draftKey = (sprintIndex: number, studentId: string, week: number) => `${sprintIndex}:${studentId}:${week}`

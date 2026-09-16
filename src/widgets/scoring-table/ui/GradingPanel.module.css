@@ -296,7 +296,7 @@
   height: 32px;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: baseline;
   gap: 2px;
   padding: 4px 0 7px;
 
@@ -317,7 +317,8 @@
 }
 
 .input {
-  width: 24px;
+  /* ширина под три цифры и всегда одна — «ч» не должна ездить за числом */
+  width: 26px;
   height: 19px;
   padding: 0;
 
@@ -400,7 +401,7 @@
 }
 
 .page:hover:not(:disabled) {
-  background: var(--color-gray-100);
+  background: var(--color-gray-150);
 }
 
 .page:disabled {
@@ -408,22 +409,41 @@
   cursor: default;
 }
 
-/* выбранный, но не текущий спринт — фоном, чтобы не спорить с красной рамкой */
-.pageSelected,
-.page.pageSelected:hover:not(:disabled) {
-  background: var(--color-gray-200);
+/* текущий спринт — пунктир в цвете дедлайна */
+.pageCurrent {
+  color: var(--color-brand-green);
+  border: 1px dashed var(--color-brand-green);
 }
 
+.pageCurrent[data-tone='attention'] {
+  color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+.pageCurrent[data-tone='danger'] {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+/* прошедший спринт с пропущенными часами — сплошная красная рамка */
 .pageGaps {
   color: var(--color-red);
   border-color: var(--color-red);
 }
 
-.pageCurrent,
-.pageCurrent:hover:not(:disabled) {
+.pageCurrent:hover:not(:disabled),
+.pageGaps:hover:not(:disabled) {
+  background: transparent;
+  opacity: 0.75;
+}
+
+/* выбранный спринт — заливка */
+.pageSelected,
+.page.pageSelected:hover:not(:disabled) {
   color: var(--color-white);
   background: var(--color-brand-green);
-  border-color: var(--color-brand-green);
+  border: 1px solid var(--color-brand-green);
+  opacity: 1;
 }
 
 .actions {

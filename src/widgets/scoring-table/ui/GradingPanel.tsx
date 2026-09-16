@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useBlocker } from 'react-router-dom'
 import clsx from 'clsx'
 import styles from './GradingPanel.module.css'
 import type { StudentRow } from '../model/types'
@@ -13,7 +14,7 @@ import {
   isGradingBlocked,
   parseHoursInput,
   rowStatus,
-  sprintHasGaps,
+  sprintTone,
   type CellTone,
   type RowStatus
 } from '../model/grading'
@@ -21,6 +22,7 @@ import { useSubmitSprintHours, type SprintHoursBatch } from '@/entities/project'
 import { Avatar, TeamUserCard } from '@/entities/user'
 import { CompetencyIcon } from '@/entities/competency'
 import { getDaysUntil, getPluralDays, parseDeadline } from '@/shared'
+import { useModalStore } from '@/shared/model'
 import { GreyButton, OutlineButton } from '@/shared/ui/elements/buttons'
 import LockIcon from '@/shared/ui/icons/lock-small.svg?react'
 import SheetIcon from '@/shared/ui/icons/sheet.svg?react'
@@ -28,6 +30,7 @@ import DoneIcon from '@/shared/ui/icons/round-status-done.svg?react'
 import WarningIcon from '@/shared/ui/icons/round-status-warning.svg?react'
 import DangerIcon from '@/shared/ui/icons/round-status-danger.svg?react'
 import PendingIcon from '@/shared/ui/icons/round-status-pending.svg?react'
+import ChangesIcon from '@/shared/ui/icons/round-status-changes.svg?react'
 
 interface GradingPanelProps {
   projectId: string
@@ -35,6 +38,7 @@ interface GradingPanelProps {
 }
 
 const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
+  changes: ChangesIcon,
   done: DoneIcon,
   warning: WarningIcon,
   danger: DangerIcon,
@@ -42,6 +46,7 @@ const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
 }
 
 const STATUS_LABELS: Record<RowStatus, string> = {
+  changes: 'Часы изменены, но не сохранены',
   done: 'Часы выставлены',
   warning: 'Нужно выставить часы',
   danger: 'Часы просрочены',
@@ -75,6 +80,33 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
   const submit = useSubmitSprintHours(projectId)
   const [pickedSprint, setPickedSprint] = useState<number | null>(null)
   const [draft, setDraft] = useState<Draft>({})
+  const { openModal, closeModal } = useModalStore()
+
+  // Уход со страницы (и переключение вкладки) с несохранёнными часами — общий поп-ап платформы
+  const dirty = Object.values(draft).some(value => value !== '')
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      dirty && (currentLocation.pathname !== nextLocation.pathname || currentLocation.hash !== nextLocation.hash)
+  )
+
+  useEffect(() => {
+    if (blocker.state !== 'blocked') return
+    openModal('CONFIRM_CANCEL', {
+      title: 'У вас есть несохраненные изменения',
+      description: 'Если вы покинете страницу, они будут безвозвратно потеряны. Вы уверены, что хотите уйти?',
+      cancelText: 'Покинуть страницу',
+      confirmText: 'Вернуться к редактированию',
+      onDecline: () => {
+        closeModal()
+        setDraft({})
+        blocker.proceed?.()
+      },
+      onConfirm: () => {
+        closeModal()
+        blocker.reset?.()
+      }
+    })
+  }, [blocker, openModal, closeModal])
 
   if (isLoading) return <p className={styles.state}>Загружаем часы…</p>
   if (isError || !data) return <p className={styles.state}>Не удалось загрузить часы</p>
@@ -208,7 +240,6 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                 <label key={week} className={clsx(styles.field, styles[tone], value === '' && styles.empty)}>
                   <input
                     className={styles.input}
-                    style={{ width: value === '' ? undefined : `${value.length}ch` }}
                     inputMode="numeric"
                     maxLength={3}
                     value={value}
@@ -223,7 +254,9 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                 </label>
               )
             })
-            const status = rowStatus(tones)
+            const unsaved = Array.from({ length: WEEKS_PER_SPRINT }, (_, week) => draft[draftKey(selected, student.id, week)])
+              .some(value => value !== undefined && value !== '')
+            const status = rowStatus(tones, unsaved)
             const StatusIcon = STATUS_ICONS[status]
 
             return (
@@ -264,23 +297,27 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
           <nav className={styles.sprints} aria-label="Спринты">
             <span className={styles.label}>Спринты:</span>
             <div className={styles.pages}>
-              {sprints.map((sprint, i) => (
-                <button
-                  key={sprint.id}
-                  type="button"
-                  disabled={sprint.isFuture}
-                  aria-current={i === selected || undefined}
-                  className={clsx(
-                    styles.page,
-                    i === selected && styles.pageSelected,
-                    sprint.isCurrent && styles.pageCurrent,
-                    !sprint.isFuture && sprintHasGaps(students, i) && styles.pageGaps
-                  )}
-                  onClick={() => setPickedSprint(i)}
-                >
-                  {i + 1}
-                </button>
-              ))}
+              {sprints.map((sprint, i) => {
+                const tone = sprint.isFuture ? 'normal' : sprintTone(students, i)
+                return (
+                  <button
+                    key={sprint.id}
+                    type="button"
+                    disabled={sprint.isFuture}
+                    aria-current={i === selected || undefined}
+                    data-tone={tone}
+                    className={clsx(
+                      styles.page,
+                      sprint.isCurrent && styles.pageCurrent,
+                      !sprint.isCurrent && tone !== 'normal' && styles.pageGaps,
+                      i === selected && styles.pageSelected
+                    )}
+                    onClick={() => setPickedSprint(i)}
+                  >
+                    {i + 1}
+                  </button>
+                )
+              })}
             </div>
           </nav>
 
@@ -288,12 +325,9 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
             {/* ponytail: макета заблокированного состояния нет — пока просто подпись */}
             {blocked && <span className={styles.error}>Оценивание заблокировано: спринт не закрыт вовремя</span>}
             {submit.isError && <span className={styles.error}>Не удалось сохранить часы</span>}
-            <GreyButton
-              textButton="Отменить"
-              className={styles.cancel}
-              disabled={Object.keys(draft).length === 0 || readOnly}
-              onClick={() => setDraft({})}
-            />
+            {Object.keys(draft).length > 0 && (
+              <GreyButton textButton="Отменить" className={styles.cancel} disabled={readOnly} onClick={() => setDraft({})} />
+            )}
             <OutlineButton
               textButton={submit.isPending ? 'Сохраняем…' : 'Сохранить результат'}
               className={styles.save}
