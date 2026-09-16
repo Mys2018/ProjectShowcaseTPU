@@ -341,9 +341,13 @@
   cursor: default;
 }
 
-/* пустое поле — линия под будущим числом */
+/* пустое поле — линия под будущим числом, 24px как в макете (поле ввода шире — под три цифры) */
 .empty .input {
-  border-bottom: 1px solid var(--tone);
+  background: linear-gradient(var(--tone), var(--tone)) center bottom / 24px 1px no-repeat;
+}
+
+.unsaved .input {
+  color: var(--color-gray-600);
 }
 
 .unit {
@@ -357,10 +361,12 @@
 }
 
 .field:focus-within .input {
-  border-bottom-color: transparent;
+  background: transparent;
 }
 
+/* замок по макету прижат к низу с теми же отступами 4/7 — выходит ровно по центру */
 .locked {
+  align-items: flex-end;
   cursor: default;
 }
 
@@ -387,6 +393,9 @@
 }
 
 .page {
+  /* цвет состояния спринта: обычный, ждёт оценки, просрочено */
+  --accent: var(--color-brand-green);
+
   box-sizing: border-box;
   min-width: 20px;
   height: 20px;
@@ -400,6 +409,14 @@
   cursor: pointer;
 }
 
+.page[data-tone='attention'] {
+  --accent: var(--color-yellow);
+}
+
+.page[data-tone='danger'] {
+  --accent: var(--color-red);
+}
+
 .page:hover:not(:disabled) {
   background: var(--color-gray-150);
 }
@@ -409,26 +426,17 @@
   cursor: default;
 }
 
-/* текущий спринт — пунктир в цвете дедлайна */
+/* текущий спринт — пунктирная рамка в цвете состояния */
 .pageCurrent {
-  color: var(--color-brand-green);
-  border: 1px dashed var(--color-brand-green);
+  color: var(--accent);
+  border-style: dashed;
+  border-color: var(--accent);
 }
 
-.pageCurrent[data-tone='attention'] {
-  color: var(--color-yellow);
-  border-color: var(--color-yellow);
-}
-
-.pageCurrent[data-tone='danger'] {
-  color: var(--color-red);
-  border-color: var(--color-red);
-}
-
-/* прошедший спринт с пропущенными часами — сплошная красная рамка */
+/* прошедший спринт с пропущенными часами — сплошная рамка в цвете состояния */
 .pageGaps {
-  color: var(--color-red);
-  border-color: var(--color-red);
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .pageCurrent:hover:not(:disabled),
@@ -437,12 +445,14 @@
   opacity: 0.75;
 }
 
-/* выбранный спринт — заливка */
-.pageSelected,
+/* выбранный спринт — заливка тем же цветом состояния, цифра белая.
+   Двойной класс, чтобы перебить цвет состояния выше. */
+.page.pageSelected,
 .page.pageSelected:hover:not(:disabled) {
   color: var(--color-white);
-  background: var(--color-brand-green);
-  border: 1px solid var(--color-brand-green);
+  background: var(--accent);
+  border-style: solid;
+  border-color: var(--accent);
   opacity: 1;
 }
 
