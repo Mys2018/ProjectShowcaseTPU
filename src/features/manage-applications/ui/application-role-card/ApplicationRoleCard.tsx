@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
+import clsx from 'clsx'
 import styles from './ApplicationRoleCard.module.css'
 import { CompetencyCard } from '@/shared/ui/competency-card/CompetencyCard'
 import { SkillTagList, type Skill } from '@/entities/skill'
 import { InviteUserButton } from '@/shared/ui/elements/buttons/invite-user-button/InviteUserButton'
 import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'
+import UpIcon from '@/shared/ui/icons/up_arrow.svg?react'
 import { useModalStore } from '@/shared/model'
 
 interface RoleData {
@@ -23,6 +25,7 @@ interface ApplicationRoleCardProps {
   applications: Application[]
   /** Заявка, чей статус-запрос в полёте — блокирует кнопки этой строки. */
   pendingApplicationId?: string
+  canInvite?: boolean
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
@@ -35,12 +38,14 @@ export const ApplicationRoleCard = ({
   totalOccurrences,
   applications,
   pendingApplicationId,
+  canInvite = false,
   onAccept,
   onReject,
   onInvite,
 }: ApplicationRoleCardProps) => {
   const { openModal } = useModalStore()
   const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   const pendingApplications = applications.filter((a) => a.status === 'pending')
 
@@ -54,49 +59,77 @@ export const ApplicationRoleCard = ({
     })
   }
 
+  const toggleCollapse = () => {
+    setIsCollapsed((prev) => !prev)
+  }
+
   const requestContent = (
-    <>
+    <div className={styles.application}>
       {pendingApplications.length > 0 ? (
         <div className={styles.applicationsBlock}>
-          <p className={styles.applicationsHeader}>
-            Откликов: {pendingApplications.length}
-          </p>
-          {pendingApplications.map((application) => (
-            <ApplicationRow
-              key={application.applicationID}
-              application={application}
-              isPending={pendingApplicationId === application.applicationID}
-              onAccept={onAccept}
-              onReject={onReject}
-            />
-          ))}
+          <div className={styles.applicationsHeader}>
+            <p>
+              Откликов: {pendingApplications.length}
+            </p>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              onClick={toggleCollapse}
+              aria-label={isCollapsed ? 'Развернуть отклики' : 'Свернуть отклики'}
+            >
+              <UpIcon className={clsx(styles.toggleIcon, isCollapsed && styles.iconDown)} />
+            </button>
+          </div>
+
+          <div className={styles.applicationList}>
+            {pendingApplications.map((application, appIndex) => (
+              <Fragment key={application.applicationID}>
+                <ApplicationRow
+                  application={application}
+                  isPending={pendingApplicationId === application.applicationID}
+                  onAccept={onAccept}
+                  onReject={onReject}
+                />
+                {appIndex < pendingApplications.length - 1 && (
+                  <div className={styles.separator} />
+                )}
+              </Fragment>
+            ))}
+          </div>
+
         </div>
       ) : (
         <div className={styles.freeBlock}>
-          <p className={styles.fieldText}>Компетенция свободна</p>
-          {!invitedUser && (
-            <InviteUserButton onClick={handleInviteUser} />
-          )}
-          {invitedUser && (
-            <div className={styles.invitedInfo}>
-              <p className={styles.invitedName}>
-                <div>
-                  Приглашен:
-                  <span>{invitedUser.name}</span>
+          <p className={styles.fieldText}>Откликов пока нет</p>
+          {canInvite ? (
+            <div className={styles.inviteContainer}>
+              {!invitedUser && (
+                <InviteUserButton onClick={handleInviteUser} />
+              )}
+              {invitedUser && (
+                <div className={styles.invitedInfo}>
+                  <p className={styles.invitedName}>
+                    <div>
+                      Приглашен:
+                      <span>{invitedUser.name}</span>
+                    </div>
+                  </p>
+                  <button
+                    type="button"
+                    className={styles.cancelInviteBtn}
+                    onClick={() => setInvitedUser(null)}
+                  >
+                    Отменить
+                  </button>
                 </div>
-              </p>
-              <button
-                type="button"
-                className={styles.cancelInviteBtn}
-                onClick={() => setInvitedUser(null)}
-              >
-                Отменить
-              </button>
+              )}
             </div>
-          )}
+          ) : <p className={styles.noRecruiting}>
+            Проект еще не выпущен
+          </p>}
         </div>
       )}
-    </>
+    </div>
   )
 
   return (
@@ -113,6 +146,8 @@ export const ApplicationRoleCard = ({
         />
       }
       requestContent={requestContent}
+      isCollapsed={isCollapsed}
+      hasApplications={pendingApplications.length > 0}
     />
   )
 }

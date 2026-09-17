@@ -86,23 +86,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     return myApplications.applications.filter(app => roleIds.includes(app.roleID) && (app.status === 'pending' || app.status === 'approved'));
   }, [myApplications, roles]);
 
-  // Проверяем, состоит ли пользователь в команде проекта (по списку занявших места, по одобренной заявке, по составу команды или владелец)
-  const isMemberByPlaces = useMemo(() => {
-    if (!myUserId) return false
-    return roles.some(r => r.placeUserIds?.includes(myUserId))
-  }, [roles, myUserId])
-
-  const hasApprovedApplication = useMemo(() => {
-    return currentApplications.some(app => app.status === 'approved')
-  }, [currentApplications])
-
-  const isMemberByTeam = useMemo(() => {
-    if (!myUserId || !teamMembers) return false
-    return teamMembers.some(member => member.userId === myUserId)
-  }, [myUserId, teamMembers])
-
-  const isOwner = !!myUserId && !!project && project.ownerId === myUserId
-  const isInTeam = isMemberByPlaces || hasApprovedApplication || isOwner || isMemberByTeam
+  const MAX_SELECTIONS = 2;
 
   // Активные (не рассмотренные) заявки
   const pendingApplications = useMemo(() => {
@@ -119,28 +103,38 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     const fromPlaces = myUserId
       ? roles.filter(r => r.placeUserIds?.includes(myUserId)).map(r => r.roleId)
       : []
-    return Array.from(new Set([...fromApps, ...fromPlaces]))
-  }, [currentApplications, myUserId, roles])
+    const myTeamMember = myUserId && teamMembers ? teamMembers.find(m => m.userId === myUserId) : null
+    const fromTeamRoles = myTeamMember?.roles
+      ? roles.filter(r => myTeamMember.roles?.includes(r.meta.name)).map(r => r.roleId)
+      : []
+    return Array.from(new Set([...fromApps, ...fromPlaces, ...fromTeamRoles]))
+  }, [currentApplications, myUserId, roles, teamMembers])
 
-  // Компетенции, которые отмечаются галочкой
+  // Компетенции, которые отмечаются галочкой (занятые + отправленные на рассмотрение + выбранные)
   const displaySelected = useMemo(() => {
-    if (isInTeam) {
-      return Array.from(new Set([
-        ...myOccupiedRoleIds,
-        ...pendingApplications.map(app => app.roleID)
-      ]))
-    }
-    if (isAppliedToProject) {
-      return pendingApplications.map(app => app.roleID)
-    }
-    return selectedCompetencies
-  }, [isInTeam, myOccupiedRoleIds, isAppliedToProject, pendingApplications, selectedCompetencies])
+    return Array.from(new Set([
+      ...myOccupiedRoleIds,
+      ...pendingApplications.map(app => app.roleID),
+      ...selectedCompetencies
+    ]))
+  }, [myOccupiedRoleIds, pendingApplications, selectedCompetencies])
+
+  const occupiedCount = myOccupiedRoleIds.length;
+  const isFullyOccupied = occupiedCount >= MAX_SELECTIONS;
 
   // Проверка: есть ли в компетенции хотя бы одно свободное место
   const isRoleFree = (role: FreeCompetenciesProps['roles'][number]) => {
     const placesTaken = role.placeUserIds?.length ?? role.places ?? 0
     return role.placesCount - placesTaken > 0
   }
+
+  // Есть ли в проекте свободные компетенции, которые пользователь ещё не занимает
+  const hasAvailableRoles = useMemo(() => {
+    return roles.some(role => !myOccupiedRoleIds.includes(role.roleId) && isRoleFree(role));
+  }, [roles, myOccupiedRoleIds]);
+
+  // Завершено ли участие пользователя (занял 2 компетенции ИЛИ занял >= 1 и больше нет свободных мест, и нет висящей заявки)
+  const isTeamMemberDone = isFullyOccupied || (occupiedCount > 0 && !hasAvailableRoles && !isAppliedToProject);
 
   // Для тех, кто ещё не откликнулся (и не занимает роль), показываем только свободные компетенции.
   // Уже занятые компетенции не должны появляться у людей, кто ещё не откликнулся.
@@ -154,11 +148,12 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   }, [roles, displaySelected])
 
   const toggleFeedBack = async () => {
-    if (isBatchPending || isInTeam) return;
+    if (isBatchPending || isTeamMemberDone) return;
 
     if (isAppliedToProject) {
       // allSettled: частичный провал не должен прерывать остальные отмены,
       // иначе половина заявок остаётся активной, а UI об этом не знает.
+      // Отменяем только не рассмотренные (pending) заявки, одобренные не трогаем.
       const results = await Promise.allSettled(
         pendingApplications.map(app =>
           updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'cancelled' })
@@ -171,6 +166,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
         console.error("Failed to cancel applications", failed);
       }
     } else {
+      if (selectedCompetencies.length === 0) return;
       const results = await Promise.allSettled(
         selectedCompetencies.map(roleId =>
           createApplicationMutation.mutateAsync(roleId)
@@ -180,30 +176,41 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
       // часть заявок уже создана, пользователь ретраит — и дублирует их.
       // Ошибки самих заявок React Query кладёт в мутацию, общий фидбек не нужен.
       const failed = results.filter(r => r.status === 'rejected').length;
-      if (failed > 0) {
+      if (failed === 0) {
+        setSelectedCompetencies([]);
+      } else {
         console.error("Failed to create applications", failed);
       }
     }
   }
 
   const toggleCompetencySelect = (roleId: string) => {
-    if (isAppliedToProject || isInTeam) return;
+    // Нельзя снять выбор с уже занятой роли
+    if (myOccupiedRoleIds.includes(roleId)) return;
+
+    // Нельзя кликом снять заявку, которая уже отправлена (для этого кнопка «Отменить отклик»)
+    if (pendingApplications.some(app => app.roleID === roleId)) return;
+
+    // Если есть отправленная нерассмотренная заявка — сначала нужно дождаться ответа или отменить её
+    if (isAppliedToProject) return;
+
+    // Если пользователь уже занял максимальное число ролей
+    if (isFullyOccupied) return;
 
     setSelectedCompetencies(prevState => {
-      let nextState;
       if (prevState.includes(roleId)) {
-        nextState = prevState.filter(id => id != roleId)
-      } else if (prevState.length >= 2) {
-        nextState = prevState
-      } else {
-        nextState = [...prevState, roleId]
+        return prevState.filter(id => id !== roleId);
       }
 
-      return nextState
-    })
+      const availableSlotsForSelection = MAX_SELECTIONS - myOccupiedRoleIds.length;
+      if (prevState.length >= availableSlotsForSelection) {
+        return prevState;
+      }
+
+      return [...prevState, roleId];
+    });
   }
 
-  const MAX_SELECTIONS = 2;
   const isMaxSelected = displaySelected.length >= MAX_SELECTIONS;
 
 
@@ -212,7 +219,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
       <div className={styles.header}>
         <h3 className={styles.title}>
-          {isInTeam
+          {isTeamMemberDone
             ? 'Компетенции проекта:'
             : !isAppliedToProject && visibleRoles.length === 0
               ? 'Компетенции проекта:'
@@ -320,7 +327,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
       <div className={styles.footer}>
         {
-          isInTeam ? (
+          isTeamMemberDone ? (
             <FeedBackButton
               isActiveFeedBack={false}
               toggleFeedBack={() => {}}
@@ -382,7 +389,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
           )
         }
 
-        {!isInTeam && visibleRoles.length > 0 && (
+        {!isTeamMemberDone && visibleRoles.length > 0 && (
           <p className={styles.countFree}>
             {displaySelected.length}/{MAX_SELECTIONS}
           </p>

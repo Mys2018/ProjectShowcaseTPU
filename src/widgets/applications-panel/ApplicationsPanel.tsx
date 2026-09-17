@@ -200,6 +200,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                 totalOccurrences={role.totalOccurrences}
                 applications={applicationsByRole.get(role.roleId) || []}
                 pendingApplicationId={pendingApplicationId}
+                canInvite={project.status === 'Recruiting'}
                 onAccept={handleAccept}
                 onReject={handleReject}
                 onInvite={handleInvite}

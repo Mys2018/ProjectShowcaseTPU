@@ -12,6 +12,8 @@ import { TagBadgeList } from "@/entities/tag";
 import { PlatformBadgeSmall } from "@/entities/platforms";
 import { ArchiveButton } from "@/shared/ui/elements/buttons";
 import {ApplicationBlock} from "@/entities/application/ui/application-block/ApplicationBlock.tsx";
+import {ROUTES} from "@/shared";
+import {useNavigate} from "react-router-dom";
 
 interface CuratorProjectCardProps {
   project: ProjectCardData
@@ -22,6 +24,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   const partner = project?.partner
 
   const {data: team} = useProjectTeam(project.id)
+  const navigate = useNavigate();
 
   const resources = useMemo(() => [
     ...(project.repository || []),
@@ -33,6 +36,9 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
     <ProjectCardHorizontal
       project={project}
       mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
+      onClick={() => {
+        navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
+      }}
       headerSlot={
         <div className={styles.header}>
           <div className={styles.badges}>

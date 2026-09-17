@@ -1,0 +1,38 @@
+.bodyContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 100%;
+  padding-bottom: 48px;
+}
+
+.bigBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-gray-900);
+}
+
+.lightTitle {
+  font: var(--section-title-interface);
+  color: var(--color-gray-500);
+}
+
+.projectsContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}

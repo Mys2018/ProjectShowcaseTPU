@@ -1,16 +1,16 @@
 import clsx from 'clsx'
-import { Link } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyRow, useCompetencies } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
 import { getProjectDates, ProjectCardHorizontal, ProjectCardTeam, ProjectPublicStatusLabel, useProjectTeam, type ProjectCardData } from '@/entities/project'
 import { Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, useMe, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString } from '@/shared'
+import {buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, ROUTES} from '@/shared'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
-  competencyId: string
+  competencyId?: string
   className?: string
 }
 
@@ -19,6 +19,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
   const { data: team = [] } = useProjectTeam(project?.id, Boolean(project?.id))
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
+  const navigate = useNavigate()
 
   if (!project) return null
 
@@ -40,6 +41,9 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
     <ProjectCardHorizontal
       className={clsx(styles.card, className)}
       project={project}
+      onClick={() => {
+        navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
+      }}
       headerSlot={
         <div className={styles.header}>
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />

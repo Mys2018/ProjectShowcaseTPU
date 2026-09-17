@@ -2,6 +2,7 @@ import styles from './SkillTagList.module.css'
 import { ProjectTeamPopup } from '@/entities/project/ui/project-team-popup/ProjectTeamPopup.tsx'
 import type { Skill } from '../../model/types'
 import clsx from 'clsx'
+import {SkillBadge} from "@/entities/skill";
 
 export interface SkillTagListProps {
   skills: Skill[]
@@ -20,9 +21,10 @@ export const SkillTagList = ({ skills, maxVisible = 3, className }: SkillTagList
   return (
     <div className={styles.container}>
       {visible.map((skill) => (
-        <div key={skill.id} className={styles.skill}>
-          {skill.name}
-        </div>
+        <SkillBadge
+          key={skill.id}
+          skill={skill}
+        />
       ))}
 
       {hidden.length > 0 && (
@@ -31,15 +33,16 @@ export const SkillTagList = ({ skills, maxVisible = 3, className }: SkillTagList
           triggerOn="hover"
           trigger={
             <div className={styles.remainingBadge}>
-              +{hidden.length}
+              ещё +{hidden.length}
             </div>
           }
         >
           <div className={styles.popupSkillList}>
             {hidden.map((skill) => (
-              <div key={skill.id} className={styles.popupSkill}>
-                {skill.name}
-              </div>
+              <SkillBadge
+                key={skill.id}
+                skill={skill}
+              />
             ))}
           </div>
         </ProjectTeamPopup>

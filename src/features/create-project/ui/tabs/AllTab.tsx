@@ -230,11 +230,6 @@ export function AllTab({ form, setStep, setBlinkFields, onEditType }: TabProps) 
                         }
                       </div>
                   }
-                  {
-                    index === 0 && <p className={styles.invite}>
-                      Приглашенный участник: идет нахуй
-                    </p>
-                  }
                 </div>
               ))
             }

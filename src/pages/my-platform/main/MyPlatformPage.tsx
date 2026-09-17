@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
 import { MyPlatformBanner } from './MyPlatformBanner'
-import { MyPlatformProjects } from './MyPlatformProjects'
+import {MyPlatformProjectsWidgets} from "@/pages/my-platform/main/MyPlatformProjectsWidgets.tsx";
 import {
   Avatar,
   getSwitchableRoles,
@@ -233,7 +233,7 @@ export function MyPlatformPage() {
         </div>
 
         <div className={styles.projects}>
-          <MyPlatformProjects />
+          <MyPlatformProjectsWidgets />
         </div>
       </div>
     </div>

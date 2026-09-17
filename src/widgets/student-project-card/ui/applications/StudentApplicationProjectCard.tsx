@@ -7,7 +7,8 @@ import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById, TeamUserCard, Avatar, getAvatarRoleInfo, useMe, getMemberRoleName } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
 import { CompetencyRow, useCompetencies } from '@/entities/competency'
-import { ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, TextSkeleton } from '@/shared'
+import {ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, ROUTES, TextSkeleton} from '@/shared'
+import {useNavigate} from "react-router-dom";
 
 interface StudentApplicationProjectCardProps {
   application: Application
@@ -20,6 +21,7 @@ export function StudentApplicationProjectCard({ application, className }: Studen
   const { data: team = [] } = useProjectTeam(project?.id ?? '', Boolean(project?.id))
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
+  const navigate = useNavigate()
 
   const isExtended = application.status === 'pending'
 
@@ -52,6 +54,9 @@ export function StudentApplicationProjectCard({ application, className }: Studen
     <ProjectCardHorizontal
       className={clsx(styles.card, className)}
       project={project}
+      onClick={() => {
+        navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
+      }}
       headerSlot={
         isExtended ? (
           <div className={styles.header}>

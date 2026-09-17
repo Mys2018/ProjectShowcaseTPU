@@ -3,9 +3,10 @@ import { getApplications } from './requests';
 import type { GetApplicationsQueryParams } from '../model/types';
 import { applicationKeys } from './queryKeys';
 
-export const useApplications = (params: GetApplicationsQueryParams) => {
+export const useApplications = (params: GetApplicationsQueryParams, enabled: boolean = true) => {
   return useQuery({
     queryKey: applicationKeys.list(params),
     queryFn: () => getApplications(params),
+    enabled
   });
 };

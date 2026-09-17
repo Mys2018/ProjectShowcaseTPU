@@ -4,11 +4,17 @@ import { useNavigate } from 'react-router-dom'
 import styles from './ProjectsGrid.module.css'
 import { useFilterStore } from '@/features/filter'
 import { LikeProjectButton } from '@/features/like-project'
-import { ProjectCardVertical, useLikedProjects, useProjects } from '@/entities/project'
+import {
+  NoRecruitingBlock,
+  ProjectCardVertical,
+  useLikedProjects,
+  useProjects
+} from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { CompetencyBadgeList } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { BlankPhoto, buildRoute, ProjectSkeleton } from '@/shared'
+import { buildRoute, ProjectSkeleton } from '@/shared'
+import NoProjectsSVG from '@/shared/assets/no_projects.svg?react'
 
 const fallbackProjectsData = { projects: [], total: 0 }
 
@@ -53,14 +59,20 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
       </div>
     )
   }
+
+  if (!tags && !competencies && !projectTypes && !sort && !allProjectsData) {
+    return <NoRecruitingBlock/>
+  }
+
   if (isError) return <h2>Ошибка при загрузке проектов</h2>
+
   if (!total)
     return (
       emptyFallback ?? (
         <div className={styles.emptyContainer}>
           <div className={styles.wrapper}>
-            <BlankPhoto className={styles.blank} />
             <div>
+              <NoProjectsSVG/>
               <h3>Нет подходящих проектов</h3>
               {(projectTypes.size !== 0 || tags.size !== 0 || competencies.size !== 0) && (
                 <button className={styles.clearButton} onClick={reset}>

@@ -4,6 +4,7 @@ import { CompetencyChip, useCompetencies } from '@/entities/competency'
 import { TagChip, useTags } from '@/entities/tag'
 import { getProjectFormatTranslation, PROJECT_FORMATS } from '@/entities/project'
 import FolderIcon from '@/shared/ui/icons/folder.svg?react'
+import {GreyFilledButton} from "@/shared";
 
 export default function Filter() {
   const {
@@ -12,7 +13,8 @@ export default function Filter() {
     competencies: chosenCompetencies,
     toggleProjectType,
     toggleTag,
-    toggleCompetency
+    toggleCompetency,
+    reset,
   } = useFilterStore()
   const { data: tagGroups = [] } = useTags()
   const { data: competencies = [] } = useCompetencies()
@@ -70,6 +72,14 @@ export default function Filter() {
           ))}
         </div>
       </div>
+
+      {(chosenProjectTypes.size > 0 || chosenTags.size > 0 || chosenCompetencies.size > 0) && (
+        <GreyFilledButton
+          buttonText={'Сбросить все фильтры'}
+          onClick={reset}
+        />
+      )}
+
     </aside>
   )
 }
