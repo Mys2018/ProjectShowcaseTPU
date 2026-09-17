@@ -25,6 +25,7 @@ interface ApplicationRoleCardProps {
   applications: Application[]
   /** Заявка, чей статус-запрос в полёте — блокирует кнопки этой строки. */
   pendingApplicationId?: string
+  canInvite?: boolean
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
@@ -37,6 +38,7 @@ export const ApplicationRoleCard = ({
   totalOccurrences,
   applications,
   pendingApplicationId,
+  canInvite = false,
   onAccept,
   onReject,
   onInvite,
@@ -62,7 +64,7 @@ export const ApplicationRoleCard = ({
   }
 
   const requestContent = (
-    <div className={clsx(styles.application, isCollapsed && styles.isCollapsedList)}>
+    <div className={styles.application}>
       {pendingApplications.length > 0 ? (
         <div className={styles.applicationsBlock}>
           <div className={styles.applicationsHeader}>
@@ -79,7 +81,7 @@ export const ApplicationRoleCard = ({
             </button>
           </div>
 
-          <div className={clsx(styles.applicationList, isCollapsed && styles.collapsedList)}>
+          <div className={styles.applicationList}>
             {pendingApplications.map((application, appIndex) => (
               <Fragment key={application.applicationID}>
                 <ApplicationRow
@@ -98,27 +100,33 @@ export const ApplicationRoleCard = ({
         </div>
       ) : (
         <div className={styles.freeBlock}>
-          <p className={styles.fieldText}>Компетенция свободна</p>
-          {!invitedUser && (
-            <InviteUserButton onClick={handleInviteUser} />
-          )}
-          {invitedUser && (
-            <div className={styles.invitedInfo}>
-              <p className={styles.invitedName}>
-                <div>
-                  Приглашен:
-                  <span>{invitedUser.name}</span>
+          <p className={styles.fieldText}>Откликов пока нет</p>
+          {canInvite ? (
+            <div className={styles.inviteContainer}>
+              {!invitedUser && (
+                <InviteUserButton onClick={handleInviteUser} />
+              )}
+              {invitedUser && (
+                <div className={styles.invitedInfo}>
+                  <p className={styles.invitedName}>
+                    <div>
+                      Приглашен:
+                      <span>{invitedUser.name}</span>
+                    </div>
+                  </p>
+                  <button
+                    type="button"
+                    className={styles.cancelInviteBtn}
+                    onClick={() => setInvitedUser(null)}
+                  >
+                    Отменить
+                  </button>
                 </div>
-              </p>
-              <button
-                type="button"
-                className={styles.cancelInviteBtn}
-                onClick={() => setInvitedUser(null)}
-              >
-                Отменить
-              </button>
+              )}
             </div>
-          )}
+          ) : <p className={styles.noRecruiting}>
+            Проект еще не выпущен
+          </p>}
         </div>
       )}
     </div>
@@ -139,6 +147,7 @@ export const ApplicationRoleCard = ({
       }
       requestContent={requestContent}
       isCollapsed={isCollapsed}
+      hasApplications={pendingApplications.length > 0}
     />
   )
 }

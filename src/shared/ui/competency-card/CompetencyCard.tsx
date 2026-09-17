@@ -12,6 +12,7 @@ interface CompetencyCardProps {
   requestContent: ReactNode
   headerActions?: ReactNode
   isCollapsed?: boolean
+  hasApplications?: boolean
 }
 
 export const CompetencyCard = ({
@@ -24,6 +25,7 @@ export const CompetencyCard = ({
   requestContent,
   headerActions,
   isCollapsed = false,
+  hasApplications = true,
 }: CompetencyCardProps) => {
   const skillsRef = useRef<HTMLDivElement>(null)
   const [skillsHeight, setSkillsHeight] = useState<number | undefined>(undefined)
@@ -45,6 +47,8 @@ export const CompetencyCard = ({
 
   const showOccurrence =
     totalOccurrences !== undefined ? totalOccurrences > 1 : occurrenceIndex !== 1
+
+  const shouldMatchHeight = isCollapsed || !hasApplications
 
   return (
     <div className={styles.cardWrapper}>
@@ -70,12 +74,12 @@ export const CompetencyCard = ({
         </div>
 
         <div
-          className={clsx(styles.requestBlock, isCollapsed && styles.collapsed)}
+          className={clsx(styles.requestBlock, shouldMatchHeight && styles.collapsed)}
           style={{
-            height: isCollapsed && skillsHeight ? `${skillsHeight}px` : undefined,
+            height: shouldMatchHeight && skillsHeight ? `${skillsHeight}px` : undefined,
           }}
         >
-            {requestContent}
+          {requestContent}
         </div>
       </div>
     </div>

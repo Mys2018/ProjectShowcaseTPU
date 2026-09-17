@@ -1,12 +1,20 @@
 .application {
-  margin: 16px 16px 18px 18px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 18px 18px;
+  box-sizing: border-box;
+  min-height: 0;
 }
 
 .freeBlock {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .fieldText {
@@ -14,12 +22,16 @@
   color: var(--color-gray-500);
 }
 
+.inviteContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .applicationsBlock {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
-  min-height: 0;
 }
 
 .applicationsHeader {
@@ -66,23 +78,6 @@
   gap: 16px;
 }
 
-.collapsedList {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gray-250) transparent;
-}
-
-.collapsedList::-webkit-scrollbar {
-  width: 4px;
-}
-
-.collapsedList::-webkit-scrollbar-thumb {
-  background-color: var(--color-gray-250);
-  border-radius: 2px;
-}
-
 .separator {
   width: 100%;
   height: 1px;
@@ -95,6 +90,7 @@
   gap: 12px;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .invitedName {
@@ -118,4 +114,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
+}
+
+.noRecruiting {
+  font: var(--inter-12-400);
+  color: var(--color-brand-violet);
 }
