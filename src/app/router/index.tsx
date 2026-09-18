@@ -10,6 +10,7 @@ import { MyProfile } from '@/pages/my-profile'
 import { CreateProjectPage } from '@/pages/create-project'
 import { NotFoundPage } from '@/pages/not-found-page'
 import { SomeoneProfile } from '@/pages/someone-profile'
+import {NotificationsPage} from "@/pages/notifications-page";
 import { ROUTES } from '@/shared'
 
 export const router = createBrowserRouter([
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.PROFILE.BY_ID,
             element: <SomeoneProfile />
+          },
+          {
+            path: ROUTES.NOTIFICATION.BASE,
+            element: <NotificationsPage/>
           }
         ]
       },

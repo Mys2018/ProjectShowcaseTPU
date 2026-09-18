@@ -9,7 +9,6 @@ export const ProtectedRoute = () => {
     return <Navigate to={ROUTES.PROJECTS.BASE} replace />;
   }
 
-
   return <Outlet />;
 
 };

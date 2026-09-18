@@ -63,6 +63,26 @@
   transform: translateX(-50%);
 }
 
+.right {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.separator {
+  width: 1px;
+  height: 100%;
+  background-color: var(--color-gray-600);
+  border-radius: 1px;
+  padding-right: 12px;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 
 @media (max-width: 1280px) {
   .wrap {

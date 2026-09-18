@@ -29,6 +29,9 @@ export const ROUTES = {
     BASE: '/moderation',
     PROJECTS: '/moderation#projects',
     COMPLAINTS: '/moderation#complaints'
+  },
+  NOTIFICATION: {
+    BASE: '/notification',
   }
 } as const
 
