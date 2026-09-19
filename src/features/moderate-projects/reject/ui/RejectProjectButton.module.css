@@ -1,0 +1,39 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  width: 9px;
+  height: 9px;
+  color: var(--color-gray-400);
+}
+
+.label {
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+}
+
+.modal {
+  --iconColor: var(--color-red);
+  --titleColor: var(--color-red);
+  --confirmButtonBgColor: var(--color-red);
+
+  & .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    & .tip {
+      font: var(--inter-11-400);
+      color: var(--color-gray-600);
+    }
+  }
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-gray-200);
+}
