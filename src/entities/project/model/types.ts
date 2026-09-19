@@ -139,7 +139,7 @@ export interface PrdMeta {
   prerequisites?: string,
   productVision?: string,
   audience?: AudienceSegment[],
-  projectGoal?: string,
+  projectGoal: string,
   businessGoal?: string,
   problemStatement?: string,
   functional?: string[],
@@ -176,6 +176,10 @@ export interface ProjectsResponseDto {
   total: number;
   offset: number;
   limit: number;
+}
+
+export interface GetProjectReviewResponse {
+  comment?: string
 }
 
 export interface GetProjectsResponse {
