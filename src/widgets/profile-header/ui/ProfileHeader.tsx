@@ -33,20 +33,14 @@ export const ProfileHeader = ({ data, links }: ProfileHeaderProps) => {
           />
           <div className={styles.nameContainer}>
             <div className={styles.name}>
-              <p>{data.meta.firstName}</p>
-              <p>{data.meta.lastName}</p>
+              {data.meta.lastName && <p>{data.meta.lastName}</p>}
+              <p>{[data.meta.firstName, data.meta.patronym].filter(Boolean).join(' ')}</p>
             </div>
-            <p className={styles.group}>
-              {/*{data.group}, {data.grade} курс*/}
-              8К67, 3 курс
-            </p>
-            {/*// TODO*/}
-            {/*{data.group && data.grade && (*/}
-            {/*  <p className={styles.group}>*/}
-            {/*    /!*{data.group}, {data.grade} курс*!/*/}
-            {/*    8К33, 3 курс*/}
-            {/*  </p>*/}
-            {/*)}*/}
+            {(data.group || data.grade) && (
+              <p className={styles.group}>
+                {[data.group, data.grade ? `${data.grade} курс` : ''].filter(Boolean).join(', ')}
+              </p>
+            )}
           </div>
         </section>
 

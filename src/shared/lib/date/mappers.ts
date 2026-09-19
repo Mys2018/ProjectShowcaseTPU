@@ -22,10 +22,21 @@ export const mapDateToBackendString = (date: Date) => {
 }
 
 /**
- @param date Строка формата YYYY-MM-DD
+ @param date Строка формата YYYY-MM-DD, ISO или DD.MM.YYYY
  */
 export const mapStringToDate = (date: string): Date => {
-  const [year, month, day] = date.split('-').map(Number)
-  if (!year || !month || !day) throw new Error('Формат строки должен быть в виде YYYY-MM-DD')
-  return new Date(year, month - 1, day)
+  if (!date) return new Date()
+  const d = new Date(date)
+  if (!isNaN(d.getTime())) {
+    return d
+  }
+  const parts = date.split(/[-.]/).map(Number)
+  if (parts.length === 3 && !parts.some(isNaN)) {
+    if (parts[0] > 1000) {
+      return new Date(parts[0], parts[1] - 1, parts[2])
+    } else {
+      return new Date(parts[2], parts[1] - 1, parts[0])
+    }
+  }
+  return new Date()
 }

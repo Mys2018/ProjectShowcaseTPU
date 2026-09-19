@@ -1,2 +1,2 @@
 export * from './api'
-export { type Checkpoint, type CheckpointGroup } from './model/types'
+export { type Checkpoint, type CheckpointGroup, type CheckpointDto, type CheckpointGroupDto } from './model/types'

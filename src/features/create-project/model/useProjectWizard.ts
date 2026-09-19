@@ -3,9 +3,9 @@ import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
 import { useEffect, useState, useRef } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
-import { createCheckpointGroup, getCheckpointGroups } from '@/entities/checkpoint/api/requests';
+import { getCurrentCheckpoints } from '@/entities/checkpoint';
 import { useMe } from '@/entities/user';
-import { isSafeExternalUrl, mapDateToBackendString, parseDeadline } from '@/shared';
+import { isSafeExternalUrl } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
 
@@ -26,12 +26,13 @@ export const createProjectRoleSchema = z.object({
 export const baseProjectSchema = z.object({
   ownerId: z.number().min(1, 'ID владельца обязателен'),
   partnerId: z.string().min(1, 'Выберите партнера'),
-  checkpoints: z.array(
+  checkpoints: z.string().min(1, 'Базовые ключевые точки обязательны'),
+  customCheckpoints: z.array(
     z.object({
       title: z.string().min(1, 'Укажите название'),
       deadline: z.string().min(1, 'Укажите дату и время'),
     })
-  ).min(1, 'Укажите хотя бы одну ключевую точку'),
+  ),
   links: z.array(
     z.object({
       platformId: z.string(),
@@ -145,6 +146,7 @@ const step3Schema = z.object({
 
 const step4Schema = z.object({
   checkpoints: baseProjectSchema.shape.checkpoints,
+  customCheckpoints: baseProjectSchema.shape.customCheckpoints,
   links: baseProjectSchema.shape.links,
 });
 
@@ -184,7 +186,8 @@ const STUDY_DEFAULTS = {
   // мёртвой валидацией сфабрикованного ID.
   ownerId: 0,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' }, { title: '', deadline: '' }, { title: '', deadline: '' }],
+  checkpoints: '',
+  customCheckpoints: [],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
@@ -247,22 +250,15 @@ export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDra
     defaultValues: stableDefaultValuesRef.current,
 
     onSubmit: async ({ value }) => {
-
-      const cleanCheckpoints = value.checkpoints.map((cp) => {
-        const { isImmutable, ...rest } = cp as { isImmutable?: boolean; title: string; deadline: string };
-        return rest;
-      });
-
-      const checkpointId = await createCheckpointGroup({
-        title: 'checkpoint',
-        checkpoints: cleanCheckpoints.map(c => ({ title: c.title, deadline: parseDeadline(c.deadline)! }))
-      })
-
       const payload: CreateProjectDto = {
         type: value.type,
         ownerId: me ? Number(me.id) : 0,
         partnerId: value.partnerId,
-        checkpoints: checkpointId,
+        checkpoints: value.checkpoints,
+        customCheckpoints: (value.customCheckpoints || []).map(c => ({
+          title: c.title,
+          deadline: c.deadline
+        })),
         meta: value.meta,
         primaryTagId: value.primaryTag,
         tagIds: value.tags?.length ? value.tags : [],
@@ -346,25 +342,18 @@ export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDra
       // иначе setFieldValue спровоцирует перезапись черновика до его восстановления.
       if (isDraftLoading) return;
 
-      // Если в форме уже есть чекпоинты (в т.ч. восстановленные из черновика), не перезаписываем
-      if ((form.state.values.checkpoints ?? []).some(cp => cp.title)) return;
-      if ((initialSource?.checkpoints ?? []).some(cp => cp.title)) return;
-
-      const backCheckpoints = await getCheckpointGroups(10, 0);
-      const firstCheckpoints = backCheckpoints.checkpointGroups[0]?.checkpoints;
-
-      if (firstCheckpoints && firstCheckpoints.length > 0) {
-        const immutableCheckpoints = firstCheckpoints.map(cp => ({
-          title: cp.title,
-          deadline: mapDateToBackendString(cp.deadline),
-          isImmutable: true
-        }));
-        form.setFieldValue('checkpoints', immutableCheckpoints);
+      try {
+        const currentGroup = await getCurrentCheckpoints();
+        if (currentGroup?.id) {
+          form.setFieldValue('checkpoints', currentGroup.id);
+        }
+      } catch (e) {
+        console.error('Failed to fetch current checkpoints:', e);
       }
     };
 
     fetchDefaultCheckpoints();
-  }, [form, isDraftLoading, initialSource]);
+  }, [form, isDraftLoading]);
 
   useEffect(() => {
     const subscription = form.store.subscribe(() => {

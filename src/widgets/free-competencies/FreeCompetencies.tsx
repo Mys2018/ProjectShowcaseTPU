@@ -1,16 +1,16 @@
 import styles from './FreeCompetencies.module.css'
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsProfileFilled, useAuthStore, useMe } from "@/entities/user";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FeedBackButton } from "@/features/feedback-button";
+import { useIsProfileFilled, useAuthStore, useMe } from "@/entities/user";
+import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
+import { projectQueryKeys, useProjectTeam, useParticipatingProjects, type ProjectCardData } from "@/entities/project";
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import { InfoTooltip, ROUTES } from "@/shared";
-import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
-import { projectQueryKeys, useProjectTeam, useParticipatingProjects, type ProjectCardData } from "@/entities/project";
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const useCreateApplication = () => {
   const queryClient = useQueryClient();
@@ -324,13 +324,17 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
                   />
                 </div>
 
-                <div className={`${styles.plusButton} ${isSelected ? styles.selected : ''}`}>
-                  {isSelected ? (
-                    <CheckIcon className={styles.checkIcon} />
-                  ) : (
-                    <Plus className={styles.plusIcon} />
-                  )}
-                </div>
+                {
+                  canApply &&  <div className={`${styles.plusButton} ${isSelected ? styles.selected : ''}`}>
+                    {isSelected ? (
+                      <CheckIcon className={styles.checkIcon} />
+                    ) : (
+                      <Plus className={styles.plusIcon} />
+                    )}
+                  </div>
+                }
+
+
               </div>
             </div>
           )
@@ -410,4 +414,4 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
     </div>
   )
-}
+}

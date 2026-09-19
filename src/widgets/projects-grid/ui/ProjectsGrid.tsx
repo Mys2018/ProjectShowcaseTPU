@@ -96,7 +96,9 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
     <div className={styles.body}>
       {projects.map(project => {
         const { id, liked, tags, primaryTag, roles } = project
-        const competencies = roles.map(r => ({ id: r.roleId, name: r.meta.name }))
+        const competencies = [...roles]
+          .sort((a, b) => (isRelevanceSort ? (b.relevance ?? 0) - (a.relevance ?? 0) : 0))
+          .map(r => ({ id: r.roleId, name: r.meta.name, relevance: isRelevanceSort ? r.relevance : undefined }))
 
         const handleNavigate = () => {
           navigate(buildRoute.project(id))
@@ -119,7 +121,7 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
                 />
               </div>
             }
-            bodySlot={<CompetencyBadgeList row competencies={competencies} />}
+            bodySlot={<CompetencyBadgeList competencies={competencies} />}
             footerSlot={
               <div className={styles.footer}>
                 <span className={styles.divider} />

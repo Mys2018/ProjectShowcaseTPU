@@ -17,8 +17,11 @@ export default function Filter() {
     toggleCompetency,
     reset,
   } = useFilterStore()
-  const { data: tagGroups = [] } = useTags()
-  const { data: competencies = [] } = useCompetencies()
+  const { data: rawTagGroups } = useTags()
+  const { data: rawCompetencies } = useCompetencies()
+
+  const tagGroups = Array.isArray(rawTagGroups) ? rawTagGroups : []
+  const competencies = Array.isArray(rawCompetencies) ? rawCompetencies : []
 
   const hasActiveFilters =
     chosenProjectTypes.size > 0 ||
@@ -50,7 +53,7 @@ export default function Filter() {
         <h3 className={styles.title}>Трек-теги</h3>
         <div className={styles.bodyTags}>
           {tagGroups
-            .filter(g => g.tags.length)
+            .filter(g => Array.isArray(g.tags) && g.tags.length > 0)
             .map(group => (
               <div className={styles.tagBlock} key={group.id}>
                 <p className={styles.field}>{group.name}:</p>
@@ -84,6 +87,7 @@ export default function Filter() {
         <GreyFilledButton
           buttonText={'Сбросить все фильтры'}
           onClick={reset}
+          className={styles.filledButton}
         />
       )}
 

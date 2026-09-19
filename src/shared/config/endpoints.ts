@@ -26,6 +26,7 @@ export const ENDPOINTS = {
   COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL || '/role-types',
   SKILLS: import.meta.env.VITE_API_SKILLS_URL || '/skills',
   CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL || '/projects/checkpoints',
+  CHECKPOINTS_CURRENT: import.meta.env.VITE_API_CHECKPOINTS_CURRENT_URL || '/projects/checkpoints/current',
   CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL || '/projects/checkpoints'}/${checkpointId}`,
   APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL || '/applications',
   APPLICATION_SET_STATUS: (applicationId: string, status: string) => `${import.meta.env.VITE_APPLICATIONS_URL || '/applications'}/${applicationId}/status/${status}`,

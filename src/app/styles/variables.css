@@ -25,6 +25,12 @@
   --dark-blue: 43, 43, 59;
   --description: 129, 132, 152;
 
+  --green-radial-grad: radial-gradient(
+    circle at 35% 35%,
+    #94FF47 23%,
+    #00FF55 100%
+  );
+
   --grad-lime: linear-gradient(45deg,
   #1BBB1B 0%,
   #56D317 50%,
@@ -138,9 +144,10 @@
   --OS-11-400: 400 11px/1.3 var(--font-open-sans);
   --OS-10-400: 400 10px/1 var(--font-open-sans);
   --OS-20-550: 550 20px/1 var(--font-open-sans);
+  --OS-10-600: 600 10px/1.1 var(--font-open-sans);
 
   --ALS-9-400: 400 9px/1 var(--font-ALS);
-  --ALS-16-400: 400 16px/1 var(--font-ALS);
+  --ALS-16-400: 400 16px/1.25 var(--font-ALS);
   --ALS-13-700: 700 13px/1 var(--font-ALS);
   --ALS-10-400: 400 10px/1 var(--font-ALS);
   --ALS-10-700: 700 10px/1 var(--font-ALS);
