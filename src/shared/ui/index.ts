@@ -26,6 +26,7 @@ export { Callout } from './callout/Callout.tsx'
 export * from './elements/buttons'
 export { CompetencyCard } from './competency-card/CompetencyCard.tsx'
 export { SkillTagList, SkillList } from '@/entities/skill'
+export { Section } from './section/Section.tsx'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
