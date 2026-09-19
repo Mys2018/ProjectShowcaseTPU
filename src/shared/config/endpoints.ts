@@ -20,6 +20,8 @@ export const ENDPOINTS = {
     `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints/${sprintId}/hours`,
   LIKE_PROJECT: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/like`,
   PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL || '/me/projects/draft',
+  PROJECT_REVIEW: (projectId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}${import.meta.env.VITE_API_PROJECTS_REVIEW_URL}`,
   TAGS: import.meta.env.VITE_API_TAGS_URL || '/tags',
   PARTNERS: import.meta.env.VITE_API_PARTNERS_URL || '/partners',
   PARTNER_BY_ID: (partnerId: string) => `${import.meta.env.VITE_API_PARTNERS_URL || '/partners'}/${partnerId}`,
@@ -29,8 +31,9 @@ export const ENDPOINTS = {
   CHECKPOINTS_CURRENT: import.meta.env.VITE_API_CHECKPOINTS_CURRENT_URL || '/projects/checkpoints/current',
   CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL || '/projects/checkpoints'}/${checkpointId}`,
   APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL || '/applications',
-  APPLICATION_SET_STATUS: (applicationId: string, status: string) => `${import.meta.env.VITE_APPLICATIONS_URL || '/applications'}/${applicationId}/status/${status}`,
+  APPLICATION_SET_STATUS: (applicationId: string, status: string) =>
+    `${import.meta.env.VITE_APPLICATIONS_URL || '/applications'}/${applicationId}/status/${status}`,
 
   PLATFORMS: import.meta.env.VITE_PLATFORMS_URL || '/platforms',
-  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL || '/platforms'}/${platformId}`,
+  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL || '/platforms'}/${platformId}`
 }

@@ -121,7 +121,7 @@ const getName = (type: StagesData['type']) => {
     case 'moderator-projects':
       return 'Модерация проектов'
     case 'moderator-requests':
-      return 'Заявки на модерацию'
+      return 'Входящие жалобы'
     case 'curator-projects':
       return 'Управление проектами'
     case 'curator-requests':

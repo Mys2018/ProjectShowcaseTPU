@@ -21,5 +21,6 @@ export const projectKeys = {
   team: (id: string) => [...projectKeys.details(id), 'team'] as const,
   sprints: (id: string) => [...projectKeys.details(id), 'sprints'] as const,
   sprintGrading: (id: string, sprintId: string) => [...projectKeys.sprints(id), sprintId, 'grading'] as const,
-  draft: () => [...projectKeys.all, 'draft'] as const
+  draft: () => [...projectKeys.all, 'draft'] as const,
+  review: (id: string) => [...projectKeys.all, 'review', id] as const
 }

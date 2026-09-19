@@ -150,3 +150,11 @@ export const useAppliedProjects = (params?: GetAppliedProjectsParams, enabled?: 
     enabled: enabled
   })
 }
+
+export const useProjectReview = (projectId: string, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.review(projectId),
+    queryFn: () => projectApi.getProjectModerationReview(projectId),
+    enabled: !!projectId && enabled
+  })
+}

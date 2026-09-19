@@ -1,0 +1,19 @@
+.resource {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+
+	padding: 16px 16px 18px 18px;
+	border: 1px solid var(--color-gray-250);
+	border-radius: 16px;
+
+	& .title {
+		font: var(--field-label-interface);
+		color: var(--color-gray-500);
+	}
+
+	& .label {
+		font: var(--OS-14-400);
+		color: var(--color-gray-600);
+	}
+}
