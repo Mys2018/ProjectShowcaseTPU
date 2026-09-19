@@ -1,0 +1,26 @@
+.status {
+	height: 34px;
+
+	display: flex;
+	align-items: center;
+	gap: 6px;
+
+	padding-block: 12px;
+	
+	border-radius: 12px;
+	background-color: var(--color-white);
+
+	color: var(--color-brand-green);
+
+	&.Pending {
+		color: var(--color-yellow);
+	}
+
+	&.NeedsRework {
+		color: var(--color-gray-400);
+	}
+
+	&.Rejected {
+		color: var(--color-red);
+	}
+}

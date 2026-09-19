@@ -8,3 +8,6 @@ export { CompletedProjects, type CompletedProjectsProps } from './completed-proj
 export { ProjectCardTeam, ProjectTeamMemberRow, type ProjectTeamMemberRowProps, type ProjectTeamMemberItem, type ProjectCardTeamProps } from './project-card-team/ProjectCardTeam'
 export { ProjectTeamPopup, type ProjectTeamPopupProps } from './project-team-popup/ProjectTeamPopup'
 export { MiniProjectCard } from './mini-project-card/MiniProjectCard.tsx'
+export { ProjectInfo } from './project-info/ProjectInfo.tsx'
+export { ProjectReviewComment } from './project-review-comment/ProjectReviewComment.tsx'
+export { ProjectModerationStatus } from './project-moderation-status/ProjectModerationStatus.tsx'
