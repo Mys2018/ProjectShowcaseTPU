@@ -76,5 +76,14 @@ export const useFilterStore = create<FilterState>(set => ({
   setLimit: value => set({ limit: value }),
   setPage: value => set({ page: value }),
 
-  reset: () => set({ projectTypes: new Set(), tags: new Set(), competencies: new Set() })
+  reset: () =>
+    set({
+      projectTypes: new Set(),
+      tags: new Set(),
+      competencies: new Set(),
+      query: '',
+      page: 1,
+      isRelevanceSort: false
+    })
 }))
+

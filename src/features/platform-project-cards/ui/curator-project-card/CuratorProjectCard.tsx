@@ -7,13 +7,13 @@ import {
   ProjectInnerStatus,
   ProjectPublicStatusLabel, useProjectTeam
 } from "@/entities/project";
-import {PartnerRow, PartnerRowSkeleton} from "@/entities/partner";
+import { PartnerRow, PartnerRowSkeleton } from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
 import { PlatformBadgeSmall } from "@/entities/platforms";
 import { ArchiveButton } from "@/shared/ui/elements/buttons";
-import {ApplicationBlock} from "@/entities/application/ui/application-block/ApplicationBlock.tsx";
-import {ROUTES} from "@/shared";
-import {useNavigate} from "react-router-dom";
+import { ApplicationBlock, useApplications } from "@/entities/application";
+import { ROUTES } from "@/shared";
+import { useNavigate } from "react-router-dom";
 
 interface CuratorProjectCardProps {
   project: ProjectCardData
@@ -23,8 +23,18 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
   const partner = project?.partner
 
-  const {data: team} = useProjectTeam(project.id)
+  const { data: team } = useProjectTeam(project.id)
+  const { data: applicationsData } = useApplications({
+    mode: 'AsOwner',
+    projectId: project.id,
+    status: 'pending',
+    offset: 0,
+    limit: 1
+  })
+
   const navigate = useNavigate();
+
+  const applicationCount = applicationsData?.total ?? 0
 
   const resources = useMemo(() => [
     ...(project.repository || []),
@@ -83,9 +93,20 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
       footerSlot={
         <div className={styles.footer}>
           <ArchiveButton color='grey' />
-          <ApplicationBlock applicationCount={67} notification={true} onClick={() => {}} buttonText={"Смотреть"}/>
+          <ApplicationBlock
+            applicationCount={applicationCount}
+            notification={applicationCount > 0}
+            onClick={(e) => {
+              e.stopPropagation()
+              navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#teams`, {
+                state: { projectId: project.id }
+              })
+            }}
+            buttonText={"Смотреть"}
+          />
         </div>
       }
     />
   )
 }
+
