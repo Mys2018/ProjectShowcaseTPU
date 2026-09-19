@@ -1,0 +1,15 @@
+.dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+}
+
+.icon {
+	width: 16px;
+	height: 16px;
+
+	&.small {
+		width: 12px;
+		height: 12px;
+	}
+}
