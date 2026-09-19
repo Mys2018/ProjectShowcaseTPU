@@ -11,6 +11,7 @@ export default function Filter() {
     projectTypes: chosenProjectTypes,
     tags: chosenTags,
     competencies: chosenCompetencies,
+    query,
     toggleProjectType,
     toggleTag,
     toggleCompetency,
@@ -18,6 +19,12 @@ export default function Filter() {
   } = useFilterStore()
   const { data: tagGroups = [] } = useTags()
   const { data: competencies = [] } = useCompetencies()
+
+  const hasActiveFilters =
+    chosenProjectTypes.size > 0 ||
+    chosenTags.size > 0 ||
+    chosenCompetencies.size > 0 ||
+    Boolean(query?.trim())
 
   return (
     <aside className={styles.body}>
@@ -73,7 +80,7 @@ export default function Filter() {
         </div>
       </div>
 
-      {(chosenProjectTypes.size > 0 || chosenTags.size > 0 || chosenCompetencies.size > 0) && (
+      {hasActiveFilters && (
         <GreyFilledButton
           buttonText={'Сбросить все фильтры'}
           onClick={reset}
@@ -83,3 +90,4 @@ export default function Filter() {
     </aside>
   )
 }
+

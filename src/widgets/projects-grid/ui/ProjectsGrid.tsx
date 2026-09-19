@@ -66,6 +66,12 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
 
   if (isError) return <h2>Ошибка при загрузке проектов</h2>
 
+  const hasActiveFilters =
+    projectTypes.size !== 0 ||
+    tags.size !== 0 ||
+    competencies.size !== 0 ||
+    Boolean(query?.trim())
+
   if (!total)
     return (
       emptyFallback ?? (
@@ -74,7 +80,7 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
             <div>
               <NoProjectsSVG/>
               <h3>Нет подходящих проектов</h3>
-              {(projectTypes.size !== 0 || tags.size !== 0 || competencies.size !== 0) && (
+              {hasActiveFilters && (
                 <button className={styles.clearButton} onClick={reset}>
                   Сбросить все фильтры
                 </button>
@@ -84,6 +90,7 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
         </div>
       )
     )
+
 
   return (
     <div className={styles.body}>
