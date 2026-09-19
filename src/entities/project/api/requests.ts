@@ -11,10 +11,12 @@ import type {
   GetManagedProjectsParams,
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
+  GetProjectReviewResponse,
+  ProjectStatus
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
-import type { UserCard } from "@/entities/user";
-import { api, ENDPOINTS } from '@/shared';
+import type { UserCard } from '@/entities/user'
+import { api, ENDPOINTS } from '@/shared'
 
 export interface ProjectDraftResponse {
   data: Record<string, unknown>
@@ -94,5 +96,14 @@ export const projectApi = {
   getAppliedProjects: async (params?: GetAppliedProjectsParams): Promise<GetProjectsResponse> => {
     const { data } = await api.get<ProjectsResponseDto>(ENDPOINTS.APPLIED_PROJECTS, { params })
     return { total: data.total, projects: data.hits.map(mapProjectDtoToEntity) }
+  },
+
+  getProjectModerationReview: async (projectId: string): Promise<string> => {
+    const { data } = await api.get<GetProjectReviewResponse>(ENDPOINTS.PROJECT_REVIEW(projectId))
+    return data.comment ?? ''
+  },
+
+  setProjectModerationReview: async (projectId: string, payload: { verdict: ProjectStatus; comment?: string }): Promise<void> => {
+    await api.post(ENDPOINTS.PROJECT_REVIEW(projectId), payload)
   }
 }

@@ -6,7 +6,7 @@ import type {
   GetLikedProjectsParams,
   GetManagedProjectsParams,
   GetParticipatingProjectsParams,
-  GetAppliedProjectsParams,
+  GetAppliedProjectsParams
 } from '../model/types'
 import { projectKeys } from './queryKeys'
 
@@ -112,5 +112,13 @@ export const useAppliedProjects = (params?: GetAppliedProjectsParams, enabled?: 
     queryKey: projectKeys.appliedList(params),
     queryFn: () => projectApi.getAppliedProjects(params),
     enabled: enabled
+  })
+}
+
+export const useProjectReview = (projectId: string, enabled?: boolean) => {
+  return useQuery({
+    queryKey: projectKeys.review(projectId),
+    queryFn: () => projectApi.getProjectModerationReview(projectId),
+    enabled: !!projectId && enabled
   })
 }
