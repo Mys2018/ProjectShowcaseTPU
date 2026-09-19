@@ -224,7 +224,7 @@
     grid-template-rows: repeat(6, auto);
     gap: 18px;
 
-    --padding-inline: 20px;
+    padding: 0;
   }
 
   .switch {

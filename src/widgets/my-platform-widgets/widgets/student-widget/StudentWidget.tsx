@@ -10,20 +10,26 @@ export const StudentWidget = () => {
   const { data: projects } = useParticipatingProjects()
   const navigate = useNavigate()
 
+  console.log(projects)
+
   return (
     <section className={styles.bodyContainer}>
-      <div className={styles.bigBlock}>
-        <div className={styles.headerRow}>
+
+      {
+        projects && projects.projects.length > 1 && <div className={styles.bigBlock}>
+          <div className={styles.headerRow}>
+            {
+              (projects && projects.projects.length > 1) ? <h3 className={styles.title}>Ваши активные проекты</h3> : <h3 className={styles.title}>Ваш активный проект</h3>
+            }
+          </div>
           {
-            (projects && projects.projects.length > 1) ? <h3 className={styles.title}>Ваши активные проекты</h3> : <h3 className={styles.title}>Ваш активный проект</h3>
+            projects && projects.projects.map((project) => (
+              <StudentParticipatingProjectCard key={project.id} project={project}/>
+            ))
           }
         </div>
-        {
-          projects && projects.projects.map((project) => (
-            <StudentParticipatingProjectCard key={project.id} project={project}/>
-          ))
-        }
-      </div>
+      }
+
       <div className={styles.bigBlock}>
         <div className={styles.headerRow}>
           <h3 className={styles.lightTitle}>

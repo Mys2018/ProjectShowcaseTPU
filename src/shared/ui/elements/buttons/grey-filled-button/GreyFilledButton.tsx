@@ -1,13 +1,15 @@
 import styles from './GreyFilledButton.module.css'
+import clsx from "clsx";
 
 interface GreyFilledButtonProps {
   buttonText: string,
   onClick?: () => void,
+  className?: string,
 }
 
-export const GreyFilledButton = ({buttonText, onClick}: GreyFilledButtonProps) => {
+export const GreyFilledButton = ({buttonText, className, onClick}: GreyFilledButtonProps) => {
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button className={clsx(styles.button, className)} onClick={onClick}>
       {
         buttonText
       }

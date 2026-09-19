@@ -1,4 +1,5 @@
 import type { ProjectDto, ProjectCardData } from '../model/types'
+import { mapStringToDate } from '@/shared'
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
   return {
@@ -21,13 +22,17 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     },
 
     checkpoints: {
-      id: dto.checkpoints.id || '',
-      title: dto.checkpoints.name || '',
-      checkpoints: dto.checkpoints.checkpoints.map(c => {
-        const [year, month, day] = c.deadline.split('-').map(Number)
-        const deadline = new Date(year, month - 1, day)
-        return { title: c.title, deadline: deadline }
-      })
+      id: dto.checkpoints?.id || '',
+      title: dto.checkpoints?.name || '',
+      checkpoints: [
+        ...(dto.checkpoints?.checkpoints || []),
+        ...(dto.customCheckpoints || [])
+      ]
+        .map(c => ({
+          title: c.title,
+          deadline: mapStringToDate(c.deadline)
+        }))
+        .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
     },
 
     roles: (dto.roles || []).map(r => ({
@@ -42,7 +47,8 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
         name: r.roleType?.name || 'Без названия',
         description: r.meta?.description || ''
       },
-      skills: r.skills
+      skills: r.skills,
+      relevance: r.relevance
     })),
 
     prdMeta: dto.prdMeta,

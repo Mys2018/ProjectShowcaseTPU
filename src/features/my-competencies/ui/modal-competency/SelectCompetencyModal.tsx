@@ -24,7 +24,7 @@ export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelect
   }, [isOpen, draftData, initialSelectedIds]);
 
   const availableCompetencies = useMemo(() => {
-    return roleTypesData;
+    return Array.isArray(roleTypesData) ? roleTypesData : [];
   }, [roleTypesData]);
 
   const limit = maxCount ?? 7;

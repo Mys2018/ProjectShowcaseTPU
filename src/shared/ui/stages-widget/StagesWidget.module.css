@@ -111,8 +111,10 @@
 }
 
 @media (max-width: 768px) {
+
   .mainContainer {
     gap: 6px;
+    flex-direction: column;
   }
 
   .cardBody {
