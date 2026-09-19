@@ -1,4 +1,5 @@
 export type Competency = {
   id: string
   name: string
+  relevance?: number
 }

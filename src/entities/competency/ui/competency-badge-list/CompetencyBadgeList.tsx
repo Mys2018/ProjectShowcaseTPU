@@ -17,6 +17,10 @@ export function CompetencyBadgeList({ competencies, label, row, className }: Com
   const wrapperRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
+  const sortedCompetencies = [...competencies].sort(
+    (a, b) => (b.relevance ?? 0) - (a.relevance ?? 0)
+  )
+
   useEffect(() => {
     const list = listRef.current
     const wrapper = wrapperRef.current
@@ -26,21 +30,22 @@ export function CompetencyBadgeList({ competencies, label, row, className }: Com
     const ro = new ResizeObserver(handler)
 
     handler()
-    list.addEventListener('scroll', handler)
+    requestAnimationFrame(handler)
+    list.addEventListener('scroll', handler, { passive: true })
     ro.observe(list)
 
     return () => {
       list.removeEventListener('scroll', handler)
       ro.disconnect()
     }
-  }, [row])
+  }, [row, sortedCompetencies.length])
 
   return (
     <div className={clsx(styles.competencies, className)}>
       <div className={styles.label}>{label ?? getCompetencyPlural(competencies.length)}</div>
       <div className={clsx(styles.wrapper, row && styles.row)} ref={wrapperRef}>
         <div className={styles.list} ref={listRef}>
-          {competencies.map(competency => (
+          {sortedCompetencies.map(competency => (
             <CompetencyBadge key={competency.id} competency={competency} />
           ))}
         </div>

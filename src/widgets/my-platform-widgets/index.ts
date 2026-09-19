@@ -1,1 +1,0 @@
-export { CuratorWidget } from './widgets/curator-widget/CuratorWidget'

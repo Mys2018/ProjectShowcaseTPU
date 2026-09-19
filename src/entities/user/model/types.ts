@@ -16,11 +16,12 @@ export type User = UserBase & {
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
     bio: string
     interests: string
     skills: CompetenceDto[]
-    experience: string,
-    messengers: Messengers,
+    experience: string
+    messengers: Messengers
     portfolioLink: string
   }
   capabilities: string[]
@@ -28,11 +29,11 @@ export type User = UserBase & {
 
 export type Messengers = {
   element?: string
-  telegram?: string,
-  vk?: string,
+  telegram?: string
+  vk?: string
 }
 
-export type MessengerType = keyof Messengers;
+export type MessengerType = keyof Messengers
 
 export type UserBase = {
   id: string
@@ -41,10 +42,12 @@ export type UserBase = {
   profilePicture: string
   competencies?: string[]
   grade?: number
+  group?: string
   meta: {
     name: string
     firstName?: string
     lastName?: string
+    patronym?: string
   }
 }
 
@@ -53,11 +56,12 @@ export type UserCard = {
   email: string
   roles?: string[]
   profilePicture?: string
-  // TODO Бек должен обавить
   grade?: string
+  group?: string
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
   }
 }
 
@@ -72,10 +76,11 @@ export type UserDto = {
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
     bio: string
     interests: string
     skills: CompetenceDto[]
-    experience: string,
+    experience: string
     messengers: Messengers
     portfolioLink: string
   }

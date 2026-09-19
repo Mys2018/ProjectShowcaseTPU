@@ -8,7 +8,7 @@ export interface Application {
   projectId: string
   createdAt: Date
   status: ApplicationStatus
-  applicationType?: ApplicationType
+  applicationType: ApplicationType
 }
 
 export interface ListApplicationsResponse {
@@ -22,10 +22,10 @@ export interface ApplicationDto {
   applicationID: string
   studentID: number
   roleID: string
-  projectID?: string // TODO required
+  projectID: string
   createdAt: string
   status: Capitalize<ApplicationStatus>
-  applicationType?: ApplicationType
+  applicationType: ApplicationType
 }
 
 export interface ListApplicationsResponseDto extends Omit<ListApplicationsResponse, 'applications'> {

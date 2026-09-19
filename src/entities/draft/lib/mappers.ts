@@ -42,9 +42,14 @@ export const mapDraftToProjectCardData = (
       description: draftValues.meta?.description || '',
     },
     checkpoints: {
-      id: 'draft-checkpoints',
+      id: typeof draftValues.checkpoints === 'string' ? draftValues.checkpoints : 'draft-checkpoints',
       title: 'Ключевые точки',
-      checkpoints: (draftValues.checkpoints || []).map(c => ({
+      checkpoints: (Array.isArray(draftValues.customCheckpoints)
+        ? draftValues.customCheckpoints
+        : Array.isArray(draftValues.checkpoints)
+          ? draftValues.checkpoints
+          : []
+      ).map(c => ({
         title: c.title,
         deadline: c.deadline ? new Date(c.deadline) : new Date(),
       })),

@@ -163,3 +163,7 @@
   color: var(--color-brand-black);
   font-weight: 500;
 }
+
+.filledButton {
+  width: 100%;
+}

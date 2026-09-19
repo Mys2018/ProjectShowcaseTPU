@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
 import { MyPlatformBanner } from './MyPlatformBanner'
-import { MyPlatformProjects } from './MyPlatformProjects'
+import { MyPlatformProjectsWidgets } from "@/pages/my-platform/main/MyPlatformProjectsWidgets.tsx";
 import {
   Avatar,
   getSwitchableRoles,
@@ -17,7 +17,7 @@ import {
   FloatingTabs,
   StagesWidget,
   YourPointsWidget,
-  YourTasksWidget,
+  // YourTasksWidget,
   type Activity,
   type ClosingDiscipline,
   type FloatingTabItem
@@ -213,7 +213,6 @@ export function MyPlatformPage() {
         <span className={clsx(styles.cover, styles.fixed)} ref={coverFixedRef} />
         <span className={clsx(styles.cover, styles.shaped)} ref={coverShapedRef} />
         <div className={styles.side} ref={sideRef}>
-          <YourTasksWidget data={mockedData.activities} />
           <YourPointsWidget tpuPoints={0} disciplines={mockedData.closingDisciplines} />
         </div>
 
@@ -233,7 +232,7 @@ export function MyPlatformPage() {
         </div>
 
         <div className={styles.projects}>
-          <MyPlatformProjects />
+          <MyPlatformProjectsWidgets />
         </div>
       </div>
     </div>

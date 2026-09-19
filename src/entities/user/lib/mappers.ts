@@ -17,18 +17,20 @@ export const mapUserDto = (dto: UserDto): User => {
   const grade = dto.grade || dto.roles?.Student?.course
   const group = dto.group || dto.roles?.Student?.meta?.group
   const competencies = dto.meta.skills?.map(s => s.roleTypeName).filter(Boolean) || []
+  const computedName = [dto.meta.firstName, dto.meta.lastName, dto.meta.patronym].filter(Boolean).join(' ').trim()
 
   return {
     id: String(dto.userId),
     email: dto.email,
     profilePicture: dto.profilePicture || userIconUrl,
     group,
-    grade: Number(grade),
+    grade: grade ? Number(grade) : undefined,
     competencies,
     meta: {
-      name: `${dto.meta.firstName} ${dto.meta.lastName}`.trim(),
+      name: computedName || dto.email,
       firstName: dto.meta.firstName,
       lastName: dto.meta.lastName,
+      patronym: dto.meta.patronym,
       bio: dto.meta.bio,
       interests: dto.meta.interests || '',
       skills: dto.meta.skills || [],
@@ -68,15 +70,27 @@ const extractGrade = (dto: UserBaseDto | UserDto): string | undefined => {
   return undefined
 }
 
+const extractGroup = (dto: UserBaseDto | UserDto): string | undefined => {
+  if ('group' in dto && dto.group) {
+    return dto.group
+  }
+  if ('roles' in dto && dto.roles && typeof dto.roles === 'object' && !Array.isArray(dto.roles)) {
+    return dto.roles.Student?.meta?.group
+  }
+  return undefined
+}
+
 export const mapUserBaseDto = (dto: UserBaseDto | UserDto): UserBase => {
   const firstName = dto.meta.firstName || ''
   const lastName = dto.meta.lastName || ''
-  const computedName = `${firstName} ${lastName}`.trim()
+  const patronym = ('patronym' in dto.meta && dto.meta.patronym) ? dto.meta.patronym : undefined
+  const computedName = [firstName, lastName, patronym].filter(Boolean).join(' ').trim()
   const name = computedName || dto.email || 'Без имени'
 
   const rawRoles = extractRawRoles(dto.roles)
   const competencies = extractCompetencies(dto)
   const grade = extractGrade(dto)
+  const group = extractGroup(dto)
 
   return {
     id: String(dto.userId),
@@ -90,11 +104,13 @@ export const mapUserBaseDto = (dto: UserBaseDto | UserDto): UserBase => {
       } as UserRole
     }),
     competencies,
-    grade: Number(grade),
+    grade: grade ? Number(grade) : undefined,
+    group,
     meta: {
       name,
       firstName,
-      lastName
+      lastName,
+      patronym
     }
   }
 }

@@ -10,8 +10,9 @@ import CopyLogo from '@/shared/ui/icons/copy.svg?react'
 import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
-import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
+
+import STUDENT_src from '@/shared/assets/svg/STUDENT.svg'
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 
@@ -44,7 +45,7 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
   return (
     <div className={styles.container}>
 
-      <img className={styles.backgroundPicture} src={blankPictureSrc} alt={'Фон карточки пользователя'}/>
+      <img className={styles.backgroundPicture} src={STUDENT_src} alt={'Фон карточки пользователя'}/>
 
       <div className={styles.mobileHeader}>
         <p className={styles.titleMobile}>
@@ -69,24 +70,15 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
 
           <div className={styles.infoBlock}>
             <div className={styles.nameBlock}>
-              <p>
-                {user.meta.lastName}
-              </p>
-              <p>
-                {user.meta.firstName}
-              </p>
+              {user.meta.lastName && <p>{user.meta.lastName}</p>}
+              <p>{[user.meta.firstName, user.meta.patronym].filter(Boolean).join(' ')}</p>
             </div>
-            <div className={styles.groupBlock}>
-              {/*TODO МОК*/}
-              <p>
-                8К67
-                {/*{user.group}*/}
-              </p>
-              <p>
-                {/*{user.group} курс*/}
-                8 курс
-              </p>
-            </div>
+            {(user.group || user.grade) && (
+              <div className={styles.groupBlock}>
+                {user.group && <p>{user.group}</p>}
+                {user.grade && <p>{user.grade} курс</p>}
+              </div>
+            )}
           </div>
         </div>
 

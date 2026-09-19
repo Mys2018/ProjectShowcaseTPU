@@ -1,8 +1,20 @@
+.application {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 18px 18px;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
 .freeBlock {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 24px;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .fieldText {
@@ -10,16 +22,76 @@
   color: var(--color-gray-500);
 }
 
+.fullInviteContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.inviteContainer p:nth-child(1) {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
+}
+
 .applicationsBlock {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
 }
 
 .applicationsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.applicationsHeader p {
   font: var(--field-label-interface);
   color: var(--color-gray-500);
-  margin-bottom: 4px;
+}
+
+.toggleButton {
+  background: none;
+  border: none;
+  padding: 4px;
+  margin: -4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.toggleButton:hover {
+  color: var(--color-gray-750);
+}
+
+.toggleIcon {
+  transition: transform 0.25s ease;
+}
+
+.iconDown {
+  transform: rotate(180deg);
+}
+
+.applicationList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-gray-50);
+  border-radius: 0.5px;
 }
 
 .invitedInfo {
@@ -27,6 +99,7 @@
   gap: 12px;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .invitedName {
@@ -50,4 +123,9 @@
   border: none;
   padding: 0;
   cursor: pointer;
+}
+
+.noRecruiting {
+  font: var(--inter-12-400);
+  color: var(--color-brand-violet);
 }

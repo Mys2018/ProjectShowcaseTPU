@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
+import clsx from 'clsx'
 import styles from './ApplicationRoleCard.module.css'
 import { CompetencyCard } from '@/shared/ui/competency-card/CompetencyCard'
 import { SkillTagList, type Skill } from '@/entities/skill'
 import { InviteUserButton } from '@/shared/ui/elements/buttons/invite-user-button/InviteUserButton'
 import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'
+import UpIcon from '@/shared/ui/icons/up_arrow.svg?react'
 import { useModalStore } from '@/shared/model'
+import { useUserById } from '@/entities/user'
 
 interface RoleData {
   roleId: string
@@ -23,9 +26,11 @@ interface ApplicationRoleCardProps {
   applications: Application[]
   /** Заявка, чей статус-запрос в полёте — блокирует кнопки этой строки. */
   pendingApplicationId?: string
+  canInvite?: boolean
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
+  onCancelInvite?: (applicationId: string) => void
 }
 
 export const ApplicationRoleCard = ({
@@ -35,68 +40,138 @@ export const ApplicationRoleCard = ({
   totalOccurrences,
   applications,
   pendingApplicationId,
+  canInvite = false,
   onAccept,
   onReject,
   onInvite,
+  onCancelInvite,
 }: ApplicationRoleCardProps) => {
   const { openModal } = useModalStore()
-  const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
-  const pendingApplications = applications.filter((a) => a.status === 'pending')
+  // Активное приглашение от наставника для данной роли
+  const pendingInvitation = applications.find(
+    (a) => a.applicationType === 'Invitation' && a.status === 'pending'
+  )
+
+  // Данные приглашенного пользователя из API
+  const { data: invitedUser } = useUserById(
+    pendingInvitation?.studentID,
+    Boolean(pendingInvitation?.studentID)
+  )
+
+  // Прямые отклики студентов со статусом pending
+  const pendingDirectApplications = applications.filter(
+    (a) => a.applicationType === 'Application' && a.status === 'pending'
+  )
 
   const handleInviteUser = () => {
     openModal('INVITE_USER', {
       roleName: role.roleName,
       onInvite: (user: { id: number; name: string }) => {
-        setInvitedUser(user)
         onInvite(role.roleId, role.roleName, user)
       },
     })
   }
 
+  const handleCancelInvitation = () => {
+    if (pendingInvitation) {
+      if (onCancelInvite) {
+        onCancelInvite(pendingInvitation.applicationID)
+      } else {
+        onReject(pendingInvitation.applicationID)
+      }
+    }
+  }
+
+  const toggleCollapse = () => {
+    setIsCollapsed((prev) => !prev)
+  }
+
+  const isInvitePending =
+    Boolean(pendingInvitation) && pendingApplicationId === pendingInvitation?.applicationID
+
+  const invitedUserName = invitedUser
+    ? `${invitedUser.meta.firstName} ${invitedUser.meta.lastName}`
+    : 'Пользователь'
+
   const requestContent = (
-    <>
-      {pendingApplications.length > 0 ? (
-        <div className={styles.applicationsBlock}>
-          <p className={styles.applicationsHeader}>
-            Откликов: {pendingApplications.length}
-          </p>
-          {pendingApplications.map((application) => (
-            <ApplicationRow
-              key={application.applicationID}
-              application={application}
-              isPending={pendingApplicationId === application.applicationID}
-              onAccept={onAccept}
-              onReject={onReject}
-            />
-          ))}
-        </div>
-      ) : (
+    <div className={styles.application}>
+      {pendingInvitation ? (
+        // Если для роли висит активное приглашение — скрываем отклики и показываем статус приглашения
         <div className={styles.freeBlock}>
-          <p className={styles.fieldText}>Компетенция свободна</p>
-          {!invitedUser && (
-            <InviteUserButton onClick={handleInviteUser} />
-          )}
-          {invitedUser && (
+          <div className={styles.fullInviteContainer}>
+            <p className={styles.fieldText}>
+              Откликов пока нет
+            </p>
+
             <div className={styles.invitedInfo}>
               <p className={styles.invitedName}>
                 <div>
                   Приглашен:
-                  <span>{invitedUser.name}</span>
+                  <span>{invitedUserName}</span>
                 </div>
               </p>
               <button
                 type="button"
                 className={styles.cancelInviteBtn}
-                onClick={() => setInvitedUser(null)}
+                onClick={handleCancelInvitation}
+                disabled={isInvitePending}
               >
                 Отменить
               </button>
             </div>
+          </div>
+        </div>
+      ) : pendingDirectApplications.length > 0 ? (
+        // Если активного приглашения нет — показываем входящие отклики от студентов
+        <div className={styles.applicationsBlock}>
+          <div className={styles.applicationsHeader}>
+            <p>
+              Откликов: {pendingDirectApplications.length}
+            </p>
+            <button
+              type="button"
+              className={styles.toggleButton}
+              onClick={toggleCollapse}
+              aria-label={isCollapsed ? 'Развернуть отклики' : 'Свернуть отклики'}
+            >
+              <UpIcon className={clsx(styles.toggleIcon, isCollapsed && styles.iconDown)} />
+            </button>
+          </div>
+
+          <div className={styles.applicationList}>
+            {pendingDirectApplications.map((application, appIndex) => (
+              <Fragment key={application.applicationID}>
+                <ApplicationRow
+                  application={application}
+                  isPending={pendingApplicationId === application.applicationID}
+                  onAccept={onAccept}
+                  onReject={onReject}
+                />
+                {appIndex < pendingDirectApplications.length - 1 && (
+                  <div className={styles.separator} />
+                )}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      ) : (
+        // Если откликов нет и приглашений нет — кнопка пригласить
+        <div className={styles.freeBlock}>
+          <p className={styles.fieldText}>Откликов пока нет</p>
+          {canInvite ? (
+            <div className={styles.inviteContainer}>
+              <InviteUserButton onClick={handleInviteUser} />
+            </div>
+          ) : (
+            <p className={styles.noRecruiting}>
+              Проект еще не выпущен
+            </p>
           )}
         </div>
       )}
-    </>
+    </div>
   )
 
   return (
@@ -113,6 +188,8 @@ export const ApplicationRoleCard = ({
         />
       }
       requestContent={requestContent}
+      isCollapsed={isCollapsed}
+      hasApplications={!pendingInvitation && pendingDirectApplications.length > 0}
     />
   )
 }

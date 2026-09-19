@@ -10,11 +10,19 @@ export function MobileSearchBar() {
   const { pathname } = useLocation()
   const { searchTop, searchState, searchAnimate } = useMobileChrome(true, pathname)
 
+  const query = useFilterStore(state => state.query)
   const setQuery = useFilterStore(state => state.setQuery)
-  const [localQuery, setLocalQuery] = useState('')
+  const [localQuery, setLocalQuery] = useState(query)
   const debouncedQuery = useDebounce(localQuery.trim(), 500)
 
+  useEffect(() => {
+    if (query !== localQuery && (query === '' || query !== debouncedQuery)) {
+      setLocalQuery(query)
+    }
+  }, [query])
+
   useEffect(() => setQuery(debouncedQuery), [debouncedQuery, setQuery])
+
 
   return (
     <div

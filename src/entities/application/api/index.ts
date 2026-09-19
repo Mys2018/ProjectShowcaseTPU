@@ -1,3 +1,3 @@
-export { createApplication, updateApplicationStatus } from './requests'
+export { createApplication, updateApplicationStatus, getApplications } from './requests'
 export * from './queries'
 export { applicationKeys } from './queryKeys'

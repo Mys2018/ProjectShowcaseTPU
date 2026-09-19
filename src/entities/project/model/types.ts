@@ -1,7 +1,7 @@
 /* eslint-disable fsd/no-cross-slice-dependency */
 /* eslint-disable fsd/forbidden-imports */
 import type { PROJECT_FORMATS } from "./constants";
-import type { CheckpointGroup } from "@/entities/checkpoint";
+import type { CheckpointGroup, CheckpointDto } from "@/entities/checkpoint";
 import type { Tag } from "@/entities/tag";
 import type { Partner } from "@/entities/partner";
 import type { UserCard } from "@/entities/user";
@@ -73,6 +73,7 @@ export interface ProjectCardData {
       skillName: string;
       requireSkill?: boolean;
     }[];
+    relevance?: number;
   }[];
   prdMeta: PrdMeta;
   isLiked: boolean;
@@ -126,6 +127,9 @@ export interface ProjectRole {
   meta: {
     description: string;
   };
+  relevance?: number;
+  applicationsCount?: number;
+  isAppliedByMe?: boolean;
 }
 
 export interface AudienceSegment {
@@ -161,6 +165,7 @@ export interface ProjectDto {
     description: string;
   };
   checkpoints: ProjectCheckpoints;
+  customCheckpoints?: CheckpointDto[];
   roles: ProjectRole[];
   prdMeta: PrdMeta;
   type?: ProjectFormat;
@@ -223,6 +228,7 @@ export interface BaseCreateProjectDto {
   ownerId?: number;
   partnerId: string;
   checkpoints: string;
+  customCheckpoints?: { title: string; deadline: string }[];
   meta: {
     title: string;
     description: string;
@@ -273,3 +279,52 @@ export interface CreateRealProjectDto extends BaseCreateProjectDto {
 }
 
 export type CreateProjectDto = CreateCaseProjectDto | CreateRealProjectDto | CreateStudyProjectDto;
+/* ── Спринты и табель часов ───────────────────────────────────────── */
+
+export type GradingState =
+  | 'BlockedOverdue'
+  | 'Closed'
+  | 'DangerNeedsGrading'
+  | 'LockedBeforeMidweek'
+  | 'Open'
+  | 'WarningNeedsGrading'
+
+export interface ProjectSprint {
+  id: string
+  /** YYYY-MM-DD */
+  startDate: string
+  /** YYYY-MM-DD */
+  endDate: string
+  isCurrent: boolean
+}
+
+export interface WeekGradingStatus {
+  weekNumber: number
+  /** Нет поля — часы за неделю ещё не выставлены. */
+  hours?: number
+  state: GradingState
+}
+
+export interface StudentGradingStatus {
+  studentId: number
+  studentName: string
+  weeks?: WeekGradingStatus[]
+}
+
+export interface SprintGradingStatus {
+  sprintId: string
+  overallState: GradingState
+  students?: StudentGradingStatus[]
+}
+
+export interface StudentHoursInput {
+  studentId: number
+  /** Тот же weekNumber, что пришёл в grading-status. */
+  weekNumber: number
+  hours: number
+}
+
+export interface SprintHoursBatch {
+  sprintId: string
+  records: StudentHoursInput[]
+}

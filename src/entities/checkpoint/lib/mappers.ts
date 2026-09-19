@@ -7,9 +7,9 @@ export const mapCheckpointDto = (dto: CheckpointDto): Checkpoint => {
 }
 
 export const mapCheckpointGroupDto = (dto: CheckpointGroupDto): CheckpointGroup => ({
-  id: dto.id,
-  title: dto.name,
-  checkpoints: dto.checkpoints.map(mapCheckpointDto)
+  id: dto.id || '',
+  title: dto.name || '',
+  checkpoints: Array.isArray(dto.checkpoints) ? dto.checkpoints.map(mapCheckpointDto) : []
 })
 
 export const mapCheckpointToDto = (checkpoint: Checkpoint): CheckpointDto => ({

@@ -4,8 +4,9 @@
   width: 100%;
   max-width: 1560px;
 
+  padding-top: 48px ;
+
   overflow-y: auto;
-  padding-top: 72px;
 }
 
 .container {
@@ -13,6 +14,7 @@
   grid-template-columns: 300px 1fr 300px;
   grid-template-rows: 48px auto 1fr;
   gap: 8px;
+  padding: 0 20px 0;
 
   --paddingInline: 16px;
   --paddingBottom: 18px;
@@ -144,7 +146,7 @@
 
   &.shaped {
     top: var(--shapedCoverTop);
-    left: calc(max((100vw - 1560px) / 2, 0px));
+    left: calc(max((100vw - 1560px) / 2, 0px) + 20px);
     translate: calc(-1 * var(--paddingInline)) -18px;
 
     width: 332px;
@@ -222,7 +224,7 @@
     grid-template-rows: repeat(6, auto);
     gap: 18px;
 
-    --padding-inline: 20px;
+    padding: 0;
   }
 
   .switch {

@@ -1,16 +1,16 @@
 import styles from './FreeCompetencies.module.css'
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useIsProfileFilled, useAuthStore, useMe } from "@/entities/user";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FeedBackButton } from "@/features/feedback-button";
+import { useIsProfileFilled, useAuthStore, useMe } from "@/entities/user";
+import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
+import { projectQueryKeys, useProjectTeam, useParticipatingProjects, type ProjectCardData } from "@/entities/project";
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
 import Plus from '@/shared/ui/icons/plus.svg?react'
 import { InfoTooltip, ROUTES } from "@/shared";
-import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
-import { projectQueryKeys, useProjectTeam, type ProjectCardData } from "@/entities/project";
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const useCreateApplication = () => {
   const queryClient = useQueryClient();
@@ -45,6 +45,7 @@ interface FreeCompetenciesProps {
     minPlacesCount: number,
     places: number,
     placeUserIds?: number[],
+    applicationsCount?: number,
     skills:
     {
       skillId: string,
@@ -69,7 +70,9 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   const myUserId = me ? Number(me.id) : null
   const navigate = useNavigate()
 
-  const { data: myApplications } = useApplications({ limit: 100, offset: 0, mode: 'AsStudent' })
+  const { data: myApplications } = useApplications({ limit: 100, offset: 0, mode: 'AsStudent' }, status === 'authenticated')
+  const { data: participatingProjects } = useParticipatingProjects({ offset: 0, limit: 100 }, status === 'authenticated')
+
   const createApplicationMutation = useCreateApplication()
   const updateApplicationStatusMutation = useUpdateApplicationStatus()
 
@@ -86,30 +89,23 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     return myApplications.applications.filter(app => roleIds.includes(app.roleID) && (app.status === 'pending' || app.status === 'approved'));
   }, [myApplications, roles]);
 
-  // Проверяем, состоит ли пользователь в команде проекта (по списку занявших места, по одобренной заявке, по составу команды или владелец)
-  const isMemberByPlaces = useMemo(() => {
-    if (!myUserId) return false
-    return roles.some(r => r.placeUserIds?.includes(myUserId))
-  }, [roles, myUserId])
+  const MAX_PROJECT_SELECTIONS = 2;
+  const MAX_GLOBAL_APPLICATIONS = 5;
 
-  const hasApprovedApplication = useMemo(() => {
-    return currentApplications.some(app => app.status === 'approved')
-  }, [currentApplications])
-
-  const isMemberByTeam = useMemo(() => {
-    if (!myUserId || !teamMembers) return false
-    return teamMembers.some(member => member.userId === myUserId)
-  }, [myUserId, teamMembers])
-
-  const isOwner = !!myUserId && !!project && project.ownerId === myUserId
-  const isInTeam = isMemberByPlaces || hasApprovedApplication || isOwner || isMemberByTeam
-
-  // Активные (не рассмотренные) заявки
+  // Активные (не рассмотренные) заявки в текущем проекте
   const pendingApplications = useMemo(() => {
     return currentApplications.filter(app => app.status === 'pending')
   }, [currentApplications])
 
   const isAppliedToProject = pendingApplications.length > 0;
+
+  // Все активные (не рассмотренные) заявки студента во всех проектах
+  const allActiveApplications = useMemo(() => {
+    return (myApplications?.applications ?? []).filter(app => app.status === 'pending')
+  }, [myApplications])
+
+  const totalActiveApplicationsCount = allActiveApplications.length
+  const isGlobalLimitReached = totalActiveApplicationsCount >= MAX_GLOBAL_APPLICATIONS
 
   // Компетенции, которые уже заняты пользователем
   const myOccupiedRoleIds = useMemo(() => {
@@ -119,22 +115,27 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     const fromPlaces = myUserId
       ? roles.filter(r => r.placeUserIds?.includes(myUserId)).map(r => r.roleId)
       : []
-    return Array.from(new Set([...fromApps, ...fromPlaces]))
-  }, [currentApplications, myUserId, roles])
+    const myTeamMember = myUserId && teamMembers ? teamMembers.find(m => m.userId === myUserId) : null
+    const fromTeamRoles = myTeamMember?.roles
+      ? roles.filter(r => myTeamMember.roles?.includes(r.meta.name)).map(r => r.roleId)
+      : []
+    return Array.from(new Set([...fromApps, ...fromPlaces, ...fromTeamRoles]))
+  }, [currentApplications, myUserId, roles, teamMembers])
 
-  // Компетенции, которые отмечаются галочкой
+  // Пользователя уже приняли в один из проектов (в текущий или любой другой)
+  const isAcceptedInAnyProject =
+    (participatingProjects?.projects?.length ?? 0) > 0 ||
+    (participatingProjects?.total ?? 0) > 0 ||
+    myOccupiedRoleIds.length > 0
+
+  // Компетенции, которые отмечаются галочкой (занятые + отправленные на рассмотрение + выбранные)
   const displaySelected = useMemo(() => {
-    if (isInTeam) {
-      return Array.from(new Set([
-        ...myOccupiedRoleIds,
-        ...pendingApplications.map(app => app.roleID)
-      ]))
-    }
-    if (isAppliedToProject) {
-      return pendingApplications.map(app => app.roleID)
-    }
-    return selectedCompetencies
-  }, [isInTeam, myOccupiedRoleIds, isAppliedToProject, pendingApplications, selectedCompetencies])
+    return Array.from(new Set([
+      ...myOccupiedRoleIds,
+      ...pendingApplications.map(app => app.roleID),
+      ...selectedCompetencies
+    ]))
+  }, [myOccupiedRoleIds, pendingApplications, selectedCompetencies])
 
   // Проверка: есть ли в компетенции хотя бы одно свободное место
   const isRoleFree = (role: FreeCompetenciesProps['roles'][number]) => {
@@ -142,23 +143,37 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     return role.placesCount - placesTaken > 0
   }
 
-  // Для тех, кто ещё не откликнулся (и не занимает роль), показываем только свободные компетенции.
-  // Уже занятые компетенции не должны появляться у людей, кто ещё не откликнулся.
+  // Не отображаем в списке те, которые заняты другими людьми или самим пользователем
   const visibleRoles = useMemo(() => {
     return roles.filter(role => {
-      if (displaySelected.includes(role.roleId)) {
-        return true
-      }
-      return isRoleFree(role)
+      const hasPendingApp = pendingApplications.some(app => app.roleID === role.roleId)
+      return (isRoleFree(role) || hasPendingApp) && !myOccupiedRoleIds.includes(role.roleId)
     })
-  }, [roles, displaySelected])
+  }, [roles, myOccupiedRoleIds, pendingApplications])
+
+  const isOwner = !!(myUserId && project?.ownerId === myUserId)
+  const isProjectNotRecruiting = !!(project && project.status !== 'Recruiting' && project.status !== 'RecruitmentCompleted')
+
+  // Нельзя подавать заявки, если:
+  // - человека уже приняли в один проект (isAcceptedInAnyProject)
+  // - исчерпан глобальный лимит в 5 откликов (isGlobalLimitReached)
+  // - пользователь является владельцем проекта
+  // - проект не находится в статусе набора
+  // - нет свободных компетенций
+  const canApply =
+    !isAcceptedInAnyProject &&
+    !isGlobalLimitReached &&
+    !isOwner &&
+    !isProjectNotRecruiting &&
+    visibleRoles.length > 0
 
   const toggleFeedBack = async () => {
-    if (isBatchPending || isInTeam) return;
+    if (isBatchPending) return;
 
     if (isAppliedToProject) {
       // allSettled: частичный провал не должен прерывать остальные отмены,
       // иначе половина заявок остаётся активной, а UI об этом не знает.
+      // Отменяем только не рассмотренные (pending) заявки, одобренные не трогаем.
       const results = await Promise.allSettled(
         pendingApplications.map(app =>
           updateApplicationStatusMutation.mutateAsync({ applicationId: app.applicationID, status: 'cancelled' })
@@ -171,6 +186,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
         console.error("Failed to cancel applications", failed);
       }
     } else {
+      if (!canApply || selectedCompetencies.length === 0) return;
       const results = await Promise.allSettled(
         selectedCompetencies.map(roleId =>
           createApplicationMutation.mutateAsync(roleId)
@@ -180,214 +196,222 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
       // часть заявок уже создана, пользователь ретраит — и дублирует их.
       // Ошибки самих заявок React Query кладёт в мутацию, общий фидбек не нужен.
       const failed = results.filter(r => r.status === 'rejected').length;
-      if (failed > 0) {
+      if (failed === 0) {
+        setSelectedCompetencies([]);
+      } else {
         console.error("Failed to create applications", failed);
       }
     }
   }
 
   const toggleCompetencySelect = (roleId: string) => {
-    if (isAppliedToProject || isInTeam) return;
+    if (!canApply) return;
+
+    // Нельзя снять выбор с уже занятой роли
+    if (myOccupiedRoleIds.includes(roleId)) return;
+
+    // Нельзя кликом снять заявку, которая уже отправлена (для этого кнопка «Отменить отклик»)
+    if (pendingApplications.some(app => app.roleID === roleId)) return;
+
+    // Если есть отправленная нерассмотренная заявка — сначала нужно дождаться ответа или отменить её
+    if (isAppliedToProject) return;
 
     setSelectedCompetencies(prevState => {
-      let nextState;
       if (prevState.includes(roleId)) {
-        nextState = prevState.filter(id => id != roleId)
-      } else if (prevState.length >= 2) {
-        nextState = prevState
-      } else {
-        nextState = [...prevState, roleId]
+        return prevState.filter(id => id !== roleId);
       }
 
-      return nextState
-    })
+      const availableSlotsInProject = MAX_PROJECT_SELECTIONS - pendingApplications.length;
+      const availableSlotsGlobal = MAX_GLOBAL_APPLICATIONS - totalActiveApplicationsCount;
+      const maxCanSelect = Math.max(0, Math.min(availableSlotsInProject, availableSlotsGlobal));
+
+      if (prevState.length >= maxCanSelect) {
+        return prevState;
+      }
+
+      return [...prevState, roleId];
+    });
   }
 
-  const MAX_SELECTIONS = 2;
-  const isMaxSelected = displaySelected.length >= MAX_SELECTIONS;
+  const isMaxSelected =
+    (selectedCompetencies.length + pendingApplications.length >= MAX_PROJECT_SELECTIONS) ||
+    (totalActiveApplicationsCount + selectedCompetencies.length >= MAX_GLOBAL_APPLICATIONS);
 
+  // Если свободных компетенций нет, полностью скрываем блок
+  if (visibleRoles.length === 0) {
+    return null
+  }
 
   return (
     <div className={styles.freeCompetencies}>
 
       <div className={styles.header}>
         <h3 className={styles.title}>
-          {isInTeam
+          {!isAppliedToProject && visibleRoles.length === 0
             ? 'Компетенции проекта:'
-            : !isAppliedToProject && visibleRoles.length === 0
-              ? 'Компетенции проекта:'
-              : 'Выберите компетенции для отклика:'}
+            : 'Выберите компетенции для отклика:'}
         </h3>
       </div>
 
-      <div className={styles.competenciesList}>
-        {visibleRoles.length === 0 ? (
-          <p className={styles.emptyCompetencies}>
-            Все компетенции уже заняты
-          </p>
-        ) : (
-          visibleRoles.map((role) => {
-            const isSelected = displaySelected.includes(role.roleId);
-            const isDimmed = isMaxSelected && !isSelected;
 
-            return (
-              <div
-                key={role.roleId}
-                className={`${styles.competency} ${isSelected ? styles.selected : ''} ${isDimmed ? styles.dimmed : ''}`}
-                onClick={() => toggleCompetencySelect(role.roleId)}
-              >
-                <div className={styles.leftHalfRole}>
-                  <div className={styles.competencyHeader}>
-                    <p className={styles.role}>
-                      {role.meta.name}
-                    </p>
-                    {!isDimmed && (
-                      <div className={styles.tooltipWrapper} onClick={(e) => e.stopPropagation()}>
-                        <InfoTooltip
-                          className={styles.tooltip}
-                          iconClassName={styles.tooltipIcon}
-                          title="Заголовок тултипа"
-                          body={
-                            [
-                              {
-                                text: [
-                                  'Бла бла',
-                                ]
-                              },
-                            ]
+      <div className={styles.competenciesList}>
+        {visibleRoles.map((role) => {
+          const isSelected = displaySelected.includes(role.roleId);
+          const isDimmed = isMaxSelected && !isSelected;
+
+          return (
+            <div
+              key={role.roleId}
+              className={`${styles.competency} ${isSelected ? styles.selected : ''} ${isDimmed ? styles.dimmed : ''}`}
+              onClick={() => toggleCompetencySelect(role.roleId)}
+            >
+              <div className={styles.leftHalfRole}>
+                <div className={styles.competencyHeader}>
+                  <p className={styles.role}>
+                    {role.meta.name}
+                  </p>
+                  {!isDimmed && (
+                    <div className={styles.tooltipWrapper} onClick={(e) => e.stopPropagation()}>
+                      <InfoTooltip
+                        className={styles.tooltip}
+                        iconClassName={styles.tooltipIcon}
+                        title="Заголовок тултипа"
+                        body={[
+                          {
+                            text: ['Бла бла']
                           }
-                          size={'small'}
-                          pointer={'topRight'}
-                          type={'help'}
-                        />
-                      </div>
+                        ]}
+                        size={'small'}
+                        pointer={'topRight'}
+                        type={'help'}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {role.skills.length !== 0 ? (
+                  <ul className={styles.skillsList}>
+                    {role.skills.map((skill, skillIdx) => (
+                      <li
+                        className={`${styles.skill} ${skill.requireSkill ? styles.required : ''}`}
+                        key={skill.skillId || `${skill.skillName}-${skillIdx}`}
+                      >
+                        {skill.skillName}
+                        {skill.requireSkill && (
+                          <StarDetailIcon
+                            className={styles.starIcon}
+                            color={`${isSelected ? 'var(--color-brand-green)' : 'white'}`}
+                          />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className={styles.withoutSkills}>
+                    Определённые навыки не требуются
+                  </p>
+                )}
+              </div>
+
+              <div className={styles.aside}>
+                <div className={styles.response}>
+                  <p className={styles.countRes}>
+                    {role.applicationsCount ?? 0}
+                  </p>
+                  <FeedBackIcon
+                    className={styles.feedbackIcon}
+                    color={`${isSelected ? 'white' : 'var(--color-gray-600)'} `}
+                  />
+                </div>
+
+                {
+                  canApply &&  <div className={`${styles.plusButton} ${isSelected ? styles.selected : ''}`}>
+                    {isSelected ? (
+                      <CheckIcon className={styles.checkIcon} />
+                    ) : (
+                      <Plus className={styles.plusIcon} />
                     )}
                   </div>
+                }
 
-                  {
-                    role.skills.length !== 0 ? (
-                      <ul className={styles.skillsList}>
-                        {
-                          role.skills.map((skill, skillIdx) => (
-                            <li className={`${styles.skill} ${skill.requireSkill ? styles.required : ''}`}
-                              key={skill.skillId || `${skill.skillName}-${skillIdx}`}>
-                              {skill.skillName}
-                              {skill.requireSkill && (
-                                <>
-                                  <StarDetailIcon
-                                    className={styles.starIcon}
-                                    color={`${isSelected ? 'var(--color-brand-green)' : 'white'}`}
-                                  />
-                                </>
-                              )}
-                            </li>
-                          ))
-                        }
-                      </ul>
-                    ) : (
-                      <p className={styles.withoutSkills}>
-                        Определённые навыки не требуются
-                      </p>
-                    )
-                  }
-
-                </div>
-
-                <div className={styles.aside}>
-
-                  <div className={styles.response}>
-                    <p className={styles.countRes}>
-                      {67}
-                    </p>
-                    <FeedBackIcon className={styles.feedbackIcon} color={`${isSelected ? 'white' : 'var(--color-gray-600)'} `} />
-                  </div>
-
-                  <div className={`${styles.plusButton} ${isSelected ? styles.selected : ''}`}>
-                    {isSelected ?
-                      <CheckIcon className={styles.checkIcon} /> :
-                      <Plus className={styles.plusIcon} />
-                    }
-                  </div>
-
-                </div>
 
               </div>
-            )
-
-          })
-        )}
+            </div>
+          )
+        })}
       </div>
 
-      <div className={styles.footer}>
-        {
-          isInTeam ? (
+      {(canApply || isAppliedToProject) && (
+        <div className={styles.footer}>
+          {isAppliedToProject ? (
             <FeedBackButton
-              isActiveFeedBack={false}
-              toggleFeedBack={() => {}}
-              disabled={true}
-              isInTeam={true}
+              isActiveFeedBack={true}
+              toggleFeedBack={() => void toggleFeedBack()}
+              disabled={isBatchPending}
             />
-          ) : !isAppliedToProject && visibleRoles.length === 0 ? (
-            <FeedBackButton
-              isActiveFeedBack={false}
-              toggleFeedBack={() => {}}
-              disabled={true}
-              customText="Набор завершён"
-            />
-          ) : status === 'authenticated' ? (
-            isProfileFilled ? (
-              <FeedBackButton
-                isActiveFeedBack={isAppliedToProject}
-                toggleFeedBack={() => void toggleFeedBack()}
-                disabled={(!isAppliedToProject && selectedCompetencies.length === 0) || isBatchPending}
-              />
+          ) : canApply ? (
+            status === 'authenticated' ? (
+              isProfileFilled ? (
+                <FeedBackButton
+                  isActiveFeedBack={false}
+                  toggleFeedBack={() => void toggleFeedBack()}
+                  disabled={selectedCompetencies.length === 0 || isBatchPending}
+                />
+              ) : (
+                <InfoTooltip
+                  title="Заполните профиль для отлика на проект"
+                  body={[
+                    {
+                      text: [
+                        'Для подачи заявки необходимо заполнить блок «О себе» и указать свои навыки. Это поможет наставнику оценить вашу кандидатуру.'
+                      ]
+                    }
+                  ]}
+                  size={'small'}
+                  pointer={'topRight'}
+                  greenButtonText={'Перейти к заполнению'}
+                  onClickGreenButtonText={() => {
+                    navigate(ROUTES.PROFILE.BASE)
+                  }}
+                >
+                  <FeedBackButton
+                    isActiveFeedBack={false}
+                    toggleFeedBack={() => void toggleFeedBack()}
+                    disabled={true}
+                  />
+                </InfoTooltip>
+              )
             ) : (
               <InfoTooltip
-                title='Заполните профиль для отлика на проект'
                 body={[
                   {
-                    text: ['Для подачи заявки необходимо заполнить блок «О себе» и указать свои навыки. Это поможет наставнику оценить вашу кандидатуру.']
+                    text: ['Откликаться на проекты могут только зарегистрированные пользователи.']
                   }
                 ]}
                 size={'small'}
                 pointer={'topRight'}
-                greenButtonText={'Перейти к заполнению'}
-                onClickGreenButtonText={() => { navigate(ROUTES.PROFILE.BASE) }}
+                greenButtonText={'Войти в аккаунт'}
+                onClickGreenButtonText={() => {
+                  navigate(ROUTES.LOGIN)
+                }}
               >
                 <FeedBackButton
-                  isActiveFeedBack={isAppliedToProject}
+                  isActiveFeedBack={false}
                   toggleFeedBack={() => void toggleFeedBack()}
                   disabled={true}
                 />
               </InfoTooltip>
             )
-          ) : (
-            <InfoTooltip
-              body={[
-                {
-                  text: ['Откликаться на проекты могут только зарегистрированные пользователи.']
-                }
-              ]}
-              size={'small'}
-              pointer={'topRight'}
-              greenButtonText={'Войти в аккаунт'}
-              onClickGreenButtonText={() => { navigate(ROUTES.LOGIN) }}
-            >
-              <FeedBackButton
-                isActiveFeedBack={isAppliedToProject}
-                toggleFeedBack={() => void toggleFeedBack()}
-                disabled={true}
-              />
-            </InfoTooltip>
-          )
-        }
+          ) : null}
 
-        {!isInTeam && visibleRoles.length > 0 && (
-          <p className={styles.countFree}>
-            {displaySelected.length}/{MAX_SELECTIONS}
-          </p>
-        )}
-      </div>
+          {canApply && (
+            <p className={styles.countFree}>
+              {selectedCompetencies.length + pendingApplications.length}/{MAX_PROJECT_SELECTIONS}
+            </p>
+          )}
+        </div>
+      )}
+
     </div>
   )
 }

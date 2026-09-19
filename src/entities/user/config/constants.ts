@@ -30,6 +30,7 @@ export const placeholderUser: User = {
     name: `Загрузка...`,
     firstName: `Загрузка...`,
     lastName: '',
+    patronym: '',
     bio: '',
     skills: [],
     experience: '',

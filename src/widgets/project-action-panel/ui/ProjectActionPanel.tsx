@@ -77,7 +77,10 @@ export function ProjectActionPanel({
 
   // Свободное место — то, которое ещё никем не занято; подавался я на него или нет,
   // значения не имеет (решение дизайнера).
-  const canTakeMore = hasFreePlaces(project) && myActive.length < MAX_ROLES_PER_PROJECT
+  const myOccupiedRoleCount = me ? project.roles.filter(role => role.placeUserIds?.includes(Number(me.id))).length : 0
+  const myApprovedCount = myActive.filter(a => a.status === 'approved').length
+  const myTotalOccupied = Math.max(myOccupiedRoleCount, myApprovedCount)
+  const canTakeMore = hasFreePlaces(project) && (myTotalOccupied + (hasPending ? 1 : 0)) < MAX_ROLES_PER_PROJECT
 
   // TODO: отзывов нет в API. Пока читаем флаг из ответа проекта, чтобы состояние
   // можно было проверить на моках; когда появится эндпоинт — заменить на запрос.

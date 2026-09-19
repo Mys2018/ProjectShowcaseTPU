@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import styles from "./Tabs.module.css";
 import type { CreateProjectForm, StepErrors } from '../../model/useProjectWizard';
 import { CheckpointsBlock } from "../components/checkpoints-block/CheckpointsBlock.tsx";
 import { RequirementList } from "../components/requirement-list/RequirementList.tsx";
-import { EmptyStateBlock, InfoTooltip, useModalStore } from "@/shared";
+import { EmptyStateBlock, InfoTooltip, mapDateToBackendString, useModalStore } from "@/shared";
 import type { Platform } from "@/entities/platforms/model/types.ts";
+import { useCurrentCheckpoints } from "@/entities/checkpoint";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -12,8 +14,14 @@ interface TabProps {
 }
 
 export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
-
   const { openModal, closeModal } = useModalStore();
+  const { data: currentGroup } = useCurrentCheckpoints();
+
+  useEffect(() => {
+    if (currentGroup?.id) {
+      form.setFieldValue('checkpoints', currentGroup.id);
+    }
+  }, [currentGroup?.id, form]);
 
   return (
     <div className={styles.mainFieldContainer}>
@@ -30,37 +38,45 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
-            body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
-            }
+            title="Ключевые точки проекта"
+            body={[
+              {
+                text: [
+                  'Базовые этапы фиксированы для учебного процесса. Ментор может добавлять собственные промежуточные точки контроля.',
+                ],
+              },
+            ]}
             size={'small'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
+            importantText={'Важно!'}
             type={'bulb'}
           />
         </h4>
 
         <div className={styles.errorWrapper}>
-          <form.Field name="checkpoints" mode='array'>
+          <form.Field name="customCheckpoints" mode='array'>
             {
               (field) => {
-                const checkpoints = field.state.value || []
+                const customCheckpoints = field.state.value || []
 
-                const sortCheckpoints = (cps: { title: string; deadline: string }[]) => {
-                  return [...cps].sort((a, b) => {
-                    const dateA = new Date(a.deadline).getTime();
-                    const dateB = new Date(b.deadline).getTime();
-                    return dateA - dateB;
-                  });
-                };
+                const baseCheckpoints = (currentGroup?.checkpoints || []).map(cp => ({
+                  title: cp.title,
+                  deadline: mapDateToBackendString(cp.deadline),
+                  isBase: true,
+                }))
+
+                const mentorCheckpoints = customCheckpoints.map((cp, idx) => ({
+                  title: cp.title,
+                  deadline: cp.deadline,
+                  isBase: false,
+                  customIndex: idx,
+                }))
+
+                const mergedCheckpoints = [...baseCheckpoints, ...mentorCheckpoints].sort((a, b) => {
+                  const dateA = new Date(a.deadline).getTime();
+                  const dateB = new Date(b.deadline).getTime();
+                  return dateA - dateB;
+                });
 
                 const addDays = (dateString: string, days: number) => {
                   if (!dateString) return '';
@@ -69,8 +85,8 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
                   return date.toISOString().split('T')[0];
                 };
 
-                const minDate = addDays(checkpoints[1]?.deadline || checkpoints[0]?.deadline || '', 1);
-                const maxDate = addDays(checkpoints[checkpoints.length - 1]?.deadline || '', -1);
+                const minDate = addDays(mergedCheckpoints[0]?.deadline || '', 1);
+                const maxDate = addDays(mergedCheckpoints[mergedCheckpoints.length - 1]?.deadline || '', -1);
 
                 const handleAdd = () => {
                   openModal('ADD_CHECKPOINT', {
@@ -78,37 +94,37 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
                     maxDate,
                     onConfirm: (title: string, deadline: string) => {
                       closeModal();
-                      field.setValue(sortCheckpoints([...checkpoints, { title, deadline }]));
+                      field.setValue([...customCheckpoints, { title, deadline }]);
                     }
                   })
                 }
 
-                const handleEdit = (index: number) => {
-                  const checkpoint = checkpoints[index];
+                const handleEdit = (customIndex: number) => {
+                  const checkpoint = customCheckpoints[customIndex];
+                  if (!checkpoint) return;
                   openModal('ADD_CHECKPOINT', {
                     initialTitle: checkpoint.title,
                     initialDeadline: checkpoint.deadline,
                     minDate,
                     maxDate,
-
                     onConfirm: (title: string, deadline: string) => {
                       closeModal();
-                      const newCheckpoints = [...checkpoints];
-                      newCheckpoints[index] = { ...newCheckpoints[index], title, deadline };
-                      field.setValue(sortCheckpoints(newCheckpoints));
+                      const newCustom = [...customCheckpoints];
+                      newCustom[customIndex] = { title, deadline };
+                      field.setValue(newCustom);
                     }
                   })
                 }
 
-                const handleDelete = (index: number) => {
-                  const newCheckpoints = [...checkpoints];
-                  newCheckpoints.splice(index, 1);
-                  field.setValue(newCheckpoints);
+                const handleDelete = (customIndex: number) => {
+                  const newCustom = [...customCheckpoints];
+                  newCustom.splice(customIndex, 1);
+                  field.setValue(newCustom);
                 }
 
                 return (
                   <CheckpointsBlock
-                    checkpoints={checkpoints}
+                    checkpoints={mergedCheckpoints}
                     addCheckpoint={handleAdd}
                     onEditCheckpoint={handleEdit}
                     onDeleteCheckpoint={handleDelete}
@@ -124,10 +140,13 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
               {stepErrors['checkpoints'][0]}
             </span>
           )}
+          {stepErrors?.['customCheckpoints'] && (
+            <span className={styles.errorText}>
+              {stepErrors['customCheckpoints'][0]}
+            </span>
+          )}
         </div>
       </div>
-
-
 
       <div className={styles.errorWrapper}>
         <div className={styles.mainInfo}>

@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 16px 8px;
+  padding: 16px 8px 8px;
   width: 100%;
 
   background-color: var(--color-brand-violet);
@@ -120,6 +120,7 @@
 
 .selected .plusButton {
   background-color: white;
+
 }
 
 .selected .countRes {
@@ -136,7 +137,7 @@
 
 .footer {
   display: flex;
-  padding: 0 8px 0 4px;
+  padding: 0 8px 8px 4px;
   justify-content: space-between;
   align-items: center;
 }

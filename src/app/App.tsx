@@ -8,7 +8,6 @@ function App() {
     <AppProvider>
       <RouterProvider router={router} />
       <ModalRoot/>
-      {/*<TestMenu />*/}
     </AppProvider>
   );
 }

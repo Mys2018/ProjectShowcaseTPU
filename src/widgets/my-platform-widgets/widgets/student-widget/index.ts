@@ -1,0 +1,1 @@
+export { StudentWidget } from './StudentWidget.tsx'

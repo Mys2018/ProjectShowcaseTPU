@@ -6,6 +6,7 @@ import { MyApplicationsPage } from '../my-applications/ui/MyApplicationsPage'
 import { ParticipatingProjectsPage } from '../participating-projects/ParticipatingProjectsPage'
 import { AllCuratingProjects } from '../all-curating-projects/AllCuratingProjects'
 import { ApplicationsAndTeam } from '../applications-and-team/ApplicationsAndTeam'
+import { ParticipantsGrading } from '../participants-grading/ParticipantsGrading'
 import { ProjectModerationPage } from '../project-moderation/ProjectModerationPage'
 import { ProjectActivitiesTabs } from '@/widgets/project-activities-tabs'
 import { BackLink } from '@/shared/ui/back-link'
@@ -44,6 +45,8 @@ export function ProjectActivitiesLayout() {
         return <AllCuratingProjects />
       case ROUTES.MANAGE.TEAMS:
         return <ApplicationsAndTeam />
+      case ROUTES.MANAGE.GRADES:
+        return <ParticipantsGrading />
       case ROUTES.MODERATION.BASE:
       case ROUTES.MODERATION.PROJECTS:
         return <ProjectModerationPage />
