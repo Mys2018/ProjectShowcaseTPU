@@ -40,6 +40,8 @@ import CrossIcon from './icons/cross.svg?react'
 import ClockIcon from './icons/clock.svg?react'
 import CalendarIcon from './icons/calendar.svg?react'
 import LightningIcon from './icons/lightning.svg?react'
+import MessageIcon from './icons/message.svg?react'
+import ApproveIcon from './icons/approve.svg?react'
 export {
   userIconUrl,
   FeedbackIcon,
@@ -52,5 +54,7 @@ export {
   CrossIcon,
   ClockIcon,
   CalendarIcon,
-  LightningIcon
+  LightningIcon,
+  MessageIcon,
+  ApproveIcon
 }
