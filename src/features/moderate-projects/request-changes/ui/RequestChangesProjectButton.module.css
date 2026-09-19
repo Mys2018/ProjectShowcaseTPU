@@ -1,0 +1,46 @@
+.button {
+	--accentColor: var(--color-yellow);
+	--activeColor: var(--color-yellow);
+}
+
+.info {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+
+	& .title {
+		font: var(--section-title-interface);
+		color: black;
+	}
+
+	& .description {
+		font: var(--body-text-platform);
+		color: var(--color-gray-900);
+	}
+}
+
+.inputWrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+
+	margin-top: 8px;
+
+	& .restriction {
+		font: var(--inter-12-300);
+		color: var(--color-gray-600);
+	}
+}
+
+.actions {
+	align-self: flex-end;
+
+	display: flex;
+	align-items: center;
+	gap: 24px;
+
+	& .cancel {
+		font: var(--inter-13-600);
+		color: var(--color-gray-500);
+	}
+}
