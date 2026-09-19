@@ -66,6 +66,13 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     [updateStatusMutation]
   )
 
+  const handleCancelInvite = useCallback(
+    (applicationId: string) => {
+      updateStatusMutation.mutate({ applicationId, status: 'cancelled' })
+    },
+    [updateStatusMutation]
+  )
+
   // Ид заявки, чей статус-запрос сейчас в полёте: кнопки этой строки блокируем,
   // чтобы второй клик не отправил конфликтующий статус (финал решает порядок
   // прихода пакетов на сервер).
@@ -204,6 +211,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                 onAccept={handleAccept}
                 onReject={handleReject}
                 onInvite={handleInvite}
+                onCancelInvite={handleCancelInvite}
               />
             ))}
           </div>

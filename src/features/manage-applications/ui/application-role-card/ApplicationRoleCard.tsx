@@ -8,6 +8,7 @@ import { ApplicationRow } from '../application-row/ApplicationRow'
 import type { Application } from '@/entities/application'
 import UpIcon from '@/shared/ui/icons/up_arrow.svg?react'
 import { useModalStore } from '@/shared/model'
+import { useUserById } from '@/entities/user'
 
 interface RoleData {
   roleId: string
@@ -29,6 +30,7 @@ interface ApplicationRoleCardProps {
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
+  onCancelInvite?: (applicationId: string) => void
 }
 
 export const ApplicationRoleCard = ({
@@ -42,34 +44,91 @@ export const ApplicationRoleCard = ({
   onAccept,
   onReject,
   onInvite,
+  onCancelInvite,
 }: ApplicationRoleCardProps) => {
   const { openModal } = useModalStore()
-  const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null)
   const [isCollapsed, setIsCollapsed] = useState(true)
 
-  const pendingApplications = applications.filter((a) => a.status === 'pending')
+  // Активное приглашение от наставника для данной роли
+  const pendingInvitation = applications.find(
+    (a) => a.applicationType === 'Invitation' && a.status === 'pending'
+  )
+
+  // Данные приглашенного пользователя из API
+  const { data: invitedUser } = useUserById(
+    pendingInvitation?.studentID,
+    Boolean(pendingInvitation?.studentID)
+  )
+
+  // Прямые отклики студентов со статусом pending
+  const pendingDirectApplications = applications.filter(
+    (a) => a.applicationType === 'Application' && a.status === 'pending'
+  )
 
   const handleInviteUser = () => {
     openModal('INVITE_USER', {
       roleName: role.roleName,
       onInvite: (user: { id: number; name: string }) => {
-        setInvitedUser(user)
         onInvite(role.roleId, role.roleName, user)
       },
     })
+  }
+
+  const handleCancelInvitation = () => {
+    if (pendingInvitation) {
+      if (onCancelInvite) {
+        onCancelInvite(pendingInvitation.applicationID)
+      } else {
+        onReject(pendingInvitation.applicationID)
+      }
+    }
   }
 
   const toggleCollapse = () => {
     setIsCollapsed((prev) => !prev)
   }
 
+  const isInvitePending =
+    Boolean(pendingInvitation) && pendingApplicationId === pendingInvitation?.applicationID
+
+  const invitedUserName = invitedUser
+    ? `${invitedUser.meta.firstName} ${invitedUser.meta.lastName}`
+    : 'Пользователь'
+
   const requestContent = (
     <div className={styles.application}>
-      {pendingApplications.length > 0 ? (
+      {pendingInvitation ? (
+        // Если для роли висит активное приглашение — скрываем отклики и показываем статус приглашения
+        <div className={styles.freeBlock}>
+          <div className={styles.fullInviteContainer}>
+            <p className={styles.fieldText}>
+              Откликов пока нет
+            </p>
+
+            <div className={styles.invitedInfo}>
+              <p className={styles.invitedName}>
+                <div>
+                  Приглашен:
+                  <span>{invitedUserName}</span>
+                </div>
+              </p>
+              <button
+                type="button"
+                className={styles.cancelInviteBtn}
+                onClick={handleCancelInvitation}
+                disabled={isInvitePending}
+              >
+                Отменить
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : pendingDirectApplications.length > 0 ? (
+        // Если активного приглашения нет — показываем входящие отклики от студентов
         <div className={styles.applicationsBlock}>
           <div className={styles.applicationsHeader}>
             <p>
-              Откликов: {pendingApplications.length}
+              Откликов: {pendingDirectApplications.length}
             </p>
             <button
               type="button"
@@ -82,7 +141,7 @@ export const ApplicationRoleCard = ({
           </div>
 
           <div className={styles.applicationList}>
-            {pendingApplications.map((application, appIndex) => (
+            {pendingDirectApplications.map((application, appIndex) => (
               <Fragment key={application.applicationID}>
                 <ApplicationRow
                   application={application}
@@ -90,43 +149,26 @@ export const ApplicationRoleCard = ({
                   onAccept={onAccept}
                   onReject={onReject}
                 />
-                {appIndex < pendingApplications.length - 1 && (
+                {appIndex < pendingDirectApplications.length - 1 && (
                   <div className={styles.separator} />
                 )}
               </Fragment>
             ))}
           </div>
-
         </div>
       ) : (
+        // Если откликов нет и приглашений нет — кнопка пригласить
         <div className={styles.freeBlock}>
           <p className={styles.fieldText}>Откликов пока нет</p>
           {canInvite ? (
             <div className={styles.inviteContainer}>
-              {!invitedUser && (
-                <InviteUserButton onClick={handleInviteUser} />
-              )}
-              {invitedUser && (
-                <div className={styles.invitedInfo}>
-                  <p className={styles.invitedName}>
-                    <div>
-                      Приглашен:
-                      <span>{invitedUser.name}</span>
-                    </div>
-                  </p>
-                  <button
-                    type="button"
-                    className={styles.cancelInviteBtn}
-                    onClick={() => setInvitedUser(null)}
-                  >
-                    Отменить
-                  </button>
-                </div>
-              )}
+              <InviteUserButton onClick={handleInviteUser} />
             </div>
-          ) : <p className={styles.noRecruiting}>
-            Проект еще не выпущен
-          </p>}
+          ) : (
+            <p className={styles.noRecruiting}>
+              Проект еще не выпущен
+            </p>
+          )}
         </div>
       )}
     </div>
@@ -147,7 +189,7 @@ export const ApplicationRoleCard = ({
       }
       requestContent={requestContent}
       isCollapsed={isCollapsed}
-      hasApplications={pendingApplications.length > 0}
+      hasApplications={!pendingInvitation && pendingDirectApplications.length > 0}
     />
   )
 }

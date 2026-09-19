@@ -22,10 +22,19 @@
   color: var(--color-gray-500);
 }
 
-.inviteContainer {
+.fullInviteContainer {
   display: flex;
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.inviteContainer p:nth-child(1) {
+  font: var(--field-label-interface);
+  color: var(--color-gray-500);
 }
 
 .applicationsBlock {
