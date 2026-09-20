@@ -13,14 +13,12 @@ import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
 import { PopUpNavigation } from "./pop-up-navigation/PopUpNavigation.tsx";
-import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import BellNotiIcon from '@/shared/ui/icons/bell_with_notification.svg?react'
 import {useApplications} from "@/entities/application";
 import {useMemo} from "react";
 
 export default function Header() {
   const status = useAuthStore(state => state.status);
-  const { data } = useMe()
   const { data: invites } = useApplications(
     {
       mode: 'AsStudent',
