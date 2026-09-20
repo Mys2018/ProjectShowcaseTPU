@@ -11,9 +11,13 @@ export function ProjectModerationPage() {
   const projects = data ? getSortedProjects(data.projects) : []
   const [activeProject, setActiveProject] = useState<ProjectCardData>()
 
+  const canProjectBeChosen = (project: ProjectCardData) => project.status === 'Pending' || project.status === 'NeedsRework'
+
   useEffect(() => {
-    if (!activeProject && projects.length) {
-      setActiveProject(projects[0])
+    if (!activeProject) {
+      let i = 0
+      while (i < projects.length && !canProjectBeChosen(projects[i])) i++
+      if (i < projects.length) setActiveProject(projects[i])
     }
   }, [projects])
 
@@ -25,7 +29,11 @@ export function ProjectModerationPage() {
           : projects.map(project => (
               <ProjectCardVertical
                 key={project.id}
-                className={clsx(styles.project, activeProject?.id === project.id && styles.active)}
+                className={clsx(
+                  styles.project,
+                  canProjectBeChosen(project) && styles.pointer,
+                  activeProject?.id === project.id && styles.active
+                )}
                 project={project}
                 onClick={() => setActiveProject(project)}
                 small

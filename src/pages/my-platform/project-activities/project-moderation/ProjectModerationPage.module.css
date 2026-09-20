@@ -14,7 +14,11 @@
 
   .project {
     flex-shrink: 0;
-    cursor: pointer;
+    cursor: default;
+
+    &.pointer {
+      cursor: pointer;
+    }
 
     &.active {
       cursor: default;
