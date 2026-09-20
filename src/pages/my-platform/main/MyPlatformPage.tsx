@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
 import { MyPlatformBanner } from './MyPlatformBanner'
-import { MyPlatformProjectsWidgets } from "@/pages/my-platform/main/MyPlatformProjectsWidgets.tsx";
+import { MyPlatformProjectsWidgets } from './MyPlatformProjectsWidgets'
 import {
   Avatar,
   getSwitchableRoles,
@@ -132,7 +132,7 @@ export function MyPlatformPage() {
       const stopAt = sideBaseTop + sideHeight - viewportHeight
 
       if (stopAt <= 0) {
-        side.style.top = `${rowBottom - rowTop}px`
+        side.style.top = `${rowBottom - rowTop + 8}px`
         return
       }
 
@@ -187,7 +187,7 @@ export function MyPlatformPage() {
       window.removeEventListener('resize', onResize)
       scroller?.removeEventListener('scroll', onScroll)
     }
-  }, [])
+  }, [me])
 
   const isHeroWrapperVisible = switchableRoles.some(role => role.type !== 'Student')
   const isFloatingTabsVisible = switchableRoles.length > 1 && preferredRoleType
@@ -203,7 +203,7 @@ export function MyPlatformPage() {
       roles={me.competencies}
     />
   ) : (
-    <UserRowSkeleton />
+    <UserRowSkeleton className={styles.skeleton} />
   )
 
   return (
