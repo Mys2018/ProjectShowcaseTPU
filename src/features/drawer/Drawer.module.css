@@ -15,17 +15,23 @@
 .backdrop {
   position: absolute;
   inset: 0;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.open .backdrop {
+  opacity: 1;
 }
 
 .sheet {
   position: relative;
   width: 100%;
-  background-color: var(--color-brand-violet);
   will-change: transform;
-  padding: 11px 20px 32px;
-  border-radius: 20px 20px 0 0;
-  max-height: 80vh;
+  padding: 12px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+  border-radius: 24px 24px 0 0;
+  max-height: 85vh;
+  box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
@@ -33,9 +39,22 @@
   align-items: center;
 }
 
+.sheet.violet {
+  background-color: var(--color-brand-violet);
+}
+
+.sheet.gray50 {
+  background-color: var(--color-gray-50);
+}
+
 .dragHandle {
-  width: 95px;
-  height: 5px;
-  background-color: #cbd5e1;
+  width: 48px;
+  height: 4px;
+  background-color: var(--color-gray-250);
   border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.sheet.violet .dragHandle {
+  background-color: rgba(255, 255, 255, 0.4);
 }

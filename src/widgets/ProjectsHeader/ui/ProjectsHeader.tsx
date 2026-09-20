@@ -7,6 +7,7 @@ import { getProjectPlural, useProjects } from '@/entities/project'
 import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared";
 import { useAuthStore, useIsProfileFilled } from "@/entities/user";
+import clsx from "clsx";
 
 const SORT_OPTIONS: { key: Exclude<SortKey, 'relevance'>; label: string }[] = [
   { key: 'created_desc', label: 'Новые' },
@@ -86,7 +87,7 @@ export function ProjectsHeader() {
 
             Наиболее подходящие
           </div>
-          <div className={styles.navEl}>|</div>
+          <div className={clsx(styles.navEl, styles.separator)}>|</div>
           <div className={`${styles.navEl} ${isRelevanceSort ? styles.disabled : ''}`}>
             <PopupMenu trigger={
               <div className={styles.sortTrigger}>
@@ -105,8 +106,8 @@ export function ProjectsHeader() {
               ))}
             </PopupMenu>
           </div>
-          <div className={styles.navEl}>|</div>
-          <div>
+          <div className={clsx(styles.navEl, styles.separator)}>|</div>
+          <div className={styles.pagination}>
             <Pagination currentPage={page} onPageSelect={setPage} totalPages={total ? Math.ceil(total / limit) || 1 : 1} />
           </div>
         </nav>

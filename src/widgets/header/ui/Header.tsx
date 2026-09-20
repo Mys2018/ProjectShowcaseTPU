@@ -16,11 +16,26 @@ import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import BellNotiIcon from '@/shared/ui/icons/bell_with_notification.svg?react'
+import {useApplications} from "@/entities/application";
+import {useMemo} from "react";
 
 export default function Header() {
-
-  const { data } = useMe()
   const status = useAuthStore(state => state.status);
+  const { data } = useMe()
+  const { data: invites } = useApplications(
+    {
+      mode: 'AsStudent',
+      type: 'Invitation',
+      offset: 0,
+      limit: 100,
+    },
+    status === 'authenticated'
+  )
+
+  const activeInvites = useMemo(() => {
+    return invites?.applications.filter(item => item.status === 'pending') ?? []
+  }, [invites])
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
   const { mutate: logout, isPending: isLogoutPending } = useLogout()
@@ -64,7 +79,10 @@ export default function Header() {
                   navigate(ROUTES.NOTIFICATION.BASE)
                 }}
               >
-                <BellIcon/>
+                {
+                  activeInvites && activeInvites.length > 0 ? <BellNotiIcon/> : <BellIcon/>
+                }
+
               </button>
             </div>
             {

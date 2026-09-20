@@ -21,6 +21,7 @@ import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContaine
 import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { ROUTES } from "@/shared";
+import { copyToClipboard } from "@/shared/lib";
 import IdIcon from '@/shared/ui/icons/id.svg?react';
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
@@ -37,6 +38,7 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
   const { data: owner } = useUserById(project.ownerId)
   const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
+  const [isIdCopied, setIsIdCopied] = useState(false);
 
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [blockedBy, setBlockedBy] = useState<'guest' | 'profile' | null>(null);
@@ -109,16 +111,40 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
         </div>
 
         <div className={styles.rightTopBlock}>
-          <ShareIcon />
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label="Поделиться проектом"
+            onClick={() => {
+              if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+                void navigator.share({
+                  title: project.meta.title,
+                  url: window.location.href,
+                }).catch(() => {})
+              } else {
+                void copyToClipboard(window.location.href)
+              }
+            }}
+          >
+            <ShareIcon />
+          </button>
           <PopupMenu
             trigger={<button
               type="button"
               className={styles.moreMenuButton}
+              aria-label="Дополнительно"
             >
               <MoreIcon />
             </button>}
           >
-            <PopupMenu.Row onClick={() => { }} title={'Скопировать ID'}>
+            <PopupMenu.Row
+              onClick={() => {
+                void copyToClipboard(project.id)
+                setIsIdCopied(true)
+                setTimeout(() => setIsIdCopied(false), 2000)
+              }}
+              title={isIdCopied ? 'ID скопирован!' : 'Скопировать ID'}
+            >
               <IdIcon />
             </PopupMenu.Row>
           </PopupMenu>
@@ -146,10 +172,11 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
             ) : (
               <>
                 <ProfileWidget
+                  userId={owner.id}
                   last_name={owner?.meta?.lastName ?? ''}
                   first_name={owner?.meta?.firstName ?? ''}
                   role="Менеджер данного проекта"
-                  avatarSrc=""
+                  avatarSrc={owner?.profilePicture}
                 />
                 <ProjectTeam
                   project={project}
@@ -183,7 +210,16 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
         // TODO: экрана баллов и формы отзыва ещё нет — бэк не готов
         onShowPoints={() => { }}
         onLeaveReview={() => { }}
-        onShare={() => { }}
+        onShare={() => {
+          if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+            void navigator.share({
+              title: project.meta.title,
+              url: window.location.href,
+            }).catch(() => {})
+          } else {
+            void copyToClipboard(window.location.href)
+          }
+        }}
       />
 
       {blockedBy && (

@@ -22,6 +22,7 @@ import { usePlatformFinder } from "@/entities/platforms";
 import { useMemo } from "react";
 import { BackLink } from "@/shared/ui/back-link";
 import { ROUTES } from "@/shared";
+import { copyToClipboard } from "@/shared/lib";
 
 interface ProjectPageProps {
   project: ProjectCardData
@@ -31,6 +32,8 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   // TODO
   const { data: owner } = useUserById(project.ownerId)
   const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
+  const [isIdCopied, setIsIdCopied] = useState(false)
+  const [isLinkCopied, setIsLinkCopied] = useState(false)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);
@@ -138,10 +141,11 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
 
         <ProfileWidget
+          userId={owner.id}
           last_name={owner.meta.lastName}
           first_name={owner.meta.firstName}
           role="Менеджер данного проекта"
-          avatarSrc=""
+          avatarSrc={owner.profilePicture}
         />
 
         <KeyPoints
@@ -190,20 +194,36 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
       <aside className={styles.idBlock}>
 
-        <a className={styles.share} href='#'>
+        <button
+          type="button"
+          className={styles.share}
+          onClick={() => {
+            void copyToClipboard(window.location.href)
+            setIsLinkCopied(true)
+            setTimeout(() => setIsLinkCopied(false), 2000)
+          }}
+        >
           <ShareIcon />
-          Поделиться проектом
-        </a>
+          {isLinkCopied ? 'Ссылка скопирована' : 'Поделиться проектом'}
+        </button>
 
         <PopupMenu
           trigger={<button
             type="button"
             className={styles.moreMenuButton}
+            aria-label="Дополнительно"
           >
             <MoreIcon />
           </button>}
         >
-          <PopupMenu.Row onClick={() => { }} title={'Скопировать ID'}>
+          <PopupMenu.Row
+            onClick={() => {
+              void copyToClipboard(project.id)
+              setIsIdCopied(true)
+              setTimeout(() => setIsIdCopied(false), 2000)
+            }}
+            title={isIdCopied ? 'ID скопирован!' : 'Скопировать ID'}
+          >
             <IdIcon />
           </PopupMenu.Row>
         </PopupMenu>

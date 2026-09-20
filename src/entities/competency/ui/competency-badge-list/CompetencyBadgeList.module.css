@@ -12,6 +12,7 @@
 .wrapper {
   position: relative;
   max-height: 56px;
+  padding-bottom: 4px;
 
   &::after,
   &::before {

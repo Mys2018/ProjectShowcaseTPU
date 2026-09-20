@@ -12,6 +12,10 @@ import BellIcon from '@/shared/ui/icons/bell.svg?react'
 import { useMobileChrome } from '@/shared/lib'
 import { ROUTES } from '@/shared'
 
+import { useMemo } from 'react'
+import { useApplications } from '@/entities/application'
+import BellNotiIcon from '@/shared/ui/icons/bell_with_notification.svg?react'
+
 export function MobileHeader() {
   const { pathname } = useLocation()
   const { headerTransform, headerAnimate } = useMobileChrome(true, pathname)
@@ -19,6 +23,20 @@ export function MobileHeader() {
   const status = useAuthStore(state => state.status)
   const { data: user } = useMe()
   const navigate = useNavigate()
+
+  const { data: invites } = useApplications(
+    {
+      mode: 'AsStudent',
+      type: 'Invitation',
+      offset: 0,
+      limit: 100,
+    },
+    status === 'authenticated'
+  )
+
+  const activeInvites = useMemo(() => {
+    return invites?.applications.filter(item => item.status === 'pending') ?? []
+  }, [invites])
 
   const isAuthenticated = status === 'authenticated' || status === 'loading'
 
@@ -57,7 +75,7 @@ export function MobileHeader() {
                 navigate(ROUTES.NOTIFICATION.BASE)
               }}
             >
-              <BellIcon />
+              {activeInvites.length > 0 ? <BellNotiIcon /> : <BellIcon />}
             </button>
           </div>
           <Avatar

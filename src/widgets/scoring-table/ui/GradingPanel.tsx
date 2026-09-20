@@ -272,6 +272,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
               <div key={student.id} className={styles.row}>
                 <div className={clsx(styles.grid, styles.card)}>
                   <TeamUserCard
+                    userId={student.id}
                     firstName={student.firstName}
                     lastName={student.lastName}
                     nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
@@ -284,7 +285,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                     nameSubtextStyle="OS-12-350"
                     avatar={
                       <span className={styles.avatar}>
-                        <Avatar picture={student.picture} fallbackType="user" size="48px" strokeColor="grey" />
+                        <Avatar userId={student.id} picture={student.picture} fallbackType="user" size="48px" strokeColor="grey" />
                       </span>
                     }
                   />

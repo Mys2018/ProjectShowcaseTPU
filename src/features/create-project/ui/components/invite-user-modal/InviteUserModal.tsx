@@ -84,6 +84,7 @@ export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteU
                   <div key={user.id}>
                     <div className={styles.userCard}>
                       <TeamUserCard
+                        userId={user.id}
                         firstName={user.meta.firstName}
                         lastName={user.meta.lastName}
                         course={user.grade}
@@ -92,7 +93,7 @@ export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteU
                         nameTextStyle={'bodyText'}
                         nameSubtextStyle={"OS-12-350"}
                         avatar={
-                          <Avatar picture={user.profilePicture} fallbackType={'user'} size={'48px'} strokeColor={'grey'}/>
+                          <Avatar userId={user.id} picture={user.profilePicture} fallbackType={'user'} size={'48px'} strokeColor={'grey'}/>
                         }
                       />
 
