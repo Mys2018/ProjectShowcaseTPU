@@ -19,19 +19,6 @@
 	}
 }
 
-.inputWrapper {
-	display: flex;
-	flex-direction: column;
-	gap: 5px;
-
-	margin-top: 8px;
-
-	& .restriction {
-		font: var(--inter-12-300);
-		color: var(--color-gray-600);
-	}
-}
-
 .actions {
 	align-self: flex-end;
 

@@ -1,38 +1,23 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import styles from './ProjectModerationPage.module.css'
+import { getSortedProjects } from './lib/getSortedProjects'
 import { ProjectModeration } from '@/widgets/project-moderation'
-import {
-  NoProjectsFallback,
-  ProjectCardVertical,
-  ProjectModerationStatus,
-  useProjects,
-  type ProjectCardData,
-  type ProjectStatus
-} from '@/entities/project'
+import { NoProjectsFallback, ProjectCardVertical, ProjectModerationStatus, useProjects, type ProjectCardData } from '@/entities/project'
 import { ProjectSkeleton, TextSkeleton } from '@/shared'
-
-const getStatusPriority = (status: ProjectStatus): number => {
-  switch (status) {
-    case 'Pending':
-      return 1
-    case 'NeedsRework':
-      return 2
-    case 'Rejected':
-      return 3
-    default:
-      return 4
-  }
-}
 
 export function ProjectModerationPage() {
   const { data, isLoading } = useProjects({ sort: 'created_desc' })
-  const projects = data?.projects.toSorted((a, b) => getStatusPriority(a.status) - getStatusPriority(b.status)) || []
+  const projects = data ? getSortedProjects(data.projects) : []
   const [activeProject, setActiveProject] = useState<ProjectCardData>()
 
+  const canProjectBeChosen = (project: ProjectCardData) => project.status === 'Pending' || project.status === 'NeedsRework'
+
   useEffect(() => {
-    if (!activeProject && projects.length) {
-      setActiveProject(projects[0])
+    if (!activeProject) {
+      let i = 0
+      while (i < projects.length && !canProjectBeChosen(projects[i])) i++
+      if (i < projects.length) setActiveProject(projects[i])
     }
   }, [projects])
 
@@ -44,7 +29,11 @@ export function ProjectModerationPage() {
           : projects.map(project => (
               <ProjectCardVertical
                 key={project.id}
-                className={clsx(styles.project, activeProject?.id === project.id && styles.active)}
+                className={clsx(
+                  styles.project,
+                  canProjectBeChosen(project) && styles.pointer,
+                  activeProject?.id === project.id && styles.active
+                )}
                 project={project}
                 onClick={() => setActiveProject(project)}
                 small
