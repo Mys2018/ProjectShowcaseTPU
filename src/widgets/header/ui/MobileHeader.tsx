@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import styles from './MobileHeader.module.css'
 import EnterButton from './EnterButton/EnterButton.tsx'
-import { useAuthStore, useMe } from '@/entities/user'
-import { Avatar } from '@/entities/user/ui/avatar/Avatar.tsx'
+import { PopUpNavigation } from './pop-up-navigation/PopUpNavigation.tsx'
+import { useAuthStore } from '@/entities/user'
 // ponytail: ассет как в макете — знак ТПУ, разделитель и чип «ИШИТР +» одной картинкой.
 // Школа в нём зашита, из данных пользователя не подставляется.
 import LogoTPU from '@/shared/assets/svg/logoTPUMobile.svg'
@@ -17,7 +17,6 @@ export function MobileHeader() {
   const { headerTransform, headerAnimate } = useMobileChrome(true, pathname)
 
   const status = useAuthStore(state => state.status)
-  const { data: user } = useMe()
   const navigate = useNavigate()
 
   const isAuthenticated = status === 'authenticated' || status === 'loading'
@@ -60,14 +59,7 @@ export function MobileHeader() {
               <BellIcon />
             </button>
           </div>
-          <Avatar
-            className={styles.avatar}
-            size={'36px'}
-            fallbackType={'user'}
-            picture={user?.profilePicture}
-            onClick={() => void navigate(ROUTES.PROFILE.BASE)}
-            strokeColor={"grad"}
-          />
+          <PopUpNavigation />
         </div>
       ) : (
         <EnterButton />

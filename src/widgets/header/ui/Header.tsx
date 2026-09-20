@@ -6,24 +6,19 @@ import clsx from "clsx";
 import EnterButton from "@/widgets/header/ui/EnterButton/EnterButton.tsx";
 import { SwitchWorkSpace } from "@/features/switch-workspace";
 import {SwitchMyPlatform} from "@/features/switch-my-platform";
-import { useLogout } from "@/features/auth";
-import {useAuthStore, useMe} from "@/entities/user";
-import {Avatar} from "@/entities/user/ui/avatar";
-import { getAvatarRoleInfo } from "@/entities/user";
+import {useAuthStore} from "@/entities/user";
 import HeartIcon from '@/shared/ui/icons/heart.svg?react'
 import BellIcon from '@/shared/ui/icons/bell.svg?react'
 import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import LogoTPU from "@/shared/assets/svg/newLogo.svg";
 import {ROUTES} from "@/shared";
-import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
+import { PopUpNavigation } from "./pop-up-navigation/PopUpNavigation.tsx";
 
 export default function Header() {
 
-  const { data } = useMe()
   const status = useAuthStore(state => state.status);
   const navigate = useNavigate()
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-  const { mutate: logout, isPending: isLogoutPending } = useLogout()
 
   const handleLogoClick = () => {
     if (status == 'authenticated') {
@@ -70,34 +65,7 @@ export default function Header() {
             {
               status !== 'authenticated' && status !== 'loading' ?
                 <EnterButton/> :
-                <PopupMenu
-                  trigger={
-                    <Avatar
-                      picture={data?.profilePicture}
-                      label={getAvatarRoleInfo(data?.roles)?.label}
-                      labelColor={'black'}
-                      fallbackType={getAvatarRoleInfo(data?.roles)?.fallback || 'user'}
-                      size={"48px"}
-                      strokeColor={"grad"}
-                    />
-                  }
-                >
-                  <PopupMenu.Row
-                    title={'Мой профиль'}
-                    onClick={() => {
-                      navigate(ROUTES.PROFILE.BASE);
-                    }}
-                  />
-                  <PopupMenu.Row
-                    title={isLogoutPending ? 'Выходим…' : 'Выйти'}
-                    onClick={() => {
-                      // Уходим на логин только по подтверждённому onSuccess —
-                      // при ошибке logout сессия жива, и тихий уход создал бы
-                      // «я вышел», под которым остаётся рабочий cookie.
-                      logout();
-                    }}
-                  />
-                </PopupMenu>
+                <PopUpNavigation />
             }
           </div>
         </div>
