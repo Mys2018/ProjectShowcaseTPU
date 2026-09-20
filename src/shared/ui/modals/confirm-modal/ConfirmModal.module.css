@@ -1,4 +1,8 @@
 .container {
+  --iconColor: var(--color-gray-350);
+  --titleColor: var(--color-gray-900);
+  --confirmButtonBgColor: var(--color-brand-green);
+
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -8,7 +12,7 @@
 .questionIcon {
   width: 50px;
   height: 50px;
-  color: var(--color-gray-350)
+  color: var(--iconColor);
 }
 
 .textBlock {
@@ -20,7 +24,7 @@
 
 .title {
   font: var(--field-title-big-interface);
-  color: var(--color-gray-900);
+  color: var(--titleColor);
   text-align: center;
 }
 
@@ -38,18 +42,24 @@
 
 .cancelBtn {
   font: var(--inter-13-600);
-  color: var(--color-gray-500)
+  color: var(--color-gray-500);
 }
 
 .confirmBtn {
   padding: 14px 24px 15px 24px;
-  background-color: var(--color-brand-green);
+  background-color: var(--confirmButtonBgColor);
   color: white;
   border-radius: 50px;
   font: var(--inter-13-600);
+
+  &:hover,
+  &:active {
+    background-color: var(--confirmButtonBgColor);
+  }
 }
 
-.cancelBtn:hover, .confirmBtn:hover {
+.cancelBtn:hover,
+.confirmBtn:hover {
   opacity: 0.8;
   transition: all 0.5s;
 }

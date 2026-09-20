@@ -26,6 +26,7 @@ export { Callout } from './callout/Callout.tsx'
 export * from './elements/buttons'
 export { CompetencyCard } from './competency-card/CompetencyCard.tsx'
 export { SkillTagList, SkillList } from '@/entities/skill'
+export { Section } from './section/Section.tsx'
 
 import userIconUrl from './icons/fallback_personal.svg'
 import FeedbackIcon from './icons/feedback.svg?react'
@@ -39,6 +40,8 @@ import CrossIcon from './icons/cross.svg?react'
 import ClockIcon from './icons/clock.svg?react'
 import CalendarIcon from './icons/calendar.svg?react'
 import LightningIcon from './icons/lightning.svg?react'
+import MessageIcon from './icons/message.svg?react'
+import ApproveIcon from './icons/approve.svg?react'
 export {
   userIconUrl,
   FeedbackIcon,
@@ -51,5 +54,7 @@ export {
   CrossIcon,
   ClockIcon,
   CalendarIcon,
-  LightningIcon
+  LightningIcon,
+  MessageIcon,
+  ApproveIcon
 }

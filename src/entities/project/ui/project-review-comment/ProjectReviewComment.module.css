@@ -1,0 +1,33 @@
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  border-color: var(--color-yellow);
+
+  & .label {
+    font: var(--font-open-sans);
+    font-size: 15px;
+    line-height: 150%;
+    color: var(--color-gray-900);
+  }
+
+  & .title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--color-yellow);
+
+    & .icon {
+      width: 18px;
+      height: 15px;
+      color: inherit;
+    }
+
+    & .label {
+      font: var(--field-title-big-interface);
+      color: inherit;
+    }
+  }
+}
