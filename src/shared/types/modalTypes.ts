@@ -9,4 +9,6 @@ export type ModalType =
   'AVATAR_UPLOAD' |
   'INVITE_USER' |
   'START_MODAL' |
+  'BLOCKED_GRADING' |
+  'COMPLAINT_MODAL' |
   null

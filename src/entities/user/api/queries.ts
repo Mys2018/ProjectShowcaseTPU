@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
-import type { User } from '../model/types'
+import type { StudentScoreResponse, User } from '../model/types'
 import type { AuthStatusResponse, UpdateProfileMetaRequest } from './types'
 import type { AxiosError } from 'axios'
 import { queryKeys } from './queryKeys'
-import { getAuthStatus, getMe, getUserById, getUsers, updateProfileMeta } from './requests'
+import { getAuthStatus, getMe, getMyScores, getUserById, getUsers, updateProfileMeta } from './requests'
 
 export const useAuthStatus = (enabled = true): UseQueryResult<AuthStatusResponse, AxiosError> => {
   return useQuery({
@@ -24,6 +24,15 @@ export const useMe = (enabled = true): UseQueryResult<User, AxiosError> => {
     // Infinity замораживал бы «меня» до F5: правки профиля из другой вкладки
     // или смена аватки в ЛК никогда бы не подхватились.
     staleTime: 5 * 60 * 1000,
+  })
+}
+
+export const useMyScores = (enabled = true): UseQueryResult<StudentScoreResponse, AxiosError> => {
+  return useQuery({
+    queryKey: queryKeys.scores(),
+    queryFn: getMyScores,
+    enabled,
+    staleTime: 60 * 1000,
   })
 }
 

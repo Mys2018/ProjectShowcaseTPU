@@ -42,7 +42,7 @@ export function CompetencyBadgeList({ competencies, label, row, className }: Com
 
   return (
     <div className={clsx(styles.competencies, className)}>
-      <div className={styles.label}>{label ?? getCompetencyPlural(competencies.length)}</div>
+      {label !== '' && <div className={styles.label}>{label ?? getCompetencyPlural(competencies.length)}</div>}
       <div className={clsx(styles.wrapper, row && styles.row)} ref={wrapperRef}>
         <div className={styles.list} ref={listRef}>
           {sortedCompetencies.map(competency => (

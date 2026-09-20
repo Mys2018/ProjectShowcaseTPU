@@ -29,6 +29,17 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
 
   const {data: team} = useProjectTeam(project.id)
 
+  const teamUserIds = useMemo(() => {
+    const ids = new Set<number>()
+    if (team) {
+      team.forEach((u) => ids.add(u.userId))
+    }
+    project.roles?.forEach((r) => {
+      r.placeUserIds?.forEach((id) => ids.add(id))
+    })
+    return Array.from(ids)
+  }, [team, project.roles])
+
   // Одобрение/отклонение меняет состав команды и занятые места, приглашение —
   // тоже: списки participating/applied и деталь проекта (team, roles) обязаны
   // рефетчиться вместе со списком заявок, иначе панель действия и ростер
@@ -208,6 +219,8 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                 applications={applicationsByRole.get(role.roleId) || []}
                 pendingApplicationId={pendingApplicationId}
                 canInvite={project.status === 'Recruiting'}
+                projectId={project.id}
+                teamUserIds={teamUserIds}
                 onAccept={handleAccept}
                 onReject={handleReject}
                 onInvite={handleInvite}

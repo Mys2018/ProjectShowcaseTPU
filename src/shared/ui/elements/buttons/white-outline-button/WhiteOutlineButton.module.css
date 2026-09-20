@@ -1,0 +1,12 @@
+.whiteButton {
+  padding: 13px 24px 14px 24px;
+  border-radius: 50px;
+  border: 1px solid white;
+  color: white;
+  background-color: transparent;
+  font: var(--inter-13-600);
+}
+
+.whiteButton:hover {
+
+}

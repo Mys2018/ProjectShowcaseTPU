@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { buildRoute } from "@/shared/config/routes";
+import { useModalStore } from "@/shared/model";
 
 type TeamUserCardTextStyle = 'ALS' | 'bodyText' | 'OS-12-500' | 'bodySmall'
 type TeamUserCardSubtextStyle = 'OS-10-400' | 'OS-12-350'
@@ -99,6 +100,7 @@ export const TeamUserCard = ({
 
   const handleClick = onClick ?? (userId ? (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    useModalStore.getState().closeModal();
     navigate(buildRoute.profileById(String(userId)));
   } : undefined);
 

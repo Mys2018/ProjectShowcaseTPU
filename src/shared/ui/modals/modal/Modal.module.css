@@ -28,6 +28,10 @@
   gap: 8px;
 }
 
+.grey100 {
+  background: var(--color-gray-100);
+}
+
 .header {
   display: flex;
   flex-direction: column;

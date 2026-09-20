@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import clsx from 'clsx'
 // та же раскладка, что у «Отклики и команда»: карточки проектов слева, работа справа
 import styles from '../applications-and-team/ApplicationsAndTeam.module.css'
@@ -8,6 +9,16 @@ import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
 export const ParticipantsGrading = () => {
   const { data } = useCuratedProjects({ limit: 100 })
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [searchParams] = useSearchParams()
+  const location = useLocation()
+
+  const targetProjectId = searchParams.get('projectId') || (location.state as { projectId?: string } | null)?.projectId
+
+  useEffect(() => {
+    if (targetProjectId) {
+      setSelectedProjectId(targetProjectId)
+    }
+  }, [targetProjectId])
 
   // Часы выставляются только по спринтам — они есть у проектов в работе
   const projects = (data?.projects ?? []).filter(p => p.status === 'InProgress')

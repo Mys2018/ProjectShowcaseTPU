@@ -1,0 +1,37 @@
+.button {
+  width: 100%;
+  padding: 10px 16px 10px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--color-gray-400);
+  border-radius: 20px;
+  background-color: transparent;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: var(--color-gray-750);
+}
+
+.icon path {
+  fill: var(--color-gray-750);
+}
+
+.button div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 2px
+}
+
+.button div p:nth-child(1) {
+  font: var(--inter-10-500);
+  color: var(--color-gray-750);
+}
+
+.button div p:nth-child(2) {
+  font: var(--inter-10-300);
+  color: var(--color-gray-750);
+}

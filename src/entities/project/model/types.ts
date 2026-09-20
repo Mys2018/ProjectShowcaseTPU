@@ -328,3 +328,21 @@ export interface SprintHoursBatch {
   sprintId: string
   records: StudentHoursInput[]
 }
+
+export interface StudentSprintHoursSummary {
+  sprintId: string
+  hoursByWeeks?: number[]
+  totalHours: number
+}
+
+export interface StudentTimesheetSummary {
+  studentId: number
+  studentName: string
+  totalHours: number
+  sprints?: StudentSprintHoursSummary[]
+}
+
+export interface ProjectTimesheetSummaryResponse {
+  projectId: string
+  students?: StudentTimesheetSummary[]
+}

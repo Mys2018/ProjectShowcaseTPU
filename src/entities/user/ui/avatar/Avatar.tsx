@@ -9,6 +9,7 @@ import ModerIcon from '@/shared/ui/icons/fallback_moderator.svg?react';
 import AdminIcon from '@/shared/ui/icons/fallback_admin.svg?react';
 import OrgIcon from '@/shared/ui/icons/fallback_admin.svg?react';
 import { buildRoute } from '@/shared/config/routes';
+import { useModalStore } from '@/shared/model';
 
 export type AvatarSizeType = '108px' | '80px' | '70px' | '48px' | '40px' | '36px'
 export type AvatarFallbackType = 'user' | 'mentor' | 'moder' | 'admin' | 'organization'
@@ -63,6 +64,7 @@ export const Avatar = ({picture, className, label, userId, onClick, onClickEditB
 
   const handleClick = onClick ?? (userId ? (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()
+    useModalStore.getState().closeModal()
     navigate(buildRoute.profileById(String(userId)))
   } : undefined)
 

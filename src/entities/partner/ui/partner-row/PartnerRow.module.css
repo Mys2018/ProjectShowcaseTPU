@@ -13,6 +13,10 @@
   object-fit: cover;
 }
 
+.placeholder {
+  background-color: var(--color-gray-100);
+}
+
 .info {
   display: flex;
   flex-direction: column;

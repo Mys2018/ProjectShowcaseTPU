@@ -35,20 +35,21 @@ export const useProjectTeam = (projectId: string, enabled?: boolean) => {
   })
 }
 
-export const useProjectSprints = (projectId: string) => {
+export const useProjectSprints = (projectId: string, enabled?: boolean) => {
   return useQuery({
     queryKey: projectKeys.sprints(projectId),
     queryFn: () => projectApi.getProjectSprints(projectId),
-    enabled: !!projectId
+    enabled: enabled !== undefined ? (enabled && !!projectId) : !!projectId
   })
 }
 
 /** Матрица часов отдаётся по одному спринту — грузим нужные спринты параллельно. */
-export const useSprintsGradingStatus = (projectId: string, sprintIds: string[]) => {
+export const useSprintsGradingStatus = (projectId: string, sprintIds: string[], enabled?: boolean) => {
   return useQueries({
     queries: sprintIds.map(sprintId => ({
       queryKey: projectKeys.sprintGrading(projectId, sprintId),
-      queryFn: () => projectApi.getSprintGradingStatus(projectId, sprintId)
+      queryFn: () => projectApi.getSprintGradingStatus(projectId, sprintId),
+      enabled: enabled !== undefined ? (enabled && !!projectId && !!sprintId) : (!!projectId && !!sprintId)
     })),
     combine: results => ({
       data: results.flatMap(r => (r.data ? [r.data] : [])),
@@ -57,6 +58,7 @@ export const useSprintsGradingStatus = (projectId: string, sprintIds: string[]) 
     })
   })
 }
+
 
 /** Часы шлются по одному спринту — изменения из разных спринтов отправляем параллельно. */
 export const useSubmitSprintHours = (projectId: string) => {
@@ -156,5 +158,13 @@ export const useProjectReview = (projectId: string, enabled?: boolean) => {
     queryKey: projectKeys.review(projectId),
     queryFn: () => projectApi.getProjectModerationReview(projectId),
     enabled: !!projectId && enabled
+  })
+}
+
+export const useProjectTimesheetSummary = (projectId?: string, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: projectKeys.timesheetSummary(projectId ?? ''),
+    queryFn: () => projectApi.getProjectTimesheetSummary(projectId!),
+    enabled: Boolean(projectId) && enabled
   })
 }

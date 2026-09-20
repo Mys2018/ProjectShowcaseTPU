@@ -35,5 +35,14 @@ export const ENDPOINTS = {
     `${import.meta.env.VITE_APPLICATIONS_URL || '/applications'}/${applicationId}/status/${status}`,
 
   PLATFORMS: import.meta.env.VITE_PLATFORMS_URL || '/platforms',
-  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL || '/platforms'}/${platformId}`
+  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL || '/platforms'}/${platformId}`,
+
+  COMPLAINTS: import.meta.env.VITE_API_COMPLAINTS_URL || '/complaints',
+  MODERATION_COMPLAINTS: import.meta.env.VITE_API_MODERATION_COMPLAINTS_URL || '/moderation/complaints',
+  MODERATION_COMPLAINT_BY_ID: (complaintId: string) =>
+    `${import.meta.env.VITE_API_MODERATION_COMPLAINTS_URL || '/moderation/complaints'}/${complaintId}`,
+
+  SCORES_ME: import.meta.env.VITE_API_SCORES_ME_URL || '/users/me/scores',
+  PROJECT_TIMESHEET_SUMMARY: (projectId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/timesheet/summary`
 }

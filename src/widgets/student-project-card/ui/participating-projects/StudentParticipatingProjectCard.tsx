@@ -1,12 +1,22 @@
 import clsx from 'clsx'
-import {Link, useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
 import { CompetencyRow, useCompetencies } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
-import { getProjectDates, ProjectCardHorizontal, ProjectCardTeam, ProjectPublicStatusLabel, useProjectTeam, type ProjectCardData } from '@/entities/project'
+import {
+  getProjectDates,
+  getScoreWord,
+  getStudentProjectHours,
+  ProjectCardHorizontal,
+  ProjectCardTeam,
+  ProjectPublicStatusLabel,
+  useProjectTeam,
+  useProjectTimesheetSummary,
+  type ProjectCardData
+} from '@/entities/project'
 import { Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, useMe, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import {buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, ROUTES} from '@/shared'
+import { buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, ROUTES } from '@/shared'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
@@ -17,6 +27,7 @@ interface StudentParticipatingProjectCardProps {
 export function StudentParticipatingProjectCard({ project, competencyId, className }: StudentParticipatingProjectCardProps) {
   const { data: curator } = useUserById(project?.ownerId)
   const { data: team = [] } = useProjectTeam(project?.id, Boolean(project?.id))
+  const { data: timesheetSummary } = useProjectTimesheetSummary(project?.id, Boolean(project?.id))
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
   const navigate = useNavigate()
@@ -36,6 +47,8 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
   const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints.checkpoints)
 
   const isClosed = project.status === 'Completed' || project.status === 'NotImplemented'
+
+  const studentHours = getStudentProjectHours(timesheetSummary, me?.id)
 
   return (
     <ProjectCardHorizontal
@@ -108,14 +121,15 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
             <Link className={styles.link} to={buildRoute.project(project.id)}>
               Перейти к проекту <ChevronRightIcon />
             </Link>
+
             <div className={clsx(styles.results, isClosed && styles.closed)}>
               <p className={styles.label}>
                 <span className={styles.preface}>{isClosed && 'Ваш результат'}</span>
-                <span className={styles.strong}>36</span> баллов
+                <span className={styles.strong}>{studentHours}</span> {getScoreWord(studentHours)}
               </p>
-              <button type='button' className={styles.sheetButton}>
+              {/* <button type='button' className={styles.sheetButton}>
                 Показать таблицу
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

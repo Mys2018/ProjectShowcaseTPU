@@ -9,63 +9,47 @@ import {
   ROLES_TRANSLATIONS,
   TeamUserCard,
   useMe,
+  useMyScores,
   usePreferencesStore,
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
 import {
+  getStudentProjectHours,
+  useParticipatingProjects,
+  useProjectTimesheetSummary
+} from '@/entities/project'
+import {
   FloatingTabs,
   StagesWidget,
   YourPointsWidget,
   // YourTasksWidget,
-  type Activity,
   type ClosingDiscipline,
   type FloatingTabItem
 } from '@/shared'
-
-const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
-  activities: [
-    {
-      type: 'currentStage',
-      title: 'Подготовка презентации',
-      deadline: '5-06-2026',
-      progressSteps: 5,
-      progressCurrentStep: 5,
-      unitType: 'points'
-    },
-    {
-      type: 'upcomingStage',
-      title: 'Подготовка презентации',
-      progressSteps: 1,
-      progressCurrentStep: 0,
-      unitType: 'points'
-    },
-    {
-      type: 'keyPoint',
-      title: 'Постерная сессия 1',
-      deadline: '29-05-2026',
-      status: 'completed',
-      number: 1,
-      extra: 'tooltip'
-    }
-  ],
-  closingDisciplines: [
-    {
-      title: 'УИРС-1',
-      currentProgress: 18,
-      maxProgress: 36
-    },
-    {
-      title: 'УИРС-2',
-      currentProgress: 0,
-      maxProgress: 36
-    }
-  ]
-} // TODO заменить на реальные данные
+import { ComplaintBlock } from "@/shared/ui/complaint-block";
 
 export function MyPlatformPage() {
   const { data: me } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
+
+  const { data: scoresData } = useMyScores(Boolean(me?.id))
+  const { data: participatingData } = useParticipatingProjects({ limit: 10 }, Boolean(me?.id))
+  const activeProject = participatingData?.projects?.[0]
+  const { data: timesheetSummary } = useProjectTimesheetSummary(activeProject?.id, Boolean(activeProject?.id))
+
+  const activeProjectHours = getStudentProjectHours(timesheetSummary, me?.id)
+
+  const disciplines: ClosingDiscipline[] = activeProject
+    ? [
+      {
+        // title: activeProject.meta?.title || 'УИРС',
+        title: 'УИРС',
+        currentProgress: activeProjectHours,
+        maxProgress: 36
+      }
+    ]
+    : []
 
   const switchableRoles = getSwitchableRoles(me ? me.roles : [])
   const tabItems: FloatingTabItem<UserSwitchableRole['type']>[] = [...switchableRoles]
@@ -214,7 +198,8 @@ export function MyPlatformPage() {
         <span className={clsx(styles.cover, styles.fixed)} ref={coverFixedRef} />
         <span className={clsx(styles.cover, styles.shaped)} ref={coverShapedRef} />
         <div className={styles.side} ref={sideRef}>
-          <YourPointsWidget tpuPoints={0} disciplines={mockedData.closingDisciplines} />
+          <YourPointsWidget tpuPoints={scoresData?.totalScore ?? 0} disciplines={disciplines} />
+          <ComplaintBlock onClick={() => { }} />
         </div>
 
         <div className={styles.userRow} ref={userRowRef}>
