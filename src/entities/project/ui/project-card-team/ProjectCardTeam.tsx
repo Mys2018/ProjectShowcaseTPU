@@ -20,6 +20,7 @@ export const ProjectTeamMemberRow = ({ member, project }: ProjectTeamMemberRowPr
 
   return (
     <TeamUserCard
+      userId={member.userId}
       firstName={member.meta?.firstName || ''}
       lastName={member.meta?.lastName || ''}
       course={member.grade}
@@ -27,6 +28,7 @@ export const ProjectTeamMemberRow = ({ member, project }: ProjectTeamMemberRowPr
       competency={memberRole}
       avatar={
         <Avatar
+          userId={member.userId}
           picture={member.profilePicture || ''}
           fallbackType={getAvatarRoleInfo(member.roles)?.fallback || 'user'}
           size="40px"

@@ -194,7 +194,8 @@ export function MyPlatformPage() {
 
   const userRow = me ? (
     <TeamUserCard
-      avatar={<Avatar fallbackType={'user'} size={'40px'} strokeColor={'grey'} />}
+      userId={me.id}
+      avatar={<Avatar userId={me.id} picture={me.profilePicture} fallbackType={'user'} size={'40px'} strokeColor={'grey'} />}
       firstName={me.meta.firstName}
       lastName={me.meta.lastName}
       nameTextStyle={'ALS'}

@@ -1,12 +1,14 @@
 import styles from './Avatar.module.css'
 import clsx from "clsx";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import EditIcon from '@/shared/ui/icons/edit.svg?react';
 import UserIcon from "@/shared/ui/icons/fallback_personal.svg?react";
 import MentorIcon from '@/shared/ui/icons/fallback_mentor.svg?react';
 import ModerIcon from '@/shared/ui/icons/fallback_moderator.svg?react';
 import AdminIcon from '@/shared/ui/icons/fallback_admin.svg?react';
 import OrgIcon from '@/shared/ui/icons/fallback_admin.svg?react';
+import { buildRoute } from '@/shared/config/routes';
 
 export type AvatarSizeType = '108px' | '80px' | '70px' | '48px' | '40px' | '36px'
 export type AvatarFallbackType = 'user' | 'mentor' | 'moder' | 'admin' | 'organization'
@@ -38,7 +40,8 @@ interface AvatarProps {
   label?: string | undefined,
   labelColor?: AvatarLabelColorType,
 
-  onClick?: () => void,
+  userId?: number | string,
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void,
   onClickEditButton?: () => void,
 
   fallbackType: AvatarFallbackType,
@@ -48,7 +51,9 @@ interface AvatarProps {
 }
 
 
-export const Avatar = ({picture, className, label, onClick, onClickEditButton, fallbackType, labelColor, size, strokeColor}: AvatarProps) => {
+export const Avatar = ({picture, className, label, userId, onClick, onClickEditButton, fallbackType, labelColor, size, strokeColor}: AvatarProps) => {
+  const navigate = useNavigate()
+
   const sizeStyle: React.CSSProperties = {
     width: size,
     height: size,
@@ -56,8 +61,13 @@ export const Avatar = ({picture, className, label, onClick, onClickEditButton, f
     minHeight: size
   };
 
+  const handleClick = onClick ?? (userId ? (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    navigate(buildRoute.profileById(String(userId)))
+  } : undefined)
+
   return (
-    <div className={clsx(styles.avatarContainer, className, getStrokeColor(strokeColor))} style={sizeStyle} onClick={onClick}>
+    <div className={clsx(styles.avatarContainer, className, getStrokeColor(strokeColor))} style={sizeStyle} onClick={handleClick}>
       {
         picture ?
           <img className={clsx(styles.avatar)} src={picture} alt="Аватар студента" /> :

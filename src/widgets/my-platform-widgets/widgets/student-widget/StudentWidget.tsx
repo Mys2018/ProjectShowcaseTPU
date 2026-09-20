@@ -16,7 +16,7 @@ export const StudentWidget = () => {
     <section className={styles.bodyContainer}>
 
       {
-        projects && projects.projects.length > 1 && <div className={styles.bigBlock}>
+        projects && projects.projects.length > 0 && <div className={styles.bigBlock}>
           <div className={styles.headerRow}>
             {
               (projects && projects.projects.length > 1) ? <h3 className={styles.title}>Ваши активные проекты</h3> : <h3 className={styles.title}>Ваш активный проект</h3>

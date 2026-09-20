@@ -127,3 +127,39 @@
   opacity: 0.6;
   pointer-events: none;
 }
+
+@media (max-width: 768px) {
+
+  .separator {
+    display: none;
+  }
+
+  .topPart {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .titleBlock {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 12px;
+    gap: 12px
+  }
+
+  .pagination {
+    display: none;
+  }
+
+  .navPart {
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    justify-content: space-between;
+    padding: 10px 0 10px;
+  }
+
+  .navEl {
+    font: var(--inter-13-400);
+  }
+}

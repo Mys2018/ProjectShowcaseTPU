@@ -151,19 +151,16 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     })
   }, [roles, myOccupiedRoleIds, pendingApplications])
 
-  const isOwner = !!(myUserId && project?.ownerId === myUserId)
   const isProjectNotRecruiting = !!(project && project.status !== 'Recruiting' && project.status !== 'RecruitmentCompleted')
 
   // Нельзя подавать заявки, если:
   // - человека уже приняли в один проект (isAcceptedInAnyProject)
   // - исчерпан глобальный лимит в 5 откликов (isGlobalLimitReached)
-  // - пользователь является владельцем проекта
   // - проект не находится в статусе набора
   // - нет свободных компетенций
   const canApply =
     !isAcceptedInAnyProject &&
     !isGlobalLimitReached &&
-    !isOwner &&
     !isProjectNotRecruiting &&
     visibleRoles.length > 0
 

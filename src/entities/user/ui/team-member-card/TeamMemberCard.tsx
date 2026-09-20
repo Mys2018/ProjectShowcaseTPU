@@ -73,8 +73,10 @@ export const TeamMemberCard = ({
         </div>
         <div className={styles.rightBlock}>
           <TeamUserCard
+            userId={user.userId}
             avatar={
               <Avatar
+                userId={user.userId}
                 picture={user.profilePicture}
                 fallbackType={getAvatarRoleInfo(user.roles)?.fallback || 'user'}
                 size="48px"

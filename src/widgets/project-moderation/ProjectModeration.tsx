@@ -1,7 +1,13 @@
 import clsx from 'clsx'
 import styles from './ProjectModeration.module.css'
 import { ApproveProjectButton, RejectProjectButton, RequestChangesProjectButton } from '@/features/moderate-projects'
-import { ProjectInfo, ProjectReviewComment, useProjectReview, type ProjectCardData } from '@/entities/project'
+import {
+  ProjectInfo,
+  ProjectReviewComment,
+  useProjectReview,
+  type ProjectCardData,
+  getProjectFormatTranslation
+} from '@/entities/project'
 import { ProjectSkeleton } from '@/shared'
 
 interface ProjectModerationProps {
@@ -19,7 +25,7 @@ export function ProjectModeration({ project }: ProjectModerationProps) {
               Проверка проекта «{project.meta.title}»
             </h2>
             <h3 className={styles.subtitle}>
-              Тип проекта: <span className={styles.regular}>Учебный</span>
+              Тип проекта: <span className={styles.regular}>{getProjectFormatTranslation(project.type)}</span>
             </h3>
           </div>
           {isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment comment={review} />}

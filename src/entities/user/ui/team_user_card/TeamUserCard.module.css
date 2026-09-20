@@ -6,6 +6,15 @@
   min-width: 0;
 }
 
+.clickable {
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.clickable:hover {
+  opacity: 0.85;
+}
+
 .avatar {
   width: 48px;
   height: 48px;

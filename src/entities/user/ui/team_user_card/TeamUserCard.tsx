@@ -1,12 +1,16 @@
 import styles from './TeamUserCard.module.css'
 import type { ReactNode } from "react";
+import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import { buildRoute } from "@/shared/config/routes";
 
 type TeamUserCardTextStyle = 'ALS' | 'bodyText' | 'OS-12-500' | 'bodySmall'
 type TeamUserCardSubtextStyle = 'OS-10-400' | 'OS-12-350'
 type TeamUserCardNameStyle = 'normal' | 'short' | 'twoLines'
 
 interface TeamUserCardProps {
+  userId?: number | string,
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void,
   firstName: string,
   lastName: string,
   course?: string | number,
@@ -76,6 +80,8 @@ const getTeamUserCardNameComponent = (style: TeamUserCardNameStyle, firstName: s
 }
 
 export const TeamUserCard = ({
+  userId,
+  onClick,
   course,
   firstName,
   lastName,
@@ -89,6 +95,13 @@ export const TeamUserCard = ({
   nameSuffix,
   rolesIcon
 }: TeamUserCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = onClick ?? (userId ? (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    navigate(buildRoute.profileById(String(userId)));
+  } : undefined);
+
   const displayRoles = competency ? [competency] : roles;
   const rolesText = displayRoles && displayRoles.length > 0 && (
     <p
@@ -100,7 +113,7 @@ export const TeamUserCard = ({
   );
 
   return (
-    <div className={styles.leftHalf}>
+    <div className={clsx(styles.leftHalf, handleClick && styles.clickable)} onClick={handleClick}>
       {
         avatar
       }
