@@ -43,6 +43,7 @@ import CalendarIcon from './icons/calendar.svg?react'
 import LightningIcon from './icons/lightning.svg?react'
 import MessageIcon from './icons/message.svg?react'
 import ApproveIcon from './icons/approve.svg?react'
+import QuestionIcon from './icons/question.svg?react'
 export {
   userIconUrl,
   FeedbackIcon,
@@ -57,5 +58,6 @@ export {
   CalendarIcon,
   LightningIcon,
   MessageIcon,
-  ApproveIcon
+  ApproveIcon,
+  QuestionIcon
 }
