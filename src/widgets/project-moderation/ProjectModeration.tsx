@@ -1,13 +1,9 @@
 import clsx from 'clsx'
 import styles from './ProjectModeration.module.css'
 import { ApproveProjectButton, RejectProjectButton, RequestChangesProjectButton } from '@/features/moderate-projects'
-import {
-  ProjectInfo,
-  ProjectReviewComment,
-  useProjectReview,
-  type ProjectCardData,
-  getProjectFormatTranslation
-} from '@/entities/project'
+import { getProjectFormatTranslation, ProjectInfo, ProjectReviewComment, useProjectReview, type ProjectCardData } from '@/entities/project'
+import { CheckpointList } from '@/entities/checkpoint'
+import { getSortedTags, TagBadge, TagBadgeList } from '@/entities/tag'
 import { ProjectSkeleton } from '@/shared'
 
 interface ProjectModerationProps {
@@ -16,6 +12,7 @@ interface ProjectModerationProps {
 
 export function ProjectModeration({ project }: ProjectModerationProps) {
   const { data: review, isLoading: isReviewLoading } = useProjectReview(project.id)
+  const sortedTags = getSortedTags(project.tags, project.primaryTag)
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
@@ -30,7 +27,12 @@ export function ProjectModeration({ project }: ProjectModerationProps) {
           </div>
           {isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment comment={review} />}
         </div>
-        <ProjectInfo project={project} />
+        <ProjectInfo
+          project={project}
+          primaryTagSlot={<TagBadge tag={sortedTags[0]} />}
+          tagsSlot={<TagBadgeList tags={sortedTags.slice(1)} />}
+          checkpointsSlot={<CheckpointList checkpoints={project.checkpoints} />}
+        />
       </div>
       <div className={styles.buttons}>
         <RejectProjectButton projectId={project.id} />

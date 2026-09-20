@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import styles from './RequestChangesProjectButton.module.css'
 import { useRequestChangesOnProject } from '../api/mutations'
-import { FilledButton, Modal, OutlineButton, TextArea } from '@/shared'
+import { BigTextField, FilledButton, Modal, OutlineButton } from '@/shared'
 
 interface RequestChangesProjectButtonProps {
   projectId: string
 }
-
-const maxLength = 1500
 
 export function RequestChangesProjectButton({ projectId }: RequestChangesProjectButtonProps) {
   const { mutate: requestChanges, isPending } = useRequestChangesOnProject()
@@ -25,17 +23,12 @@ export function RequestChangesProjectButton({ projectId }: RequestChangesProject
             Наставник увидит комментарий и отправит проект на повторную проверку после внесения корректировок.
           </p>
         </div>
-        <div className={styles.inputWrapper}>
-          <TextArea
+          <BigTextField
             placeholder='Замечания по оформлению и другие корректировки'
-            maxLength={maxLength}
-            isValid={comment.trim().length > 0}
-            isDisable={false}
+            maxLength={1500}
             value={comment}
-            handleChange={e => setComment(e.target.value)}
+            onChange={e => setComment(e.target.value)}
           />
-          <p className={styles.restriction}>Макс. символов: {maxLength}</p>
-        </div>
         <div className={styles.actions}>
           <button className={styles.cancel} onClick={() => setIsModalOpen(false)}>
             Отмена
