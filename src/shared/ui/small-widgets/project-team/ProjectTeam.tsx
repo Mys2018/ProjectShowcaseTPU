@@ -53,7 +53,10 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
                   </p>
                   <div className={styles.info}>
                     <TeamUserCard
+                      userId={item.userId}
                       avatar={<Avatar
+                        userId={item.userId}
+                        picture={item.profilePicture}
                         fallbackType={getAvatarRoleInfo(item.roles)?.fallback || 'user'}
                         size={'36px'}
                         strokeColor={'grey'}/>

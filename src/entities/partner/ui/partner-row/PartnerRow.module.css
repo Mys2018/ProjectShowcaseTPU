@@ -9,7 +9,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background-color: var(--color-brand-green);
+  background-color: transparent;
   object-fit: cover;
 }
 

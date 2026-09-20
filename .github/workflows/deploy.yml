@@ -52,6 +52,7 @@ jobs:
           VITE_API_CHECKPOINTS_URL: /projects/checkpoints
           VITE_APPLICATIONS_URL: /applications
           VITE_PLATFORMS_URL: /platforms
+          VITE_API_PROJECTS_REVIEW_URL: /review
           VITE_OAUTH_AUTHORIZE_URL: https://oauth.tpu.ru/authorize
 
         run: |

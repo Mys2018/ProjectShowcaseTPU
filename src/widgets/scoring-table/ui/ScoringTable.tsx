@@ -110,6 +110,7 @@ export function ScoringTable({ model }: ScoringTableProps) {
                 <td className={clsx(styles.stickyLeft, styles.participant)}>
                   <div className={styles.bio}>
                     <TeamUserCard
+                      userId={student.id}
                       firstName={student.firstName}
                       lastName={student.lastName}
                       nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
@@ -125,6 +126,7 @@ export function ScoringTable({ model }: ScoringTableProps) {
                       nameSubtextStyle={isMobile ? 'OS-10-400' : 'OS-12-350'}
                       avatar={
                         <Avatar
+                          userId={student.id}
                           picture={student.picture}
                           fallbackType="user"
                           size={isMobile ? '36px' : '48px'}

@@ -74,8 +74,10 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
             <div className={styles.block}>
               <p>Наставник:</p>
               <TeamUserCard
+                userId={curator.id}
                 avatar={
                   <Avatar
+                    userId={curator.id}
                     picture={curator.profilePicture}
                     fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
                     size="36px"

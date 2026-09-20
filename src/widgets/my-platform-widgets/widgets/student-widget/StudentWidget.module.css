@@ -35,4 +35,5 @@
   flex-direction: column;
   align-items: center;
   padding-bottom: 24px;
+  gap: 24px;
 }

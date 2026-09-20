@@ -89,8 +89,10 @@ export function StudentApplicationProjectCard({ application, className }: Studen
             <div className={styles.block}>
               <p>Наставник:</p>
               <TeamUserCard
+                userId={curator.id}
                 avatar={
                   <Avatar
+                    userId={curator.id}
                     picture={curator.profilePicture}
                     fallbackType={getAvatarRoleInfo(curator.roles)?.fallback || 'user'}
                     size="36px"
