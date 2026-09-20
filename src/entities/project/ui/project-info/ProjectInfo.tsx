@@ -8,13 +8,15 @@ import { Section } from '@/shared'
 
 interface ProjectInfoProps {
   project: ProjectCardData
+  primaryTagSlot?: ReactElement
+  tagsSlot?: ReactElement
   checkpointsSlot?: ReactElement
 }
 
-export function ProjectInfo({ project, checkpointsSlot }: ProjectInfoProps) {
+export function ProjectInfo({ project, primaryTagSlot, tagsSlot, checkpointsSlot }: ProjectInfoProps) {
   return (
     <div className={styles.container}>
-      <ProjectMainInfo project={project} />
+      <ProjectMainInfo project={project} primaryTagSlot={primaryTagSlot} tagsSlot={tagsSlot} />
       <ProjectPrd prd={project.prdMeta} />
       <div className={styles.wrapper}>
         <h3 className={styles.title}>Даты и ресурсы</h3>
