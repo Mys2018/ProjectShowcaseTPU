@@ -6,4 +6,5 @@ export const queryKeys = {
   me: () => [...all, 'auth', 'me'] as const,
   user: (id: number) => [...all, 'user', id] as const,
   search: (query: string, offset = 0, limit = 20) => [...all, 'search', { query, limit, offset }] as const,
+  scores: () => [...all, 'scores'] as const,
 };

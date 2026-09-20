@@ -10,9 +10,10 @@ type BigTextFieldProps = {
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
   validError?: string | undefined
   isBlink?: boolean
+  className?: string
 }
 
-export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle, validError, isBlink }: BigTextFieldProps) => {
+export const BigTextField = ({className, value, placeholder, maxLength, onChange, subtitle, validError, isBlink }: BigTextFieldProps) => {
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -24,6 +25,7 @@ export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle
         </p>}
 
         <textarea
+          className={clsx(className)}
           name="text"
           value={value ?? ''}
           placeholder={placeholder}

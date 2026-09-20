@@ -1,27 +1,35 @@
 import { useMemo } from 'react';
 import styles from './CuratorProjectCard.module.css'
+import { useNavigate } from "react-router-dom";
 import {
   type ProjectCardData,
   ProjectCardHorizontal,
   ProjectCardTeam,
   ProjectInnerStatus,
-  ProjectPublicStatusLabel, useProjectTeam
+  ProjectPublicStatusLabel,
+  useProjectTeam,
+  useProjectGrading
 } from "@/entities/project";
 import { PartnerRow, PartnerRowSkeleton } from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
 import { PlatformBadgeSmall } from "@/entities/platforms";
-import { ArchiveButton } from "@/shared/ui/elements/buttons";
 import { ApplicationBlock, useApplications } from "@/entities/application";
+import { GradingStatus } from "@/entities/project/ui";
+import { ArchiveButton, FilledButton } from "@/shared/ui/elements/buttons";
+import { useModalStore } from "@/shared/model";
 import { ROUTES } from "@/shared";
-import { useNavigate } from "react-router-dom";
+import {CompetencyBadgeList} from "@/entities/competency";
 
 interface CuratorProjectCardProps {
   project: ProjectCardData
 }
 
 export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
-
+  const openModal = useModalStore(state => state.openModal);
   const partner = project?.partner
+
+  const isProjectInProgress = project?.status === 'InProgress';
+  const grading = useProjectGrading(project?.id, isProjectInProgress);
 
   const { data: team } = useProjectTeam(project.id)
   const { data: applicationsData } = useApplications({
@@ -35,6 +43,22 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   const navigate = useNavigate();
 
   const applicationCount = applicationsData?.total ?? 0
+
+  const freeCompetencies = useMemo(() => {
+    return (project.roles ?? [])
+      .filter(role => {
+        const placesTaken = role.placeUserIds?.length ?? 0;
+        const placesCount = role.placesCount ?? role.places;
+        if (placesCount !== undefined && placesCount > 0) {
+          return placesCount - placesTaken > 0;
+        }
+        return true;
+      })
+      .map(role => ({
+        id: role.roleId,
+        name: role.meta.name,
+      }));
+  }, [project.roles]);
 
   const resources = useMemo(() => [
     ...(project.repository || []),
@@ -65,48 +89,106 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
       }
       sideSlot={
         <div className={styles.cardBody}>
-          <ProjectCardTeam
-            members={team}
-            max={3}
-            project={project}
-          />
-          {resources.length > 0 && (
+          <div className={styles.bodyBlock}>
+            <p>
+              Команда:
+            </p>
+            {team && team.length > 0 ? (
+              <ProjectCardTeam
+                members={team}
+                max={6}
+                project={project}
+              />
+            ) : (
+              <div className={styles.emptyBlock}>
+                Еще нет
+              </div>
+            )}
+          </div>
+
+          {project.status === 'Recruiting' ? (
+            <div className={styles.bodyBlock}>
+              <p>
+                Свободные компетенции:
+              </p>
+              {freeCompetencies.length > 0 ? (
+                <CompetencyBadgeList competencies={freeCompetencies} label="" />
+              ) : (
+                <div className={styles.emptyBlock}>
+                  отсутствуют
+                </div>
+              )}
+            </div>
+          ) : (
             <div className={styles.bodyBlock}>
               <p>
                 Ресурсы:
               </p>
-              <div className={styles.resourceList}>
-                {resources.map((platform, idx) => {
-                  return (
+              {resources.length > 0 ? (
+                <div className={styles.resourceList}>
+                  {resources.map((platform, idx) => (
                     <PlatformBadgeSmall
                       key={`${platform.platformId}-${idx}`}
                       link={platform.url}
                       platformName={platform.name}
                     />
-                  )
-                })}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.emptyBlock}>
+                  отсутствуют
+                </div>
+              )}
             </div>
           )}
         </div>
       }
+
       footerSlot={
         <div className={styles.footer}>
           <ArchiveButton color='grey' />
-          <ApplicationBlock
-            applicationCount={applicationCount}
-            notification={applicationCount > 0}
-            onClick={(e) => {
-              e.stopPropagation()
-              navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#teams`, {
-                state: { projectId: project.id }
-              })
-            }}
-            buttonText={"Смотреть"}
-          />
+          <div className={styles.rightSide}>
+            {isProjectInProgress && grading && grading.state !== 'Closed' && (
+              <>
+                <GradingStatus
+                  type={grading.state}
+                  count={grading.unratedCount}
+                  onClick={() => openModal('BLOCKED_GRADING')}
+                />
+                {(grading.state === 'Open' ||
+                  grading.state === 'WarningNeedsGrading' ||
+                  grading.state === 'DangerNeedsGrading') && (
+                  <FilledButton
+                    textButton="Проставить баллы"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
+                        state: { projectId: project.id }
+                      });
+                    }}
+                  />
+                )}
+              </>
+            )}
+            {
+              project.status === 'Recruiting' && <ApplicationBlock
+                applicationCount={applicationCount}
+                notification={applicationCount > 0}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#teams`, {
+                    state: { projectId: project.id }
+                  })
+                }}
+                buttonText={"Смотреть"}
+              />
+            }
+          </div>
+
         </div>
       }
     />
   )
 }
+
 

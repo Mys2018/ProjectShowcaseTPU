@@ -8,14 +8,20 @@ interface PartnerRowProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function PartnerRow({ partner, className, children, onClick, ...props }: PartnerRowProps) {
+  const hasPicture = Boolean(partner.profilePicture && partner.profilePicture.trim() !== '')
+
   return (
     <div className={clsx(styles.partner, onClick && styles.clickable, className)} onClick={onClick} {...props}>
-      <img className={styles.picture} src={partner.profilePicture} loading='lazy'  alt={partner.name}/>
+      {hasPicture ? (
+        <img className={styles.picture} src={partner.profilePicture} loading='lazy' alt={partner.name} />
+      ) : (
+        <div className={clsx(styles.picture, styles.placeholder)} />
+      )}
       <div className={styles.info}>
         <span className={styles.name}>{partner.name}</span>
         <span className={styles.sub}>публикационная активность</span> {/* TODO заменить или убрать */}
       </div>
-			{children}
+      {children}
     </div>
   )
 }

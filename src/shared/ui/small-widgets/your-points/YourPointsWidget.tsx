@@ -19,23 +19,29 @@ export const YourPointsWidget = ({ disciplines, tpuPoints }: YourPointsWidgetPro
         <div className={styles.container}>
           <p className={styles.title}>Закрытие дисциплин</p>
           <ul className={styles.disciplinesList}>
-            {disciplines?.map(discipline => (
-              <li key={discipline.title} className={styles.disciplineItem}>
-                <span className={styles.disciplineName}>{discipline.title}</span>
-                <div className={styles.progressContainer}>
-                  <div className={styles.progressBar}>
-                    <span
-                      className={styles.progressFill}
-                      style={{ width: `${(discipline.currentProgress / discipline.maxProgress) * 100}%` }}
-                    />
+            {disciplines && disciplines.length > 0 ? (
+              disciplines.map(discipline => (
+                <li key={discipline.title} className={styles.disciplineItem}>
+                  <span className={styles.disciplineName}>{discipline.title}</span>
+                  <div className={styles.progressContainer}>
+                    <div className={styles.progressBar}>
+                      <span
+                        className={styles.progressFill}
+                        style={{
+                          width: `${Math.min(100, Math.max(0, (discipline.currentProgress / (discipline.maxProgress || 36)) * 100))}%`
+                        }}
+                      />
+                    </div>
+                    <span className={styles.progressText}>
+                      {`${discipline.currentProgress}/${discipline.maxProgress} `}
+                      <span className={styles.pointsText}>ч.</span>
+                    </span>
                   </div>
-                  <span className={styles.progressText}>
-                    {`${discipline.currentProgress}/${discipline.maxProgress} `}
-                    <span className={styles.pointsText}>бал.</span>
-                  </span>
-                </div>
-              </li>
-            ))}
+                </li>
+              ))
+            ) : (
+              <li className={styles.emptyText}>Нет активных проектов</li>
+            )}
           </ul>
           <InfoTooltip
             title='Заголовок тултипа'

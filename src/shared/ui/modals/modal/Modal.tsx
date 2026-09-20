@@ -6,7 +6,7 @@ type ModalProps = {
   isOpen: boolean,
   onClose: () => void,
   children: ReactNode,
-  variant?: 'default' | 'transparent'
+  variant?: 'default' | 'transparent' | 'grey100'
 }
 
 export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalProps) {
@@ -14,7 +14,7 @@ export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalP
 
   if (!isOpen) return null;
 
-  const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''}`
+  const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''} ${variant === 'grey100' ? styles.grey100 : ''}`
 
   return (
     <div 

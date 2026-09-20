@@ -1,0 +1,51 @@
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contactsLabel {
+  font: var(--field-label-interface);
+  color: var(--color-gray-750);
+}
+
+.contactsEmail {
+  text-decoration: none;
+  font: var(--OS-14-550);
+  color: var(--color-gray-600);
+}
+
+.errorText {
+  font: var(--inter-12-300);
+  color: var(--color-red);
+}
+
+.actions {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.textArea {
+  height: 200px;
+}

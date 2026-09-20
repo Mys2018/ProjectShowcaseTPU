@@ -55,6 +55,12 @@
   color: var(--color-gray-500);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .toggleButton {
   background: none;
   border: none;
@@ -94,6 +100,46 @@
   border-radius: 0.5px;
 }
 
+.invitedWithApplicationsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+.invitedWithApplicationsExpanded {
+  justify-content: flex-start;
+}
+
+.blueFeedbackButton {
+  width: 100%;
+  padding: 10px 16px;
+  background-color: var(--color-blue);
+  color: var(--color-white);
+  border: none;
+  border-radius: 10px;
+  font: var(--inter-14-500);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.blueFeedbackButton:hover {
+  opacity: 0.9;
+}
+
+.blueFeedbackButton:active {
+  opacity: 0.8;
+}
+
 .invitedInfo {
   display: flex;
   gap: 12px;
@@ -104,16 +150,15 @@
 
 .invitedName {
   font: var(--inter-12-400);
-  color: var(--color-gray-750);
-}
-
-.invitedName div {
+  color: var(--color-gray-500);
   display: flex;
-  gap: 2px;
+  align-items: center;
+  gap: 4px;
 }
 
 .invitedName span {
-  color: var(--color-gray-500);
+  color: var(--color-gray-900);
+  font-weight: 500;
 }
 
 .cancelInviteBtn {
@@ -123,6 +168,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .noRecruiting {

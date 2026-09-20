@@ -1,0 +1,1 @@
+export {ComplaintBlock} from './ComplaintBlock.tsx'

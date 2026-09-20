@@ -54,7 +54,7 @@ export interface ProjectCardTeamProps {
 }
 
 export const ProjectCardTeam = ({
-  label = 'Команда:',
+  label,
   members,
   max,
   className,

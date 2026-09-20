@@ -5,7 +5,7 @@ import type {
   OAuthExchangeParams,
   UpdateProfileMetaRequest
 } from './types'
-import type { User, UserDto } from '../model/types'
+import type { StudentScoreResponse, User, UserDto } from '../model/types'
 import { mapUserDto } from '../lib/mappers'
 import { api, ENDPOINTS } from '@/shared'
 
@@ -21,6 +21,11 @@ export async function getAuthStatus(): Promise<AuthStatusResponse> {
 export async function getMe(): Promise<User> {
   const { data } = await api.get<UserDto>(ENDPOINTS.ME)
   return mapUserDto(data)
+}
+
+export async function getMyScores(): Promise<StudentScoreResponse> {
+  const { data } = await api.get<StudentScoreResponse>(ENDPOINTS.SCORES_ME)
+  return data
 }
 
 export async function logout(): Promise<void> {

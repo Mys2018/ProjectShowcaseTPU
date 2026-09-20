@@ -110,3 +110,8 @@ type Role<T> = {
 
 export type UserRole = Role<UserDto['roles']>
 export type UserSwitchableRole = Extract<UserRole, { type: 'Student' | 'Curator' | 'Moderator' }>
+
+export interface StudentScoreResponse {
+  userId: number
+  totalScore: number
+}

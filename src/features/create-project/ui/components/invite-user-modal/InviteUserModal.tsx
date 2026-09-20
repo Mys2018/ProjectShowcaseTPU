@@ -2,11 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './InviteUserModal.module.css';
 import { TeamUserCard } from "@/entities/user/ui/team_user_card/TeamUserCard.tsx";
 import { useSearchUsers } from "@/entities/user";
+import { useProjects } from "@/entities/project";
+import type { Application } from "@/entities/application";
 import {Avatar} from "@/entities/user/ui/avatar";
 import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import SadIcon from '@/shared/ui/icons/sad_face.svg?react';
 import CrossIcon from '@/shared/ui/icons/cross.svg?react';
-import { InviteActionButton } from "@/shared/ui/elements/buttons";
+import { InviteActionButton, type InviteActionButtonType } from "@/shared/ui/elements/buttons";
 import { SmallSearchField } from "@/shared/ui/small-search-field";
 import { useDebounce } from "@/shared/lib";
 
@@ -14,12 +16,50 @@ interface InviteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
   roleName: string;
+  roleId?: string;
+  projectId?: string;
+  teamUserIds?: number[];
+  applications?: Application[];
   onInvite?: (user: { id: number; name: string}) => void;
+  onAcceptApplication?: (applicationId: string) => void;
 }
 
-export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteUserModalProps) => {
+export const InviteUserModal = ({
+  isOpen,
+  onClose,
+  roleName,
+  roleId,
+  projectId,
+  teamUserIds,
+  applications,
+  onInvite,
+  onAcceptApplication,
+}: InviteUserModalProps) => {
   const [query, setQuery] = useState('');
   const debouncedQuery = useDebounce(query.trim(), 300);
+
+  const { data: allProjectsData } = useProjects({ limit: 100 }, isOpen);
+  const allProjects = allProjectsData?.projects ?? [];
+
+  const occupiedUserIdsInOtherProjects = useMemo(() => {
+    const set = new Set<number>();
+    for (const p of allProjects) {
+      if (projectId && String(p.id) === String(projectId)) {
+        continue;
+      }
+      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed') {
+        continue;
+      }
+      for (const role of p.roles ?? []) {
+        for (const uid of role.placeUserIds ?? []) {
+          set.add(uid);
+        }
+      }
+    }
+    return set;
+  }, [allProjects, projectId]);
+
+  const currentTeamSet = useMemo(() => new Set(teamUserIds ?? []), [teamUserIds]);
 
   const { data, isLoading } = useSearchUsers(debouncedQuery, {
     enabled: isOpen && Boolean(debouncedQuery),
@@ -79,6 +119,53 @@ export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteU
             <div className={styles.scrollContainer}>
               {filteredUsers.map((user, index) => {
                 const competencies = user.competencies ?? [];
+                const candidateId = Number(user.id);
+
+                // 1. Приглашение отклонено для этой роли
+                const hasRejectedInvitation = Boolean(
+                  applications?.some(
+                    (a) =>
+                      a.studentID === candidateId &&
+                      (!roleId || a.roleID === roleId) &&
+                      a.applicationType === 'Invitation' &&
+                      a.status === 'rejected'
+                  )
+                );
+
+                // 2. Уже в команде текущего проекта или любого другого активного проекта
+                const isAlreadyInTeam =
+                  currentTeamSet.has(candidateId) ||
+                  occupiedUserIdsInOtherProjects.has(candidateId);
+
+                // 3. Прямой отклик на эту компетенцию
+                const matchingApplication = applications?.find(
+                  (a) =>
+                    a.studentID === candidateId &&
+                    (!roleId || a.roleID === roleId) &&
+                    a.applicationType === 'Application' &&
+                    a.status === 'pending'
+                );
+
+                let buttonType: InviteActionButtonType = 'Invite';
+                let handleAction: (() => void) | undefined;
+
+                if (hasRejectedInvitation) {
+                  buttonType = 'InviteRejected';
+                } else if (isAlreadyInTeam) {
+                  buttonType = 'AlreadyInCommand';
+                } else if (matchingApplication) {
+                  buttonType = 'FeedbackResponse';
+                  handleAction = () => {
+                    onAcceptApplication?.(matchingApplication.applicationID);
+                    onClose();
+                  };
+                } else {
+                  buttonType = 'Invite';
+                  handleAction = () => {
+                    onInvite?.({ id: candidateId, name: user.meta.name });
+                    onClose();
+                  };
+                }
 
                 return (
                   <div key={user.id}>
@@ -98,11 +185,8 @@ export const InviteUserModal = ({ isOpen, onClose, roleName, onInvite }: InviteU
                       />
 
                       <InviteActionButton
-                        type="Invite"
-                        onClick={() => {
-                          onInvite?.({ id: Number(user.id), name: user.meta.name });
-                          onClose();
-                        }}
+                        type={buttonType}
+                        onClick={handleAction}
                       />
                     </div>
                     {index < filteredUsers.length - 1 && <div className={styles.divider} />}

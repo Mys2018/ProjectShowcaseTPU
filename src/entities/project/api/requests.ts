@@ -16,6 +16,7 @@ import type {
   ProjectSprint,
   SprintGradingStatus,
   SprintHoursBatch,
+  ProjectTimesheetSummaryResponse,
 } from '../model/types'
 import { mapProjectDtoToEntity } from '../lib/mappers'
 import type { UserCard } from '@/entities/user'
@@ -76,6 +77,11 @@ export const projectApi = {
 
   submitSprintHours: async (projectId: string, { sprintId, records }: SprintHoursBatch): Promise<void> => {
     await api.post(ENDPOINTS.SPRINT_HOURS(projectId, sprintId), { records })
+  },
+
+  getProjectTimesheetSummary: async (projectId: string): Promise<ProjectTimesheetSummaryResponse> => {
+    const { data } = await api.get<ProjectTimesheetSummaryResponse>(ENDPOINTS.PROJECT_TIMESHEET_SUMMARY(projectId))
+    return data
   },
 
   createProject: async (payload: CreateProjectDto): Promise<string> => {

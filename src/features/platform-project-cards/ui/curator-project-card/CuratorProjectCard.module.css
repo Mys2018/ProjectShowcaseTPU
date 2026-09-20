@@ -38,6 +38,16 @@
   color: var(--color-gray-500)
 }
 
+.emptyBlock {
+  padding: 12px 32px;
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-100);
+  border-radius: 10px;
+  width: fit-content;
+  font: var(--OS-10-400);
+  color: var(--color-gray-600);
+}
+
 
 .resourceList {
   display: flex;
@@ -50,5 +60,11 @@
   display: flex;
   gap: 8px;
   justify-content: space-between;
+  align-items: center;
+}
+
+.rightSide {
+  display: flex;
+  gap: 24px;
   align-items: center;
 }
