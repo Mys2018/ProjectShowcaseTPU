@@ -93,6 +93,10 @@ export const projectApi = {
     return data.projectId
   },
 
+  updateProject: async (projectId: string, payload: CreateProjectDto): Promise<void> => {
+    await api.patch(ENDPOINTS.PROJECT_BY_ID(projectId), payload)
+  },
+
   likeProject: async (projectId: string): Promise<void> => {
     await api.post(ENDPOINTS.LIKE_PROJECT(projectId))
   },
