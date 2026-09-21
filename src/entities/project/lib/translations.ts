@@ -30,6 +30,8 @@ export const getProjectStatusTranslation = (status: ProjectStatus) => {
       return 'Набор завершён'
     case 'Rejected':
       return 'Отклонён модератором'
+    case 'Archived':
+      return 'В архиве'
     default:
       return assertNever(status)
   }
@@ -43,6 +45,8 @@ export const getModerationStatusTranslation = (status: ProjectStatus) => {
       return 'На доработке'
     case 'Rejected':
       return 'Отклонён'
+    case 'Archived':
+      return 'В архиве'
     default:
       return 'Опубликован'
   }

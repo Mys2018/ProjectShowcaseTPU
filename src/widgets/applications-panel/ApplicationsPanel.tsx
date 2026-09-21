@@ -58,7 +58,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
 
     const allProjects = allProjectsData?.projects ?? []
     for (const p of allProjects) {
-      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed') {
+      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed' || p.status === 'Archived') {
         continue
       }
       for (const role of p.roles ?? []) {

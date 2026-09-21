@@ -14,3 +14,8 @@ export { getPublicProjectStatus, hasFreePlaces, hasFreePlace } from './lib/publi
 export { useIsInOtherProject, useProjectLimitReached } from './model/participation'
 export { useProjectGrading, type ProjectGradingResult } from './model/useProjectGrading'
 export { getStudentProjectHours } from './lib/timesheet'
+export {
+  ALLOWED_COURSES_BY_PROJECT_TYPE,
+  isProjectCourseEligible,
+  getCourseRestrictionText
+} from './lib/courseEligibility'

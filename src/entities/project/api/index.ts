@@ -18,5 +18,6 @@ export {
   useAppliedProjects,
   useProjectReview,
   useProjectTimesheetSummary,
-  useRemoveTeamMember
+  useRemoveTeamMember,
+  useSetProjectStatus
 } from './queries'

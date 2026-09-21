@@ -5,7 +5,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FeedBackButton } from "@/features/feedback-button";
 import { useIsProfileFilled, useAuthStore, useMe } from "@/entities/user";
 import { useApplications, updateApplicationStatus, createApplication, applicationKeys, type ApplicationStatus } from "@/entities/application";
-import { projectQueryKeys, useProjectTeam, useParticipatingProjects, type ProjectCardData } from "@/entities/project";
+import {
+  projectQueryKeys,
+  useProjectTeam,
+  useParticipatingProjects,
+  isProjectCourseEligible,
+  getCourseRestrictionText,
+  type ProjectCardData
+} from "@/entities/project";
 import CheckIcon from '@/shared/ui/icons/check.svg?react';
 import FeedBackIcon from '@/shared/ui/icons/feedback.svg?react';
 import StarDetailIcon from '@/shared/ui/icons/starDetail.svg?react';
@@ -68,6 +75,9 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   const status = useAuthStore(state => state.status)
   const { data: me } = useMe()
   const myUserId = me ? Number(me.id) : null
+  const userGrade = me?.grade ? Number(me.grade) : null
+  const isCourseEligible = status === 'authenticated' && userGrade !== null ? isProjectCourseEligible(project?.type, userGrade) : true
+  const courseRestrictionText = getCourseRestrictionText(project?.type)
   const navigate = useNavigate()
 
   const { data: myApplications } = useApplications({ limit: 100, offset: 0, mode: 'AsStudent', type: 'Application' }, status === 'authenticated')
@@ -158,11 +168,13 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   const isProjectNotRecruiting = !!(project && project.status !== 'Recruiting' && project.status !== 'RecruitmentCompleted')
 
   // Нельзя подавать заявки, если:
+  // - курс студента не подходит для типа проекта (!isCourseEligible)
   // - человека уже приняли в один проект (isAcceptedInAnyProject)
   // - исчерпан глобальный лимит в 5 откликов (isGlobalLimitReached)
   // - проект не находится в статусе набора
   // - нет свободных компетенций
   const canApply =
+    isCourseEligible &&
     !isAcceptedInAnyProject &&
     !isGlobalLimitReached &&
     !isProjectNotRecruiting &&
@@ -248,7 +260,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
       <div className={styles.header}>
         <h3 className={styles.title}>
-          {!isAppliedToProject && visibleRoles.length === 0
+          {(!canApply && !isAppliedToProject)
             ? 'Компетенции проекта:'
             : 'Выберите компетенции для отклика:'}
         </h3>
@@ -342,7 +354,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
         })}
       </div>
 
-      {(canApply || isAppliedToProject) && (
+      {(canApply || isAppliedToProject || !isCourseEligible) && (
         <div className={styles.footer}>
           {isAppliedToProject ? (
             <FeedBackButton
@@ -350,6 +362,10 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
               toggleFeedBack={() => void toggleFeedBack()}
               disabled={isBatchPending}
             />
+          ) : !isCourseEligible ? (
+            <div className={styles.courseRestricted}>
+              {courseRestrictionText}
+            </div>
           ) : canApply ? (
             status === 'authenticated' ? (
               isProfileFilled ? (

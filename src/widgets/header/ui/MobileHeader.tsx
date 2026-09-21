@@ -75,7 +75,7 @@ export function MobileHeader() {
                 navigate(ROUTES.NOTIFICATION.BASE)
               }}
             >
-              {activeInvites.length > 0 ? <BellNotiIcon /> : <BellIcon />}
+              {activeInvites.length > 0 ? <BellNotiIcon className={styles.icon}/> : <BellIcon className={styles.icon}/>}
             </button>
           </div>
           <Avatar

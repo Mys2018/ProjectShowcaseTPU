@@ -53,7 +53,8 @@ const STATUS_MAP: Record<ProjectStatus, InnerStatuses> = {
   // TODO Rejected Что-то придумать потом
   Rejected: 'report',
   Pending: 'moderation',
-  NeedsRework: 'report'
+  NeedsRework: 'report',
+  Archived: 'published'
 }
 
 export const ProjectInnerStatus = ({ status, children }: ProjectInnerStatusProps) => {

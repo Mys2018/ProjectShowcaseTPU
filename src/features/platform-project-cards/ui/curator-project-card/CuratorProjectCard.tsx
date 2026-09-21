@@ -7,8 +7,10 @@ import {
   ProjectCardTeam,
   ProjectInnerStatus,
   ProjectPublicStatusLabel,
+  getPublicProjectStatus,
   useProjectTeam,
-  useProjectGrading
+  useProjectGrading,
+  useSetProjectStatus
 } from "@/entities/project";
 import { PartnerRow, PartnerRowSkeleton } from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
@@ -42,6 +44,12 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   })
 
   const navigate = useNavigate();
+  const setStatusMutation = useSetProjectStatus();
+
+  const handleArchive = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setStatusMutation.mutate({ projectId: project.id, status: 'NotImplemented' });
+  };
 
   const applicationCount = applicationsData?.total ?? 0
 
@@ -67,6 +75,8 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
     ...(project.otherPlatforms || project.designEnvironment || [])
   ], [project.repository, project.taskTracker, project.otherPlatforms, project.designEnvironment]);
 
+  const publicStatus = getPublicProjectStatus(project);
+
   return (
     <ProjectCardHorizontal
       project={project}
@@ -81,9 +91,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
           </div>
 
           <div className={styles.statusContainer}>
-            {
-              !(project.status === 'Pending' || project.status === 'NeedsRework') && <ProjectPublicStatusLabel status={project.status} />
-            }
+            <ProjectPublicStatusLabel status={publicStatus} />
             <ProjectInnerStatus status={project.status} />
           </div>
         </div>
@@ -107,7 +115,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
             )}
           </div>
 
-          {project.status === 'Recruiting' ? (
+          {(project.status === 'Recruiting' || publicStatus === 'Recruiting' || publicStatus === 'RecruitmentCompleted') ? (
             <div className={styles.bodyBlock}>
               <p>
                 Свободные компетенции:
@@ -147,7 +155,15 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
       footerSlot={
         <div className={styles.footer}>
-          <ArchiveButton color='grey' />
+          {project.status !== 'Completed' && project.status !== 'NotImplemented' && project.status !== 'Archived' ? (
+            <ArchiveButton
+              color='grey'
+              disabled={setStatusMutation.isPending}
+              onClick={handleArchive}
+            />
+          ) : (
+            <div />
+          )}
           <div className={styles.rightSide}>
             {isProjectInProgress && grading && grading.state !== 'Closed' && (
               <>
@@ -172,7 +188,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
               </>
             )}
             {
-              project.status === 'Recruiting' && <ApplicationBlock
+              (project.status === 'Recruiting' || publicStatus === 'Recruiting' || publicStatus === 'RecruitmentCompleted') && <ApplicationBlock
                 applicationCount={applicationCount}
                 notification={applicationCount > 0}
                 onClick={(e) => {

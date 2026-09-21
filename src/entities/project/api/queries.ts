@@ -8,6 +8,7 @@ import type {
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
   SprintHoursBatch,
+  ProjectStatus,
 } from '../model/types'
 import { projectKeys } from './queryKeys'
 
@@ -184,3 +185,15 @@ export const useRemoveTeamMember = () => {
     }
   })
 }
+
+export const useSetProjectStatus = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ projectId, status }: { projectId: string; status: ProjectStatus | string }) =>
+      projectApi.setProjectStatus(projectId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.all })
+    }
+  })
+}
+

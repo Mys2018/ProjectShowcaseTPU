@@ -214,11 +214,16 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1199px) {
   .scrollContainer {
-    padding-top: 24px;
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    padding-top: calc(var(--header-mobile-h) + 24px);
+    padding-bottom: 88px;
   }
+}
 
+@media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(6, auto);

@@ -5,6 +5,7 @@ import { CompetencyRow, isPseudoRole, useCompetencies } from '@/entities/compete
 import { PartnerRow } from '@/entities/partner'
 import {
   getProjectDates,
+  getPublicProjectStatus,
   getScoreWord,
   getStudentProjectHours,
   ProjectCardHorizontal,
@@ -55,7 +56,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
 
   const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints.checkpoints)
 
-  const isClosed = project.status === 'Completed' || project.status === 'NotImplemented'
+  const isClosed = project.status === 'Completed' || project.status === 'NotImplemented' || project.status === 'Archived'
 
   const studentHours = getStudentProjectHours(timesheetSummary, me?.id)
 
@@ -69,7 +70,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
       headerSlot={
         <div className={styles.header}>
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
-          <ProjectPublicStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
       }
       mainSlot={<PartnerRow partner={project.partner} />}

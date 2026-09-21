@@ -2,7 +2,13 @@ import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
 import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow } from '@/entities/partner'
-import { ProjectCardHorizontal, ProjectCardTeam, useProjectDetails, useProjectTeam } from '@/entities/project'
+import {
+  getPublicProjectStatus,
+  ProjectCardHorizontal,
+  ProjectCardTeam,
+  useProjectDetails,
+  useProjectTeam
+} from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById, TeamUserCard, Avatar, getAvatarRoleInfo, useMe, getMemberRoleName } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
@@ -47,8 +53,10 @@ export function StudentApplicationProjectCard({ application, className }: Studen
 
   const roleName = isPseudoRole(rawRoleName) ? '' : rawRoleName
 
+  const isRecruiting = project.status === 'Recruiting' && getPublicProjectStatus(project) === 'Recruiting'
+
   const statusBadge =
-    project.status === 'Recruiting' && application.status === 'pending' ? (
+    isRecruiting && application.status === 'pending' ? (
       <div className={clsx(styles.statusBadge, !isExtended && styles.topRight)}>
         <ClockIcon />
         <p>Ожидает окончания набора</p>

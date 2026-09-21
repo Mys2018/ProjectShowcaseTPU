@@ -112,6 +112,11 @@ export function MyPlatformPage() {
     const updateSide = () => {
       if (!scroller || !side || !row) return
 
+      if (window.innerWidth <= 768) {
+        side.style.top = ''
+        return
+      }
+
       const viewportHeight = scroller.clientHeight
       const stopAt = sideBaseTop + sideHeight - viewportHeight
 
@@ -134,7 +139,13 @@ export function MyPlatformPage() {
       const rowBottomViewport = rowBottomInContent + 8
       const heroBottomViewport = heroBottomInContent - scroller.scrollTop + 36
 
-      const stopAt = window.innerWidth > 768 ? Math.max(heroBottomViewport, rowBottomViewport) : scroller ? 468 - scroller.scrollTop : 0
+      const mobileHeroBottom = heroBottomInContent
+        ? heroBottomInContent - scroller.scrollTop + 18
+        : 468 - scroller.scrollTop
+      const stopAt =
+        window.innerWidth > 768
+          ? Math.max(heroBottomViewport, rowBottomViewport)
+          : Math.max(0, mobileHeroBottom)
 
       if (coverFixed) coverFixed.style.setProperty('--fixedCoverHeight', `${rowBottom + 8}px`)
       if (cover) cover.style.setProperty('--scrollableCoverHeight', `${stopAt}px`)

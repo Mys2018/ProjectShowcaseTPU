@@ -132,5 +132,9 @@ export const projectApi = {
 
   setProjectModerationReview: async (projectId: string, payload: { verdict: ProjectStatus; comment?: string }): Promise<void> => {
     await api.post(ENDPOINTS.PROJECT_REVIEW(projectId), payload)
+  },
+
+  setProjectStatus: async (projectId: string, status: ProjectStatus | string): Promise<void> => {
+    await api.post(ENDPOINTS.PROJECT_SET_STATUS(projectId, status))
   }
 }

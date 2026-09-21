@@ -46,6 +46,39 @@
   padding: 8px 0;
 }
 
+.body div {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .textArea {
   height: 200px;
 }
+
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.successContainer div {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.successTitle {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+  text-align: center;
+}
+
+.successDesc {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  text-align: center;
+}
+

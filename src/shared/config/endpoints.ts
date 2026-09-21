@@ -12,6 +12,8 @@ export const ENDPOINTS = {
   PARTICIPATING_PROJECTS: import.meta.env.VITE_API_PARTICIPATING_PROJECTS_URL || '/me/projects/participating',
   APPLIED_PROJECTS: import.meta.env.VITE_API_APPLIED_PROJECTS_URL || '/me/projects/applied',
   PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}`,
+  PROJECT_SET_STATUS: (projectId: string, status: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/status/${status}`,
   PROJECT_TEAM: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team`,
   PROJECT_TEAM_MEMBER: (projectId: string, userId: number | string) =>
     `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team/${userId}`,
