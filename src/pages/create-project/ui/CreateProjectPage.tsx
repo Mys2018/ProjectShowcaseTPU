@@ -11,12 +11,11 @@ import {
   type CreateProjectFormValues,
   type WizardProgress,
 } from '@/features/create-project';
-import { useCreateProject, useProjectDetails } from '@/entities/project/api/queries';
+import { useCreateProject, useProjectDetails, useSetProjectStatus } from '@/entities/project/api/queries';
 import { mapProjectToDraftValues } from '@/entities/draft';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
 import {
   getProjectFormatTranslation,
-  ProjectReviewComment,
   useProjectReview,
   useUpdateProject,
 } from '@/entities/project';
@@ -29,7 +28,7 @@ import type { StatusType } from '@/shared/constants/save-status-drafts/getSaveSt
 import { BackLink } from '@/shared/ui/back-link';
 import { DesktopOnlyStub } from '@/shared/ui';
 import { MOBILE_BREAKPOINT } from '@/shared/lib';
-import { ROUTES, ProjectSkeleton } from '@/shared';
+import { ROUTES } from '@/shared';
 import {useMe} from "@/entities/user";
 
 type PageStep = 'type-select' | 'fill';
@@ -51,9 +50,10 @@ interface CreateProjectWizardFormProps {
   isDraftLoading?: boolean;
   editProjectId?: string | null;
   editOwnerId?: number | null;
+  editOriginalRoles?: { roleId: string; roleTypeId?: string }[];
 }
 
-function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading, editProjectId, editOwnerId }: CreateProjectWizardFormProps) {
+function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading, editProjectId, editOwnerId, editOriginalRoles }: CreateProjectWizardFormProps) {
   const navigate = useNavigate();
   const initialType = (initialDraft?.type as CreateProjectRequestType) || 'Study';
 
@@ -69,7 +69,8 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
 
   const { mutate: createProject, isPending: isCreatePending } = useCreateProject();
   const { mutate: updateProject, isPending: isUpdatePending } = useUpdateProject();
-  const isPending = isCreatePending || isUpdatePending;
+  const { mutate: setProjectStatus, isPending: isStatusPending } = useSetProjectStatus();
+  const isPending = isCreatePending || isUpdatePending || isStatusPending;
   const { data: review, isLoading: isReviewLoading } = useProjectReview(editProjectId ?? '', Boolean(editProjectId));
 
   const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
@@ -86,11 +87,33 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
       };
 
       if (editProjectId) {
+        const { meta, ...rest } = values;
+        // RoleUpdateDto: id существующей роли обязателен, иначе бэкенд пытается
+        // создать новую с тем же roleTypeId → уникальный ключ (project, roleType)
+        // нарушается → CONFLICT. Привязываем форму к существующим ролям проекта.
+        const originalRoles = editOriginalRoles ?? [];
+        const updateRoles = values.roles.map((role) => {
+          const originalRole = originalRoles.find((r) => r.roleTypeId === role.roleTypeId);
+          return originalRole ? { ...role, roleId: originalRole.roleId } : role;
+        });
         updateProject({
           projectId: editProjectId,
-          payload: { ...values, ownerId: editOwnerId ?? values.ownerId },
+          payload: {
+            ...rest,
+            roles: updateRoles,
+            ownerId: editOwnerId ?? values.ownerId,
+            title: meta?.title ?? '',
+            description: meta?.description ?? '',
+          },
         }, {
-          onSuccess: handleSuccess,
+          onSuccess: () => {
+            // Доработка отправлена — возвращаем проект на модерацию.
+            // Только после смены статуса уходим назад, иначе проект
+            // останется в NeedsRework и «потеряется».
+            setProjectStatus({ projectId: editProjectId, status: 'Pending' }, {
+              onSuccess: handleSuccess,
+            });
+          },
         });
       } else {
         createProject(values, { onSuccess: handleSuccess });
@@ -341,10 +364,6 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
         </section>
 
         <section className={styles.body}>
-          {editProjectId && currentStep === 5 && (
-            isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment label="Комментарий от модератора" comment={review} />
-          )}
-
           <ProjectInfoStep
             form={form}
             onEditType={() => setPageStep('type-select')}
@@ -353,6 +372,8 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
             onSubmit={handleSubmit}
             onDeleteDraft={handleDeleteDraft}
             isEditMode={Boolean(editProjectId)}
+            review={review}
+            isReviewLoading={isReviewLoading}
             partners={mappedPartners}
             currentStep={currentStep}
             nextStep={nextStep}
@@ -440,6 +461,7 @@ export function CreateProjectPage() {
       isDraftLoading={editProjectId ? isProjectLoading : isDraftLoading}
       editProjectId={editProjectId}
       editOwnerId={projectData?.ownerId ?? null}
+      editOriginalRoles={projectData?.roles ?? []}
     />
   );
 }

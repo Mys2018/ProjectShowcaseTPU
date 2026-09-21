@@ -98,10 +98,15 @@ export const mapProjectToDraftValues = (
     primaryTag: project.primaryTag.id,
     tags: project.tags.map(tag => tag.id),
     checkpoints: project.checkpoints.id,
-    customCheckpoints: project.checkpoints.checkpoints.map(checkpoint => ({
-      title: checkpoint.title,
-      deadline: mapDateToBackendString(checkpoint.deadline),
-    })),
+    // Проект приходит со слитым списком (базовая группа + custom), поэтому после
+    // слияния каждый пункт встречается дважды. Дубли нарушают уникальность на
+    // бэкенде при PATCH — отдаём строго по одному экземпляру.
+    customCheckpoints: project.checkpoints.checkpoints
+      .map(checkpoint => ({
+        title: checkpoint.title,
+        deadline: mapDateToBackendString(checkpoint.deadline),
+      }))
+      .filter((c, index, all) => all.findIndex((x) => x.title === c.title && x.deadline === c.deadline) === index),
     links: [
       ...(project.repository ?? []).map(link => ({ platformId: link.platformId, name: link.name, category: 'Repository', link: link.url })),
       ...(project.taskTracker ?? []).map(link => ({ platformId: link.platformId, name: link.name, category: 'TaskTracker', link: link.url })),

@@ -7,7 +7,8 @@ import { RolesTab } from './tabs/RolesTab'
 import { DatesTab } from './tabs/DatesTab'
 import { AllTab } from './tabs/AllTab'
 import type { CreateProjectForm, StepErrors } from '@/features/create-project'
-import { HorizontalTabs, type HorizontalTabItem } from '@/shared'
+import { ProjectReviewComment } from '@/entities/project'
+import { HorizontalTabs, type HorizontalTabItem, ProjectSkeleton } from '@/shared'
 import {FilledButton} from "@/shared/ui/elements/buttons/filled-button/FilledButton.tsx";
 import {GreyButton, OutlineButton} from "@/shared/ui/elements/buttons";
 import BackIcon from '@/shared/ui/icons/back.svg?react'
@@ -21,6 +22,8 @@ interface ProjectInfoStepProps {
   onSubmit: () => void;
   onDeleteDraft: () => void;
   isEditMode?: boolean;
+  review?: string | undefined;
+  isReviewLoading?: boolean;
   partners: { value: string; verbose: string }[];
   currentStep: number;
   nextStep: () => void;
@@ -38,6 +41,8 @@ export function ProjectInfoStep({
   onSubmit,
   onDeleteDraft,
   isEditMode,
+  review,
+  isReviewLoading,
   partners,
   currentStep,
   nextStep,
@@ -100,6 +105,9 @@ export function ProjectInfoStep({
       />
 
       <div className={styles.main}>
+        {isEditMode && currentStep === tabItems.length && (
+          isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment label="Комментарий от модератора" comment={review} />
+        )}
         <div>
           {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} blinkFields={blinkFields} onEditType={onEditType} />}
           {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
