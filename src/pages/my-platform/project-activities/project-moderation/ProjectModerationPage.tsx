@@ -29,8 +29,7 @@ export function ProjectModerationPage() {
     }
   }, [searchParams, location.state])
 
-  const canProjectBeChosen = (project: ProjectCardData) =>
-    project.status === 'Pending' || project.status === 'NeedsRework'
+  const canProjectBeChosen = (project: ProjectCardData) => project.status === 'Pending'
 
   const selectedProject = selectedProjectId ? projects.find(p => p.id === selectedProjectId) : null
   const activeProject =

@@ -7,9 +7,11 @@ export const useRequestChangesOnProject = () => {
     mutationFn: (payload: { id: string; comment?: string }) =>
       projectApi.setProjectModerationReview(payload.id, { verdict: 'NeedsRework', comment: payload.comment }),
     onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.list(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.curatedList(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.managedList(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.review(id) })
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.details(id) })
     }
   })
 }

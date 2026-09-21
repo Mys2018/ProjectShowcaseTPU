@@ -10,6 +10,7 @@ export const useRejectProject = () => {
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.curatedList(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.managedList(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.review(id) })
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.details(id) })
     }
   })
 }

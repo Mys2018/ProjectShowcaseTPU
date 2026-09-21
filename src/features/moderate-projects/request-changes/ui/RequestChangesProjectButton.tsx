@@ -36,7 +36,12 @@ export function RequestChangesProjectButton({ projectId }: RequestChangesProject
           <FilledButton
             textButton='Отправить на доработку'
             disabled={comment.trim().length === 0 || isPending}
-            onClick={() => requestChanges({ id: projectId, comment: comment })}
+            onClick={() => requestChanges({ id: projectId, comment: comment }, {
+              onSuccess: () => {
+                setIsModalOpen(false)
+                setComment('')
+              }
+            })}
           />
         </div>
       </Modal>

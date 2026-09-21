@@ -22,7 +22,7 @@ export function RejectProjectButton({ projectId }: RejectProjectButtonProps) {
         description='Отклоняйте карточку только в случае откровенного спама, черновых записей или грубых нарушений регламента ТПУ.'
         confirmText='Отклонить проект'
         cancelText='Отмена'
-        onConfirm={() => rejectProject(projectId)}
+        onConfirm={() => rejectProject(projectId, { onSuccess: () => setIsModalOpen(false) })}
         onDecline={() => setIsModalOpen(false)}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
