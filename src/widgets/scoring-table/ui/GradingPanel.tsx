@@ -270,9 +270,10 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                     firstName={student.firstName}
                     lastName={student.lastName}
                     nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
-                    roles={[student.role]}
+                    // нет места в роли — строки компетенции нет совсем, а не «?» без подписи
+                    roles={student.role ? [student.role] : []}
                     rolesIcon={
-                      <CompetencyIcon competency={{ id: student.role, name: student.role }} className={styles.roleIcon} />
+                      student.competency && <CompetencyIcon competency={student.competency} className={styles.roleIcon} />
                     }
                     nameStyle="normal"
                     nameTextStyle="bodyText"

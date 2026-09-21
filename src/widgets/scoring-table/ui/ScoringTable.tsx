@@ -5,6 +5,7 @@ import styles from './ScoringTable.module.css'
 import type { ScoringModel } from '../model/types'
 import { pluralizeHours, totalHours } from '../model/computations'
 import { WEEKS_PER_SPRINT } from '../model/toScoringModel'
+import { useDragScroll } from '../model/useDragScroll'
 import { Avatar, TeamUserCard } from '@/entities/user'
 import { CompetencyIcon } from '@/entities/competency'
 import ClockIcon from '@/shared/ui/icons/round-clock.svg?react'
@@ -38,36 +39,14 @@ export function ScoringTable({ model }: ScoringTableProps) {
     return () => clearTimeout(timer)
   }, [currentWeekIndex, isMobile])
 
-  // Полоса прокрутки скрыта, поэтому мышью листаем перетаскиванием. Тачпад и
-  // палец скроллят нативно — их не трогаем.
-  const drag = useRef<{ x: number; scrollLeft: number } | null>(null)
-
-  const startDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType !== 'mouse' || e.button !== 0) return
-    drag.current = { x: e.clientX, scrollLeft: e.currentTarget.scrollLeft }
-    e.currentTarget.setPointerCapture(e.pointerId)
-    e.currentTarget.dataset.dragging = ''
-  }
-
-  const moveDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!drag.current) return
-    e.currentTarget.scrollLeft = drag.current.scrollLeft - (e.clientX - drag.current.x)
-  }
-
-  const endDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    drag.current = null
-    delete e.currentTarget.dataset.dragging
-  }
+  const dragScroll = useDragScroll()
 
   return (
     <div className={styles.wrap}>
       <div
         className={styles.scroll}
         ref={scrollRef}
-        onPointerDown={startDrag}
-        onPointerMove={moveDrag}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
+        {...dragScroll}
       >
         <table className={styles.table}>
           <thead>
@@ -114,12 +93,12 @@ export function ScoringTable({ model }: ScoringTableProps) {
                       firstName={student.firstName}
                       lastName={student.lastName}
                       nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
-                      roles={[student.role]}
+                      // нет места в роли — строки компетенции нет совсем, а не «?» без подписи
+                      roles={student.role ? [student.role] : []}
                       rolesIcon={
-                        <CompetencyIcon
-                          competency={{ id: student.role, name: student.role }}
-                          className={styles.roleIcon}
-                        />
+                        student.competency && (
+                          <CompetencyIcon competency={student.competency} className={styles.roleIcon} />
+                        )
                       }
                       nameStyle={isMobile ? 'twoLines' : 'normal'}
                       nameTextStyle={isMobile ? 'OS-12-500' : 'bodyText'}

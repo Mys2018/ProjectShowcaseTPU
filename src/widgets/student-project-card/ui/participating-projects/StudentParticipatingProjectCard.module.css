@@ -187,40 +187,67 @@
 	border-radius: 12px;
 	background-color: var(--color-gray-100);
 
+	/* архив: без заливки, фиолетовая рамка, баллы зелёные, кнопка — просто текст */
 	&.closed {
 		padding: 16px;
+		background-color: transparent;
 		border: 1px solid var(--color-brand-violet);
 
-		& .label {
+		& .score {
 			color: var(--color-brand-green);
-
-			& .preface {
-				color: var(--color-gray-500);
-			}
 		}
 
 		& .sheetButton {
 			padding: 0;
 			border-radius: 0;
+			background-color: transparent;
 		}
 	}
+}
 
-	& .label {
-		font: var(--inter-12-300);
-		color: var(--color-gray-900);
+/* глобальный `*` ставит ALS Sirius каждому элементу — шрифт у span наследуем явно */
+.points {
+	display: flex;
+	align-items: center;
+	gap: 4px;
 
-		& .strong {
-			font: var(--inter-13-600);
-		}
+	font: 300 12px/1 var(--font-inter);
+	color: var(--color-gray-900);
+	white-space: nowrap;
+
+	& span {
+		font: inherit;
 	}
+}
 
-	.sheetButton {
-		font: var(--inter-13-600);
-		color: var(--color-gray-900);
-		
-		padding: 12px 16px;
+.preface {
+	color: var(--color-gray-500);
+}
 
-		border-radius: 8px;
-		background-color: var(--color-white);
+.score {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.points .strong {
+	font: var(--inter-13-600);
+}
+
+.sheetButton {
+	padding: 12px 16px;
+
+	font: var(--inter-13-600);
+	color: var(--color-gray-900);
+	white-space: nowrap;
+
+	border: none;
+	border-radius: 8px;
+	background-color: var(--color-white);
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: 2px solid var(--color-brand-violet);
+		outline-offset: 2px;
 	}
 }

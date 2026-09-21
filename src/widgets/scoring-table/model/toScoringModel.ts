@@ -1,5 +1,5 @@
 import type { ScoringModel, StudentRow, WeekCell } from './types'
-import type { ProjectSprint, SprintGradingStatus } from '@/entities/project'
+import type { ProjectCardData, ProjectSprint, SprintGradingStatus } from '@/entities/project'
 import type { UserCard } from '@/entities/user'
 
 export const WEEKS_PER_SPRINT = 2
@@ -9,15 +9,17 @@ interface ScoringSources {
   sprints: ProjectSprint[]
   gradings: SprintGradingStatus[]
   team: UserCard[]
+  /** Роли проекта: по местам в них определяется компетенция участника. */
+  projectRoles?: ProjectCardData['roles']
   /** Сегодня в формате YYYY-MM-DD — параметром, чтобы маппер был чистым. */
   today: string
   /** id текущего пользователя: если он есть в таблице, его строка идёт первой. */
   viewerId?: string
 }
 
-export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: ScoringSources): ScoringModel => {
+/** Ось таблицы: спринты по порядку и текущая неделя — общая для всех таблиц часов. */
+export const toSprintAxis = (sprints: ProjectSprint[], today: string) => {
   const ordered = [...sprints].sort((a, b) => a.startDate.localeCompare(b.startDate))
-  const weekCount = ordered.length * WEEKS_PER_SPRINT
 
   const currentSprint = ordered.findIndex(s => s.isCurrent)
   const currentWeekIndex =
@@ -26,6 +28,34 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
       : currentSprint * WEEKS_PER_SPRINT +
         (Date.parse(today) - Date.parse(ordered[currentSprint].startDate) >= 7 * DAY_MS ? 1 : 0)
 
+  return {
+    ordered,
+    currentWeekIndex,
+    sprints: ordered.map(s => ({
+      id: s.id,
+      isCurrent: s.isCurrent,
+      isFuture: s.startDate > today,
+      startDate: s.startDate,
+      endDate: s.endDate
+    }))
+  }
+}
+
+export const toScoringModel = ({ sprints, gradings, team, projectRoles = [], today, viewerId }: ScoringSources): ScoringModel => {
+  // В team.roles приходят роли аккаунта (Default, Student), а не компетенции —
+  // компетенцию берём из места, которое человек занимает в роли проекта.
+  const competencyOf = (userId: number) => {
+    const taken = projectRoles.filter(r => r.placeUserIds.includes(userId))
+    const first = taken[0]
+    return {
+      role: taken.map(r => r.meta.name).join(', '),
+      competency: first ? { id: first.roleTypeId ?? first.roleId, name: first.meta.name } : undefined
+    }
+  }
+  const axis = toSprintAxis(sprints, today)
+  const { ordered, currentWeekIndex } = axis
+  const weekCount = ordered.length * WEEKS_PER_SPRINT
+
   // Порядок строк — как в команде; студенты из табеля, которых нет в команде, идут следом.
   const rows = new Map<number, StudentRow>()
   for (const member of team) {
@@ -33,7 +63,7 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
       id: String(member.userId),
       firstName: member.meta.firstName,
       lastName: member.meta.lastName,
-      role: member.roles?.join(', ') ?? '',
+      ...competencyOf(member.userId),
       picture: member.profilePicture,
       hours: Array<number | null>(weekCount).fill(null),
       weeks: Array<WeekCell | null>(weekCount).fill(null)
@@ -51,7 +81,7 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
           id: String(student.studentId),
           firstName,
           lastName: rest.join(' '),
-          role: '',
+          ...competencyOf(student.studentId),
           hours: Array<number | null>(weekCount).fill(null),
           weeks: Array<WeekCell | null>(weekCount).fill(null)
         })
@@ -92,15 +122,5 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
     students.unshift({ ...viewer, isViewer: true })
   }
 
-  return {
-    sprints: ordered.map(s => ({
-      id: s.id,
-      isCurrent: s.isCurrent,
-      isFuture: s.startDate > today,
-      startDate: s.startDate,
-      endDate: s.endDate
-    })),
-    currentWeekIndex,
-    students
-  }
+  return { sprints: axis.sprints, currentWeekIndex, students }
 }

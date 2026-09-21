@@ -1,4 +1,5 @@
 export { ProjectScoringTable } from './ui/ProjectScoringTable'
 export { ScoringTable } from './ui/ScoringTable'
 export { GradingPanel } from './ui/GradingPanel'
+export { MyHoursModal, type MyHoursModalProps } from './ui/MyHoursModal'
 export type { ScoringModel, ScoringSprint, StudentRow } from './model/types'

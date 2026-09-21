@@ -11,4 +11,5 @@ export type ModalType =
   'START_MODAL' |
   'BLOCKED_GRADING' |
   'COMPLAINT_MODAL' |
+  'MY_PROJECT_HOURS' |
   null

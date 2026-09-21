@@ -1,4 +1,5 @@
 import type { GradingState } from '@/entities/project'
+import type { Competency } from '@/entities/competency'
 
 export interface ScoringSprint {
   id: string
@@ -24,7 +25,10 @@ export interface StudentRow {
   id: string
   firstName: string
   lastName: string
+  /** Компетенции в проекте через запятую — подпись под именем. */
   role: string
+  /** Первая компетенция — по ней выбирается иконка. Нет — человек не на месте в роли. */
+  competency?: Competency
   picture?: string
   /** Строка текущего пользователя: стоит первой, у имени приписка «(Вы)». */
   isViewer?: boolean
