@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import styles from './ApplicationsPanel.module.css'
 import { ApplicationRoleCard } from '../../features/manage-applications/ui/application-role-card/ApplicationRoleCard.tsx'
@@ -12,6 +13,7 @@ import {
 } from '@/entities/application'
 import {projectQueryKeys, type ProjectCardData, useProjectTeam} from '@/entities/project'
 import { TeamMemberCard, type UserCard } from "@/entities/user";
+import { ROUTES } from '@/shared'
 
 interface ApplicationsPanelProps {
   project: ProjectCardData
@@ -19,6 +21,14 @@ interface ApplicationsPanelProps {
 
 export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  // «Оценить работу участника» — на вкладку оценки этого проекта; строка участника там подсветится
+  const rateMember = (userId: number) => {
+    void navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
+      state: { projectId: project.id, studentId: String(userId) }
+    })
+  }
 
   const { data: applicationsData, isLoading } = useApplications({
     mode: 'AsOwner',
@@ -260,6 +270,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                     isRequired={role.minPlacesCount > 0}
                     occurrenceIndex={role.occurrenceIndex}
                     totalOccurrences={role.totalOccurrences}
+                    onRate={() => rateMember(item.user.userId)}
                   />
                 )
               })}
@@ -275,6 +286,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                   }
                   index={occupiedRoleItems.length + idx}
                   name={user.userId === project.ownerId ? 'Куратор проекта' : 'Участник'}
+                  onRate={user.userId === project.ownerId ? undefined : () => rateMember(user.userId)}
                 />
               ))}
             </>

@@ -12,7 +12,8 @@ export const ParticipantsGrading = () => {
   const [searchParams] = useSearchParams()
   const location = useLocation()
 
-  const targetProjectId = searchParams.get('projectId') || (location.state as { projectId?: string } | null)?.projectId
+  const routeState = location.state as { projectId?: string; studentId?: string } | null
+  const targetProjectId = searchParams.get('projectId') || routeState?.projectId
 
   useEffect(() => {
     if (targetProjectId) {
@@ -40,7 +41,13 @@ export const ParticipantsGrading = () => {
 
       <main className={styles.main}>
         {selected ? (
-          <GradingPanel key={selected.id} projectId={selected.id} title={selected.meta.title} />
+          <GradingPanel
+            key={selected.id}
+            projectId={selected.id}
+            title={selected.meta.title}
+            // пришли кнопкой «Оценить работу участника» — подсветить его строку
+            highlightStudentId={selected.id === targetProjectId ? routeState?.studentId : undefined}
+          />
         ) : (
           <div className={styles.emptyMain}>
             <p>Нет проектов в работе — оценивать пока некого</p>

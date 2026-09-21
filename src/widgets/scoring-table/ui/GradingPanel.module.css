@@ -184,9 +184,41 @@
 }
 
 .card {
+  position: relative;
   height: 72px;
   background: var(--color-white);
   border-radius: 16px;
+}
+
+/* Пришли кнопкой «Оценить работу участника»: жёлтая рамка поверх карточки студента.
+   Тайминги сняты с экспорта анимации из Figma: пауза 0.4 с (страница открылась,
+   строка доехала до центра), 0.27 с проявляется, 0.33 с держится, 0.27 с гаснет. */
+.highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background: rgb(255 182 0 / 0.03);
+  border: 1px solid var(--color-yellow);
+  border-radius: 16px;
+  pointer-events: none;
+
+  animation: highlight 0.87s ease-in-out 0.4s both;
+}
+
+@keyframes highlight {
+  0% { opacity: 0; }
+  31% { opacity: 1; }
+  69% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* без движения — просто показать рамку на то же время */
+@media (prefers-reduced-motion: reduce) {
+  .highlight::after {
+    animation-timing-function: step-end;
+  }
 }
 
 .avatar {

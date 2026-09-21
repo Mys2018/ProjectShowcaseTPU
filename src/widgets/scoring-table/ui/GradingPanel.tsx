@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useBlocker } from 'react-router-dom'
 import clsx from 'clsx'
 import styles from './GradingPanel.module.css'
@@ -34,6 +34,8 @@ import PendingIcon from '@/shared/ui/icons/round-status-pending.svg?react'
 interface GradingPanelProps {
   projectId: string
   title: string
+  /** Пришли кнопкой «Оценить работу участника»: строку этого студента прокрутить и подсветить. */
+  highlightStudentId?: string
 }
 
 const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
@@ -72,8 +74,16 @@ const withoutKey = (draft: Draft, key: string): Draft => {
  * Оценка участников: часы по неделям выбранного спринта. Ключ `projectId` на
  * компоненте сбрасывает черновик при смене проекта.
  */
-export function GradingPanel({ projectId, title }: GradingPanelProps) {
+export function GradingPanel({ projectId, title, highlightStudentId }: GradingPanelProps) {
   const { data, isLoading, isError } = useProjectScoring(projectId)
+  const [highlighted, setHighlighted] = useState(highlightStudentId)
+  const highlightRef = useRef<HTMLDivElement>(null)
+  const hasData = Boolean(data)
+
+  // Строки появляются после загрузки — тогда и подводим к нужной
+  useEffect(() => {
+    highlightRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [hasData])
   const submit = useSubmitSprintHours(projectId)
   const [pickedSprint, setPickedSprint] = useState<number | null>(null)
   const [draft, setDraft] = useState<Draft>({})
@@ -263,8 +273,16 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
             const StatusIcon = STATUS_ICONS[status]
 
             return (
-              <div key={student.id} className={styles.row}>
-                <div className={clsx(styles.grid, styles.card)}>
+              <div
+                key={student.id}
+                ref={student.id === highlighted ? highlightRef : undefined}
+                className={styles.row}
+              >
+                <div
+                  className={clsx(styles.grid, styles.card, student.id === highlighted && styles.highlight)}
+                  // подсветка отыграла один раз — снимаем, чтобы не повторялась при перерисовках
+                  onAnimationEnd={() => student.id === highlighted && setHighlighted(undefined)}
+                >
                   <TeamUserCard
                     userId={student.id}
                     firstName={student.firstName}

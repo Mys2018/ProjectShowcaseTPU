@@ -18,6 +18,8 @@ interface TeamMemberCardProps {
   occurrenceIndex?: number;
   totalOccurrences?: number;
   className?: string;
+  /** Пункт меню «Оценить работу участника». Нет — пункт ничего не делает. */
+  onRate?: () => void;
 }
 
 export const TeamMemberCard = ({
@@ -30,6 +32,7 @@ export const TeamMemberCard = ({
   occurrenceIndex,
   totalOccurrences,
   className,
+  onRate,
 }: TeamMemberCardProps) => {
   const { data: user_full } = useUserById(user.userId);
 
@@ -111,7 +114,7 @@ export const TeamMemberCard = ({
               <PopupMenu.Row title={'Исключить пользователя'} onClick={() => {}}>
                 <RemoveUserIcon/>
               </PopupMenu.Row>
-              <PopupMenu.Row title={'Оценить работу участника'} onClick={() => {}}>
+              <PopupMenu.Row title={'Оценить работу участника'} onClick={() => onRate?.()}>
                 <StarPlusIcon/>
               </PopupMenu.Row>
             </PopupMenu>

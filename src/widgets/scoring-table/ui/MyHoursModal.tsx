@@ -4,6 +4,7 @@ import styles from './MyHoursModal.module.css'
 import { WEEKS_PER_SPRINT } from '../model/toScoringModel'
 import { useDragScroll } from '../model/useDragScroll'
 import { useMyProjectHours } from '../model/useMyProjectHours'
+import { HScrollbar } from './HScrollbar'
 import { getScoreWord } from '@/entities/project'
 import { CompetencyIcon, type Competency } from '@/entities/competency'
 import { mapDateToLocalString } from '@/shared'
@@ -99,57 +100,60 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
             ) : weekCount === 0 ? (
               <p className={styles.state}>Спринтов пока нет</p>
             ) : (
-              <div className={styles.wrap}>
-                <div className={styles.scroll} ref={scrollRef} {...dragScroll}>
-                  <table className={styles.table}>
-                    <thead>
-                      <tr>
-                        {sprints.map((sprint, i) => (
-                          <th
-                            key={sprint.id}
-                            colSpan={WEEKS_PER_SPRINT}
-                            className={clsx(styles.sprint, sprint.isCurrent && styles.sprintCurrent)}
-                          >
-                            <span className={styles.sprintInner}>
-                              Спринт {i + 1}
-                              {sprint.isFuture && <ClockIcon className={styles.clock} aria-label="Ещё не начался" />}
-                            </span>
-                          </th>
-                        ))}
-                      </tr>
-                      <tr>
-                        {weeks.map(w => (
-                          <th
-                            key={w}
-                            data-current-week={w === data.currentWeekIndex || undefined}
-                            // колонки поровну на всю ширину; уже 50px не сжимаются — таблица прокручивается
-                            style={{ width: `${100 / weekCount}%` }}
-                            className={clsx(styles.week, w === data.currentWeekIndex && styles.current)}
-                          >
-                            н. {w + 1}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        {weeks.map(w => (
-                          <td
-                            key={w}
-                            className={clsx(
-                              styles.score,
-                              data.absent[w] && styles.absent,
-                              w === data.currentWeekIndex && styles.current
-                            )}
-                            title={data.absent[w] ? 'Вас тогда ещё не было в проекте' : undefined}
-                          >
-                            {data.absent[w] ? '—' : data.hours[w]}
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
+              <div>
+                <div className={styles.wrap}>
+                  <div className={styles.scroll} ref={scrollRef} {...dragScroll}>
+                    <table className={styles.table}>
+                      <thead>
+                        <tr>
+                          {sprints.map((sprint, i) => (
+                            <th
+                              key={sprint.id}
+                              colSpan={WEEKS_PER_SPRINT}
+                              className={clsx(styles.sprint, sprint.isCurrent && styles.sprintCurrent)}
+                            >
+                              <span className={styles.sprintInner}>
+                                Спринт {i + 1}
+                                {sprint.isFuture && <ClockIcon className={styles.clock} aria-label="Ещё не начался" />}
+                              </span>
+                            </th>
+                          ))}
+                        </tr>
+                        <tr>
+                          {weeks.map(w => (
+                            <th
+                              key={w}
+                              data-current-week={w === data.currentWeekIndex || undefined}
+                              // колонки поровну на всю ширину; уже 50px не сжимаются — таблица прокручивается
+                              style={{ width: `${100 / weekCount}%` }}
+                              className={clsx(styles.week, w === data.currentWeekIndex && styles.current)}
+                            >
+                              н. {w + 1}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          {weeks.map(w => (
+                            <td
+                              key={w}
+                              className={clsx(
+                                styles.score,
+                                data.absent[w] && styles.absent,
+                                w === data.currentWeekIndex && styles.current
+                              )}
+                              title={data.absent[w] ? 'Вас тогда ещё не было в проекте' : undefined}
+                            >
+                              {data.absent[w] ? '—' : data.hours[w]}
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+                <HScrollbar target={scrollRef} />
               </div>
             )}
 

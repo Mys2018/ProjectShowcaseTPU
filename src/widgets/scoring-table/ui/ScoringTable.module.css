@@ -1,4 +1,10 @@
 /* Цветов ниже нет в variables.css — взяты из макета. */
+/* таблица + полоса прокрутки под ней — одной ширины */
+.frame {
+  width: fit-content;
+  max-width: 100%;
+}
+
 .wrap {
   --sc-current-bg: #E9F9E9;
   --sc-result-bg: #DADEF6;

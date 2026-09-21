@@ -1,0 +1,32 @@
+/* По макету: 4px толщиной, с боков по 8px от краёв таблицы, над ней 4px зазора */
+.track {
+  position: relative;
+  height: 4px;
+  margin: 4px 8px 0;
+
+  background: var(--color-gray-100);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.thumb {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+
+  background: var(--color-gray-500);
+  border-radius: 2px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.thumb:active {
+  cursor: grabbing;
+}
+
+/* тонкую полосу тяжело поймать мышью — зона захвата выше самой полосы */
+.thumb::before {
+  content: '';
+  position: absolute;
+  inset: -6px 0;
+}
