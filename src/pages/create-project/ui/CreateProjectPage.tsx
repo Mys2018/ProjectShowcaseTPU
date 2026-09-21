@@ -11,7 +11,8 @@ import {
   type CreateProjectFormValues,
   type WizardProgress,
 } from '@/features/create-project';
-import { useCreateProject } from '@/entities/project/api/queries';
+import { useCreateProject, useProjectDetails } from '@/entities/project/api/queries';
+import { mapProjectToDraftValues } from '@/entities/draft';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
 import { getProjectFormatTranslation } from '@/entities/project';
 
@@ -37,9 +38,15 @@ interface CreateProjectWizardFormProps {
     highestStep?: number;
     progress?: WizardProgress;
   }) | null;
+  restoreValues?: (Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  }) | null;
+  isDraftLoading?: boolean;
 }
 
-function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWizardFormProps) {
+function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading }: CreateProjectWizardFormProps) {
   const navigate = useNavigate();
   const initialType = (initialDraft?.type as CreateProjectRequestType) || 'Study';
 
@@ -59,6 +66,8 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWiz
     defaultValues: initialDraft ?? {
       type: selectedType,
     } as Partial<CreateProjectFormValues>,
+    restoreValues,
+    isDraftLoading,
     onSubmit: (values) => {
       createProject(values, {
         onSuccess: () => {
@@ -332,9 +341,11 @@ export function CreateProjectPage() {
   const { data: me, isLoading: isMeLoading } = useMe();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
+  const editProjectId = searchParams.get('projectId');
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
   const { data: draftData, isLoading: isDraftLoading } = useProjectDraft();
+  const { data: projectData, isLoading: isProjectLoading } = useProjectDetails(editProjectId ?? '');
 
   if (isMeLoading) {
     return (
@@ -356,7 +367,23 @@ export function CreateProjectPage() {
     return <DesktopOnlyStub />;
   }
 
-  if (isDraftMode && isDraftLoading) {
+  if (editProjectId && isProjectLoading) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Загрузка проекта...</p>
+      </main>
+    );
+  }
+
+  if (editProjectId && !projectData) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Проект не найден</p>
+      </main>
+    );
+  }
+
+  if (isDraftMode && !editProjectId && isDraftLoading) {
     return (
       <main className={styles.mainContent}>
         <p>Загрузка черновика...</p>
@@ -364,7 +391,7 @@ export function CreateProjectPage() {
     );
   }
 
-  const draftPayload = isDraftMode && draftData?.data
+  const draftPayload = isDraftMode && !editProjectId && draftData?.data
     ? (draftData.data as Partial<CreateProjectFormValues> & {
         currentStep?: number;
         highestStep?: number;
@@ -372,11 +399,15 @@ export function CreateProjectPage() {
       })
     : null;
 
+  const restoreValues = editProjectId && projectData ? mapProjectToDraftValues(projectData) : null;
+
   return (
     <CreateProjectWizardForm
-      key={isDraftMode ? 'draft' : 'new'}
-      isDraftMode={isDraftMode}
+      key={editProjectId ?? (isDraftMode ? 'draft' : 'new')}
+      isDraftMode={Boolean(editProjectId) || isDraftMode}
       initialDraft={draftPayload}
+      restoreValues={restoreValues}
+      isDraftLoading={editProjectId ? isProjectLoading : isDraftLoading}
     />
   );
 }
