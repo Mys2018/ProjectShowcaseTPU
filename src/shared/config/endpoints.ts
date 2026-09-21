@@ -13,6 +13,8 @@ export const ENDPOINTS = {
   APPLIED_PROJECTS: import.meta.env.VITE_API_APPLIED_PROJECTS_URL || '/me/projects/applied',
   PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}`,
   PROJECT_TEAM: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team`,
+  PROJECT_TEAM_MEMBER: (projectId: string, userId: number | string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team/${userId}`,
   PROJECT_SPRINTS: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints`,
   SPRINT_GRADING_STATUS: (projectId: string, sprintId: string) =>
     `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints/${sprintId}/grading-status`,

@@ -2,11 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateApplicationStatus, applicationKeys, type Application } from '@/entities/application'
 import { projectQueryKeys } from '@/entities/project'
 
-/** Активной считаем заявку, которую ещё рассматривают или уже одобрили. */
-export const isActiveApplication = (a: Application) => a.status === 'pending' || a.status === 'approved'
+/** Активной считаем заявку-отклик, которую ещё рассматривают или уже одобрили. */
+export const isActiveApplication = (a: Application) =>
+  a.applicationType === 'Application' && (a.status === 'pending' || a.status === 'approved')
 
-/** Параметры запроса «мои заявки по этому проекту». */
-export const myApplicationsParams = (projectId: string) => ({ mode: 'AsStudent', projectId, offset: 0, limit: 100 }) as const
+/** Параметры запроса «мои отклики по этому проекту». */
+export const myApplicationsParams = (projectId: string) =>
+  ({ mode: 'AsStudent', type: 'Application', projectId, offset: 0, limit: 100 }) as const
 
 /**
  * Студент снимает свою заявку. Cancelled — «отозвана» в терминах бэкенда.

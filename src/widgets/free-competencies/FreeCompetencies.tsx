@@ -70,7 +70,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   const myUserId = me ? Number(me.id) : null
   const navigate = useNavigate()
 
-  const { data: myApplications } = useApplications({ limit: 100, offset: 0, mode: 'AsStudent' }, status === 'authenticated')
+  const { data: myApplications } = useApplications({ limit: 100, offset: 0, mode: 'AsStudent', type: 'Application' }, status === 'authenticated')
   const { data: participatingProjects } = useParticipatingProjects({ offset: 0, limit: 100 }, status === 'authenticated')
 
   const createApplicationMutation = useCreateApplication()
@@ -86,7 +86,9 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   const currentApplications = useMemo(() => {
     if (!myApplications?.applications) return [];
     const roleIds = roles.map(r => r.roleId);
-    return myApplications.applications.filter(app => roleIds.includes(app.roleID) && (app.status === 'pending' || app.status === 'approved'));
+    return myApplications.applications.filter(
+      app => app.applicationType === 'Application' && roleIds.includes(app.roleID) && (app.status === 'pending' || app.status === 'approved')
+    );
   }, [myApplications, roles]);
 
   const MAX_PROJECT_SELECTIONS = 2;
@@ -101,7 +103,9 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
   // Все активные (не рассмотренные) заявки студента во всех проектах
   const allActiveApplications = useMemo(() => {
-    return (myApplications?.applications ?? []).filter(app => app.status === 'pending')
+    return (myApplications?.applications ?? []).filter(
+      app => app.applicationType === 'Application' && app.status === 'pending'
+    )
   }, [myApplications])
 
   const totalActiveApplicationsCount = allActiveApplications.length

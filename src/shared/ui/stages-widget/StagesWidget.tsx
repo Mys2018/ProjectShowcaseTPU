@@ -188,7 +188,7 @@ export const StagesWidget = () => {
     isStudent
   )
   const { data: applicationsData } = useApplications(
-    { mode: 'AsStudent', offset: 0, limit: 100 },
+    { mode: 'AsStudent', type: 'Application', offset: 0, limit: 100 },
     isStudent
   )
   const { data: likedData } = useLikedProjects(
@@ -238,7 +238,7 @@ export const StagesWidget = () => {
   }
 
   const activeStudentApplications = (applicationsData?.applications ?? []).filter(
-    app => app.status === 'pending'
+    app => app.applicationType === 'Application' && app.status === 'pending'
   )
   const studentApplicationsCount = activeStudentApplications.length
   let studentApplicationsSnippet: string

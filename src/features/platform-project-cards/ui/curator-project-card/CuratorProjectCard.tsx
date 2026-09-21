@@ -35,6 +35,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   const { data: applicationsData } = useApplications({
     mode: 'AsOwner',
     projectId: project.id,
+    type: 'Application',
     status: 'pending',
     offset: 0,
     limit: 1

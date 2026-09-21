@@ -65,6 +65,10 @@ export const projectApi = {
     return data
   },
 
+  removeTeamMember: async (projectId: string, userId: number): Promise<void> => {
+    await api.delete(ENDPOINTS.PROJECT_TEAM_MEMBER(projectId, userId))
+  },
+
   getProjectSprints: async (projectId: string): Promise<ProjectSprint[]> => {
     const { data } = await api.get<ProjectSprint[]>(ENDPOINTS.PROJECT_SPRINTS(projectId))
     return data

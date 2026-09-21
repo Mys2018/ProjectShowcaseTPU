@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export function MyApplicationsPage() {
-  const { data } = useApplications({ mode: 'AsStudent', offset: 0, limit: 20 })
+  const { data } = useApplications({ mode: 'AsStudent', type: 'Application', offset: 0, limit: 100 })
   const navigate = useNavigate()
   const applications = data?.applications || []
 

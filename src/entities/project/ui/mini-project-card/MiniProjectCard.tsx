@@ -15,6 +15,7 @@ export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
   const { data: applications } = useApplications({
     mode: 'AsOwner',
     projectId: project.id,
+    type: 'Application',
     status: 'pending',
     offset: 0,
     limit: 1,

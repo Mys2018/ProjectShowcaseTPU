@@ -20,7 +20,7 @@ import {
 } from '../model/grading'
 import { useSubmitSprintHours, type SprintHoursBatch } from '@/entities/project'
 import { Avatar, TeamUserCard } from '@/entities/user'
-import { CompetencyIcon } from '@/entities/competency'
+import { CompetencyIcon, isPseudoRole } from '@/entities/competency'
 import { getDaysUntil, getPluralDays, parseDeadline } from '@/shared'
 import { useModalStore } from '@/shared/model'
 import { GreyButton, OutlineButton } from '@/shared/ui/elements/buttons'
@@ -276,9 +276,11 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                     firstName={student.firstName}
                     lastName={student.lastName}
                     nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
-                    roles={[student.role]}
+                    roles={student.role && !isPseudoRole(student.role) ? [student.role] : undefined}
                     rolesIcon={
-                      <CompetencyIcon competency={{ id: student.role, name: student.role }} className={styles.roleIcon} />
+                      student.role && !isPseudoRole(student.role) ? (
+                        <CompetencyIcon role={student.role} className={styles.roleIcon} />
+                      ) : undefined
                     }
                     nameStyle="normal"
                     nameTextStyle="bodyText"

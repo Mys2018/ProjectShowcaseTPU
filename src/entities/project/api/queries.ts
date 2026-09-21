@@ -168,3 +168,19 @@ export const useProjectTimesheetSummary = (projectId?: string, enabled: boolean 
     enabled: Boolean(projectId) && enabled
   })
 }
+
+export const useRemoveTeamMember = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ projectId, userId }: { projectId: string; userId: number }) =>
+      projectApi.removeTeamMember(projectId, userId),
+    onSuccess: (_, { projectId }) => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.team(projectId) })
+      queryClient.invalidateQueries({ queryKey: projectKeys.details(projectId) })
+      queryClient.invalidateQueries({ queryKey: projectKeys.curatedList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.managedList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.participatingList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.timesheetSummary(projectId) })
+    }
+  })
+}

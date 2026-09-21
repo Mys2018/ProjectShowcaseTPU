@@ -6,7 +6,7 @@ import type { ScoringModel } from '../model/types'
 import { pluralizeHours, totalHours } from '../model/computations'
 import { WEEKS_PER_SPRINT } from '../model/toScoringModel'
 import { Avatar, TeamUserCard } from '@/entities/user'
-import { CompetencyIcon } from '@/entities/competency'
+import { CompetencyIcon, isPseudoRole } from '@/entities/competency'
 import ClockIcon from '@/shared/ui/icons/round-clock.svg?react'
 
 interface ScoringTableProps {
@@ -114,12 +114,14 @@ export function ScoringTable({ model }: ScoringTableProps) {
                       firstName={student.firstName}
                       lastName={student.lastName}
                       nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
-                      roles={[student.role]}
+                      roles={student.role && !isPseudoRole(student.role) ? [student.role] : undefined}
                       rolesIcon={
-                        <CompetencyIcon
-                          competency={{ id: student.role, name: student.role }}
-                          className={styles.roleIcon}
-                        />
+                        student.role && !isPseudoRole(student.role) ? (
+                          <CompetencyIcon
+                            role={student.role}
+                            className={styles.roleIcon}
+                          />
+                        ) : undefined
                       }
                       nameStyle={isMobile ? 'twoLines' : 'normal'}
                       nameTextStyle={isMobile ? 'OS-12-500' : 'bodyText'}
