@@ -3,7 +3,7 @@ import { getStudentProjectHours, useProjectSprints, useProjectTimesheetSummary }
 import { useMe } from '@/entities/user'
 
 export const useMyProjectHours = (projectId: string) => {
-  const { data: me, isLoading: isMeLoading } = useMe()
+  const { data: me, isLoading: isMeLoading, isError: isMeError } = useMe()
   // Локальная дата в YYYY-MM-DD: шведская локаль форматирует ровно так.
   const today = new Date().toLocaleDateString('sv-SE')
 
@@ -12,10 +12,11 @@ export const useMyProjectHours = (projectId: string) => {
 
   // без me не найти себя в сводке: таблица мигнула бы пустой и с нулём в итоге
   const isLoading = sprints.isLoading || summary.isLoading || isMeLoading
-  const isError = sprints.isError || summary.isError
+  // без меня в сводке таблица вышла бы пустой, а не с ошибкой
+  const isError = sprints.isError || summary.isError || isMeError
 
   const data =
-    sprints.data && !isLoading
+    sprints.data && me && !isLoading
       ? toMyHoursModel({ sprints: sprints.data, summary: summary.data, studentId: me?.id, today })
       : undefined
 

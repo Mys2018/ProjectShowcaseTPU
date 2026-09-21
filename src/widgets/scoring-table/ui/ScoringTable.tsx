@@ -48,6 +48,10 @@ export function ScoringTable({ model }: ScoringTableProps) {
         <div
           className={styles.scroll}
           ref={scrollRef}
+          // своя полоса скрыта от скринридера — листать стрелками можно, сфокусировав область
+          tabIndex={0}
+          role="region"
+          aria-label="Часы участников по неделям"
           {...dragScroll}
         >
           <table className={styles.table}>

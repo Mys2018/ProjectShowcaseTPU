@@ -21,6 +21,11 @@ export interface MyHoursModalProps {
   deadline?: Date
 }
 
+/** Шаг листания стрелками — примерно один спринт (две недели по 50px). */
+const SPRINT_WIDTH = 100
+/** Скорость при зажатой стрелке, px/с — спринт за пятую долю секунды. */
+const HOLD_SPEED = 500
+
 // YYYY-MM-DD как локальная дата: new Date('2026-09-25') даёт полночь по UTC.
 const fromDay = (day?: string) => (day ? new Date(`${day}T00:00:00`) : undefined)
 const formatDate = (date?: Date) => (date ? mapDateToLocalString(date, { year: true }) : '—')
@@ -36,9 +41,66 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
 
   useEffect(() => {
     if (!isOpen) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    // Зажатая стрелка: едем с постоянной скоростью, пока не отпустят. Автоповтор клавиши
+    // (~30 раз в секунду) запускал бы плавную прокрутку поверх недоигранной — таблица дёргалась.
+    let hold: { direction: number; frame: number; last: number } | null = null
+    const stopHold = () => {
+      if (hold) cancelAnimationFrame(hold.frame)
+      hold = null
+    }
+    const drive = (now: number) => {
+      const scroller = scrollRef.current
+      if (!hold || !scroller) return
+      scroller.scrollLeft += hold.direction * HOLD_SPEED * ((now - hold.last) / 1000)
+      hold.last = now
+      hold.frame = requestAnimationFrame(drive)
+    }
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') return onClose()
+      // ← → листают таблицу, где бы ни стоял фокус: попап модальный, больше им листать нечего
+      const scroller = scrollRef.current
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && scroller) {
+        e.preventDefault()
+        const direction = e.key === 'ArrowLeft' ? -1 : 1
+        if (!e.repeat) {
+          stopHold()
+          scroller.scrollBy({ left: direction * SPRINT_WIDTH, behavior: 'smooth' })
+        } else if (!hold || hold.direction !== direction) {
+          stopHold()
+          const now = performance.now()
+          hold = { direction, last: now, frame: requestAnimationFrame(drive) }
+        }
+        return
+      }
+      // Tab ходит по кругу внутри попапа — к странице под затемнением не уйти
+      const popup = popupRef.current
+      if (e.key !== 'Tab' || !popup) return
+      const focusable = [...popup.querySelectorAll<HTMLElement>('button, [tabindex="0"]')]
+      const first = focusable[0]
+      const last = focusable.at(-1)
+      if (!first || !last) return
+      const active = document.activeElement
+      if (e.shiftKey && (active === first || active === popup)) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && (active === last || !popup.contains(active))) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') stopHold()
+    }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keyup', onKeyUp)
+    window.addEventListener('blur', stopHold)
+    return () => {
+      stopHold()
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('keyup', onKeyUp)
+      window.removeEventListener('blur', stopHold)
+    }
   }, [isOpen, onClose])
 
   // Фокус — в попап, после закрытия — обратно на кнопку, которой его открыли
@@ -65,7 +127,7 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} variant="transparent">
-      <section ref={popupRef} tabIndex={-1} className={styles.popup} role="dialog" aria-labelledby={titleId}>
+      <section ref={popupRef} tabIndex={-1} className={styles.popup} role="dialog" aria-modal="true" aria-labelledby={titleId}>
         <div className={styles.content}>
           <header className={styles.header}>
             <h2 id={titleId} className={styles.title}>
@@ -102,7 +164,15 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
             ) : (
               <div>
                 <div className={styles.wrap}>
-                  <div className={styles.scroll} ref={scrollRef} {...dragScroll}>
+                  {/* полоса прокрутки своя и скрыта от скринридера — листать стрелками можно, сфокусировав область */}
+                  <div
+                    className={styles.scroll}
+                    ref={scrollRef}
+                    tabIndex={0}
+                    role="region"
+                    aria-label="Часы по неделям"
+                    {...dragScroll}
+                  >
                     <table className={styles.table}>
                       <thead>
                         <tr>
@@ -160,7 +230,7 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
             <div className={styles.note}>
               <span>1 час = 1 балл</span>
               <span className={styles.dispute}>
-                Часы проставлены не верно?
+                Часы проставлены неверно?
                 {/* ponytail: спора о часах на бэке пока нет — только подсказка; появится запрос — повесить onClick */}
                 <span className={styles.disputeWrap}>
                   <button

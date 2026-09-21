@@ -136,6 +136,11 @@
   display: none;
 }
 
+/* область фокусируется ради листания стрелками — рамка фокуса тут не нужна */
+.scroll:focus {
+  outline: none;
+}
+
 @media (hover: hover) and (pointer: fine) {
   .scroll {
     cursor: grab;

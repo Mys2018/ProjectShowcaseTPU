@@ -28,6 +28,11 @@
   display: none;
 }
 
+/* область фокусируется ради листания стрелками — рамка фокуса тут не нужна */
+.scroll:focus {
+  outline: none;
+}
+
 /* Мышью таблица листается перетаскиванием (см. ScoringTable.tsx). */
 @media (hover: hover) and (pointer: fine) {
   .scroll {
