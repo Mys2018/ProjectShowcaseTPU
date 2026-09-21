@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import styles from '../applications-and-team/ApplicationsAndTeam.module.css'
 import { GradingPanel } from '@/widgets/scoring-table'
 import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
+import {EmptyBlanking} from "@/shared/ui/empty-blanking";
 
 export const ParticipantsGrading = () => {
   const { data } = useCuratedProjects({ limit: 100 })
@@ -49,9 +50,7 @@ export const ParticipantsGrading = () => {
             highlightStudentId={selected.id === targetProjectId ? routeState?.studentId : undefined}
           />
         ) : (
-          <div className={styles.emptyMain}>
-            <p>Нет проектов в работе — оценивать пока некого</p>
-          </div>
+          <EmptyBlanking text={'Нет проектов в работе — оценивать пока некого'}/>
         )}
       </main>
     </>

@@ -1,29 +1,40 @@
+import clsx from 'clsx';
 import styles from './MiniProjectCard.module.css';
 import { ProjectCardHeader } from '../project-card-header/ProjectCardHeader';
 import {type ProjectCardData, ProjectCardTeam, useProjectTeam} from '@/entities/project';
 import { useApplications } from "@/entities/application";
 
-type MiniProjectCardType = 'applications' | 'rating'
+export type MiniProjectCardType = 'applications' | 'rating' | 'moderation'
 
-interface MiniProjectCardProps {
+export interface MiniProjectCardProps {
   project: ProjectCardData
-  type: MiniProjectCardType
+  type?: MiniProjectCardType
+  headerSlot?: React.ReactNode
+  className?: string
 }
 
-export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
+export const MiniProjectCard = ({project, type, headerSlot, className}: MiniProjectCardProps) => {
+  const isApplications = type === 'applications';
+  const isModeration = type === 'moderation';
 
   const { data: applications } = useApplications({
     mode: 'AsOwner',
     projectId: project.id,
+    type: 'Application',
     status: 'pending',
     offset: 0,
     limit: 1,
-  })
+  }, isApplications)
 
   const { data: team } = useProjectTeam(project.id)
 
   return (
-    <div className={styles.container}>
+    <div className={clsx(styles.container, className)}>
+      {headerSlot && (
+        <div className={styles.headerSlot}>
+          {headerSlot}
+        </div>
+      )}
       <ProjectCardHeader className={styles.header} label={project.primaryTag.name} />
       <div className={styles.body}>
         <p>
@@ -38,11 +49,14 @@ export const MiniProjectCard = ({project, type}: MiniProjectCardProps) => {
             )}
           </div>
 
-          <ProjectCardTeam
-            members={team}
-            max={4}
-            project={project}
-          />
+          {
+            !isModeration && <ProjectCardTeam
+              members={team}
+              max={4}
+              project={project}
+            />
+          }
+
         </div>
       </div>
 

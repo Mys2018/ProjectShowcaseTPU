@@ -29,6 +29,7 @@ interface ApplicationRoleCardProps {
   canInvite?: boolean
   projectId?: string
   teamUserIds?: number[]
+  occupiedUserIds?: Set<number>
   onAccept: (applicationId: string) => void
   onReject: (applicationId: string) => void
   onInvite: (roleId: string, roleName: string, user: { id: number; name: string }) => void
@@ -45,6 +46,7 @@ export const ApplicationRoleCard = ({
   canInvite = false,
   projectId,
   teamUserIds,
+  occupiedUserIds,
   onAccept,
   onReject,
   onInvite,
@@ -71,9 +73,12 @@ export const ApplicationRoleCard = ({
     Boolean(pendingInvitation?.studentID)
   )
 
-  // Прямые отклики студентов со статусом pending
+  // Прямые отклики студентов со статусом pending (исключая тех, у кого уже есть проект)
   const pendingDirectApplications = applications.filter(
-    (a) => a.applicationType === 'Application' && a.status === 'pending'
+    (a) =>
+      a.applicationType === 'Application' &&
+      a.status === 'pending' &&
+      (!occupiedUserIds || !occupiedUserIds.has(a.studentID))
   )
 
   const handleInviteUser = () => {
@@ -82,7 +87,7 @@ export const ApplicationRoleCard = ({
       roleId: role.roleId,
       projectId,
       teamUserIds,
-      applications,
+      applications: pendingDirectApplications,
       onInvite: (user: { id: number; name: string }) => {
         onInvite(role.roleId, role.roleName, user)
       },

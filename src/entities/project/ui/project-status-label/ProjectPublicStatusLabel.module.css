@@ -36,12 +36,21 @@
   color: var(--color-brand-violet);
 }
 
-.Completed {
+.Completed,
+.Archived {
   color: var(--color-gray-650);
 }
 
 .Rejected {
   color: var(--color-red);
+}
+
+.Pending {
+  color: var(--color-yellow);
+}
+
+.NeedsRework {
+  color: var(--color-gray-400);
 }
 
 

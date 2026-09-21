@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styles from './ComplaintModal.module.css'
 import TpuLogoDark from '@/shared/assets/tpu_logo.svg?react'
+import GreenLike from '@/shared/ui/icons/green_round_like.svg?react'
 import { Modal } from '@/shared/ui/modals/modal/Modal.tsx'
 import { FilledButton } from '@/shared/ui/elements/buttons'
 import { BigTextField } from '@/shared/ui/fields/text-field/TextField.tsx'
@@ -50,13 +51,17 @@ export const ComplaintModal = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} variant="grey100">
+    <Modal isOpen={isOpen} onClose={handleClose} variant={isSubmitted ? 'default' : "grey100"}>
         {isSubmitted ? (
           <div className={styles.successContainer}>
-            <h3 className={styles.successTitle}>Обращение отправлено!</h3>
-            <p className={styles.successDesc}>
-              Спасибо за обратную связь. Мы изучим вашу проблему и свяжемся с вами при необходимости.
-            </p>
+            <GreenLike/>
+            <div>
+              <h3 className={styles.successTitle}>Обращение отправлено!</h3>
+              <p className={styles.successDesc}>
+                Спасибо за обратную связь. Мы изучим вашу проблему и свяжемся с вами при необходимости.
+              </p>
+            </div>
+
             <FilledButton textButton="Понятно" onClick={handleClose} />
           </div>
         ) : (
@@ -76,6 +81,14 @@ export const ComplaintModal = ({
                   Не удалось отправить обращение. Пожалуйста, попробуйте позже.
                 </p>
               )}
+              <div>
+                <FilledButton
+                  textButton={isPending ? 'Отправка...' : 'Отправить'}
+                  onClick={handleSubmit}
+                  disabled={!reason.trim() || isPending}
+                  className={styles.submitButton}
+                />
+              </div>
             </div>
 
             <Modal.Footer>
@@ -89,12 +102,7 @@ export const ComplaintModal = ({
 
                 <div className={styles.actions}>
                   <TpuLogoDark/>
-                  <FilledButton
-                    textButton={isPending ? 'Отправка...' : 'Отправить'}
-                    onClick={handleSubmit}
-                    disabled={!reason.trim() || isPending}
-                    className={styles.submitButton}
-                  />
+
                 </div>
               </div>
             </Modal.Footer>

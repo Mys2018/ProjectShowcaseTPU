@@ -1,5 +1,5 @@
 import styles from './TeamMemberCard.module.css'
-import { CompetencyIcon, type Competency } from '@/entities/competency';
+import { CompetencyIcon, isPseudoRole, type Competency } from '@/entities/competency';
 import { Avatar, getAvatarRoleInfo, TeamUserCard, type UserCard, useUserById } from '@/entities/user';
 import { SkillTagList, type Skill } from '@/entities/skill';
 import StarPlusIcon from '@/shared/ui/icons/plus_star.svg?react'
@@ -11,28 +11,31 @@ import {InfoTooltip, PopupMenu} from "@/shared";
 interface TeamMemberCardProps {
   user: UserCard;
   skills?: Skill[];
-  competency?: Competency;
+  competency?: Competency | string;
+  role?: string;
   index?: number;
   name?: string;
   isRequired?: boolean;
   occurrenceIndex?: number;
   totalOccurrences?: number;
   className?: string;
-  /** Пункт меню «Оценить работу участника». Нет — пункт ничего не делает. */
-  onRate?: () => void;
+  onRemove?: () => void;
+  onScore?: () => void;
 }
 
 export const TeamMemberCard = ({
   user,
   skills = [],
   competency,
+  role,
   index,
   name,
   isRequired,
   occurrenceIndex,
   totalOccurrences,
   className,
-  onRate,
+  onRemove,
+  onScore,
 }: TeamMemberCardProps) => {
   const { data: user_full } = useUserById(user.userId);
 
@@ -40,10 +43,16 @@ export const TeamMemberCard = ({
     ? user_full.competencies.join(', ')
     : user_full?.competencies;
 
-  const competencyName = competency?.name || userCompetencyText || '';
-  const displayCompetency: Competency = competency || { id: '', name: competencyName };
+  const rawRole =
+    role ||
+    (typeof competency === 'string' ? competency : competency?.name) ||
+    (name && !isPseudoRole(name) ? name : undefined) ||
+    user.roles?.filter(r => !isPseudoRole(r)).join(', ') ||
+    (userCompetencyText && !isPseudoRole(userCompetencyText) ? userCompetencyText : undefined) ||
+    '';
 
-  const title = name || competency?.name;
+  const cleanRole = isPseudoRole(rawRole) ? '' : rawRole;
+  const title = (name && !isPseudoRole(name) ? name : undefined) || cleanRole || undefined;
   const showOccurrence =
     totalOccurrences !== undefined
       ? totalOccurrences > 1
@@ -66,7 +75,7 @@ export const TeamMemberCard = ({
       )}
       <div className={styles.container}>
         <div className={styles.leftBlock}>
-          <CompetencyIcon competency={displayCompetency} className={styles.competencyIcon} />
+          <CompetencyIcon role={cleanRole} className={styles.competencyIcon} />
           <div className={styles.skills}>
             <p className={styles.skillsTitle}>
               Требуемые навыки
@@ -92,7 +101,7 @@ export const TeamMemberCard = ({
             nameSubtextStyle="OS-12-350"
             nameStyle="normal"
             course={user_full?.grade}
-            competency={competencyName}
+            competency={cleanRole}
           />
           <div className={styles.buttonContainer}>
             <InfoTooltip body={[
@@ -102,7 +111,7 @@ export const TeamMemberCard = ({
                 ]
               },
             ]} size={"small"} pointer={"topLeft"}>
-              <button className={styles.toScore}>
+              <button className={styles.toScore} onClick={onScore}>
                 <StarPlusIcon/>
               </button>
             </InfoTooltip>
@@ -111,10 +120,10 @@ export const TeamMemberCard = ({
                 <MoreIcon/>
               </button>
             }>
-              <PopupMenu.Row title={'Исключить пользователя'} onClick={() => {}}>
+              <PopupMenu.Row title={'Исключить пользователя'} onClick={onRemove || (() => {})}>
                 <RemoveUserIcon/>
               </PopupMenu.Row>
-              <PopupMenu.Row title={'Оценить работу участника'} onClick={() => onRate?.()}>
+              <PopupMenu.Row title={'Оценить работу участника'} onClick={onScore || (() => {})}>
                 <StarPlusIcon/>
               </PopupMenu.Row>
             </PopupMenu>

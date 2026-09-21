@@ -2,12 +2,20 @@
   display: flex;
   gap: 4px;
   align-items: center;
+  font: var(--inter-12-300);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
 
-  font: var(--inter-12-300)
+.archiveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .grey {
-  color: var(--color-gray-500)
+  color: var(--color-gray-500);
 }
 
 .red {

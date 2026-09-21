@@ -17,5 +17,7 @@ export {
   useParticipatingProjects,
   useAppliedProjects,
   useProjectReview,
-  useProjectTimesheetSummary
+  useProjectTimesheetSummary,
+  useRemoveTeamMember,
+  useSetProjectStatus
 } from './queries'

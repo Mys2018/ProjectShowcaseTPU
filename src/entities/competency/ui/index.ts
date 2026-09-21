@@ -3,4 +3,4 @@ export { CompetencyBadgeList } from './competency-badge-list/CompetencyBadgeList
 export { CompetencyChip } from './competency-chip/CompetencyChip'
 export { CompetencyRow } from './competency-row/CompetencyRow'
 export { CompetencyRowSkeleton } from './competency-row/CompetencyRowSkeleton'
-export { CompetencyIcon } from './CompetencyIcon'
+export { CompetencyIcon, isPseudoRole, type CompetencyIconProps } from './CompetencyIcon'

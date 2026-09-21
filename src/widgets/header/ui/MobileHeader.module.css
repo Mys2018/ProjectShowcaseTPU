@@ -88,3 +88,8 @@
   min-width: 38px;
   min-height: 38px;
 }
+
+.icon {
+  min-height: 24px;
+  min-width: 24px;
+}

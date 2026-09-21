@@ -65,6 +65,10 @@ export const projectApi = {
     return data
   },
 
+  removeTeamMember: async (projectId: string, userId: number): Promise<void> => {
+    await api.delete(ENDPOINTS.PROJECT_TEAM_MEMBER(projectId, userId))
+  },
+
   getProjectSprints: async (projectId: string): Promise<ProjectSprint[]> => {
     const { data } = await api.get<ProjectSprint[]>(ENDPOINTS.PROJECT_SPRINTS(projectId))
     return data
@@ -128,5 +132,9 @@ export const projectApi = {
 
   setProjectModerationReview: async (projectId: string, payload: { verdict: ProjectStatus; comment?: string }): Promise<void> => {
     await api.post(ENDPOINTS.PROJECT_REVIEW(projectId), payload)
+  },
+
+  setProjectStatus: async (projectId: string, status: ProjectStatus | string): Promise<void> => {
+    await api.post(ENDPOINTS.PROJECT_SET_STATUS(projectId, status))
   }
 }

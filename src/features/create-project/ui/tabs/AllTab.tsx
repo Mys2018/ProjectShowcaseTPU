@@ -10,7 +10,6 @@ import {
 import type { PrdMeta } from "@/entities/project";
 import { getProjectFormatTranslation } from "@/entities/project";
 import {EditProjectType} from "@/shared/ui/edit-project-type";
-import {ArchiveButton} from "@/shared/ui/elements/buttons";
 import { useCurrentCheckpoints } from "@/entities/checkpoint";
 import { mapDateToBackendString, mapDateToLocalString, parseDeadline } from "@/shared";
 
@@ -312,7 +311,6 @@ export function AllTab({ form, setStep, setBlinkFields, onEditType }: TabProps) 
 
       </BigBlock>
 
-      <ArchiveButton color='red'/>
     </div>
 
   );

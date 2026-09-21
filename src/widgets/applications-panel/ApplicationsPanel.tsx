@@ -11,8 +11,9 @@ import {
   type ApplicationStatus,
   type Application,
 } from '@/entities/application'
-import {projectQueryKeys, type ProjectCardData, useProjectTeam} from '@/entities/project'
+import { projectQueryKeys, type ProjectCardData, useProjectTeam, useRemoveTeamMember, useProjects } from '@/entities/project'
 import { TeamMemberCard, type UserCard } from "@/entities/user";
+import { isPseudoRole } from '@/entities/competency';
 import { ROUTES } from '@/shared'
 
 interface ApplicationsPanelProps {
@@ -21,14 +22,6 @@ interface ApplicationsPanelProps {
 
 export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
-
-  // «Оценить работу участника» — на вкладку оценки этого проекта; строка участника там подсветится
-  const rateMember = (userId: number) => {
-    void navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
-      state: { projectId: project.id, studentId: String(userId) }
-    })
-  }
 
   const { data: applicationsData, isLoading } = useApplications({
     mode: 'AsOwner',
@@ -37,7 +30,8 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     limit: 100,
   })
 
-  const {data: team} = useProjectTeam(project.id)
+  const { data: team } = useProjectTeam(project.id)
+  const { data: allProjectsData } = useProjects({ limit: 100 })
 
   const teamUserIds = useMemo(() => {
     const ids = new Set<number>()
@@ -50,15 +44,49 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     return Array.from(ids)
   }, [team, project.roles])
 
+  // ID студентов, у которых уже есть проект (в текущей команде, с одобренной заявкой или в любом другом проекте)
+  const occupiedUserIds = useMemo(() => {
+    const set = new Set<number>(teamUserIds)
+
+    if (applicationsData?.applications) {
+      for (const app of applicationsData.applications) {
+        if (app.status === 'approved') {
+          set.add(app.studentID)
+        }
+      }
+    }
+
+    const allProjects = allProjectsData?.projects ?? []
+    for (const p of allProjects) {
+      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed' || p.status === 'Archived') {
+        continue
+      }
+      for (const role of p.roles ?? []) {
+        for (const uid of role.placeUserIds ?? []) {
+          set.add(uid)
+        }
+      }
+    }
+
+    return set
+  }, [teamUserIds, applicationsData?.applications, allProjectsData?.projects])
+
+  const navigate = useNavigate()
+  const removeTeamMemberMutation = useRemoveTeamMember()
+
   // Одобрение/отклонение меняет состав команды и занятые места, приглашение —
   // тоже: списки participating/applied и деталь проекта (team, roles) обязаны
   // рефетчиться вместе со списком заявок, иначе панель действия и ростер
   // показывают устаревшее состояние до конца сессии.
   const invalidateApplicationScope = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: applicationKeys.lists() })
+    queryClient.invalidateQueries({ queryKey: projectQueryKeys.lists() })
     queryClient.invalidateQueries({ queryKey: projectQueryKeys.participatingList() })
     queryClient.invalidateQueries({ queryKey: projectQueryKeys.appliedList() })
     queryClient.invalidateQueries({ queryKey: projectQueryKeys.details(project.id) })
+    queryClient.invalidateQueries({ queryKey: projectQueryKeys.team(project.id) })
+    queryClient.invalidateQueries({ queryKey: projectQueryKeys.curatedList() })
+    queryClient.invalidateQueries({ queryKey: projectQueryKeys.managedList() })
   }, [queryClient, project.id])
 
   const updateStatusMutation = useMutation({
@@ -107,17 +135,43 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     [createInvitationMutation]
   )
 
-  // Map applications to roles by roleID
+  // На вкладку оценки этого проекта; studentId — чтобы там подсветить строку участника
+  const handleScoreMember = useCallback(
+    (user: UserCard) => {
+      void navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
+        state: { projectId: project.id, studentId: String(user.userId) }
+      })
+    },
+    [navigate, project.id]
+  )
+
+  const handleRemoveMember = useCallback(
+    (user: UserCard) => {
+      removeTeamMemberMutation.mutate(
+        { projectId: project.id, userId: user.userId },
+        {
+          onSuccess: invalidateApplicationScope,
+        }
+      )
+    },
+    [removeTeamMemberMutation, project.id, invalidateApplicationScope]
+  )
+
+  // Map applications to roles by roleID (не показываем отклики людей, у которых уже есть проект)
   const applicationsByRole = useMemo(() => {
     const map = new Map<string, Application[]>()
     if (!applicationsData?.applications) return map
     for (const app of applicationsData.applications) {
+      // Исключаем отклики людей, у которых уже есть проект
+      if (app.applicationType === 'Application' && occupiedUserIds.has(app.studentID)) {
+        continue
+      }
       const list = map.get(app.roleID) || []
       list.push(app)
       map.set(app.roleID, list)
     }
     return map
-  }, [applicationsData])
+  }, [applicationsData, occupiedUserIds])
 
   // Compute occurrence indices and total count for duplicate role types
   const rolesWithOccurrence = useMemo(() => {
@@ -231,6 +285,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                 canInvite={project.status === 'Recruiting'}
                 projectId={project.id}
                 teamUserIds={teamUserIds}
+                occupiedUserIds={occupiedUserIds}
                 onAccept={handleAccept}
                 onReject={handleReject}
                 onInvite={handleInvite}
@@ -254,41 +309,42 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                   id: s.skillId,
                   name: s.skillName,
                 }))
-                const memberCompetency = {
-                  id: role.roleId || role.roleTypeId || '',
-                  name: role.meta.name,
-                }
-
                 return (
                   <TeamMemberCard
                     key={`${role.roleId}-${item.user.userId}`}
                     user={item.user}
                     skills={memberSkills}
-                    competency={memberCompetency}
+                    role={role.meta.name}
                     index={index}
                     name={role.meta.name}
                     isRequired={role.minPlacesCount > 0}
                     occurrenceIndex={role.occurrenceIndex}
                     totalOccurrences={role.totalOccurrences}
-                    onRate={() => rateMember(item.user.userId)}
+                    onRemove={() => handleRemoveMember(item.user)}
+                    onScore={() => handleScoreMember(item.user)}
                   />
                 )
               })}
-              {unassignedTeamMembers.map((user, idx) => (
-                <TeamMemberCard
-                  key={user.userId}
-                  user={user}
-                  skills={[]}
-                  competency={
-                    user.userId === project.ownerId
-                      ? { id: 'curator', name: 'Куратор проекта' }
-                      : undefined
-                  }
-                  index={occupiedRoleItems.length + idx}
-                  name={user.userId === project.ownerId ? 'Куратор проекта' : 'Участник'}
-                  onRate={user.userId === project.ownerId ? undefined : () => rateMember(user.userId)}
-                />
-              ))}
+              {unassignedTeamMembers.map((user, idx) => {
+                const matchedRole = project.roles?.find((r) =>
+                  r.placeUserIds?.includes(user.userId) ||
+                  (user.roles && user.roles.some((ur) => ur.toLowerCase() === r.meta?.name?.toLowerCase()))
+                )?.meta?.name
+                const userRole = matchedRole || user.roles?.find((r) => !isPseudoRole(r)) || ''
+
+                return (
+                  <TeamMemberCard
+                    key={user.userId}
+                    user={user}
+                    skills={[]}
+                    role={userRole || undefined}
+                    index={occupiedRoleItems.length + idx}
+                    name={userRole || undefined}
+                    onRemove={() => handleRemoveMember(user)}
+                    onScore={() => handleScoreMember(user)}
+                  />
+                )
+              })}
             </>
           ) : (
             <div className={styles.emptyState}>

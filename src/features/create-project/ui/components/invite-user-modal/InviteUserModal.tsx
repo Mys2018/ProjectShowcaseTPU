@@ -47,7 +47,7 @@ export const InviteUserModal = ({
       if (projectId && String(p.id) === String(projectId)) {
         continue;
       }
-      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed') {
+      if (p.status === 'Rejected' || p.status === 'NotImplemented' || p.status === 'Completed' || p.status === 'Archived') {
         continue;
       }
       for (const role of p.roles ?? []) {

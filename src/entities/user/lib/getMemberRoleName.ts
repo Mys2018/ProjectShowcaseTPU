@@ -13,9 +13,9 @@ export interface ProjectLike {
 export const getMemberRoleName = (
   userId?: number,
   project?: ProjectLike
-): string => {
+): string | undefined => {
   if (!userId || !project?.roles) {
-    return 'Участник'
+    return undefined
   }
 
   const matchedRoles = project.roles.filter(role =>
@@ -23,15 +23,13 @@ export const getMemberRoleName = (
   )
 
   if (matchedRoles.length > 0) {
-    return matchedRoles
-      .map(r => r.meta?.name)
-      .filter(Boolean)
-      .join(', ') || 'Участник'
+    return (
+      matchedRoles
+        .map(r => r.meta?.name)
+        .filter(Boolean)
+        .join(', ') || undefined
+    )
   }
 
-  if (project.ownerId === userId) {
-    return 'Куратор проекта'
-  }
-
-  return 'Участник'
+  return undefined
 }

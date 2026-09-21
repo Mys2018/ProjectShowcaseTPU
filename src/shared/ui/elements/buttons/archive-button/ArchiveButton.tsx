@@ -5,8 +5,9 @@ import clsx from "clsx";
 type Color = 'red' | 'grey'
 
 interface ArchiveButtonProps {
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   color: Color;
+  disabled?: boolean;
 }
 
 const getColor = (color: Color) => {
@@ -20,8 +21,14 @@ const getColor = (color: Color) => {
   }
 }
 
-export const ArchiveButton = ({onClick, color}: ArchiveButtonProps) => {
+export const ArchiveButton = ({onClick, color, disabled}: ArchiveButtonProps) => {
   return (
-    <button className={clsx(styles.archiveButton, getColor(color))} onClick={onClick}> <ArchiveIcon/> Архивировать проект </button>
+    <button
+      className={clsx(styles.archiveButton, getColor(color))}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      <ArchiveIcon/> Архивировать проект
+    </button>
   )
 }
