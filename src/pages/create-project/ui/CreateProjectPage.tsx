@@ -14,7 +14,12 @@ import {
 import { useCreateProject, useProjectDetails } from '@/entities/project/api/queries';
 import { mapProjectToDraftValues } from '@/entities/draft';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
-import { getProjectFormatTranslation } from '@/entities/project';
+import {
+  getProjectFormatTranslation,
+  ProjectReviewComment,
+  useProjectReview,
+  useUpdateProject,
+} from '@/entities/project';
 
 import { usePartners } from '@/entities/partner/api/queries';
 import { CreateProjectProgressWidget } from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
@@ -24,7 +29,7 @@ import type { StatusType } from '@/shared/constants/save-status-drafts/getSaveSt
 import { BackLink } from '@/shared/ui/back-link';
 import { DesktopOnlyStub } from '@/shared/ui';
 import { MOBILE_BREAKPOINT } from '@/shared/lib';
-import { ROUTES } from '@/shared';
+import { ROUTES, ProjectSkeleton } from '@/shared';
 import {useMe} from "@/entities/user";
 
 type PageStep = 'type-select' | 'fill';
@@ -44,9 +49,11 @@ interface CreateProjectWizardFormProps {
     progress?: WizardProgress;
   }) | null;
   isDraftLoading?: boolean;
+  editProjectId?: string | null;
+  editOwnerId?: number | null;
 }
 
-function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading }: CreateProjectWizardFormProps) {
+function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading, editProjectId, editOwnerId }: CreateProjectWizardFormProps) {
   const navigate = useNavigate();
   const initialType = (initialDraft?.type as CreateProjectRequestType) || 'Study';
 
@@ -60,7 +67,10 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
   const { data: partnersList = [] } = usePartners();
   const mappedPartners = partnersList.map(p => ({ value: p.id, verbose: p.name }));
 
-  const { mutate: createProject, isPending } = useCreateProject();
+  const { mutate: createProject, isPending: isCreatePending } = useCreateProject();
+  const { mutate: updateProject, isPending: isUpdatePending } = useUpdateProject();
+  const isPending = isCreatePending || isUpdatePending;
+  const { data: review, isLoading: isReviewLoading } = useProjectReview(editProjectId ?? '', Boolean(editProjectId));
 
   const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
     defaultValues: initialDraft ?? {
@@ -69,13 +79,22 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
     restoreValues,
     isDraftLoading,
     onSubmit: (values) => {
-      createProject(values, {
-        onSuccess: () => {
-          // Delete draft after successful publish
-          deleteDraftMutation();
-          navigate(-1);
-        },
-      });
+      const handleSuccess = () => {
+        // Delete draft after successful publish
+        deleteDraftMutation();
+        navigate(-1);
+      };
+
+      if (editProjectId) {
+        updateProject({
+          projectId: editProjectId,
+          payload: { ...values, ownerId: editOwnerId ?? values.ownerId },
+        }, {
+          onSuccess: handleSuccess,
+        });
+      } else {
+        createProject(values, { onSuccess: handleSuccess });
+      }
     },
   });
 
@@ -316,6 +335,10 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
         </section>
 
         <section className={styles.body}>
+          {editProjectId && (
+            isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment label="Комментарий от модератора" comment={review} />
+          )}
+
           <ProjectInfoStep
             form={form}
             onEditType={() => setPageStep('type-select')}
@@ -408,6 +431,8 @@ export function CreateProjectPage() {
       initialDraft={draftPayload}
       restoreValues={restoreValues}
       isDraftLoading={editProjectId ? isProjectLoading : isDraftLoading}
+      editProjectId={editProjectId}
+      editOwnerId={projectData?.ownerId ?? null}
     />
   );
 }
