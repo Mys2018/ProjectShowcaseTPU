@@ -11,6 +11,9 @@ export const getFilteredApplications = (applications: Application[]): FilteredAp
   const thisYear = new Date().getFullYear()
 
   applications.forEach(application => {
+    if (application.applicationType && application.applicationType !== 'Application') {
+      return
+    }
     const { status, createdAt } = application
 
     if (status === 'pending') {

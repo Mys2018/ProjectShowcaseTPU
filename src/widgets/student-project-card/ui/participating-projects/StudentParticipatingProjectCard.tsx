@@ -1,10 +1,11 @@
 import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import styles from './StudentParticipatingProjectCard.module.css'
-import { CompetencyRow, useCompetencies } from '@/entities/competency'
+import { CompetencyRow, isPseudoRole, useCompetencies } from '@/entities/competency'
 import { PartnerRow } from '@/entities/partner'
 import {
   getProjectDates,
+  getPublicProjectStatus,
   getScoreWord,
   getStudentProjectHours,
   ProjectCardHorizontal,
@@ -34,19 +35,28 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
 
   if (!project) return null
 
-  const roleForCompetency = project.roles?.find(r => r.roleTypeId === competencyId || r.roleId === competencyId) || project.roles?.[0]
+  const myUserId = me?.id ? Number(me.id) : undefined
+  const placedRole = myUserId
+    ? project.roles?.find(r => r.placeUserIds?.includes(myUserId))?.meta?.name
+    : undefined
+  const roleForCompetency = project.roles?.find(r => r.roleTypeId === competencyId || r.roleId === competencyId)
   const targetCompetency = competencies?.find(c => c.id === competencyId || (roleForCompetency && c.id === roleForCompetency.roleTypeId))
-  const memberRole = me?.id ? getMemberRoleName(Number(me.id), project) : undefined
-  const roleName = (memberRole && memberRole !== 'Участник' ? memberRole : undefined) || targetCompetency?.name || roleForCompetency?.meta?.name || 'Участник'
+  const memberRole = myUserId ? getMemberRoleName(myUserId, project) : undefined
+  const validMemberRole = memberRole && !isPseudoRole(memberRole) ? memberRole : undefined
 
-  const displayCompetency = {
-    id: targetCompetency?.id || competencyId || roleForCompetency?.roleId || '',
-    name: roleName,
-  }
+  const rawRoleName =
+    placedRole ||
+    targetCompetency?.name ||
+    roleForCompetency?.meta?.name ||
+    validMemberRole ||
+    project.roles?.[0]?.meta?.name ||
+    ''
+
+  const roleName = isPseudoRole(rawRoleName) ? '' : rawRoleName
 
   const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints.checkpoints)
 
-  const isClosed = project.status === 'Completed' || project.status === 'NotImplemented'
+  const isClosed = project.status === 'Completed' || project.status === 'NotImplemented' || project.status === 'Archived'
 
   const studentHours = getStudentProjectHours(timesheetSummary, me?.id)
 
@@ -60,7 +70,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
       headerSlot={
         <div className={styles.header}>
           <TagBadgeList tags={getSortedTags(project.tags, project.primaryTag)} visibleCount={2} />
-          <ProjectPublicStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
       }
       mainSlot={<PartnerRow partner={project.partner} />}
@@ -73,11 +83,11 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
                 <ProjectCardTeam members={team} max={3} label="" project={project} />
               </div>
             )}
-            {displayCompetency && (
+            {roleName && (
               <div className={styles.block}>
                 <p>Компетенция:</p>
                 <CompetencyRow
-                  competency={displayCompetency}
+                  role={roleName}
                   className={styles.competencyText}
                 />
               </div>

@@ -2,11 +2,17 @@ import clsx from 'clsx'
 import styles from './StudentApplicationProjectCard.module.css'
 import { CancelApplicationButton } from '@/features/cancel-application'
 import { PartnerRow } from '@/entities/partner'
-import { ProjectCardHorizontal, ProjectCardTeam, useProjectDetails, useProjectTeam } from '@/entities/project'
+import {
+  getPublicProjectStatus,
+  ProjectCardHorizontal,
+  ProjectCardTeam,
+  useProjectDetails,
+  useProjectTeam
+} from '@/entities/project'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { useUserById, TeamUserCard, Avatar, getAvatarRoleInfo, useMe, getMemberRoleName } from '@/entities/user'
 import { ApplicationStatusBadge, type Application } from '@/entities/application'
-import { CompetencyRow, useCompetencies } from '@/entities/competency'
+import { CompetencyRow, isPseudoRole, useCompetencies } from '@/entities/competency'
 import {ClockIcon, ImageSkeleton, mapDateToLocalString, ProjectSkeleton, ROUTES, TextSkeleton} from '@/shared'
 import {useNavigate} from "react-router-dom";
 
@@ -32,16 +38,25 @@ export function StudentApplicationProjectCard({ application, className }: Studen
   const roleForApplication = project.roles?.find(r => r.roleId === application.roleID || r.roleTypeId === application.roleID)
   const targetCompetency = competencies?.find(c => c.id === application.roleID || (roleForApplication && c.id === roleForApplication.roleTypeId))
   const studentUserId = application.studentID || (me?.id ? Number(me.id) : undefined)
+  const placedRole = studentUserId
+    ? project.roles?.find(r => r.placeUserIds?.includes(studentUserId))?.meta?.name
+    : undefined
   const memberRole = studentUserId ? getMemberRoleName(studentUserId, project) : undefined
-  const roleName = (memberRole && memberRole !== 'Участник' ? memberRole : undefined) || roleForApplication?.meta?.name || targetCompetency?.name || 'Участник'
+  const validMemberRole = memberRole && !isPseudoRole(memberRole) ? memberRole : undefined
 
-  const displayCompetency = {
-    id: targetCompetency?.id || roleForApplication?.roleTypeId || application.roleID || '',
-    name: roleName,
-  }
+  const rawRoleName =
+    roleForApplication?.meta?.name ||
+    targetCompetency?.name ||
+    placedRole ||
+    validMemberRole ||
+    ''
+
+  const roleName = isPseudoRole(rawRoleName) ? '' : rawRoleName
+
+  const isRecruiting = project.status === 'Recruiting' && getPublicProjectStatus(project) === 'Recruiting'
 
   const statusBadge =
-    project.status === 'Recruiting' && application.status === 'pending' ? (
+    isRecruiting && application.status === 'pending' ? (
       <div className={clsx(styles.statusBadge, !isExtended && styles.topRight)}>
         <ClockIcon />
         <p>Ожидает окончания набора</p>
@@ -75,13 +90,13 @@ export function StudentApplicationProjectCard({ application, className }: Studen
                 <ProjectCardTeam members={team} max={3} label="" project={project} />
               </div>
             )}
-            {displayCompetency && (
+            {roleName && (
               <div className={styles.block}>
                 <p>Компетенция:</p>
                 <CompetencyRow
-                  competency={displayCompetency}
+                  role={roleName}
                   className={styles.competencyText}
-                  />
+                />
               </div>
             )}
           </div>

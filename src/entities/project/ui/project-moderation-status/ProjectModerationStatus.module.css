@@ -11,6 +11,8 @@
 	
 	color: var(--accentColor);
 	background-color: var(--color-white);
+	white-space: nowrap;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 
 	&.Pending {
 		--accentColor: var(--color-yellow);

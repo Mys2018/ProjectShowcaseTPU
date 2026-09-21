@@ -1,47 +1,66 @@
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
+import { useSearchParams, useLocation } from 'react-router-dom'
 import styles from './ProjectModerationPage.module.css'
 import { getSortedProjects } from './lib/getSortedProjects'
 import { ProjectModeration } from '@/widgets/project-moderation'
-import { NoProjectsFallback, ProjectCardVertical, ProjectModerationStatus, useProjects, type ProjectCardData } from '@/entities/project'
+import {
+  MiniProjectCard,
+  NoProjectsFallback,
+  ProjectModerationStatus,
+  useProjects,
+} from '@/entities/project'
 import { ProjectSkeleton, TextSkeleton } from '@/shared'
 
 export function ProjectModerationPage() {
   const { data, isLoading } = useProjects({ sort: 'created_desc' })
   const projects = data ? getSortedProjects(data.projects) : []
-  const [activeProject, setActiveProject] = useState<ProjectCardData>()
 
-  const canProjectBeChosen = (project: ProjectCardData) => project.status === 'Pending' || project.status === 'NeedsRework'
+  const [searchParams] = useSearchParams()
+  const location = useLocation()
+  const queryProjectId = searchParams.get('projectId') || (location.state as { projectId?: string } | null)?.projectId
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(queryProjectId || null)
 
   useEffect(() => {
-    if (!activeProject) {
-      let i = 0
-      while (i < projects.length && !canProjectBeChosen(projects[i])) i++
-      if (i < projects.length) setActiveProject(projects[i])
+    const targetId = searchParams.get('projectId') || (location.state as { projectId?: string } | null)?.projectId
+    if (targetId) {
+      setSelectedProjectId(targetId)
     }
-  }, [projects])
+  }, [searchParams, location.state])
+
+  const activeProjectId = (selectedProjectId && projects.some((p) => p.id === selectedProjectId))
+    ? selectedProjectId
+    : (projects[0]?.id || null)
+
+  const activeProject = projects.find((p) => p.id === activeProjectId) || null
+
+  const handleSelectProject = (projectId: string) => {
+    setSelectedProjectId(projectId)
+  }
 
   return (
     <>
-      <div className={styles.side}>
+      <aside className={styles.side}>
         {isLoading
           ? Array.from({ length: 4 }, (_, i) => <ProjectSkeleton className={styles.skeleton} key={i} />)
           : projects.map(project => (
-              <ProjectCardVertical
+              <div
                 key={project.id}
                 className={clsx(
-                  styles.project,
-                  canProjectBeChosen(project) && styles.pointer,
-                  activeProject?.id === project.id && styles.active
+                  styles.projectItem,
+                  project.id === activeProjectId && styles.projectItemActive
                 )}
-                project={project}
-                onClick={() => setActiveProject(project)}
-                small
-                headerSlot={<ProjectModerationStatus status={project.status} className={styles.status} />}
-              />
+                onClick={() => handleSelectProject(project.id)}
+              >
+                <MiniProjectCard
+                  project={project}
+                  type='moderation'
+                  headerSlot={<ProjectModerationStatus status={project.status} />}
+                />
+              </div>
             ))}
-      </div>
-      <div className={styles.content}>
+      </aside>
+      <main className={styles.content}>
         {isLoading ? (
           <div className={styles.skeleton}>
             <TextSkeleton />
@@ -55,7 +74,7 @@ export function ProjectModerationPage() {
         ) : (
           <NoProjectsFallback title='Активного проекта пока нет' description='Выберите проект чтобы начать рассмотрение' />
         )}
-      </div>
+      </main>
     </>
   )
 }

@@ -8,6 +8,7 @@ import type {
   GetParticipatingProjectsParams,
   GetAppliedProjectsParams,
   SprintHoursBatch,
+  ProjectStatus,
 } from '../model/types'
 import { projectKeys } from './queryKeys'
 
@@ -168,3 +169,31 @@ export const useProjectTimesheetSummary = (projectId?: string, enabled: boolean 
     enabled: Boolean(projectId) && enabled
   })
 }
+
+export const useRemoveTeamMember = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ projectId, userId }: { projectId: string; userId: number }) =>
+      projectApi.removeTeamMember(projectId, userId),
+    onSuccess: (_, { projectId }) => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.team(projectId) })
+      queryClient.invalidateQueries({ queryKey: projectKeys.details(projectId) })
+      queryClient.invalidateQueries({ queryKey: projectKeys.curatedList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.managedList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.participatingList() })
+      queryClient.invalidateQueries({ queryKey: projectKeys.timesheetSummary(projectId) })
+    }
+  })
+}
+
+export const useSetProjectStatus = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ projectId, status }: { projectId: string; status: ProjectStatus | string }) =>
+      projectApi.setProjectStatus(projectId, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: projectKeys.all })
+    }
+  })
+}
+

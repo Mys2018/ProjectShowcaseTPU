@@ -9,8 +9,8 @@ export const AllCuratingProjects = () => {
   const navigate = useNavigate();
 
   const projects = curatorData?.projects || []
-  const activeProjects = projects.filter(p => p.status !== 'Completed' && p.status !== 'NotImplemented' && p.status !== 'Rejected')
-  const completedProjects = projects.filter(p => p.status === 'Completed' || p.status === 'NotImplemented' || p.status === 'Rejected')
+  const activeProjects = projects.filter(p => p.status !== 'Completed' && p.status !== 'NotImplemented' && p.status !== 'Rejected' && p.status !== 'Archived')
+  const completedProjects = projects.filter(p => p.status === 'Completed' || p.status === 'NotImplemented' || p.status === 'Rejected' || p.status === 'Archived')
   const hasActiveProjects = activeProjects.length > 0
   const hasCompletedProjects = completedProjects.length > 0
 

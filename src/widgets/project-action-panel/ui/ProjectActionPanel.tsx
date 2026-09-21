@@ -3,7 +3,14 @@ import { isActiveApplication, myApplicationsParams } from '../model/applications
 import { useIsInOtherProject, useProjectLimitReached } from '../model/participation'
 import { useToggleLikeProject } from '@/features/like-project'
 import { useApplications } from '@/entities/application'
-import { getPublicProjectStatus, hasFreePlaces, ProjectPublicStatusLabel, type ProjectCardData } from '@/entities/project'
+import {
+  getPublicProjectStatus,
+  hasFreePlaces,
+  isProjectCourseEligible,
+  getCourseRestrictionText,
+  ProjectPublicStatusLabel,
+  type ProjectCardData
+} from '@/entities/project'
 import { useAuthStore, useMe } from '@/entities/user'
 import { FloatingPanel } from '@/shared/ui/floating-panel'
 import { useMobileChrome } from '@/shared/lib'
@@ -59,6 +66,10 @@ export function ProjectActionPanel({
   const publicStatus = getPublicProjectStatus(project)
   const isRecruitmentPhase = publicStatus === 'Recruiting' || publicStatus === 'RecruitmentCompleted'
 
+  const userGrade = me?.grade ? Number(me.grade) : null
+  const isCourseEligible = !isGuest && userGrade !== null ? isProjectCourseEligible(project?.type, userGrade) : true
+  const courseRestrictionText = getCourseRestrictionText(project?.type)
+
   const { data: applications } = useApplications(myApplicationsParams(project.id))
   const myActive = (applications?.applications ?? []).filter(isActiveApplication)
   const hasPending = myActive.some(a => a.status === 'pending')
@@ -97,7 +108,7 @@ export function ProjectActionPanel({
   const center = (() => {
     /* ── Фазы проекта ────────────────────────────────────────────────── */
 
-    if (publicStatus === 'Completed') {
+    if (publicStatus === 'Completed' || publicStatus === 'Archived') {
       if (!isMember) return projectStatus
       return hasReview ? (
         <FloatingPanel.Action tone="muted">Отзыв оставлен</FloatingPanel.Action>
@@ -153,6 +164,11 @@ export function ProjectActionPanel({
           Посмотреть компетенции
         </FloatingPanel.Action>
       )
+    }
+
+    // Курс студента не подходит для данного формата проекта
+    if (!isCourseEligible && userGrade) {
+      return <FloatingPanel.Note>{courseRestrictionText}</FloatingPanel.Note>
     }
 
     // Мест не осталось — это и есть «Набор завершён».

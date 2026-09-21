@@ -25,7 +25,7 @@ export const getPublicProjectStatus = (project: ProjectCardData): ProjectStatus 
   if (status === 'InProgress') return 'InProgress'
 
   // Терминальные статусы приходят с бэкенда как есть.
-  if (status === 'Completed' || status === 'NotImplemented' || status === 'Rejected') return status
+  if (status === 'Completed' || status === 'NotImplemented' || status === 'Rejected' || status === 'Archived') return status
 
   // Фаза набора: место есть — набираем, места кончились — набор завершён.
   if (status === 'Recruiting' || status === 'RecruitmentCompleted') {
