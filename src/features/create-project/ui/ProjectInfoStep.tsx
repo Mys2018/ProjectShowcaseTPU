@@ -20,6 +20,7 @@ interface ProjectInfoStepProps {
   isPending: boolean;
   onSubmit: () => void;
   onDeleteDraft: () => void;
+  isEditMode?: boolean;
   partners: { value: string; verbose: string }[];
   currentStep: number;
   nextStep: () => void;
@@ -36,6 +37,7 @@ export function ProjectInfoStep({
   isPending,
   onSubmit,
   onDeleteDraft,
+  isEditMode,
   partners,
   currentStep,
   nextStep,
@@ -120,10 +122,12 @@ export function ProjectInfoStep({
         </div>
 
         <div className={styles.rightButtons}>
-          <GreyButton
-            onClick={onDeleteDraft}
-            textButton={'Сохранить черновик'}
-          />
+          {!isEditMode && (
+            <GreyButton
+              onClick={onDeleteDraft}
+              textButton={'Сохранить черновик'}
+            />
+          )}
 
           {!isLastStep ? (
             <OutlineButton

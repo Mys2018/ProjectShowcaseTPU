@@ -279,7 +279,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
       <main className={styles.mainContent}>
         <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
 
-        <h1 className={styles.title}>Новый проект</h1>
+        <h1 className={styles.title}>{editProjectId ? 'Редактирование проекта' : 'Новый проект'}</h1>
 
         <section className={styles.body}>
           <div className={styles.description}>
@@ -307,15 +307,21 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
       <main className={styles.mainContent}>
         <div
           className={styles.headerLeft}
-          onClick={() => setPageStep('type-select')}
+          onClick={() => {
+            if (editProjectId) {
+              navigate(-1);
+            } else {
+              setPageStep('type-select');
+            }
+          }}
         >
           <BackIcon />
           {/* Шаг мастера, а не страница, поэтому мимо словаря — но подпись
               по тому же правилу: стрелка плюс название, куда ведёт. */}
-          <p>Выбор типа проекта</p>
+          <p>{editProjectId ? 'Моя платформа' : 'Выбор типа проекта'}</p>
         </div>
 
-        <h1 className={styles.title}>Новый проект — «{typeLabel}»</h1>
+        <h1 className={styles.title}>{editProjectId ? 'Редактирование проекта' : 'Новый проект'} — «{typeLabel}»</h1>
 
         <section className={styles.saveStatusContainer}>
           {saveStatus !== 'idle' && getSaveStatus(saveStatus)}
@@ -335,7 +341,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
         </section>
 
         <section className={styles.body}>
-          {editProjectId && (
+          {editProjectId && currentStep === 5 && (
             isReviewLoading ? <ProjectSkeleton /> : review && <ProjectReviewComment label="Комментарий от модератора" comment={review} />
           )}
 
@@ -346,6 +352,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
             isPending={isPending}
             onSubmit={handleSubmit}
             onDeleteDraft={handleDeleteDraft}
+            isEditMode={Boolean(editProjectId)}
             partners={mappedPartners}
             currentStep={currentStep}
             nextStep={nextStep}
