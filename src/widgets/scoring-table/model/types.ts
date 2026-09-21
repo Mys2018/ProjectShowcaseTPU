@@ -11,10 +11,13 @@ export interface ScoringSprint {
   endDate: string
 }
 
+/** Состояния недели с бэка плюс наше: студента в этот спринт в проекте ещё не было. */
+export type WeekState = GradingState | 'NotInProject'
+
 export interface WeekCell {
   /** Как пришло из grading-status — с ним же часы и отправляются. */
   weekNumber: number
-  state: GradingState
+  state: WeekState
 }
 
 export interface StudentRow {

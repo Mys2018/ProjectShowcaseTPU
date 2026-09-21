@@ -136,11 +136,19 @@ export function ScoringTable({ model }: ScoringTableProps) {
                     />
                   </div>
                 </td>
-                {weeks.map(w => (
-                  <td key={w} className={clsx(styles.score, w === currentWeekIndex && styles.current)}>
-                    {student.hours[w]}
-                  </td>
-                ))}
+                {weeks.map(w => {
+                  // прочерк — участника тогда не было в проекте, пусто — часы не выставлены
+                  const absent = student.weeks[w]?.state === 'NotInProject'
+                  return (
+                    <td
+                      key={w}
+                      className={clsx(styles.score, absent && styles.absent, w === currentWeekIndex && styles.current)}
+                      title={absent ? 'Участника тогда ещё не было в проекте' : undefined}
+                    >
+                      {absent ? '—' : student.hours[w]}
+                    </td>
+                  )
+                })}
                 <td className={clsx(styles.stickyRight, styles.result)}>
                   {pluralizeHours(totalHours(student.hours))}
                 </td>

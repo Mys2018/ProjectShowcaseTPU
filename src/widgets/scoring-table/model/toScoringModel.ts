@@ -57,16 +57,35 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
         })
       }
       const row = rows.get(student.studentId)!
-      // weekNumber может быть и 1/2 внутри спринта, и сквозным — порядок недель одинаков в обоих случаях.
+      // weekNumber может быть и 1/2 внутри спринта, и сквозным (3/4, 5/6…) — остаток от деления
+      // даёт слот в обоих случаях. По порядку класть нельзя: у пришедшего в середине спринта
+      // есть только вторая неделя, и она встала бы в первую колонку.
       const weeks = [...(student.weeks ?? [])].sort((a, b) => a.weekNumber - b.weekNumber)
       weeks.slice(0, WEEKS_PER_SPRINT).forEach((week, i) => {
-        row.hours[sprintIndex * WEEKS_PER_SPRINT + i] = week.hours ?? null
-        row.weeks[sprintIndex * WEEKS_PER_SPRINT + i] = { weekNumber: week.weekNumber, state: week.state }
+        const slot = week.weekNumber >= 1 ? (week.weekNumber - 1) % WEEKS_PER_SPRINT : i
+        row.hours[sprintIndex * WEEKS_PER_SPRINT + slot] = week.hours ?? null
+        row.weeks[sprintIndex * WEEKS_PER_SPRINT + slot] = { weekNumber: week.weekNumber, state: week.state }
       })
     }
   }
 
-  const students = [...rows.values()]
+  // Табель спринта перечисляет тех, кто тогда был в проекте: остальным ставим прочерк,
+  // иначе пустая ячейка врала бы, что часы просто забыли выставить.
+  for (const grading of gradings) {
+    const sprintIndex = ordered.findIndex(s => s.id === grading.sprintId)
+    if (sprintIndex < 0) continue
+    for (const row of rows.values()) {
+      for (let w = 0; w < WEEKS_PER_SPRINT; w++) {
+        const i = sprintIndex * WEEKS_PER_SPRINT + w
+        if (!row.weeks[i]) row.weeks[i] = { weekNumber: w + 1, state: 'NotInProject' }
+      }
+    }
+  }
+
+  // Куратор есть в команде, но в табеле его нет никогда — строка из одних прочерков не нужна
+  const students = [...rows.values()].filter(row =>
+    gradings.length === 0 || row.weeks.some(week => week && week.state !== 'NotInProject')
+  )
   const viewerIndex = students.findIndex(s => s.id === viewerId)
   if (viewerIndex >= 0) {
     const [viewer] = students.splice(viewerIndex, 1)
