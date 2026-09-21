@@ -174,7 +174,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
         <h2 className={styles.title}>Оценка участников «{title}»</h2>
         <div className={styles.meta}>
           <div className={styles.metaItem}>
-            <p className={styles.label}>Текущий этап</p>
+            <p className={styles.label}>Текущий этап:</p>
             {currentSprint >= 0 ? (
               <p className={styles.stage}>
                 <span className={styles.sprintName}>Спринт {currentSprint + 1}</span>
@@ -186,7 +186,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
             )}
           </div>
           <div className={styles.metaItem}>
-            <p className={styles.label}>Дедлайн</p>
+            <p className={styles.label}>Дедлайн:</p>
             <p className={styles.deadline}>
               <span className={styles.weekName}>
                 {deadline ? parseDeadline(deadline)?.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : '—'}

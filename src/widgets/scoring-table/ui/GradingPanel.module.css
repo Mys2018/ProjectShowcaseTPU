@@ -107,6 +107,10 @@
 
 .sheet svg {
   align-self: center;
+  /* рисунок иконки (12.5px) выше заглавных и свисает под строку — поднимаем,
+     чтобы его середина совпала с серединой текста */
+  position: relative;
+  top: -1.5px;
 }
 
 /* ── Таблица часов ───────────────────────────────────────────────── */
@@ -314,8 +318,8 @@
   justify-content: center;
   align-items: baseline;
   gap: 2px;
-  /* макетные 4/7 визуально задирают число вверх — опускаем пару «число + ч» по центру */
-  padding: 6px 0 5px;
+  /* по 5px сверху и снизу — пара «число + ч» ровно по центру ячейки */
+  padding: 5px 0;
 
   background: var(--color-white);
   border: 1px solid var(--tone);
@@ -336,10 +340,11 @@
 .input {
   /* ширина под три цифры и всегда одна — «ч» не должна ездить за числом */
   width: 26px;
-  height: 19px;
+  /* ровно высота ячейки без паддингов 5/5 и рамки: 32 − 10 − 2 */
+  height: 20px;
   padding: 0;
 
-  font: 400 15px/19px var(--font-open-sans);
+  font: 400 15px/20px var(--font-open-sans);
   color: var(--color-gray-900);
   text-align: center;
   caret-color: var(--color-brand-violet);
