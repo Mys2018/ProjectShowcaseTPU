@@ -30,7 +30,6 @@ import DoneIcon from '@/shared/ui/icons/round-status-done.svg?react'
 import WarningIcon from '@/shared/ui/icons/round-status-warning.svg?react'
 import DangerIcon from '@/shared/ui/icons/round-status-danger.svg?react'
 import PendingIcon from '@/shared/ui/icons/round-status-pending.svg?react'
-import ChangesIcon from '@/shared/ui/icons/round-status-changes.svg?react'
 
 interface GradingPanelProps {
   projectId: string
@@ -38,7 +37,6 @@ interface GradingPanelProps {
 }
 
 const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
-  changes: ChangesIcon,
   done: DoneIcon,
   warning: WarningIcon,
   danger: DangerIcon,
@@ -46,7 +44,6 @@ const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
 }
 
 const STATUS_LABELS: Record<RowStatus, string> = {
-  changes: 'Часы изменены, но не сохранены',
   done: 'Часы выставлены',
   warning: 'Нужно выставить часы',
   danger: 'Часы просрочены',
@@ -112,9 +109,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
   if (isError || !data) return <p className={styles.state}>Не удалось загрузить часы</p>
   if (data.sprints.length === 0) return <p className={styles.state}>Спринтов пока нет</p>
 
-  const { sprints, currentWeekIndex } = data
-  // Оцениваем только тех, кто есть в табеле: куратор в команде, но часов у него нет
-  const students = data.students.filter(s => s.weeks.some(Boolean))
+  const { sprints, currentWeekIndex, students } = data
   const currentSprint = sprints.findIndex(s => s.isCurrent)
   const lastStarted = sprints.findLastIndex(s => !s.isFuture)
   const selected = pickedSprint ?? (currentSprint >= 0 ? currentSprint : Math.max(lastStarted, 0))
@@ -229,6 +224,13 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
               const tone = cellTone(state, value !== '')
               tones.push(tone)
 
+              if (tone === 'absent') {
+                return (
+                  <span key={week} className={clsx(styles.field, styles.absent)} aria-label="Участника тогда ещё не было в проекте">
+                    —
+                  </span>
+                )
+              }
               if (tone === 'locked') {
                 return (
                   <span key={week} className={clsx(styles.field, styles.locked)} aria-label="Оценивание недели ещё не открыто">
@@ -239,13 +241,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
               return (
                 <label
                   key={week}
-                  className={clsx(
-                    styles.field,
-                    styles[tone],
-                    value === '' && styles.empty,
-                    // введено, но не сохранено — по макету («New value») число серее
-                    value !== '' && draft[draftKey(selected, student.id, week)] !== undefined && styles.unsaved
-                  )}
+                  className={clsx(styles.field, styles[tone], value === '' && styles.empty)}
                 >
                   <input
                     className={styles.input}
@@ -263,9 +259,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
                 </label>
               )
             })
-            const unsaved = Array.from({ length: WEEKS_PER_SPRINT }, (_, week) => draft[draftKey(selected, student.id, week)])
-              .some(value => value !== undefined && value !== '')
-            const status = rowStatus(tones, unsaved)
+            const status = rowStatus(tones)
             const StatusIcon = STATUS_ICONS[status]
 
             return (

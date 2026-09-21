@@ -33,14 +33,26 @@
 .meta {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: auto auto;
   gap: 12px;
-  align-items: end;
+  /* значения стоят на одной базовой линии, какой бы у них ни был размер шрифта */
+  align-items: baseline;
 }
 
+/* ярлык и значение — самостоятельные ячейки сетки: строки выравниваются между колонками */
 .metaItem {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: contents;
+}
+
+.label {
+  grid-row: 1;
+}
+
+.stage,
+.deadline,
+.weekName,
+.sheet {
+  grid-row: 2;
 }
 
 .label {
@@ -50,7 +62,7 @@
 
 .stage {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 10px;
 }
 
@@ -60,6 +72,7 @@
 }
 
 .divider {
+  align-self: center;
   width: 1px;
   height: 16px;
   background: var(--color-gray-100);
@@ -74,8 +87,6 @@
   display: flex;
   align-items: baseline;
   gap: 8px;
-  /* строка по высоте как «Спринт N», чтобы значения стояли на одной линии */
-  min-height: 20px;
 }
 
 .daysLeft {
@@ -86,12 +97,16 @@
 .sheet {
   justify-self: end;
   display: flex;
-  align-items: center;
+  /* базовую линию строке задаёт текст, значок просто центрируется рядом */
+  align-items: baseline;
   gap: 4px;
-  padding-bottom: 2px;
 
   font: var(--field-label-interface);
   color: var(--color-brand-green);
+}
+
+.sheet svg {
+  align-self: center;
 }
 
 /* ── Таблица часов ───────────────────────────────────────────────── */
@@ -250,6 +265,7 @@
   }
 
   .sheet {
+    grid-row: 3;
     grid-column: 1 / -1;
     justify-self: start;
   }
@@ -298,7 +314,8 @@
   justify-content: center;
   align-items: baseline;
   gap: 2px;
-  padding: 4px 0 7px;
+  /* макетные 4/7 визуально задирают число вверх — опускаем пару «число + ч» по центру */
+  padding: 6px 0 5px;
 
   background: var(--color-white);
   border: 1px solid var(--tone);
@@ -346,10 +363,6 @@
   background: linear-gradient(var(--tone), var(--tone)) center bottom / 24px 1px no-repeat;
 }
 
-.unsaved .input {
-  color: var(--color-gray-600);
-}
-
 .unit {
   font: var(--description-platform);
   color: var(--unit);
@@ -364,9 +377,20 @@
   background: transparent;
 }
 
-/* замок по макету прижат к низу с теми же отступами 4/7 — выходит ровно по центру */
+/* участника тогда не было в проекте — серый прочерк вместо поля */
+.absent {
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font: 400 15px/19px var(--font-open-sans);
+  color: var(--color-gray-250);
+  cursor: default;
+}
+
+/* у замка нет текста — ставим его ровно по центру ячейки */
 .locked {
-  align-items: flex-end;
+  align-items: center;
+  padding: 0;
   cursor: default;
 }
 
@@ -445,14 +469,14 @@
   opacity: 0.75;
 }
 
-/* выбранный спринт — заливка тем же цветом состояния, цифра белая.
+/* выбранный спринт — всегда зелёная заливка, цифра белая.
    Двойной класс, чтобы перебить цвет состояния выше. */
 .page.pageSelected,
 .page.pageSelected:hover:not(:disabled) {
   color: var(--color-white);
-  background: var(--accent);
+  background: var(--color-brand-green);
   border-style: solid;
-  border-color: var(--accent);
+  border-color: var(--color-brand-green);
   opacity: 1;
 }
 
