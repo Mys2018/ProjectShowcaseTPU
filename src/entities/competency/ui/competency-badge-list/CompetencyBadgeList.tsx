@@ -8,13 +8,18 @@ import { updateScrollFade } from '@/shared'
 
 interface CompetencyBadgeListProps {
   competencies: Competency[]
+  label?: string
   row?: boolean
   className?: string
 }
 
-export function CompetencyBadgeList({ competencies, row, className }: CompetencyBadgeListProps) {
+export function CompetencyBadgeList({ competencies, label, row, className }: CompetencyBadgeListProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+
+  const sortedCompetencies = [...competencies].sort(
+    (a, b) => (b.relevance ?? 0) - (a.relevance ?? 0)
+  )
 
   useEffect(() => {
     const list = listRef.current
@@ -25,21 +30,22 @@ export function CompetencyBadgeList({ competencies, row, className }: Competency
     const ro = new ResizeObserver(handler)
 
     handler()
-    list.addEventListener('scroll', handler)
+    requestAnimationFrame(handler)
+    list.addEventListener('scroll', handler, { passive: true })
     ro.observe(list)
 
     return () => {
       list.removeEventListener('scroll', handler)
       ro.disconnect()
     }
-  }, [row])
+  }, [row, sortedCompetencies.length])
 
   return (
     <div className={clsx(styles.competencies, className)}>
-      <div className={styles.label}>{getCompetencyPlural(competencies.length)}</div>
+      {label !== '' && <div className={styles.label}>{label ?? getCompetencyPlural(competencies.length)}</div>}
       <div className={clsx(styles.wrapper, row && styles.row)} ref={wrapperRef}>
         <div className={styles.list} ref={listRef}>
-          {competencies.map(competency => (
+          {sortedCompetencies.map(competency => (
             <CompetencyBadge key={competency.id} competency={competency} />
           ))}
         </div>

@@ -1,150 +1,237 @@
 import clsx from 'clsx'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import styles from './MyPlatformPage.module.css'
-import { ProjectsGrid } from '@/widgets/projects-grid'
+import { MyPlatformBanner } from './MyPlatformBanner'
+import { MyPlatformProjectsWidgets } from './MyPlatformProjectsWidgets'
 import {
+  Avatar,
   getSwitchableRoles,
   ROLES_TRANSLATIONS,
+  TeamUserCard,
   useMe,
+  useMyScores,
   usePreferencesStore,
-  UserRow,
   UserRowSkeleton,
-  type UserRole
+  type UserSwitchableRole
 } from '@/entities/user'
+import {
+  getStudentProjectHours,
+  useParticipatingProjects,
+  useProjectTimesheetSummary
+} from '@/entities/project'
 import {
   FloatingTabs,
   StagesWidget,
   YourPointsWidget,
-  YourTasksWidget,
-  type Activity,
+  // YourTasksWidget,
   type ClosingDiscipline,
-  type FloatingTabItem, usePageTitle
+  type FloatingTabItem
 } from '@/shared'
+import { ComplaintBlock } from "@/shared/ui/complaint-block";
 
-
-export const MyPlatformPage = () => {
-  usePageTitle('моей платформе');
-  const { data: user } = useMe()
+export function MyPlatformPage() {
+  const { data: me } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-  // const { data: draft, isLoading: isDraftLoading } = useProjectDraft()
-  // const { mutate: deleteDraft, isPending: isDeleting } = useDeleteDraft()
-  //
-  // const draftValues = draft?.data as Partial<CreateProjectFormValues> | undefined
-  // const draftTitle = draftValues?.meta?.title || 'Без названия'
-  // const draftType = draftValues?.type ? (TYPE_LABELS[draftValues.type] || draftValues.type) : null
-  // const draftUpdatedAt = draft?.updatedAt ? formatDraftDate(draft.updatedAt) : null
-  // const hasDraft = !!draft?.data && Object.keys(draft.data).length > 0
-  //
-  // const handleContinueDraft = () => {
-  //   navigate(`/my-platform/${ROUTES.MY_PLATFORM_CREATE}?draft=true`)
-  // }
-  //
-  // const handleDeleteDraft = () => {
-  //   deleteDraft()
-  // }
+  const { data: scoresData } = useMyScores(Boolean(me?.id))
+  const { data: participatingData } = useParticipatingProjects({ limit: 10 }, Boolean(me?.id))
+  const activeProject = participatingData?.projects?.[0]
+  const { data: timesheetSummary } = useProjectTimesheetSummary(activeProject?.id, Boolean(activeProject?.id))
 
-  const mockedData: { activities?: Activity[]; closingDisciplines: ClosingDiscipline[] } = {
-    activities: [
+  const activeProjectHours = getStudentProjectHours(timesheetSummary, me?.id)
+
+  const disciplines: ClosingDiscipline[] = activeProject
+    ? [
       {
-        type: 'currentStage',
-        title: 'Подготовка презентации',
-        deadline: '5-06-2026',
-        progressSteps: 5,
-        progressCurrentStep: 5,
-        unitType: 'points'
-      },
-      {
-        type: 'upcomingStage',
-        title: 'Подготовка презентации',
-        progressSteps: 1,
-        progressCurrentStep: 0,
-        unitType: 'points'
-      },
-      {
-        type: 'keyPoint',
-        title: 'Постерная сессия 1',
-        deadline: '29-05-2026',
-        status: 'completed',
-        number: 1,
-        extra: 'tooltip'
-      }
-    ],
-    closingDisciplines: [
-      {
-        title: 'УИРС-1',
-        currentProgress: 18,
-        maxProgress: 36
-      },
-      {
-        title: 'УИРС-2',
-        currentProgress: 0,
+        // title: activeProject.meta?.title || 'УИРС',
+        title: 'УИРС',
+        currentProgress: activeProjectHours,
         maxProgress: 36
       }
     ]
-  } // TODO заменить на реальные данные
+    : []
 
-  const switchableRoles = user ? getSwitchableRoles(user.roles) : []
-  const tabItems: FloatingTabItem<UserRole['type']>[] = switchableRoles
+  const switchableRoles = getSwitchableRoles(me ? me.roles : [])
+  const tabItems: FloatingTabItem<UserSwitchableRole['type']>[] = [...switchableRoles]
     .sort((a, b) => a.weight - b.weight)
     .map(role => ({ label: ROLES_TRANSLATIONS[role.type], value: role.type }))
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const sideRef = useRef<HTMLDivElement>(null)
+
+  const userRowRef = useRef<HTMLDivElement>(null)
+  const heroRef = useRef<HTMLDivElement>(null)
+
+  const coverRef = useRef<HTMLSpanElement>(null)
+  const coverFixedRef = useRef<HTMLSpanElement>(null)
+  const coverShapedRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const row = userRowRef.current
+    const hero = heroRef.current
+    const cover = coverRef.current
+    const coverFixed = coverFixedRef.current
+    const coverShaped = coverShapedRef.current
+
+    const scroller = scrollRef.current
+    const side = sideRef.current
+
+    let sideBaseTop = 0
+    let sideHeight = 0
+    let viewportPaddingTop = 0
+    let rowTop = 0
+    let rowBottom = 0
+
+    let rowBottomInContent = 0
+    let heroBottomInContent = 0
+
+    const measure = () => {
+      if (!scroller || !side) return
+      side.style.top = '0px'
+
+      const scrollerRect = scroller.getBoundingClientRect()
+      const sideRect = side.getBoundingClientRect()
+
+      sideBaseTop = sideRect.top - scrollerRect.top + scroller.scrollTop
+      sideHeight = side.offsetHeight
+      viewportPaddingTop = Number(window.getComputedStyle(scroller).paddingTop.slice(0, -2))
+
+      if (row) {
+        const rowRect = row.getBoundingClientRect()
+        rowBottomInContent = rowRect.bottom + scroller.scrollTop
+        rowTop = rowRect.top
+        rowBottom = rowRect.bottom
+      }
+
+      if (hero) {
+        const heroRect = hero.getBoundingClientRect()
+        heroBottomInContent = heroRect.bottom + scroller.scrollTop
+      }
+    }
+
+    const updateSide = () => {
+      if (!scroller || !side || !row) return
+
+      if (window.innerWidth <= 768) {
+        side.style.top = ''
+        return
+      }
+
+      const viewportHeight = scroller.clientHeight
+      const stopAt = sideBaseTop + sideHeight - viewportHeight
+
+      if (stopAt <= 0) {
+        side.style.top = `${rowBottom - rowTop + 8}px`
+        return
+      }
+
+      const scrollTop = scroller.scrollTop
+      if (scrollTop - stopAt < 0) {
+        side.style.top = `${-scrollTop}px`
+      } else {
+        side.style.top = `${viewportHeight - sideHeight - viewportPaddingTop}px`
+      }
+    }
+
+    const updateCovers = () => {
+      if (!scroller) return
+
+      const rowBottomViewport = rowBottomInContent + 8
+      const heroBottomViewport = heroBottomInContent - scroller.scrollTop + 36
+
+      const mobileHeroBottom = heroBottomInContent
+        ? heroBottomInContent - scroller.scrollTop + 18
+        : 468 - scroller.scrollTop
+      const stopAt =
+        window.innerWidth > 768
+          ? Math.max(heroBottomViewport, rowBottomViewport)
+          : Math.max(0, mobileHeroBottom)
+
+      if (coverFixed) coverFixed.style.setProperty('--fixedCoverHeight', `${rowBottom + 8}px`)
+      if (cover) cover.style.setProperty('--scrollableCoverHeight', `${stopAt}px`)
+      if (coverShaped) coverShaped.style.setProperty('--shapedCoverTop', `${stopAt}px`)
+    }
+
+    let ticking = false
+    const updateAll = () => {
+      updateSide()
+      updateCovers()
+    }
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateAll()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+
+    const onResize = () => {
+      measure()
+      updateAll()
+    }
+
+    onResize()
+
+    window.addEventListener('resize', onResize)
+    scroller?.addEventListener('scroll', onScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('resize', onResize)
+      scroller?.removeEventListener('scroll', onScroll)
+    }
+  }, [me])
+
   const isHeroWrapperVisible = switchableRoles.some(role => role.type !== 'Student')
+  const isFloatingTabsVisible = switchableRoles.length > 1 && preferredRoleType
 
-  const activitiesRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
-  const bgRef = useRef<HTMLSpanElement>(null)
-  const shapeRef = useRef<HTMLSpanElement>(null)
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop
-
-    const activitiesElement = activitiesRef.current
-    const contentElement = contentRef.current
-    const bgElement = bgRef.current
-    const shapeElement = shapeRef.current
-
-    if (activitiesElement) activitiesElement.scrollTop = scrollTop
-    if (contentElement) contentElement.scrollTop = scrollTop
-    if (bgElement) bgElement.style.transform = `translateY(-${scrollTop}px)`
-    if (shapeElement) shapeElement.style.transform = `translateY(-${Math.min(338, scrollTop)}px)`
-  }
+  const userRow = me ? (
+    <TeamUserCard
+      userId={me.id}
+      avatar={<Avatar userId={me.id} picture={me.profilePicture} fallbackType={'user'} size={'40px'} strokeColor={'grey'} />}
+      firstName={me.meta.firstName}
+      lastName={me.meta.lastName}
+      nameTextStyle={'ALS'}
+      nameSubtextStyle={'OS-10-400'}
+      nameStyle={'normal'}
+      roles={me.competencies}
+    />
+  ) : (
+    <UserRowSkeleton className={styles.skeleton} />
+  )
 
   return (
-    <main className={`${styles.container} ${styles[preferredRoleType.toLowerCase()]}`} onScroll={handleScroll}>
-      <span className={`${styles.background} ${styles.fixed}`} />
-      <span className={styles.background} ref={bgRef} />
-      <span className={`${styles.background} ${styles.shaped}`} ref={shapeRef} />
-
-      <aside className={styles.userRow}>{user ? <UserRow user={user} /> : <UserRowSkeleton />}</aside>
-
-      <div className={styles.titleContainer}>
-        {user && <h1 className={`ellipsis ${styles.welcomeMessage}`}>C возвращением, {user.meta.firstName}!</h1>}
-      </div>
-
-      {switchableRoles.length > 1 && (
-        <aside className={styles.switchContainer}>
-          <FloatingTabs className={styles.roleSwitcher} items={tabItems} value={preferredRoleType} onChange={setPreferredRoleType} />
-        </aside>
-      )}
-
-      <aside className={styles.activities} ref={activitiesRef} onScroll={handleScroll}>
-        <YourTasksWidget data={mockedData.activities} />
-        <YourPointsWidget disciplines={mockedData.closingDisciplines} tpuPoints={307} />
-      </aside>
-      <div className={styles.content} ref={contentRef} onScroll={handleScroll}>
-        <div className={clsx(styles.heroWrapper, isHeroWrapperVisible && styles.visible)}>
-          <div className={styles.bannerContainer}>
-            <span className={styles.banner} />
-          </div>
-          <section className={styles.stagesWidget}>
-            <StagesWidget />
-          </section>
+    <div className={styles.scrollContainer} ref={scrollRef}>
+      <div className={clsx(styles.container, preferredRoleType && styles[preferredRoleType])}>
+        <span className={clsx(styles.cover, styles.scrollable)} ref={coverRef} />
+        <span className={clsx(styles.cover, styles.fixed)} ref={coverFixedRef} />
+        <span className={clsx(styles.cover, styles.shaped)} ref={coverShapedRef} />
+        <div className={styles.side} ref={sideRef}>
+          <YourPointsWidget tpuPoints={scoresData?.totalScore ?? 0} disciplines={disciplines} />
+          <ComplaintBlock onClick={() => { }} />
         </div>
-        <section className={styles.projects}>
-          <h3 className={styles.title}>Проекты для вас</h3>
-          <ProjectsGrid />
-        </section>
+
+        <div className={styles.userRow} ref={userRowRef}>
+          {userRow}
+        </div>
+
+        <h1 className={clsx(styles.title, 'ellipsis')}>С возвращением{me && `, ${me?.meta.firstName}`}!</h1>
+
+        {isFloatingTabsVisible && (
+          <FloatingTabs className={styles.switch} value={preferredRoleType} items={tabItems} onChange={setPreferredRoleType} />
+        )}
+
+        <div className={styles.hero} ref={heroRef}>
+          <MyPlatformBanner>{isHeroWrapperVisible ? <StagesWidget /> : undefined}</MyPlatformBanner>
+          {!isHeroWrapperVisible && <StagesWidget />}
+        </div>
+
+        <div className={styles.projects}>
+          <MyPlatformProjectsWidgets />
+        </div>
       </div>
-    </main>
+    </div>
   )
 }

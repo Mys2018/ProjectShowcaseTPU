@@ -291,6 +291,7 @@
   font-size: 12px;
   font-weight: 600;
   aspect-ratio: 1/1;
+  object-fit: cover;
 }
 
 .orgInfo {

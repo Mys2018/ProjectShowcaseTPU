@@ -19,7 +19,7 @@ export const KeyPoints = ({ checkpoints }: KeyPointsProps) => {
   today.setHours(0, 0, 0, 0);
   const now = today.getTime();
 
-  // Find the first checkpoint that is NOT completed (i.e. deadline is in the future or today)
+  // Find the first checkpoint that is NOT completed (ui.e. deadline is in the future or today)
   const activeIndex = checkpoints.findIndex(kp => {
     const kpDate = parseDeadline(kp.deadline);
     if (!kpDate) return false;

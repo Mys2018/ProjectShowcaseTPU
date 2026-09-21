@@ -13,48 +13,60 @@ export type CompetenceDto = {
 export type User = UserBase & {
   profilePicture: string
   group?: string
-  grade?: string
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
     bio: string
     interests: string
     skills: CompetenceDto[]
-    experience: string,
-    messengers: Messengers,
+    experience: string
+    messengers: Messengers
     portfolioLink: string
   }
   capabilities: string[]
 }
 
 export type Messengers = {
-  element: string
-  telegram: string,
-  vk: string,
+  element?: string
+  telegram?: string
+  vk?: string
 }
 
-export type MessengerType = keyof Messengers;
+export type MessengerType = keyof Messengers
 
 export type UserBase = {
   id: string
   email: string
   roles: UserRole[]
   profilePicture: string
+  competencies?: string[]
+  grade?: number
+  group?: string
   meta: {
     name: string
+    firstName?: string
+    lastName?: string
+    patronym?: string
   }
 }
 
-export type UserBaseDto = {
+export type UserCard = {
   userId: number
   email: string
   roles?: string[]
   profilePicture?: string
+  grade?: string
+  group?: string
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
   }
 }
+
+export type UserCardDto = UserCard
+export type UserBaseDto = UserCard
 
 export type UserDto = {
   userId: number
@@ -64,10 +76,11 @@ export type UserDto = {
   meta: {
     firstName: string
     lastName: string
+    patronym?: string
     bio: string
     interests: string
     skills: CompetenceDto[]
-    experience: string,
+    experience: string
     messengers: Messengers
     portfolioLink: string
   }
@@ -96,3 +109,9 @@ type Role<T> = {
 }[keyof Required<T>]
 
 export type UserRole = Role<UserDto['roles']>
+export type UserSwitchableRole = Extract<UserRole, { type: 'Student' | 'Curator' | 'Moderator' }>
+
+export interface StudentScoreResponse {
+  userId: number
+  totalScore: number
+}

@@ -1,44 +1,42 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigationType } from 'react-router-dom';
+import { useLocation, useNavigate, useNavigationType } from 'react-router-dom';
 import { create } from 'zustand';
+import { backLabel } from '../config/backTargets';
 
 interface PageHistoryStore {
-  titles: Record<string, string>;
-  setPageTitle: (pathname: string, title: string) => void;
+  /** Адреса посещённых страниц вместе с хэшем — разделы различаются только им. */
   historyStack: string[];
-  pushPath: (pathname: string) => void;
-  replacePath: (pathname: string) => void;
-  popPath: (pathname: string) => void;
+  pushPath: (url: string) => void;
+  replacePath: (url: string) => void;
+  popPath: (url: string) => void;
 }
 
 export const usePageHistoryStore = create<PageHistoryStore>((set) => ({
-  titles: {},
-  setPageTitle: (pathname, title) => set((state) => ({ titles: { ...state.titles, [pathname]: title } })),
   historyStack: [],
-  pushPath: (pathname) => set((state) => {
+  pushPath: (url) => set((state) => {
     const stack = state.historyStack;
-    if (stack[stack.length - 1] === pathname) return state;
-    return { historyStack: [...stack, pathname] };
+    if (stack[stack.length - 1] === url) return state;
+    return { historyStack: [...stack, url] };
   }),
-  replacePath: (pathname) => set((state) => {
+  replacePath: (url) => set((state) => {
     const stack = [...state.historyStack];
     if (stack.length > 0) {
-       stack[stack.length - 1] = pathname;
+       stack[stack.length - 1] = url;
     } else {
-       stack.push(pathname);
+       stack.push(url);
     }
     return { historyStack: stack };
   }),
-  popPath: (pathname) => set((state) => {
+  popPath: (url) => set((state) => {
     const stack = state.historyStack;
-    if (stack.length >= 2 && stack[stack.length - 2] === pathname) {
+    if (stack.length >= 2 && stack[stack.length - 2] === url) {
       return { historyStack: stack.slice(0, -1) };
     }
-    const index = stack.lastIndexOf(pathname);
+    const index = stack.lastIndexOf(url);
     if (index !== -1) {
       return { historyStack: stack.slice(0, index + 1) };
     }
-    return { historyStack: [...stack, pathname] };
+    return { historyStack: [...stack, url] };
   })
 }));
 
@@ -50,35 +48,44 @@ export function useHistoryTracker() {
   const popPath = usePageHistoryStore(state => state.popPath);
 
   useEffect(() => {
+    const url = location.pathname + location.hash;
     if (navType === 'PUSH') {
-      pushPath(location.pathname);
+      pushPath(url);
     } else if (navType === 'REPLACE') {
-      replacePath(location.pathname);
+      replacePath(url);
     } else if (navType === 'POP') {
-      popPath(location.pathname);
+      popPath(url);
     }
-  }, [location.pathname, navType, pushPath, replacePath, popPath]);
+  }, [location.pathname, location.hash, navType, pushPath, replacePath, popPath]);
 }
 
-export function usePageTitle(title: string) {
-  const location = useLocation();
-  const setPageTitle = usePageHistoryStore(state => state.setPageTitle);
-
-  useEffect(() => {
-    setPageTitle(location.pathname, title);
-  }, [location.pathname, title, setPageTitle]);
-}
-
-export function usePreviousPageTitle(fallback: string) {
+/**
+ * Кнопка «назад»: подпись и переход считаются из одного источника, поэтому
+ * разойтись не могут — нельзя пообещать «Мои проекты», а уйти в другое место.
+ *
+ * Стек живёт в памяти, и это ровно то, что нужно: пусто он бывает только при
+ * заходе по прямой ссылке или после F5, то есть тогда, когда идти назад некуда
+ * и navigate(-1) увёл бы из приложения. Одна проверка вместо догадок по
+ * location.key.
+ *
+ * @param fallback куда возвращать, если истории нет. Задаёт страница: она одна
+ *   знает, что для неё «уровень выше».
+ */
+export function useBack(fallback: string) {
   const historyStack = usePageHistoryStore(state => state.historyStack);
-  const titles = usePageHistoryStore(state => state.titles);
-  
-  if (historyStack.length >= 2) {
-    const prevPath = historyStack[historyStack.length - 2];
-    const title = titles[prevPath];
-    if (title) {
-       return `Назад к ${title}`;
+  const navigate = useNavigate();
+
+  const prev = historyStack.length >= 2 ? historyStack[historyStack.length - 2] : null;
+  // Страница без названия возвратом не бывает: вход, 404, раздел-редирект.
+  // Такую пропускаем и уходим на фолбэк — иначе кнопка выкинула бы на экран входа.
+  const prevLabel = prev ? backLabel(prev) : null;
+
+  return {
+    /** Только название страницы: направление показывает стрелка, дублировать его словом незачем. */
+    label: prevLabel ?? backLabel(fallback) ?? '',
+    go: () => {
+      if (prevLabel) void navigate(-1);
+      else void navigate(fallback);
     }
-  }
-  return fallback;
+  };
 }

@@ -4,18 +4,30 @@ import { CompetencyChip, useCompetencies } from '@/entities/competency'
 import { TagChip, useTags } from '@/entities/tag'
 import { getProjectFormatTranslation, PROJECT_FORMATS } from '@/entities/project'
 import FolderIcon from '@/shared/ui/icons/folder.svg?react'
+import {GreyFilledButton} from "@/shared";
 
 export default function Filter() {
   const {
     projectTypes: chosenProjectTypes,
     tags: chosenTags,
     competencies: chosenCompetencies,
+    query,
     toggleProjectType,
     toggleTag,
-    toggleCompetency
+    toggleCompetency,
+    reset,
   } = useFilterStore()
-  const { data: tagGroups = [] } = useTags()
-  const { data: competencies = [] } = useCompetencies()
+  const { data: rawTagGroups } = useTags()
+  const { data: rawCompetencies } = useCompetencies()
+
+  const tagGroups = Array.isArray(rawTagGroups) ? rawTagGroups : []
+  const competencies = Array.isArray(rawCompetencies) ? rawCompetencies : []
+
+  const hasActiveFilters =
+    chosenProjectTypes.size > 0 ||
+    chosenTags.size > 0 ||
+    chosenCompetencies.size > 0 ||
+    Boolean(query?.trim())
 
   return (
     <aside className={styles.body}>
@@ -41,7 +53,7 @@ export default function Filter() {
         <h3 className={styles.title}>Трек-теги</h3>
         <div className={styles.bodyTags}>
           {tagGroups
-            .filter(g => g.tags.length)
+            .filter(g => Array.isArray(g.tags) && g.tags.length > 0)
             .map(group => (
               <div className={styles.tagBlock} key={group.id}>
                 <p className={styles.field}>{group.name}:</p>
@@ -70,6 +82,16 @@ export default function Filter() {
           ))}
         </div>
       </div>
+
+      {hasActiveFilters && (
+        <GreyFilledButton
+          buttonText={'Сбросить все фильтры'}
+          onClick={reset}
+          className={styles.filledButton}
+        />
+      )}
+
     </aside>
   )
 }
+

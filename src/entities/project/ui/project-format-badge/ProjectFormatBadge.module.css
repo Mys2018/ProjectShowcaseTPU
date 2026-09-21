@@ -6,8 +6,6 @@
   justify-content: center;
   gap: 5px;
 
-  font: var(--OS-14-400);
-
   padding: 5.5px 10px 5.5px 6px;
 
   border: 1px solid var(--color-gray-350);
@@ -17,13 +15,17 @@
   background-color: var(--color-white);
 }
 
+
+.badge p {
+  font: var(--OS-14-400);
+}
+
 .case {
   border-color: var(--color-brand-violet);
 }
 
 .real {
   border-color: var(--color-brand-black);
-  
 	color: var(--color-white);
   background: var(--color-brand-black);
 }

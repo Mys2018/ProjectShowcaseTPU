@@ -1,16 +1,23 @@
+import { useEffect, useRef } from "react";
 import styles from "./LoginPage.module.css";
 import { pkceService } from "@/features/auth";
 
 export const LoginPage = () => {
-  const handleLogin = async (): Promise<void> => {
-    try {
-      await pkceService.startAuth();
-    } catch (error) {
-      console.error("Не удалось начать авторизацию:", error);
-    }
-  };
+  const startedRef = useRef(false);
 
-  handleLogin()
+  // PKCE-старт — побочный эффект, ровно один раз на маунт. В теле рендера он
+  // срабатывал бы на каждый ререндер, перегенерируя code_verifier/state и
+  // повторно дёргая window.location.assign.
+  useEffect(() => {
+    if (startedRef.current) {
+      return;
+    }
+    startedRef.current = true;
+
+    pkceService.startAuth().catch((error) => {
+      console.error("Не удалось начать авторизацию:", error);
+    });
+  }, []);
 
   return (
     <div className={styles.mainContainer}>

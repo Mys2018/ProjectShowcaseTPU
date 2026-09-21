@@ -15,7 +15,7 @@ export type CheckpointDto = {
 }
 
 export type CheckpointGroupDto = {
-	id: string
-	name: string
-	checkpoints: CheckpointDto[]
+	id?: string
+	name?: string
+	checkpoints?: CheckpointDto[]
 }

@@ -1,4 +1,5 @@
 .magicToggle {
+  z-index: 700;
   position: relative;
   cursor: pointer;
   align-content: center;
@@ -28,19 +29,9 @@
   left: -2px;
   background-color: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--drop-down);
   transition: transform 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), background-color 0.4s ease;
 }
-
-/* .sparkles {
-  position: absolute;
-  top: -10px;
-  left: 5px;
-  color: #c5cadd;
-  transition: color 0.4s ease, filter 0.4s ease;
-  pointer-events: none;
-} */
-
 
 .checked .toggleTrack {
   background-color: #858b98;
@@ -51,7 +42,43 @@
   background-color: var(--color-brand-black);
 }
 
-/* .checked .sparkles {
-  color: var(--color-brand-green);
-  filter: drop-shadow(0 0 6px rgba(57, 255, 20, 0.6));
-} */
+.star1 {
+  z-index: 10;
+  position: absolute;
+  top: -10px;
+  left: -1px;
+
+  width: 10px;
+  height: 10px;
+  transition: all 0.7s ease;
+
+  color: var(--color-gray-250)
+}
+
+.star2 {
+  z-index: 10;
+  position: absolute;
+  top: -5px;
+  right: 3px;
+
+  width: 8px;
+  height: 8px;
+  transition: all 0.7s ease;
+
+  color: var(--color-gray-250)
+}
+
+.checked .star1 {
+  color: var(--green-radial-grad);
+  transform: translateX(-11px) translateY(6px) scale(0.8);
+}
+
+.checked .star2 {
+  color: var(--green-radial-grad);
+  transform: translateX(-11px) translateY(-4px) scale(1.4);
+}
+
+.checked .star1 path,
+.checked .star2 path {
+  fill: url(#magicStarGradient);
+}

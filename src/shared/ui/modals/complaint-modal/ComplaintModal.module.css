@@ -1,0 +1,84 @@
+
+.title {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contactsLabel {
+  font: var(--field-label-interface);
+  color: var(--color-gray-750);
+}
+
+.contactsEmail {
+  text-decoration: none;
+  font: var(--OS-14-550);
+  color: var(--color-gray-600);
+}
+
+.errorText {
+  font: var(--inter-12-300);
+  color: var(--color-red);
+}
+
+.actions {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.body div {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.textArea {
+  height: 200px;
+}
+
+.successContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+.successContainer div {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.successTitle {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+  text-align: center;
+}
+
+.successDesc {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  text-align: center;
+}
+

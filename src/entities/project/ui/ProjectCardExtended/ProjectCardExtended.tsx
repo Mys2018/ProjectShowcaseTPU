@@ -1,22 +1,14 @@
 import styles from './ProjectCardExtended.module.css';
 import type { ProjectCardData } from '../../model/types';
 import Pattern from '@/assets/svg/Pattern.svg'
-import { useState } from "react";
 import { typeProjectsLabel } from '@/shared/constants/type-project-label/typeProjectsLabel';
-import { LikeButton } from "@/shared/ui";
 
 interface Props {
   project: ProjectCardData;
 }
 
 export default function ProjectCardExtended({ project }: Props) {
-  const { id, type, tags, primaryTag, partnerId, meta, roles, brandColor } = project;
-
-  const [isLiked, setIsLiked] = useState(false);
-
-  const toggleLike = () => {
-    return setIsLiked(!isLiked)
-  }
+  const { id, type, tags, primaryTag, partner, meta, roles, brandColor } = project;
 
   const visibleDirections = tags.slice(0, 3);
   const remainCount = tags.length - 3;
@@ -26,13 +18,6 @@ export default function ProjectCardExtended({ project }: Props) {
   return (
     <div className={`${styles.cardBody}`} style={brandColor ? { '--accent': brandColor.startsWith('#') ? brandColor : `#${brandColor}` } as React.CSSProperties : undefined}>
       <div className={styles.accentBody}>
-
-        <LikeButton
-          isLiked={isLiked}
-          onClick={toggleLike}
-          className={`${styles.like} ${isLiked ? styles.liked : ''}`}
-        />
-
         <img className={styles.pattern} src={Pattern} alt='Узор' />
 
         <div className={`${styles.header} ${styles[primaryTag.id]}`}>
@@ -59,9 +44,13 @@ export default function ProjectCardExtended({ project }: Props) {
 
 
             <div className={styles.org}>
-              <div className={styles.orgAvatar}>Т</div>
+              {partner.profilePicture ? (
+                <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name} />
+              ) : (
+                <div className={styles.orgAvatar}>{partner.name.at(0)}</div>
+              )}
               <div className={styles.orgInfo}>
-                <span className={styles.orgName}>{(partnerId as any)?.verbose || partnerId}</span>
+                <span className={styles.orgName}>{partner.name}</span>
                 <span className={styles.orgSub}>публикационная активность</span>
               </div>
             </div>

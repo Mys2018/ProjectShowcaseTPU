@@ -1,0 +1,272 @@
+/* Цветов ниже нет в variables.css — взяты из макета. */
+.wrap {
+  --sc-current-bg: #E9F9E9;
+  --sc-result-bg: #DADEF6;
+
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Скроллится, но без видимой полосы — как колонки на странице проекта. */
+.scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Мышью таблица листается перетаскиванием (см. ScoringTable.tsx). */
+@media (hover: hover) and (pointer: fine) {
+  .scroll {
+    cursor: grab;
+  }
+}
+
+.scroll[data-dragging] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+}
+
+/* Разделители: только справа и снизу, внешний контур даёт .wrap.
+   :where() обнуляет специфичность, чтобы классы ячеек ниже могли переопределять. */
+.table :where(th, td) {
+  box-sizing: border-box;
+  padding: 8px 12px;
+  min-width: 50px;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.table :where(tr > :last-child) {
+  border-right: none;
+}
+
+.table :where(tbody tr:last-child > *) {
+  border-bottom: none;
+}
+
+/* ── Шапка ─────────────────────────────────────────────────────────── */
+
+.head {
+  background: var(--color-gray-50);
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
+.participantHead {
+  width: 230px;
+  height: 60px;
+  padding: 8px 12px 8px 16px;
+}
+
+.sprintHead {
+  height: 32px;
+}
+
+/* font: inherit — глобальный `* { font-family: ALS Sirius }` иначе перебивает Inter из шапки. */
+.sprintInner {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clock {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.sprintCurrent {
+  background: var(--color-brand-green);
+  border-right-color: var(--color-brand-green);
+  color: var(--color-white);
+}
+
+.weekHead {
+  height: 28px;
+  font: var(--field-label-interface);
+}
+
+/* ── Строки ────────────────────────────────────────────────────────── */
+
+.participant {
+  width: 230px;
+  height: 72px;
+  padding: 12px 12px 12px 16px;
+  text-align: left;
+  background: var(--color-white);
+}
+
+/* Фиксированная ширина, иначе длинное имя растянет колонку вместо многоточия. */
+.bio {
+  width: 202px;
+}
+
+.roleIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Приписка «(Вы)» у своей строки — тем же шрифтом, что имя, но приглушённая. */
+.you {
+  font: inherit;
+  color: var(--color-gray-400);
+}
+
+.score {
+  font: 600 13px/1.25 var(--font-open-sans);
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: var(--color-gray-600);
+}
+
+/* Текущая неделя. Обе боковые линии — настоящие бордеры, поэтому браузер
+   округляет их одинаково и они не расходятся по толщине. Снаружи к ним
+   прилегают серые разделители соседей (слева — бордер предыдущей ячейки,
+   справа — border-left следующей). Разделитель строк внутри колонки нарисован
+   тенью: бордер снизу пересекал бы зелёные и рвал линию на каждой строке. */
+.current {
+  background: var(--sc-current-bg);
+  color: var(--color-brand-green);
+  border-left: 1px solid var(--color-brand-green);
+  border-right-color: var(--color-brand-green);
+  border-bottom: none;
+  box-shadow: inset 0 -1px 0 var(--color-gray-100);
+}
+
+.current + :where(th, td) {
+  border-left: 1px solid var(--color-gray-100);
+}
+
+.table :where(tbody tr:last-child) > .current {
+  box-shadow: none;
+}
+
+/* прочерк: участника тогда ещё не было в проекте. Стоит после .current,
+   чтобы и в текущей неделе оставаться серым, а не зелёным. */
+.absent {
+  color: var(--color-gray-250);
+}
+
+/* ── Колонка «Результат» ───────────────────────────────────────────── */
+
+.resultHead {
+  width: 107px;
+  height: 60px;
+  background: var(--color-brand-violet);
+  color: var(--color-white);
+}
+
+.result {
+  width: 107px;
+  background: var(--sc-result-bg);
+  font: 600 13px/1.25 var(--font-open-sans);
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: var(--color-gray-750);
+  white-space: nowrap;
+}
+
+tbody .result {
+  border-bottom-color: var(--color-white);
+}
+
+/* ── Залипающие колонки при горизонтальном скролле ─────────────────── */
+
+.stickyLeft {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.stickyRight {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+}
+
+/* Фиолетовая линия слева от «Результата». Псевдоэлемент с bottom: -1px
+   перекрывает белый разделитель ячейки, поэтому линия идёт сплошной. */
+.stickyRight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: 0;
+  width: 1px;
+  background: var(--color-brand-violet);
+  pointer-events: none;
+}
+
+/* Тёмная линия справа от «Участника» — поверх собственного бордера ячейки
+   (right: -1px) и с тем же приёмом bottom: -1px, чтобы не рвалась на строках. */
+.stickyLeft::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  right: -1px;
+  width: 1px;
+  background: var(--color-gray-250);
+  pointer-events: none;
+}
+
+/* У последней строки разделителя нет — иначе линия вылезла бы за таблицу. */
+.table :where(tbody tr:last-child) > .stickyRight::before,
+.table :where(tbody tr:last-child) > .stickyLeft::after {
+  bottom: 0;
+}
+
+/* ── Мобилка: компактная колонка участника ─────────────────────────── */
+
+@media (max-width: 767px) {
+  .participantHead,
+  .participant {
+    width: 140px;
+  }
+
+  .participantHead {
+    padding: 8px 8px 8px 12px;
+    white-space: normal;
+  }
+
+  .participant {
+    height: auto;
+    padding: 10px 8px 10px 12px;
+  }
+
+  .bio {
+    width: 120px;
+  }
+
+  .resultHead,
+  .result {
+    width: 88px;
+    padding-inline: 8px;
+  }
+}
+
+/* ── Загрузка / ошибка / пусто ─────────────────────────────────────── */
+
+.state {
+  margin: 0;
+  padding: 24px;
+  font: var(--inter-13-400);
+  color: var(--color-gray-500);
+}

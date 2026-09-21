@@ -1,0 +1,27 @@
+.button {
+  padding: 13px 24px 14px 24px;
+  border-radius: 50px;
+  background-color: var(--color-brand-violet);
+  font: var(--inter-13-600);
+  color: white;
+  transition: background-color 0.5s ease;
+
+  border: 1px solid white;
+
+  display: flex;
+  align-items: center;
+  gap: 9px
+}
+
+.icon {
+  min-width: 11px;
+  min-height: 11px;
+}
+
+.button:hover {
+  background-color: var(--color-brand-violet);
+}
+
+.button:active {
+  background-color: var(--color-brand-violet);
+}

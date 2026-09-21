@@ -1,9 +1,7 @@
-import {useEffect, useState} from "react";
 import styles from './ProjectInfo.module.css'
-import {InfoTooltip, LikeButton} from "..";
+import {InfoTooltip} from "..";
 import { typeProjectsLabel, getProjectTagBackground, type ProjectCardData } from '@/entities/project';
-import {getPartnerById} from "@/entities/partner/api/requests.ts";
-import type {PartnerDto} from "@/entities/partner/api/types.ts";
+import { PartnerRow } from '@/entities/partner';
 
 type ProjectInfoProps = {
   data: ProjectCardData
@@ -13,15 +11,7 @@ type ProjectInfoProps = {
 
 export const ProjectInfo = ({ data }: ProjectInfoProps) => {
 
-  const [partner, setPartner] = useState<PartnerDto>();
-
-  useEffect(() => {
-    const fetchPartner = async () => {
-      const partner = await getPartnerById(data.partnerId);
-      setPartner(partner)
-    }
-    fetchPartner();
-  }, [data.partnerId]);
+  const partner = data.partner;
 
   return (
     <div className={styles.projectMain} style={{ background: getProjectTagBackground(data.primaryTag.name) }}>
@@ -62,23 +52,14 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
             {typeProjectsLabel(data.type)}
           </InfoTooltip>
 
-          <LikeButton isLiked={false} onClick={() => {}}/>
+          {/* TODO move to widget -> add like button (features/like-project) */}
         </div>
       </div>
 
       <div className={styles.mainBlock}>
-        <div className={styles.orgBlock}>
-          <div className={styles.orgAvatarContainer}>
-            {
-              partner &&
-              <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name}/>
-            }
-          </div>
-          <div className={styles.orgInfo}>
-            <span className={styles.orgName}>{partner?.name}</span>
-            <span className={styles.orgSub}>публикационная активность</span>
-          </div>
-        </div>
+        {partner ? (
+          <PartnerRow partner={partner} />
+        ) : null}
 
         <p className={styles.description}>{data.meta.description}</p>
       </div>

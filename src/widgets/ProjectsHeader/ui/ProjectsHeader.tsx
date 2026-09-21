@@ -4,10 +4,10 @@ import { MagicToggle } from '@/shared/ui/magic-checkbox/MagicToggle'
 import { useFilterStore } from '@/features/filter/model/useFilterStore'
 import type { SortKey } from '@/features/filter/model/types'
 import { getProjectPlural, useProjects } from '@/entities/project'
-import { useIsProfileFilled } from "@/entities/user/lib";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "@/shared";
-import { useAuthStore } from "@/entities/user";
+import { useAuthStore, useIsProfileFilled } from "@/entities/user";
+import clsx from "clsx";
 
 const SORT_OPTIONS: { key: Exclude<SortKey, 'relevance'>; label: string }[] = [
   { key: 'created_desc', label: 'Новые' },
@@ -18,12 +18,17 @@ export function ProjectsHeader() {
   const { isSkillsFilled } = useIsProfileFilled()
   const status = useAuthStore(state => state.status)
   const navigate = useNavigate()
+  const location = useLocation()
+  const isInProgress = location.pathname === ROUTES.PROJECTS.IN_PROGRESS
+  const statusFilter = isInProgress ? ['InProgress'] : ['Recruiting', 'RecruitmentCompleted']
+
   const { tags, competencies, projectTypes, sort, setSort, isRelevanceSort, query, limit, page, setPage } = useFilterStore()
   const { data } = useProjects({
     q: query,
     projectType: Array.from(projectTypes),
     tagId: Array.from(tags),
     roleTypeId: Array.from(competencies),
+    status: statusFilter,
     sort: isRelevanceSort ? 'relevance' : sort,
     limit: limit,
     offset: (page - 1) * limit
@@ -36,7 +41,7 @@ export function ProjectsHeader() {
     <header className={styles.projectsHeader}>
       <div className={styles.topPart}>
         <div className={styles.titleBlock}>
-          <h1 className={styles.title}>Набор на проекты</h1>
+          <h1 className={styles.title}>{isInProgress ? 'Проекты в работе' : 'Набор на проекты'}</h1>
           {total ? <h2 className={styles.subTitle}>{getProjectPlural(total)}</h2> : ''}
 
         </div>
@@ -82,7 +87,7 @@ export function ProjectsHeader() {
 
             Наиболее подходящие
           </div>
-          <div className={styles.navEl}>|</div>
+          <div className={clsx(styles.navEl, styles.separator)}>|</div>
           <div className={`${styles.navEl} ${isRelevanceSort ? styles.disabled : ''}`}>
             <PopupMenu trigger={
               <div className={styles.sortTrigger}>
@@ -101,8 +106,8 @@ export function ProjectsHeader() {
               ))}
             </PopupMenu>
           </div>
-          <div className={styles.navEl}>|</div>
-          <div>
+          <div className={clsx(styles.navEl, styles.separator)}>|</div>
+          <div className={styles.pagination}>
             <Pagination currentPage={page} onPageSelect={setPage} totalPages={total ? Math.ceil(total / limit) || 1 : 1} />
           </div>
         </nav>

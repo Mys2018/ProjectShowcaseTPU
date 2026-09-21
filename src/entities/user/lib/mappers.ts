@@ -14,16 +14,23 @@ const mapRoles = (dto: UserDto['roles']): UserRole[] => {
 }
 
 export const mapUserDto = (dto: UserDto): User => {
+  const grade = dto.grade || dto.roles?.Student?.course
+  const group = dto.group || dto.roles?.Student?.meta?.group
+  const competencies = dto.meta.skills?.map(s => s.roleTypeName).filter(Boolean) || []
+  const computedName = [dto.meta.firstName, dto.meta.lastName, dto.meta.patronym].filter(Boolean).join(' ').trim()
+
   return {
     id: String(dto.userId),
     email: dto.email,
     profilePicture: dto.profilePicture || userIconUrl,
-    group: dto.group,
-    grade: dto.grade,
+    group,
+    grade: grade ? Number(grade) : undefined,
+    competencies,
     meta: {
-      name: `${dto.meta.firstName} ${dto.meta.lastName}`,
+      name: computedName || dto.email,
       firstName: dto.meta.firstName,
       lastName: dto.meta.lastName,
+      patronym: dto.meta.patronym,
       bio: dto.meta.bio,
       interests: dto.meta.interests || '',
       skills: dto.meta.skills || [],
@@ -36,21 +43,74 @@ export const mapUserDto = (dto: UserDto): User => {
   }
 }
 
-export const mapUserBaseDto = (dto: UserBaseDto): UserBase => {
+const extractRawRoles = (roles?: string[] | UserDto['roles']): string[] => {
+  if (Array.isArray(roles)) {
+    return roles
+  }
+  if (roles && typeof roles === 'object') {
+    return Object.keys(roles)
+  }
+  return []
+}
+
+const extractCompetencies = (dto: UserBaseDto | UserDto): string[] => {
+  if ('skills' in dto.meta && Array.isArray(dto.meta.skills)) {
+    return dto.meta.skills.map(s => s.roleTypeName).filter(Boolean)
+  }
+  return []
+}
+
+const extractGrade = (dto: UserBaseDto | UserDto): string | undefined => {
+  if ('grade' in dto && dto.grade) {
+    return dto.grade
+  }
+  if ('roles' in dto && dto.roles && typeof dto.roles === 'object' && !Array.isArray(dto.roles)) {
+    return dto.roles.Student?.course
+  }
+  return undefined
+}
+
+const extractGroup = (dto: UserBaseDto | UserDto): string | undefined => {
+  if ('group' in dto && dto.group) {
+    return dto.group
+  }
+  if ('roles' in dto && dto.roles && typeof dto.roles === 'object' && !Array.isArray(dto.roles)) {
+    return dto.roles.Student?.meta?.group
+  }
+  return undefined
+}
+
+export const mapUserBaseDto = (dto: UserBaseDto | UserDto): UserBase => {
+  const firstName = dto.meta.firstName || ''
+  const lastName = dto.meta.lastName || ''
+  const patronym = ('patronym' in dto.meta && dto.meta.patronym) ? dto.meta.patronym : undefined
+  const computedName = [firstName, lastName, patronym].filter(Boolean).join(' ').trim()
+  const name = computedName || dto.email || 'Без имени'
+
+  const rawRoles = extractRawRoles(dto.roles)
+  const competencies = extractCompetencies(dto)
+  const grade = extractGrade(dto)
+  const group = extractGroup(dto)
+
   return {
     id: String(dto.userId),
     email: dto.email,
     profilePicture: dto.profilePicture || userIconUrl,
-    roles:
-      dto.roles?.map(roleName => {
-        const type = roleName as keyof UserDto['roles']
-        return {
-          type: type,
-          weight: ROLE_WEIGHTS[type]
-        } as UserRole
-      }) ?? [],
+    roles: rawRoles.map(roleName => {
+      const type = roleName as keyof UserDto['roles']
+      return {
+        type,
+        weight: ROLE_WEIGHTS[type] ?? 1
+      } as UserRole
+    }),
+    competencies,
+    grade: grade ? Number(grade) : undefined,
+    group,
     meta: {
-      name: `${dto.meta.firstName} ${dto.meta.lastName}`
+      name,
+      firstName,
+      lastName,
+      patronym
     }
   }
 }

@@ -1,27 +1,43 @@
-.container {
-	width: 100%;
+.wrapper {
+  width: 100%;
 	height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-white);
+
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
 
   display: grid;
   justify-items: start;
 
-  grid-template-columns: 300px 1fr;
-  grid-template-rows: 48px 54px 1fr;
+  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-rows: 48px auto 1fr;
 
   padding: 50px 20px 0;
   max-width: 1560px;
+  overflow: hidden;
 
+  background-color: var(--color-white);
 }
 
 .back,
 .title,
-.tabs {
+.tabsContainer {
   padding-inline: 16px;
 }
 
 .back {
-  grid-row: 1;
   grid-column: 1;
+  grid-row: 1;
+  order: 1;
 
   display: flex;
   align-items: center;
@@ -41,14 +57,48 @@
 }
 
 .title {
-  grid-row: 1;
   grid-column: 2;
+  grid-row: 1;
+  order: 2;
 
   font: var(--hero-title-platform);
   color: var(--color-brand-black);
 }
 
-.tabs {
-  grid-row: 2;
+.tabsContainer {
   grid-column: 2;
+  grid-row: 2;
+  order: 3;
+
+  width: 100%;
 }
+
+.tabs {
+  border-bottom: 1px solid var(--color-gray-250);
+  z-index: 0;
+}
+
+/* До 1200px хедер фиксированный и прячется при скролле. Скроллились только
+   вкладки под заголовком, поэтому на месте уехавшего хедера оставалась пустая
+   серая полоса. Здесь страница скроллится целиком и заезжает ПОД хедер —
+   тот же приём, что в каталоге, профиле и на «Моей платформе». */
+@media (max-width: 1199px) {
+  .container {
+    margin-top: calc(-1 * var(--header-mobile-h));
+    height: calc(100% + var(--header-mobile-h));
+    /* снизу — место под плавающую навигацию (56px + 14px отступ + зазор) */
+    padding: calc(50px + var(--header-mobile-h)) 20px 88px;
+    grid-template-rows: 48px auto auto;
+    align-content: start;
+    overflow-y: auto;
+  }
+
+  /* у вкладок собственный скролл — отключаем, иначе скроллеров станет два.
+     Двойной класс — чтобы перебить стили вкладок, которые грузятся позже. */
+  .container.container > * {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+}
+

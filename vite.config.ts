@@ -31,8 +31,22 @@ export default defineConfig({
       host: true,
       proxy: {
         '/dev/api': {
-          target: 'https://project.tpu.ru',
-          changeOrigin: true
+          target: 'https://tpu.community.design',
+          changeOrigin: true,
+          cookieDomainRewrite: '',
+          cookiePathRewrite: '/',
+          configure: (proxy) => {
+            proxy.on('proxyReq', (_proxyReq, req) => {
+              if (req.url && (req.url.includes('/auth') || req.url.includes('/users/me'))) {
+                console.log(`[ProxyReq] ${req.method} ${req.url} | Cookie: ${req.headers['cookie'] || '(none)'}`);
+              }
+            });
+            proxy.on('proxyRes', (proxyRes, req) => {
+              if (req.url && req.url.includes('/auth')) {
+                console.log(`[ProxyRes] ${req.method} ${req.url} -> ${proxyRes.statusCode} | Set-Cookie:`, proxyRes.headers['set-cookie'] || '(none)');
+              }
+            });
+          }
         }
       },
       ...(hasCerts && {

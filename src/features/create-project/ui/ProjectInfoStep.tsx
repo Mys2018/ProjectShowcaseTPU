@@ -27,6 +27,7 @@ interface ProjectInfoStepProps {
   setStep: (step: number) => void;
   blinkFields: string[];
   setBlinkFields: (fields: string[]) => void;
+  onEditType: () => void;
 }
 
 export function ProjectInfoStep({
@@ -41,7 +42,8 @@ export function ProjectInfoStep({
   prevStep,
   setStep,
   blinkFields,
-  setBlinkFields
+  setBlinkFields,
+  onEditType
 }: ProjectInfoStepProps) {
   const fieldMeta = useStore(form.store, state => state.fieldMeta)
 
@@ -97,11 +99,11 @@ export function ProjectInfoStep({
 
       <div className={styles.main}>
         <div>
-          {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} blinkFields={blinkFields} />}
+          {activeTab === 'main' && <MainInfoTab form={form} stepErrors={stepErrors} partners={partners} blinkFields={blinkFields} onEditType={onEditType} />}
           {activeTab === 'prd' && <PrdTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
           {activeTab === 'roles' && <RolesTab form={form} stepErrors={stepErrors} blinkFields={blinkFields} />}
           {activeTab === 'dates' && <DatesTab form={form} stepErrors={stepErrors} blinkFields={blinkFields}/>}
-          {activeTab === 'all' && <AllTab form={form} setStep={setStep} setBlinkFields={setBlinkFields} />}
+          {activeTab === 'all' && <AllTab form={form} setStep={setStep} setBlinkFields={setBlinkFields} onEditType={onEditType} />}
         </div>
       </div>
 

@@ -8,16 +8,41 @@ import {
   Separator, AllList
 } from "@/features/create-project/ui/components/all-info-fields/AllInfoFields.tsx";
 import type { PrdMeta } from "@/entities/project";
-import ArchiveIcon from '@/shared/ui/icons/archive.svg?react'
+import { getProjectFormatTranslation } from "@/entities/project";
+import {EditProjectType} from "@/shared/ui/edit-project-type";
+import { useCurrentCheckpoints } from "@/entities/checkpoint";
+import { mapDateToBackendString, mapDateToLocalString, parseDeadline } from "@/shared";
+
+const displayDeadline = (deadline: string) => {
+  if (!deadline) return '';
+  const parsed = parseDeadline(deadline);
+  if (parsed && !isNaN(parsed.getTime())) {
+    return mapDateToLocalString(parsed, { digitsOnly: true });
+  }
+  return deadline;
+};
 
 interface TabProps {
   form: CreateProjectForm;
   setStep: (step: number) => void;
   setBlinkFields: (fields: string[]) => void;
+  onEditType: () => void;
 }
 
-export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
+export function AllTab({ form, setStep, setBlinkFields, onEditType }: TabProps) {
   const prd = form.state.values.prdMeta as PrdMeta;
+  const { data: currentGroup } = useCurrentCheckpoints();
+
+  const baseCheckpoints = (currentGroup?.checkpoints || []).map(cp => ({
+    title: cp.title,
+    deadline: mapDateToBackendString(cp.deadline),
+  }));
+  const customCheckpoints = form.state.values.customCheckpoints || [];
+  const mergedCheckpoints = [...baseCheckpoints, ...customCheckpoints].sort((a, b) => {
+    const dateA = new Date(a.deadline).getTime();
+    const dateB = new Date(b.deadline).getTime();
+    return dateA - dateB;
+  });
 
   const handleEdit = (step: number, searchTexts: string[]) => {
     setStep(step);
@@ -46,6 +71,11 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
           Перед публикацией посмотрите все поля и отредактируйте, если необходимо
         </p>
       </div>
+
+      <EditProjectType 
+        type={getProjectFormatTranslation(form.state.values.type) || ''} 
+        onClick={onEditType}
+      />
 
       {/*Основа*/}
       <BigBlock bigTitle={'Основная информация'}>
@@ -222,11 +252,6 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
                         }
                       </div>
                   }
-                  {
-                    index === 0 && <p className={styles.invite}>
-                      Приглашенный участник: идет нахуй
-                    </p>
-                  }
                 </div>
               ))
             }
@@ -241,7 +266,7 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
           <SmallBlock title={'Таймлайн'} onEditField={() => handleEdit(4, ['Ключевые точки', 'Таймлайн'])}>
             <div className={styles.timelineList}>
               {
-                form.state.values.checkpoints.map((checkpoint, index: number) => (
+                mergedCheckpoints.map((checkpoint, index: number) => (
                   <div key={index} className={styles.checkpoint}>
                     <p className={styles.checkpointIndex}>
                       {index + 1}
@@ -251,7 +276,7 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
                         {checkpoint.title}
                       </p>
                       <p>
-                        {checkpoint.deadline}
+                        {displayDeadline(checkpoint.deadline)}
                       </p>
                     </div>
                   </div>
@@ -286,9 +311,6 @@ export function AllTab({ form, setStep, setBlinkFields }: TabProps) {
 
       </BigBlock>
 
-      {
-        <button className={styles.archiveButton}> <ArchiveIcon/> Архивировать проект </button>
-      }
     </div>
 
   );

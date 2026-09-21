@@ -66,7 +66,7 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
     if (state.popoverOpenFor === competenceId) {
       const addedids = new Set(newDraft.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.id) ?? []);
 
-      const filteredGlobals = state.globalSkills;
+      const filteredGlobals = state.globalSkills.filter(s => s.roleTypeId === competenceId);
 
       newCurrentFullSkills = filteredGlobals.filter(s => !addedids.has(s.id));
     }
@@ -138,7 +138,7 @@ export const useSkillsStore = create<SkillsStoreTypes>((set) => ({
       state.draftData.find(c => c.roleTypeId === competenceId)?.skills.map(s => s.id) ?? []
     );
 
-    const filteredGlobals = state.globalSkills;
+    const filteredGlobals = state.globalSkills.filter(s => s.roleTypeId === competenceId);
 
     return {
       currentFullSkills: filteredGlobals.filter(s => !addedids.has(s.id)),

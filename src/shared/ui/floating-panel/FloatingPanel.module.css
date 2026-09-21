@@ -1,0 +1,333 @@
+/* Плавающая панель действий: круглая кнопка — центральная пилюля — круглая кнопка.
+   Группа центрируется, элементы по контенту, поэтому длина подписи не растягивает
+   боковые слоты. Высота 56 задаётся самым высоким вариантом центра. */
+.panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 400;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  height: 56px;
+  /* в макете группа занимает 362 из 375 — по 6-7px с краёв */
+  padding-inline: 6px;
+  pointer-events: none; /* фон панели кликов не ловит — только сами кнопки */
+}
+
+/* Сам сдвиг задаётся инлайн из useMobileChrome — панель уезжает синхронно
+   с хедером, а не по отдельному порогу. Здесь остаётся только снять клики
+   с уже уехавшей панели: прозрачной она не становится, просто уходит за экран. */
+.hidden {
+  pointer-events: none;
+}
+
+.hidden > * {
+  pointer-events: none;
+}
+
+.panel > * {
+  pointer-events: auto;
+}
+
+/* ── Круглые слоты по краям ─────────────────────────────────────────── */
+
+.round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 65px;
+
+  background: var(--color-white);
+  box-shadow: var(--tab-shadow);
+  color: var(--color-gray-400);
+  cursor: pointer;
+}
+
+/* «в избранное» — залитый брендовым, иконка белая */
+.roundAccent {
+  background: var(--color-brand-violet);
+  box-shadow: var(--drop-down);
+  color: var(--color-white);
+}
+
+/* Фиксированный слот под иконку: размер кнопки от иконки не зависит,
+   поэтому иконки можно менять, не трогая раскладку панели. */
+.iconBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.iconBox svg {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.round svg path {
+  fill: currentColor;
+}
+
+/* шеврон «назад»: в макете это штрих 8×13, поэтому рисуем линией, а не заливкой */
+.back {
+  color: var(--color-gray-650);
+}
+
+.back svg path {
+  fill: none;
+  stroke: currentColor;
+}
+
+.shareIcon {
+  width: 13px;
+  height: 12px;
+}
+
+.heartIcon {
+  width: 21px;
+  height: 18px;
+}
+
+.heartSolid {
+  width: 19px;
+  height: 16px;
+}
+
+.heartSolid path {
+  fill: var(--color-white);
+}
+
+/* ── Центр: действие ────────────────────────────────────────────────── */
+
+/* Цветное кольцо — не border, а подложка: внешняя пилюля 56 с padding 3
+   и белой пилюлей 50 внутри. Так кольцо не съедает внутренние отступы. */
+.action {
+  transition: transform .12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 56px;
+  min-width: 0;
+  padding: 3px;
+  border: none;
+  border-radius: 65px;
+
+  background: var(--color-white);
+  box-shadow: var(--drop-down);
+  cursor: pointer;
+}
+
+/* Тон задаёт пару «кольцо / сердцевина». В первых двух цветное кольцо и белая
+   сердцевина, в остальных наоборот — кольцо белое, залита сердцевина. */
+.actionViolet { background: var(--color-brand-violet); }
+.actionGreen  { background: var(--color-brand-green); }
+.actionFilled { background: var(--color-white); }
+.actionMuted  { background: var(--color-white); }
+.actionLocked { background: var(--color-gray-400); }
+
+.actionInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 50px;
+  min-width: 0;
+  padding: 8px 24px;
+  border-radius: 59px;
+  background: var(--color-white);
+
+  font: var(--inter-13-600);
+  white-space: nowrap;
+}
+
+.actionViolet .actionInner,
+.actionGreen .actionInner {
+  color: var(--color-brand-green);
+}
+
+.actionFilled .actionInner {
+  background: var(--color-brand-green);
+  color: var(--color-white);
+}
+
+/* Отзыв уже оставлен: действие исчерпано, поэтому серая заливка и серый текст. */
+.actionMuted {
+  cursor: default;
+}
+
+.actionLocked .actionInner {
+  color: var(--color-gray-650);
+}
+
+.actionMuted .actionInner {
+  background: var(--color-gray-100);
+  color: var(--color-gray-500);
+}
+
+/* ── Центр: личный статус ───────────────────────────────────────────── */
+
+/* «Вы в команде», «Вы уже в другом проекте» — 42px в тон боковым кнопкам. */
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 42px;
+  min-width: 0;
+  padding: 0 16px;
+  border-radius: 65px;
+  background: var(--color-white);
+  box-shadow: var(--drop-down);
+}
+
+.noteText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+}
+
+/* ── Центр: «вы откликнулись» / «вы в команде» с действием ──────────── */
+
+/* Подпись слева, кнопка справа. Отступы из макета: 16 слева у текста,
+   12 справа у кнопки, между ними 12. */
+.applied {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  height: 56px;
+  min-width: 0;
+  padding: 0 12px 0 16px;
+  border-radius: 65px;
+  background: var(--color-white);
+  box-shadow: var(--drop-down);
+}
+
+.appliedLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+}
+
+.appliedAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 30px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--color-gray-150);
+  border-radius: 35px;
+  background: var(--color-gray-150);
+
+  font: 500 11px/110% var(--font-inter);
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* «Выбрать ещё»: обводка брендовая, подпись зелёная — действие поощряется. */
+.appliedActionOutline {
+  border-color: var(--color-brand-violet);
+  background: none;
+  color: var(--color-brand-green);
+}
+
+/* лёгкий отклик на нажатие — он же пауза перед открытием шторки */
+.action:active {
+  transform: scale(0.97);
+}
+
+/* Панель сюда не входит: её transition задаётся инлайн и учитывает
+   prefers-reduced-motion в самом useMobileChrome. */
+@media (prefers-reduced-motion: reduce) {
+  .action {
+    transition: none;
+  }
+}
+
+.appliedAction:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+/* ── Общее ──────────────────────────────────────────────────────────── */
+
+.round:focus-visible,
+.action:focus-visible,
+.appliedAction:focus-visible {
+  outline: 2px solid var(--color-brand-violet);
+  outline-offset: 2px;
+}
+
+/* ── Подсказка над панелью ──────────────────────────────────────────── */
+
+/* Десктопный InfoTooltip раскрывается по :hover, поэтому пальцем его не открыть.
+   Здесь тот же смысл, но всплывает по нажатию и живёт прямо над панелью. */
+.hint {
+  position: fixed;
+  left: 15px;
+  right: 15px;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  z-index: 401;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  max-width: 320px;
+  margin-inline: auto;
+  padding: 16px;
+
+  background: var(--color-white);
+  border-radius: 16px;
+  box-shadow: var(--tooltop-shadow);
+}
+
+.hintTitle {
+  font: var(--inter-13-600);
+  color: var(--color-brand-black);
+}
+
+.hintText {
+  font: var(--OS-12-400);
+  color: var(--color-gray-600);
+}
+
+.hintAction {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  font: var(--inter-13-600);
+  color: var(--color-brand-green);
+}

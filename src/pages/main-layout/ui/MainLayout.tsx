@@ -1,10 +1,12 @@
-import {Outlet, useNavigate} from 'react-router-dom'
+import {Outlet, useLocation, useNavigate} from 'react-router-dom'
+import {useEffect} from "react";
+import {useMediaQuery} from "usehooks-ts";
 import styles from './MainLayout.module.css'
 import { Header } from '@/widgets/header'
-import {useIsProfileFilled} from "@/entities/user/lib";
+import { MobileNavBar } from '@/widgets/mobile-nav-bar'
+import {useMe, useIsProfileFilled} from "@/entities/user";
 import {useModalStore} from "@/shared/model";
-import {useEffect} from "react";
-import {useMe} from "@/entities/user";
+import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import {ROUTES} from "@/shared";
 
 export const MainLayout = () => {
@@ -12,6 +14,19 @@ export const MainLayout = () => {
   const { isProfileFilled } = useIsProfileFilled()
   const { data: user, isSuccess } = useMe()
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+  // Навигация живёт только на корневых страницах. На страницах-деталях её место
+  // занимает панель действий — договорённость «где я» против «что я могу».
+  const isRootPage = [
+    ROUTES.MAIN,
+    ROUTES.ACTIVITY.BASE,
+    ROUTES.MANAGE.BASE,
+    ROUTES.MODERATION.BASE,
+    ROUTES.PROJECTS.RECRUITMENT,
+    ROUTES.PROJECTS.IN_PROGRESS
+  ].some(route => route === pathname);
 
   const openModal = useModalStore(state => state.openModal)
   const closeModal = useModalStore(state => state.closeModal)
@@ -22,7 +37,7 @@ export const MainLayout = () => {
         onClose: closeModal,
         profilePicture: user?.profilePicture,
         onCancel: () => {
-          navigate(ROUTES.MY_PLATFORM.BASE)
+          navigate(ROUTES.MAIN)
           closeModal()
         },
         onAgree: () => {
@@ -39,6 +54,7 @@ export const MainLayout = () => {
       <div className={styles.pageContainer}>
         <Outlet/>
       </div>
+      {isMobile && isRootPage && <MobileNavBar />}
     </main>
   )
 }

@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useLogin } from "../api/mutations";
 import { pkceService } from "./pkce";
 import {
+  getSwitchableRoles,
   useAuthStatus,
   useAuthStore,
   useMe,
   usePreferencesStore,
   type OAuthExchangeParams,
 } from "@/entities/user";
-import { ROUTES } from "@/shared";
+import { ROUTES, queryClient, recordAuthSuccess, resetRefreshDeadCoolOff } from "@/shared";
 
 export const useAuthBootstrap = () => {
   const navigate = useNavigate();
@@ -27,13 +28,28 @@ export const useAuthBootstrap = () => {
     searchParams.has("code") && searchParams.has("state");
 
   useEffect(() => {
+    const handleRefreshed = () => {
+      setStatus("authenticated");
+    };
+
+    const handleUnauthorized = () => {
+      setStatus("unauthenticated");
+      queryClient.clear();
+    };
+
+    window.addEventListener("auth:refreshed", handleRefreshed);
+    window.addEventListener("auth:unauthorized", handleUnauthorized);
+
+    return () => {
+      window.removeEventListener("auth:refreshed", handleRefreshed);
+      window.removeEventListener("auth:unauthorized", handleUnauthorized);
+    };
+  }, [setStatus]);
+
+  useEffect(() => {
     if (userData?.roles) {
-      for (const role of userData.roles) {
-        if (role.type === 'Student' || role.type === 'Curator' || role.type === 'Moderator') {
-          setPreferredRoleType(role.type)
-          if (role.type === 'Student') break
-        }
-      }
+      const preferredRole = getSwitchableRoles(userData.roles).at(0)
+      if (preferredRole) setPreferredRoleType(preferredRole.type)
     }
   }, [userData, setPreferredRoleType])
 
@@ -71,6 +87,8 @@ export const useAuthBootstrap = () => {
     }
 
     if (authStatusQuery.isSuccess) {
+      recordAuthSuccess();
+      resetRefreshDeadCoolOff();
       setStatus("authenticated");
       return;
     }

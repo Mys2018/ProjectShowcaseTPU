@@ -66,6 +66,15 @@
   font-family: var(--font-ALS);
   font-size: 14px;
   color: white;
+  word-break: break-word;
+}
+
+.emptyText {
+  font-size: 12px;
+  font-family: var(--font-open-sans);
+  font-weight: 300;
+  color: var(--color-gray-350);
+  list-style: none;
 }
 
 .progressContainer {

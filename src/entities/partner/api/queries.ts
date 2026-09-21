@@ -10,10 +10,11 @@ export const usePartners = () => {
   })
 }
 
-export const usePartnerById = (partnerId: string) => {
+export const usePartnerById = (partnerId: string, enabled?: boolean) => {
   return useQuery({
     queryKey: queryKeys.partner(partnerId),
     queryFn: () => getPartnerById(partnerId),
+    enabled: enabled,
     staleTime: 60 * 1000
   })
 }

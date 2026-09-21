@@ -1,5 +1,7 @@
 .image {
-	width: 50px;
+	flex-shrink: 0;
+
+	height: 50px;
 	aspect-ratio: 1;
 
 	border-radius: 50%;

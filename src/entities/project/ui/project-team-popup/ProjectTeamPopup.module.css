@@ -1,0 +1,61 @@
+.triggerWrapper {
+  display: inline-flex;
+  width: fit-content;
+}
+
+.popup {
+  background: var(--color-white);
+  box-shadow: var(--tooltop-shadow);
+  border-radius: 2px 16px 16px 16px;
+  padding: 16px;
+  min-width: 320px;
+  max-width: 300px;
+  width: max-content;
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  box-sizing: border-box;
+  animation: popupFadeIn 0.15s ease-out;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  font: var(--OS-13-600);
+  color: var(--color-brand-black);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300, #d1d5db);
+  border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-400, #9ca3af);
+}

@@ -7,6 +7,7 @@
   border-radius: 32px;
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .backgroundPicture {
@@ -22,7 +23,6 @@
 
 .mobileHeader {
   display: none;
-  background-color: var(--color-gray-150);
   align-items: center;
   padding-bottom: 12px;
   z-index: 1;
@@ -107,7 +107,12 @@
 
 .groupBlock {
   display: flex;
-  gap: 12px;
+  gap: 8px;
+  font: var(--OS-11-400);
+  color: var(--color-gray-900)
+}
+
+.groupBlock p {
   font: var(--OS-11-400);
   color: var(--color-gray-900)
 }
@@ -307,4 +312,18 @@
     display: none;
     box-sizing: border-box;
   }
+}
+/* Отклик на «Связаться»: блок чуть уменьшается и возвращается. */
+.highlight {
+  animation: contactsPulse 0.7s ease;
+}
+
+@keyframes contactsPulse {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight { animation: none; }
 }

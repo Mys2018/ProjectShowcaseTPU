@@ -17,6 +17,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
   const [value, setValue] = useState<string>(bio || '')
   const [prevValue, setPrevValue] = useState<string>(bio || '')
   const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [showError, setShowError] = useState<boolean>(false)
 
   const { setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore()
   const { openModal, closeModal } = useModalStore()
@@ -33,7 +34,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
   const isValid = isValidSymbol && isValidAnother
 
   const hasUpdate = value.trim() !== (bio || '').trim()
-  const disabled = !hasUpdate || !isValid || isPending
+  const disabled = !hasUpdate || isPending
 
   useEffect(() => {
     if (isEditing) {
@@ -43,6 +44,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
+    if (showError) setShowError(false)
   }
 
   const handleCancel = () => {
@@ -57,6 +59,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
           setActiveEditBlock(null);
           setHasUnsavedChanges(false);
           setValue(prevValue);
+          setShowError(false);
         },
         onConfirm: () => {
           closeModal();
@@ -68,10 +71,15 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
       setActiveEditBlock(null);
       setHasUnsavedChanges(false);
       setValue(prevValue);
+      setShowError(false);
     }
   }
 
   const handleSubmit = () => {
+    if (!isValid) {
+      setShowError(true);
+      return;
+    }
     if (disabled) return;
 
     updateProfileMeta(
@@ -82,6 +90,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
           setActiveEditBlock(null);
           setHasUnsavedChanges(false);
           setPrevValue(value);
+          setShowError(false);
         }
       }
     )
@@ -100,6 +109,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
               setIsEditing(true)
               setActiveEditBlock('aboutMe')
               setPrevValue(value)
+              setShowError(false)
             }}
             disabled={isPending}
           >
@@ -112,7 +122,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
           maxLength={MAX_LENGTH}
           handleChange={handleChange}
           isDisable={!isEditing || isPending}
-          isValid={isValidSymbol}
+          isValid={showError ? isValidSymbol : true}
           isEditing={isEditing}
           placeholder={'Компетентный опыт, софт-скиллы, ваш подход к работе...'}
         />
@@ -127,6 +137,7 @@ export function AboutMe({MAX_LENGTH, MIN_LENGTH, bio, className }: AboutMeProps)
               disabled={disabled}
               handleCancel={handleCancel}
               handleSubmit={handleSubmit}
+              showError={showError}
             />
           )
         }

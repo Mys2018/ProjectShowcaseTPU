@@ -6,10 +6,8 @@ export const ProtectedRoute = () => {
   const authStatus = useAuthStore((state) => state.status);
 
   if (authStatus != 'loading' && authStatus != 'authenticated') {
-    // return <Navigate to={ROUTES.LOGIN} replace />;
-    return <Navigate to={ROUTES.MAIN} replace />;
+    return <Navigate to={ROUTES.PROJECTS.BASE} replace />;
   }
-
 
   return <Outlet />;
 

@@ -38,6 +38,7 @@
   border: 1px solid white;
   border-radius: 16px;
   height: fit-content;
+
 }
 
 .validContainer{
@@ -56,6 +57,8 @@
 
   width: 100%;
   border: none;
+
+
 
   background-color: white;
 
@@ -122,12 +125,24 @@
 }
 
 @media (max-width: 768px) {
-  .body label {
-    max-width: 100%;
+  .container {
+    margin-bottom: 16px;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+  }
+
+  .validContainer {
+    grid-column: 1 / -1;
   }
 
   .input {
     overflow: hidden;
     padding-right: 24px;
+  }
+
+  .image {
+    display: none;
   }
 }

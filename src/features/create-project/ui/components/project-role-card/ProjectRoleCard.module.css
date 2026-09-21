@@ -72,6 +72,7 @@
 
 .editingBorder {
   border-color: var(--color-brand-violet) !important;
+  z-index: 3;
 }
 
 .skillsLabel {
@@ -89,13 +90,15 @@
   gap: 12px;
   font: var(--label-interface);
   color: var(--color-gray-500);
+  cursor: pointer;
+  user-select: none;
 }
 
 .body {
   position: relative;
   height: fit-content;
 
-  grid-column: 1 / 10;
+  grid-column: 1 / 13;
   display: flex;
 
   padding: 10px;

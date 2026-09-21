@@ -1,0 +1,32 @@
+.button {
+  width: 25px;
+  height: 25px;
+
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.active .like path {
+    fill: var(--color-red);
+    stroke: white;
+  }
+}
+
+.like {
+  height: 100%;
+  aspect-ratio: 1;
+
+  & path {
+    fill: white;
+    stroke: var(--color-gray-750);
+    transition:
+      fill 0.2s ease-in-out,
+      stroke 0.2s ease-in-out;
+  }
+}

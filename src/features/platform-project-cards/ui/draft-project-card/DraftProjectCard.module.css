@@ -1,0 +1,49 @@
+.card {
+  width: 100%;
+}
+
+.headerSlot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.headerSlot p {
+  font: var(--ALS-18-700);
+  color: var(--color-gray-350);
+}
+
+.footerDraft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  justify-content: flex-end;
+}
+
+.footerDraft p {
+  font: var(--inter-13-600);
+  color: var(--color-brand-violet);
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progressRow p {
+  font: var(--body-small-platform);
+  color: var(--color-gray-900);
+}
+
+.empty {
+  color: var(--color-gray-350) !important;
+}

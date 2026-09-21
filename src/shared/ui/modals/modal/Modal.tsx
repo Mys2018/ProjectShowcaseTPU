@@ -1,21 +1,20 @@
 import styles from './Modal.module.css'
 import type {ReactNode} from "react";
+import { useRef } from 'react';
 
 type ModalProps = {
   isOpen: boolean,
   onClose: () => void,
   children: ReactNode,
-  variant?: 'default' | 'transparent'
+  variant?: 'default' | 'transparent' | 'grey100'
 }
-
-import { useRef } from 'react';
 
 export function Modal({ isOpen, onClose, children, variant = 'default' }: ModalProps) {
   const isOverlayClicked = useRef(false);
 
   if (!isOpen) return null;
 
-  const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''}`
+  const contentClass = `${styles.content} ${variant === 'transparent' ? styles.transparentContent : ''} ${variant === 'grey100' ? styles.grey100 : ''}`
 
   return (
     <div 

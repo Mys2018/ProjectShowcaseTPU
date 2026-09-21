@@ -1,0 +1,12 @@
+.description {
+  color: var(--color-brand-black);
+  font: var(--body-text-platform);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

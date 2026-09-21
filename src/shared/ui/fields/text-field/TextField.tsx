@@ -10,9 +10,10 @@ type BigTextFieldProps = {
   onChange?: (e: ChangeEvent<HTMLTextAreaElement>) => void
   validError?: string | undefined
   isBlink?: boolean
+  className?: string
 }
 
-export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle, validError, isBlink }: BigTextFieldProps) => {
+export const BigTextField = ({className, value, placeholder, maxLength, onChange, subtitle, validError, isBlink }: BigTextFieldProps) => {
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -24,16 +25,18 @@ export const BigTextField = ({ value, placeholder, maxLength, onChange, subtitle
         </p>}
 
         <textarea
+          className={clsx(className)}
           name="text"
-          value={value}
+          value={value ?? ''}
           placeholder={placeholder}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          maxLength={maxLength}
         />
       </div>
       {maxLength && <p className={clsx(styles.value, validError ? styles.error : '', isFocused && styles.visible)}>
-        {value.length} / {maxLength}
+        {(value ?? '').length} / {maxLength}
       </p>}
     </div>
   )
@@ -61,16 +64,17 @@ export const SmallTextField = ({ value, placeholder, maxLength, onChange, validE
 
         <input
           name="text"
-          value={value}
+          value={value ?? ''}
           placeholder={placeholder}
           onChange={onChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          maxLength={maxLength}
         />
       </div>
       {
         maxLength && <p className={clsx(styles.inputValue, validError ? styles.error : '', isFocused && styles.visible)}>
-          {value.length} / {maxLength}
+          {(value ?? '').length} / {maxLength}
         </p>
       }
 

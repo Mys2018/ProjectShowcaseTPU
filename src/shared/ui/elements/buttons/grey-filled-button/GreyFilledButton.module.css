@@ -1,0 +1,18 @@
+.button {
+  padding: 14px 28px 15px;
+  background-color: var(--color-gray-100);
+  border-radius: 50px;
+
+  font: var(--inter-11-400);
+  color: var(--color-gray-650);
+  transition: all 0.2s;
+  width: fit-content;
+}
+
+.button:hover {
+  background-color: var(--color-gray-150);
+}
+
+.button:active {
+  background-color: var(--color-gray-200);
+}

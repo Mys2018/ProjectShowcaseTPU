@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import { usePreferencesStore } from '@/entities/user'
-import { HorizontalTabs, ROUTES, type HorizontalTabItem } from '@/shared'
+import { assertNever, HorizontalTabs, ROUTES, type HorizontalTabItem } from '@/shared'
 
 interface ProjectActivitiesTabsProps {
   className?: string
@@ -11,28 +11,49 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
   const location = useLocation()
 
   const { preferredRoleType } = usePreferencesStore()
+
+  const roleType = ((): 'Curator' | 'Moderator' | 'Student' | null => {
+    if (location.pathname.startsWith(ROUTES.MANAGE.BASE)) return 'Curator'
+    if (location.pathname.startsWith(ROUTES.MODERATION.BASE)) return 'Moderator'
+    if (location.pathname.startsWith(ROUTES.ACTIVITY.BASE)) return 'Student'
+    return preferredRoleType
+  })()
+
   const getTabItems: () => HorizontalTabItem<string>[] = () => {
-    switch (preferredRoleType) {
+    switch (roleType) {
       case 'Student':
         return [
-          { label: 'Мои проекты', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.PROJECTS },
-          { label: 'Отклики', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.APPLICATIONS },
-          { label: 'Понравились', value: ROUTES.MY_PLATFORM.ACTIVITIES.STUDENT.LIKES }
+          { label: 'Мои проекты', value: ROUTES.ACTIVITY.MY_PROJECTS },
+          { label: 'Мои отклики', value: ROUTES.ACTIVITY.MY_APPLICATIONS },
+          { label: 'Понравившиеся', value: ROUTES.ACTIVITY.FAVORITES }
         ]
       case 'Curator':
         return [
-          { label: 'Управление проектами', value: ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.PROJECTS },
-          { label: 'Входящие заявки', value: ROUTES.MY_PLATFORM.ACTIVITIES.CURATOR.APPLICATIONS }
+          { label: 'Все проекты', value: ROUTES.MANAGE.PROJECTS },
+          { label: 'Отклики и команда', value: ROUTES.MANAGE.TEAMS },
+          { label: 'Оценка участников', value: ROUTES.MANAGE.GRADES }
         ]
       case 'Moderator':
         return [
-          { label: 'Модерация проектов', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.PROJECTS },
-          { label: 'Заявки на модерацию', value: ROUTES.MY_PLATFORM.ACTIVITIES.MODERATOR.APPLICATIONS }
+          { label: 'Модерация проектов', value: ROUTES.MODERATION.PROJECTS },
+          { label: 'Входящие жалобы', value: ROUTES.MODERATION.COMPLAINTS }
         ]
+      case null:
+        return []
       default:
+        assertNever(roleType)
         return []
     }
   }
 
-  return <HorizontalTabs className={className} items={getTabItems()} value={location.pathname} onChange={value => void navigate(value)} />
+  const currentValue = (() => {
+    if (!location.hash) {
+      if (location.pathname === ROUTES.MANAGE.BASE) return ROUTES.MANAGE.PROJECTS
+      if (location.pathname === ROUTES.ACTIVITY.BASE) return ROUTES.ACTIVITY.MY_PROJECTS
+      if (location.pathname === ROUTES.MODERATION.BASE) return ROUTES.MODERATION.PROJECTS
+    }
+    return location.pathname + location.hash
+  })()
+
+  return <HorizontalTabs className={className} items={getTabItems()} value={currentValue} onChange={value => void navigate(value, { replace: true })} />
 }

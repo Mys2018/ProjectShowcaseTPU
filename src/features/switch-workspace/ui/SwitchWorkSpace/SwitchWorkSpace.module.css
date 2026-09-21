@@ -19,12 +19,18 @@
   padding: 5px 20px;
   border-radius: 50px;
   transition: background-color 0.3s;
+  cursor: pointer;
 }
 
 .catalog,
 .research {
   font-size: 13px;
   z-index: 1;
+}
+
+.research {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .mySpace {
@@ -41,7 +47,7 @@
   height: 100%;
   border-radius: 50px;
   background-color: white;
-  transition: left 0.25s ease, width 0.25s ease;
+  transition: left 0.25s ease, width 0.25s ease, opacity 0.25s ease;
   pointer-events: none;
   z-index: 0;
 }

@@ -1,17 +1,18 @@
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import type { CreateProjectDto } from '@/entities/project/model/types';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
-import { createCheckpointGroup, getCheckpointGroups } from '@/entities/checkpoint/api/requests';
-import { mapDateToBackendString, parseDeadline } from '@/shared';
+import { getCurrentCheckpoints } from '@/entities/checkpoint';
+import { useMe } from '@/entities/user';
+import { isSafeExternalUrl } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
 
 export const createProjectRoleSchema = z.object({
   roleTypeId: z.string(),
   placesCount: z.number().min(1, 'Минимум мест должен быть не менее 1'),
-  minPlacesCount: z.number().min(1, 'Минимум мест должен быть не менее 1'),
+  minPlacesCount: z.number().min(0, 'Минимум мест должен быть не менее 0'),
   meta: z.object({
     name: z.string(),
     description: z.string(),
@@ -25,16 +26,21 @@ export const createProjectRoleSchema = z.object({
 export const baseProjectSchema = z.object({
   ownerId: z.number().min(1, 'ID владельца обязателен'),
   partnerId: z.string().min(1, 'Выберите партнера'),
-  checkpoints: z.array(
+  checkpoints: z.string().min(1, 'Базовые ключевые точки обязательны'),
+  customCheckpoints: z.array(
     z.object({
       title: z.string().min(1, 'Укажите название'),
       deadline: z.string().min(1, 'Укажите дату и время'),
     })
-  ).min(1, 'Укажите хотя бы одну ключевую точку'),
+  ),
   links: z.array(
     z.object({
+      platformId: z.string(),
       name: z.string(),
+      category: z.string(),
+      // `.url()` пропускает javascript:/data: — дополнительно требуем http(s)
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
+        .refine(isSafeExternalUrl, 'Ссылка должна начинаться с http:// или https://')
     })
   ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
@@ -82,6 +88,7 @@ const casePrdSchema = z.object({
 });
 
 const realPrdSchema = z.object({
+  prerequisites: z.string().min(prd.prerequisites.min, `Минимум ${prd.prerequisites.min} символов`).max(prd.prerequisites.max, `Максимум ${prd.prerequisites.max} символов`),
   productVision: z.string().min(prd.productVision.min, `Минимум ${prd.productVision.min} символов`).max(prd.productVision.max, `Максимум ${prd.productVision.max} символов`),
   audience: z.array(audienceSegmentSchema).min(audience.count.min, `Укажите хотя бы ${audience.count.min} сегмент аудитории`).max(audience.count.max, `Максимум ${audience.count.max} сегмента`),
   projectGoal: z.string().min(prd.projectGoal.min, `Минимум ${prd.projectGoal.min} символов`).max(prd.projectGoal.max, `Максимум ${prd.projectGoal.max} символов`),
@@ -94,6 +101,11 @@ const realPrdSchema = z.object({
     .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
     .min(lists.count.min, `Нефункциональные требования обязательны (минимум ${lists.count.min})`)
     .max(lists.count.max, `Максимум ${lists.count.max} требований`),
+  keyFunctionality: z
+    .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
+    .min(lists.count.min, `Добавьте минимум ${lists.count.min} функции`)
+    .max(lists.count.max, `Максимум ${lists.count.max} функций`),
+  problemStatement: z.string().min(prd.problemStatement.min, `Минимум ${prd.problemStatement.min} символов`).max(prd.problemStatement.max, `Максимум ${prd.problemStatement.max} символов`),
   businessMetrics: z
     .array(z.string().min(lists.itemLength.min, `Минимум ${lists.itemLength.min} символов`).max(lists.itemLength.max, `Максимум ${lists.itemLength.max} символов`))
     .min(lists.count.min, `Минимум ${lists.count.min} бизнес-метрики`)
@@ -122,9 +134,11 @@ const step1Schema = z.object({
   partnerId: baseProjectSchema.shape.partnerId,
 });
 
-const step2Schema = z.object({
-  prdMeta: z.union([studyPrdSchema, casePrdSchema, realPrdSchema]),
-});
+const step2Schema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('Study'), prdMeta: studyPrdSchema }),
+  z.object({ type: z.literal('Case'), prdMeta: casePrdSchema }),
+  z.object({ type: z.literal('Real'), prdMeta: realPrdSchema }),
+]);
 
 const step3Schema = z.object({
   roles: baseProjectSchema.shape.roles,
@@ -132,6 +146,7 @@ const step3Schema = z.object({
 
 const step4Schema = z.object({
   checkpoints: baseProjectSchema.shape.checkpoints,
+  customCheckpoints: baseProjectSchema.shape.customCheckpoints,
   links: baseProjectSchema.shape.links,
 });
 
@@ -142,77 +157,108 @@ const STEP_SCHEMAS: Record<number, z.ZodTypeAny> = {
   4: step4Schema,
 };
 
+import { calculateProjectWizardProgress, type WizardProgress, type WizardStepProgress } from './wizardProgress'
+export { calculateProjectWizardProgress, type WizardProgress, type WizardStepProgress }
+
 const TOTAL_STEPS = 5;
 
 export type StepErrors = Record<string, string[]>;
 
 interface UseProjectWizardProps {
   onSubmit: (values: CreateProjectDto) => void | Promise<void>;
-  defaultValues?: Partial<CreateProjectFormValues>;
+  defaultValues?: Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  };
+  /** Значения черновика для явного восстановления. */
+  restoreValues?: (Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  }) | null;
+  isDraftLoading?: boolean;
 }
 
-const STUDY_DEFAULTS: CreateProjectFormValues = {
+const STUDY_DEFAULTS = {
   type: 'Study',
-  ownerId: 1,
+  // Владелец — создающий куратор, не константа: захардкоженный «1» был
+  // мёртвой валидацией сфабрикованного ID.
+  ownerId: 0,
   partnerId: '',
-  checkpoints: [{ title: '', deadline: '' },{ title: '', deadline: '' },{ title: '', deadline: '' }],
+  checkpoints: '',
+  customCheckpoints: [],
   meta: { title: '', description: '' },
   roles: [],
   primaryTag: '',
   tags: [],
   links: [],
-  prdMeta: { prerequisites: '', projectGoal: '', keyFunctionality: ['', '', ''] },
+  prdMeta: {
+    prerequisites: '',
+    projectGoal: '',
+    keyFunctionality: ['', ''],
+  },
   extraFieldsForAll: { partnerName: '', primaryTagName: '', tags: [] },
-};
+} as CreateProjectFormValues;
 
-export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [highestStep, setHighestStep] = useState(1);
+export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDraftLoading }: UseProjectWizardProps) => {
+  const { data: me } = useMe();
+
+  const initialSource = defaultValues ?? restoreValues ?? null;
+  const initialStep = (typeof initialSource?.currentStep === 'number' && initialSource.currentStep >= 1)
+    ? initialSource.currentStep
+    : 1;
+  const initialHighest = (typeof initialSource?.highestStep === 'number' && initialSource.highestStep >= 1)
+    ? initialSource.highestStep
+    : 1;
+
+  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [highestStep, setHighestStep] = useState(initialHighest);
   const [stepErrors, setStepErrors] = useState<StepErrors>({});
   const [blinkFields, setBlinkFields] = useState<string[]>([]);
-  const [isRestored, setIsRestored] = useState(false);
+  const hasRestoredRef = useRef(false);
 
-  useEffect(() => {
-    if (defaultValues && !isRestored) {
-      const savedStep = (defaultValues as any).currentStep;
-      const savedHighest = (defaultValues as any).highestStep;
-      if (savedStep && savedHighest) {
-        setCurrentStep(savedStep);
-        setHighestStep(savedHighest);
-        setIsRestored(true);
-      }
-    }
-  }, [defaultValues, isRestored]);
-
-  // Extract non-form fields so they don't get passed to useForm
-  const { currentStep: _currentStep, highestStep: _highestStep, ...formDefaultValues } = (defaultValues || {}) as any;
+  // Create stable defaultValues ref to prevent formApi.update from clobbering restored state on re-renders
+  const stableDefaultValuesRef = useRef<CreateProjectFormValues | null>(null);
+  if (!stableDefaultValuesRef.current) {
+    const src = defaultValues ?? restoreValues ?? {};
+    const { currentStep: _c, highestStep: _h, progress: _p, ...fields } = src;
+    stableDefaultValuesRef.current = {
+      ...STUDY_DEFAULTS,
+      ownerId: me ? Number(me.id) : 0,
+      ...fields,
+      meta: {
+        ...STUDY_DEFAULTS.meta,
+        ...(fields.meta || {}),
+      },
+      prdMeta: {
+        ...STUDY_DEFAULTS.prdMeta,
+        ...(fields.prdMeta || {}),
+      },
+      extraFieldsForAll: {
+        ...STUDY_DEFAULTS.extraFieldsForAll,
+        ...(fields.extraFieldsForAll || {}),
+      },
+    } as CreateProjectFormValues;
+  }
 
   const form = useForm({
     // validatorAdapter: zodValidator(),
     validators: {
       onSubmit: createProjectSchema,
     },
-    defaultValues: {
-      ...STUDY_DEFAULTS,
-      ...formDefaultValues,
-    } as CreateProjectFormValues,
+    defaultValues: stableDefaultValuesRef.current,
 
     onSubmit: async ({ value }) => {
-
-      const cleanCheckpoints = value.checkpoints.map((cp) => {
-        const { isImmutable, ...rest } = cp as { isImmutable?: boolean; title: string; deadline: string };
-        return rest;
-      });
-
-      const checkpointId = await createCheckpointGroup({
-        title: 'checkpoint',
-        checkpoints: cleanCheckpoints.map(c => ({ title: c.title, deadline: parseDeadline(c.deadline)! }))
-      })
-
-      const payload = {
+      const payload: CreateProjectDto = {
         type: value.type,
+        ownerId: me ? Number(me.id) : 0,
         partnerId: value.partnerId,
-        checkpoints: checkpointId,
+        checkpoints: value.checkpoints,
+        customCheckpoints: (value.customCheckpoints || []).map(c => ({
+          title: c.title,
+          deadline: c.deadline
+        })),
         meta: value.meta,
         primaryTagId: value.primaryTag,
         tagIds: value.tags?.length ? value.tags : [],
@@ -221,12 +267,18 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
           roleTypeId: role.roleTypeId,
           placesCount: role.placesCount,
           minPlacesCount: role.minPlacesCount,
-          meta: {
-            description: "Бла бла"
-          },
           skillIds: role.skills.map(skill => skill.id)
         })),
-      } as unknown as CreateProjectDto;
+        repository: value.links
+          .filter(l => l.category === 'Repository')
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link })),
+        taskTracker: value.links
+          .filter(l => l.category === 'TaskTracker')
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link })),
+        otherPlatforms: value.links
+          .filter(l => l.category === 'OtherPlatforms' || (l.category as string) === 'DesignEnvironment')
+          .map(l => ({ platformId: l.platformId, name: l.name, url: l.link }))
+      } as CreateProjectDto;
 
       console.log('payload:', payload)
       await onSubmit(payload);
@@ -234,22 +286,74 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
   });
 
   useEffect(() => {
-    const fetchDefaultCheckpoints = async () => {
-      const backCheckpoints = await getCheckpointGroups(10, 0)
-      const firstCheckpoints = backCheckpoints.checkpointGroups[0]?.checkpoints
-
-      if (firstCheckpoints && firstCheckpoints.length > 0) {
-        const immutableCheckpoints = firstCheckpoints.map(cp => ({
-          title: cp.title,
-          deadline: mapDateToBackendString(cp.deadline),
-          isImmutable: true
-        }))
-        form.setFieldValue('checkpoints', immutableCheckpoints)
-      }
+    if (!restoreValues || hasRestoredRef.current) {
+      return;
     }
 
-    fetchDefaultCheckpoints()
-  }, [form]);
+    hasRestoredRef.current = true;
+
+    const {
+      currentStep: savedStep,
+      highestStep: savedHighest,
+      progress: _progress,
+      ...formValues
+    } = restoreValues as Record<string, any>;
+
+    const merged = {
+      ...STUDY_DEFAULTS,
+      ownerId: me ? Number(me.id) : 0,
+      ...formValues,
+      meta: {
+        ...STUDY_DEFAULTS.meta,
+        ...(formValues.meta || {}),
+      },
+      prdMeta: {
+        ...STUDY_DEFAULTS.prdMeta,
+        ...(formValues.prdMeta || {}),
+      },
+      extraFieldsForAll: {
+        ...STUDY_DEFAULTS.extraFieldsForAll,
+        ...(formValues.extraFieldsForAll || {}),
+      },
+    } as CreateProjectFormValues;
+
+    // Update stableDefaultValuesRef and form.options so formApi.update cannot revert it
+    stableDefaultValuesRef.current = merged;
+    form.options.defaultValues = merged;
+
+    form.reset(merged);
+
+    // Also explicitly set all fields so mounted FieldApi instances update their stores
+    Object.entries(merged).forEach(([key, val]) => {
+      form.setFieldValue(key as any, val);
+    });
+
+    if (typeof savedStep === 'number' && savedStep >= 1) {
+      setCurrentStep(savedStep);
+    }
+    if (typeof savedHighest === 'number' && savedHighest >= 1) {
+      setHighestStep(savedHighest);
+    }
+  }, [restoreValues, form, me]);
+
+  useEffect(() => {
+    const fetchDefaultCheckpoints = async () => {
+      // Пока загружается черновик, не подставляем дефолтные чекпоинты,
+      // иначе setFieldValue спровоцирует перезапись черновика до его восстановления.
+      if (isDraftLoading) return;
+
+      try {
+        const currentGroup = await getCurrentCheckpoints();
+        if (currentGroup?.id) {
+          form.setFieldValue('checkpoints', currentGroup.id);
+        }
+      } catch (e) {
+        console.error('Failed to fetch current checkpoints:', e);
+      }
+    };
+
+    fetchDefaultCheckpoints();
+  }, [form, isDraftLoading]);
 
   useEffect(() => {
     const subscription = form.store.subscribe(() => {
@@ -288,11 +392,11 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     });
 
     return () => {
-      if (typeof subscription === 'function') {
-        (subscription as any)();
-      } else if (subscription && typeof (subscription as any).unsubscribe === 'function') {
-        (subscription as any).unsubscribe();
-      }
+      // @ts-ignore - store subscription cleanup
+      // @ts-ignore
+      if (typeof subscription === 'function') subscription();
+      // @ts-ignore
+      else if (subscription?.unsubscribe) subscription.unsubscribe();
     };
   }, [form.store, currentStep]);
 
@@ -340,5 +444,23 @@ export const useProjectWizard = ({ onSubmit, defaultValues }: UseProjectWizardPr
     setCurrentStep(step);
   };
 
-  return { form, currentStep, stepErrors, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields };
+  const calculateProgress = (values?: Partial<CreateProjectFormValues>) =>
+    calculateProjectWizardProgress(values || form.state.values);
+
+  const getProgress = () => calculateProgress();
+
+  return {
+    form,
+    currentStep,
+    stepErrors,
+    highestStep,
+    nextStep,
+    prevStep,
+    setStep,
+    blinkFields,
+    setBlinkFields,
+    progress: getProgress(),
+    getProgress,
+    calculateProgress,
+  };
 };

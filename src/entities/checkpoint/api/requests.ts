@@ -1,15 +1,51 @@
 import { mapCheckpointGroupDto, mapCheckpointGroupToDto, mapCheckpointToDto } from '../lib/mappers'
-import type { CheckpointDto, CheckpointGroup } from '../model/types'
+import type { CheckpointDto, CheckpointGroup, CheckpointGroupDto } from '../model/types'
 import type { GetCheckpointGroupsResponse } from './types'
 import { api, ENDPOINTS } from '@/shared'
 
 export const getCheckpointGroups = async (
-  limit: number,
-  offset: number
+  limit: number = 10,
+  offset: number = 0
 ): Promise<{ checkpointGroups: CheckpointGroup[]; total: number }> => {
   const params = { offset, limit }
   const { data } = await api.get<GetCheckpointGroupsResponse>(ENDPOINTS.CHECKPOINTS, { params })
-  return { total: data.total, checkpointGroups: data.checkpoints.map(mapCheckpointGroupDto) }
+  return { total: data.total, checkpointGroups: (data.checkpoints || []).map(mapCheckpointGroupDto) }
+}
+
+export const getCurrentCheckpoints = async (): Promise<CheckpointGroup> => {
+  // 1. Попытка запросить /projects/checkpoints/current
+  try {
+    const { data } = await api.get<CheckpointGroupDto>(ENDPOINTS.CHECKPOINTS_CURRENT)
+    if (data && Array.isArray(data.checkpoints) && data.checkpoints.length > 0) {
+      const group = mapCheckpointGroupDto(data)
+      if (group.id) return group
+    }
+  } catch (err) {
+    // 404 ожидаем, если current не назначен — пробуем взять из общего списка
+  }
+
+  // 2. Попытка взять первый набор из /projects/checkpoints
+  try {
+    const { data } = await api.get<GetCheckpointGroupsResponse>(ENDPOINTS.CHECKPOINTS, {
+      params: { offset: 0, limit: 10 }
+    })
+    const list = data?.checkpoints || []
+    if (list.length > 0) {
+      const first = list[0]
+      if (first) {
+        const group = mapCheckpointGroupDto(first)
+        if (group.id) return group
+      }
+    }
+  } catch (err) {
+    console.warn('GET /projects/checkpoints error:', err)
+  }
+
+  return {
+    id: '',
+    title: '',
+    checkpoints: []
+  }
 }
 
 export const createCheckpointGroup = async (payload: Omit<CheckpointGroup, 'id'>): Promise<string> => {

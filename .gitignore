@@ -27,3 +27,5 @@ certs
 
 .env
 .continue/
+docs
+http

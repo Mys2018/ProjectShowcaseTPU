@@ -84,8 +84,8 @@
 
 .completedStage {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: -3.5px;
+  right: 0;
   font-size: 11px;
   width: fit-content;
   font-family: var(--font-open-sans);

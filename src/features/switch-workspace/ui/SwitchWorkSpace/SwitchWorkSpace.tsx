@@ -1,30 +1,58 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './SwitchWorkSpace.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ROUTES } from '@/shared';
+import {useAuthStore} from "@/entities/user";
+import type {AuthStatus} from "@/entities/user/model/store/useAuthStore.ts";
 
 export default function SwitchWorkSpace() {
-  type Tab = 'catalog' | 'mySpace' | 'research';
-  const [active, setActive] = useState<Tab>
-  ('catalog');
-  const [selectorStyle, setSelectorStyle] = useState({ left: 0, width: 0 })
+  type Tab = 'projects' | 'mySpace' | null;
+  const [active, setActive] = useState<Tab>(null);
+  const [selectorStyle, setSelectorStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const location = useLocation();
+  const status = useAuthStore(state => state.status)
 
   const refs = {
-    catalog: useRef<HTMLDivElement>(null),
+    projects: useRef<HTMLDivElement>(null),
     mySpace: useRef<HTMLDivElement>(null),
-    research: useRef<HTMLDivElement>(null),
-  }
+  };
+
+  const path = location.pathname;
 
   useEffect(() => {
-    const el = refs[active].current
+    let currentActive: Tab = null;
+    
+    if (path.startsWith(ROUTES.PROFILE.BASE)) {
+      currentActive = null;
+    } else if (path.startsWith(ROUTES.PROJECTS.BASE) && !path.startsWith(ROUTES.PROJECTS.CREATE)) {
+      currentActive = 'projects';
+    } else if (
+      path === ROUTES.MAIN || 
+      path.startsWith(ROUTES.ACTIVITY.BASE) ||
+      path.startsWith(ROUTES.MANAGE.BASE) ||
+      path.startsWith(ROUTES.MODERATION.BASE) ||
+      path.startsWith(ROUTES.PROJECTS.CREATE)
+    ) {
+      currentActive = 'mySpace';
+    }
+    
+    setActive(currentActive);
+
+    const el = currentActive ? refs[currentActive].current : null;
+
     if (el) {
       setSelectorStyle({
         left: el.offsetLeft,
-        width: el.offsetWidth
-      })
+        width: el.offsetWidth,
+        opacity: 1
+      });
+    } else {
+      setSelectorStyle(prev => ({ ...prev, opacity: 0 }));
     }
-  }, [active])
+  }, [path]);
+
 
   const square = (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -32,20 +60,26 @@ export default function SwitchWorkSpace() {
     </svg>
   );
 
+  const handleClick = (active: Tab, routes: string, status: AuthStatus) => {
+    setActive(active)
+    if (status !== 'authenticated') {
+      navigate(ROUTES.LOGIN)
+    } else {
+      navigate(routes)
+    }
+  }
+
   return (
     <nav className={styles.body}>
       <div
           className={styles.selector}
-          style={{ left: selectorStyle.left, width: selectorStyle.width }}
+          style={{ left: selectorStyle.left, width: selectorStyle.width, opacity: selectorStyle.opacity }}
       />
       <div
-        className={`${styles.button} ${styles.catalog} ${active === 'catalog' ? styles.active : ''}`}
-        ref={refs.catalog}
+        className={`${styles.button} ${styles.catalog} ${active === 'projects' ? styles.active : ''}`}
+        ref={refs.projects}
         onClick={
-          () => {
-            setActive('catalog')
-            navigate('/catalog')
-          }
+          () => handleClick('projects', ROUTES.PROJECTS.BASE, status)
         }
       >
         {square}Проекты
@@ -54,18 +88,16 @@ export default function SwitchWorkSpace() {
         className={`${styles.button} ${styles.mySpace} ${active === 'mySpace' ? styles.active : ''}`}
         ref={refs.mySpace}
         onClick={
-          () => {
-            setActive('mySpace')
-            navigate('/my-platform')
-          }
+          () => handleClick('mySpace', ROUTES.MAIN, status)
         }
       >
         {square}Моя Платформа
       </div>
       <div
-        className={`${styles.button} ${styles.research} ${active === 'research' ? styles.active : ''}`}
-        ref={refs.research}
-        onClick={() => setActive('research')}
+        className={`${styles.button} ${styles.research}`}
+        // className={`${styles.button} ${styles.research} ${active === 'research' ? styles.active : ''}`}
+        // ref={refs.research}
+        // onClick={() => setActive('research')}
       >
         {square}Исследования
       </div>

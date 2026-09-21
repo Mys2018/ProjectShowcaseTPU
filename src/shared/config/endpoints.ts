@@ -1,19 +1,52 @@
 export const ENDPOINTS = {
-  STATUS: import.meta.env.VITE_API_AUTH_STATUS_URL,
-  REFRESH: import.meta.env.VITE_API_RELOGIN_URL,
-  LOGIN: import.meta.env.VITE_API_LOGIN_URL,
-  LOGOUT: import.meta.env.VITE_API_LOGOUT_URL,
-  ME: import.meta.env.VITE_API_ME_URL,
-  USERS: import.meta.env.VITE_API_USERS_URL,
-  USER_BY_ID: (userId: string) => `${import.meta.env.VITE_API_USERS_URL}/${userId}`,
-  PROJECTS: import.meta.env.VITE_API_PROJECTS_URL,
-  PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}`,
-  PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL,
-  TAGS: import.meta.env.VITE_API_TAGS_URL,
-  PARTNERS: import.meta.env.VITE_API_PARTNERS_URL,
-  PARTNER_BY_ID: (partnerId: string) => `${import.meta.env.VITE_API_PARTNERS_URL}/${partnerId}`,
-  COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL,
-  SKILLS: import.meta.env.VITE_API_SKILLS_URL,
-  CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL,
-  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL}/${checkpointId}`
+  STATUS: import.meta.env.VITE_API_AUTH_STATUS_URL || '/auth/status',
+  REFRESH: import.meta.env.VITE_API_RELOGIN_URL || '/auth/refresh',
+  LOGIN: import.meta.env.VITE_API_LOGIN_URL || '/auth/login',
+  LOGOUT: import.meta.env.VITE_API_LOGOUT_URL || '/auth/logout',
+  ME: import.meta.env.VITE_API_ME_URL || '/users/me',
+  USERS: import.meta.env.VITE_API_USERS_URL || '/users',
+  USER_BY_ID: (userId: string) => `${import.meta.env.VITE_API_USERS_URL || '/users'}/${userId}`,
+  PROJECTS: import.meta.env.VITE_API_PROJECTS_URL || '/projects',
+  LIKED_PROJECTS: import.meta.env.VITE_API_LIKED_PROJECTS_URL || '/me/projects/liked',
+  MANAGED_PROJECTS: import.meta.env.VITE_API_MANAGED_PROJECTS_URL || '/me/projects/managed',
+  PARTICIPATING_PROJECTS: import.meta.env.VITE_API_PARTICIPATING_PROJECTS_URL || '/me/projects/participating',
+  APPLIED_PROJECTS: import.meta.env.VITE_API_APPLIED_PROJECTS_URL || '/me/projects/applied',
+  PROJECT_BY_ID: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}`,
+  PROJECT_SET_STATUS: (projectId: string, status: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/status/${status}`,
+  PROJECT_TEAM: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team`,
+  PROJECT_TEAM_MEMBER: (projectId: string, userId: number | string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/team/${userId}`,
+  PROJECT_SPRINTS: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints`,
+  SPRINT_GRADING_STATUS: (projectId: string, sprintId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints/${sprintId}/grading-status`,
+  SPRINT_HOURS: (projectId: string, sprintId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/sprints/${sprintId}/hours`,
+  LIKE_PROJECT: (projectId: string) => `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/like`,
+  PROJECT_DRAFT: import.meta.env.VITE_API_PROJECT_DRAFT_URL || '/me/projects/draft',
+  PROJECT_REVIEW: (projectId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL}/${projectId}${import.meta.env.VITE_API_PROJECTS_REVIEW_URL}`,
+  TAGS: import.meta.env.VITE_API_TAGS_URL || '/tags',
+  PARTNERS: import.meta.env.VITE_API_PARTNERS_URL || '/partners',
+  PARTNER_BY_ID: (partnerId: string) => `${import.meta.env.VITE_API_PARTNERS_URL || '/partners'}/${partnerId}`,
+  COMPETENCIES: import.meta.env.VITE_API_COMPETENCIES_URL || '/role-types',
+  SKILLS: import.meta.env.VITE_API_SKILLS_URL || '/skills',
+  CHECKPOINTS: import.meta.env.VITE_API_CHECKPOINTS_URL || '/projects/checkpoints',
+  CHECKPOINTS_CURRENT: import.meta.env.VITE_API_CHECKPOINTS_CURRENT_URL || '/projects/checkpoints/current',
+  CHECKPOINT_BY_ID: (checkpointId: string) => `${import.meta.env.VITE_API_CHECKPOINTS_URL || '/projects/checkpoints'}/${checkpointId}`,
+  APPLICATIONS: import.meta.env.VITE_APPLICATIONS_URL || '/applications',
+  APPLICATION_SET_STATUS: (applicationId: string, status: string) =>
+    `${import.meta.env.VITE_APPLICATIONS_URL || '/applications'}/${applicationId}/status/${status}`,
+
+  PLATFORMS: import.meta.env.VITE_PLATFORMS_URL || '/platforms',
+  PLATFORMS_BY_ID: (platformId: string) => `${import.meta.env.VITE_PLATFORMS_URL || '/platforms'}/${platformId}`,
+
+  COMPLAINTS: import.meta.env.VITE_API_COMPLAINTS_URL || '/complaints',
+  MODERATION_COMPLAINTS: import.meta.env.VITE_API_MODERATION_COMPLAINTS_URL || '/moderation/complaints',
+  MODERATION_COMPLAINT_BY_ID: (complaintId: string) =>
+    `${import.meta.env.VITE_API_MODERATION_COMPLAINTS_URL || '/moderation/complaints'}/${complaintId}`,
+
+  SCORES_ME: import.meta.env.VITE_API_SCORES_ME_URL || '/users/me/scores',
+  PROJECT_TIMESHEET_SUMMARY: (projectId: string) =>
+    `${import.meta.env.VITE_API_PROJECTS_URL || '/projects'}/${projectId}/timesheet/summary`
 }

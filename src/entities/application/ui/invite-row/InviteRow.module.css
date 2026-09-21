@@ -1,0 +1,79 @@
+.rowContainer {
+  display: flex;
+  padding: 12px 24px;
+}
+
+.left {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  flex-grow: 1;
+}
+
+.innerRight {
+  display: flex;
+  gap: 16px;
+  padding-top: 2px;
+  flex-direction: column;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info p:first-child {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900)
+}
+
+.info p:first-child span{
+  font: var(--OS-15-700);
+  color: var(--color-gray-900)
+}
+
+.info p:last-child {
+  font: var(--field-label-interface);
+  color: var(--color-gray-650)
+}
+
+.info p:last-child span{
+  font: var(--inter-12-500);
+  color: var(--color-gray-650);
+  cursor: pointer;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 8px
+}
+
+.statusApproved {
+  font: var(--field-label-interface);
+  color: var(--color-brand-green)
+}
+
+.statusRejected {
+  font: var(--field-label-interface);
+  color: var(--color-red)
+}
+
+.statusClosed {
+  font: var(--field-label-interface);
+  color: var(--color-gray-650)
+}
+
+.right {
+  display: flex;
+  align-items: flex-end;
+}
+
+.time {
+  font: var(--inter-12-400);
+  color: var(--color-gray-600);
+}
+
+
+
+

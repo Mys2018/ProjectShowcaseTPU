@@ -108,6 +108,15 @@
   color: var(--color-gray-150);
 }
 
+@media (max-width: 768px) {
+  .linkList {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-top: 16px;
+  }
+}
+
 
 
 

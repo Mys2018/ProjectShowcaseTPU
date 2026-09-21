@@ -1,0 +1,32 @@
+.status {
+	--accentColor: var(--color-brand-green);
+	height: 34px;
+
+	display: flex;
+	align-items: center;
+	gap: 6px;
+
+	padding-inline: 12px;	
+	border-radius: 12px;
+	
+	color: var(--accentColor);
+	background-color: var(--color-white);
+	white-space: nowrap;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+
+	&.Pending {
+		--accentColor: var(--color-yellow);
+	}
+
+	&.NeedsRework {
+		--accentColor: var(--color-gray-400);
+	}
+
+	&.Rejected {
+		--accentColor: var(--color-red);
+	}
+
+	& .label {
+		font: var(--inter-13-600);
+	}
+}

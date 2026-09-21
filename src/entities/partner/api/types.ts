@@ -1,7 +1,7 @@
 export interface PartnerDto {
   id: string;
   name: string;
-  profilePicture: string
+  profilePicture?: string
 }
 
 export interface GetPartnersResponse {

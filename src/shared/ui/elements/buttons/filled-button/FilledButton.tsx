@@ -1,8 +1,9 @@
+import type { MouseEventHandler } from 'react';
 import styles from './FilledButton.module.css'
 import clsx from "clsx";
 
 interface FilledButtonProps {
-  onClick?: () => void;
+  onClick?: MouseEventHandler;
   disabled?: boolean;
   textButton?: string;
   className?: string;
@@ -14,8 +15,9 @@ export const FilledButton = ({onClick, textButton, className, disabled}: FilledB
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={clsx(styles.button, className)}
+      className={clsx(styles.button, disabled && styles.disabled, className)}
     >
+
       {textButton}
     </button>
   )

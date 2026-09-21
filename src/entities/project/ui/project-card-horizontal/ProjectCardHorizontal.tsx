@@ -10,6 +10,7 @@ interface ProjectCardHorizontalProps {
   mainSlot?: ReactElement
   headerSlot?: ReactElement
   sideSlot?: ReactElement
+  partnerSlot?: ReactElement
   footerSlot?: ReactElement
   className?: string
   onClick?: MouseEventHandler<HTMLDivElement>
@@ -31,24 +32,33 @@ export function ProjectCardHorizontal({
     <div className={clsx(styles.card, onClick && styles.clickable, className)} onClick={onClick}>
       <ProjectCardHeader className={styles.cover} label={primaryTag.name} rotated />
       <div className={styles.content}>
-        <div className={styles.header}>
-          {headerSlot}
-        </div>
+        {headerSlot && <div className={styles.header}>{headerSlot}</div>}
         <div className={styles.main}>
           <div className={styles.info}>
             <div className={styles.short}>
               <ProjectFormatBadge format={type} />
               <div className={styles.id}>
-                <span className={styles.label}>ID</span>
-                <span className={`${styles.value} ellipsis`}>{id}</span>
+                {id && (
+                  <>
+                    <span className={styles.label}>ID</span>
+                    <span className={`${styles.value} ellipsis`}>{id}</span>
+                  </>
+                )}
               </div>
             </div>
             <div className={styles.meta}>
-              <h3 className={styles.title}>{title}</h3>
+              <h3 className={styles.title} title={title}>{title}</h3>
               {mainSlot}
             </div>
           </div>
-          {sideSlot}
+          {sideSlot ? (
+            <>
+              <div className={styles.separatorContainer}>
+                <div className={styles.separator} />
+              </div>
+              <div className={styles.sideSlotContainer}>{sideSlot}</div>
+            </>
+          ) : null}
         </div>
         {footerSlot && <div className={styles.footer}>{footerSlot}</div>}
       </div>

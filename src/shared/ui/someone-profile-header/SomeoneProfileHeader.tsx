@@ -1,6 +1,8 @@
 import styles from './SomeoneProfileHeader.module.css'
-import type {User} from "@/entities/user";
-import UserIcon from '@/shared/ui/icons/fallback_personal.svg?react'
+import clsx from "clsx";
+import {getAvatarRoleInfo, type User} from "@/entities/user";
+// import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
+import type {Messengers} from "@/entities/user/model/types.ts";
 import TgLogo from '@/shared/ui/icons/telegram.svg?react'
 import ElementLogo from '@/shared/ui/icons/white_element.svg?react'
 import VkLogo from '@/shared/ui/icons/vk.svg?react'
@@ -8,10 +10,9 @@ import CopyLogo from '@/shared/ui/icons/copy.svg?react'
 import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
 import MoreLogo from '@/shared/ui/icons/more.svg?react'
-import clsx from "clsx";
-// import {getStatuses} from "@/shared/ui/statuses/getStatuses.tsx";
-import type {Messengers} from "@/entities/user/model/types.ts";
-import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
+import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
+
+import STUDENT_src from '@/shared/assets/svg/STUDENT.svg'
 
 type linkType = 'telegram' | 'tg' | 'vk' | 'element'
 
@@ -29,17 +30,22 @@ const getLogo = (type: linkType | undefined) => {
   }
 }
 
+/** Якорь для кнопки «Связаться» на мобильной панели. */
+export const CONTACTS_ANCHOR_ID = 'profile-contacts'
+
 type SomeoneProfileHeaderProps = {
   onClickSee?: () => void,
   user: User;
   links: Messengers;
+  /** Короткая подсветка блока контактов после нажатия «Связаться». */
+  highlight?: boolean;
 }
 
-export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileHeaderProps) {
+export function SomeoneProfileHeader({onClickSee, user, links, highlight }: SomeoneProfileHeaderProps) {
   return (
     <div className={styles.container}>
 
-      <img className={styles.backgroundPicture} src={blankPictureSrc} alt={'Фон карточки пользователя'}/>
+      <img className={styles.backgroundPicture} src={STUDENT_src} alt={'Фон карточки пользователя'}/>
 
       <div className={styles.mobileHeader}>
         <p className={styles.titleMobile}>
@@ -54,49 +60,32 @@ export function SomeoneProfileHeader({onClickSee, user, links }: SomeoneProfileH
       <div className={styles.header}>
         <div className={styles.bioBlock}>
 
-          {/*Основа профиля*/}
-          {
-            user.profilePicture ?
-              <img className={styles.avatar} src={user.profilePicture} alt="Аватар студента" /> :
-              <div className={styles.avatar}>
-                <UserIcon/>
-              </div>
-          }
-
-          <div className={styles.roleLabel}>
-            {'mentor'}
-          </div>
-
-          {/*<div className={styles.statuses}>*/}
-          {/*  {getStatuses({ type: 'aha' })}*/}
-          {/*  {getStatuses({ type: 'toughGuy' })}*/}
-          {/*</div>*/}
+          <Avatar
+            fallbackType={getAvatarRoleInfo(user?.roles)?.fallback || 'user'}
+            size={'108px'}
+            labelColor={'white'}
+            label={getAvatarRoleInfo(user?.roles)?.label}
+            strokeColor={'grad'}
+          />
 
           <div className={styles.infoBlock}>
             <div className={styles.nameBlock}>
-              <p>
-                {user.meta.lastName}
-              </p>
-              <p>
-                {user.meta.firstName}
-              </p>
+              {user.meta.lastName && <p>{user.meta.lastName}</p>}
+              <p>{[user.meta.firstName, user.meta.patronym].filter(Boolean).join(' ')}</p>
             </div>
-            <div className={styles.groupBlock}>
-              {/*TODO МОК*/}
-              <p>
-                8К67
-                {/*{user.group}*/}
-              </p>
-              <p>
-                {/*{user.group} курс*/}
-                8 курс
-              </p>
-            </div>
+            {(user.group || user.grade) && (
+              <div className={styles.groupBlock}>
+                {user.group && <p>{user.group}</p>}
+                {user.grade && <p>{user.grade} курс</p>}
+              </div>
+            )}
           </div>
         </div>
 
         {/*Блок ссылок*/}
-        <div className={styles.linkBlock}>
+        {/* Якорь и подсветка — на всём блоке: заголовок, почта и мессенджеры
+            должны отзываться на «Связаться» вместе, а не по отдельности. */}
+        <div id={CONTACTS_ANCHOR_ID} className={clsx(styles.linkBlock, highlight && styles.highlight)}>
           <div className={styles.headerLink}>
             <p>
               Контакты

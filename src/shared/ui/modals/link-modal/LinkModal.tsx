@@ -1,7 +1,7 @@
 import styles from './LinkModal.module.css'
 import { useEffect, useState } from "react";
 import { Modal } from "@/shared/ui/modals/modal/Modal.tsx";
-import {DeleteButton, FilledButton, GreyButton} from "@/shared/ui/elements/buttons";
+import { DeleteButton, FilledButton, GreyButton } from "@/shared/ui/elements/buttons";
 
 type LinkModalProps = {
   isOpen: boolean,
@@ -31,6 +31,14 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
+
+    if (rawValue.length > 33) return;
+
+    const textWithoutAt = rawValue.replace(/^@+/, '');
+    if (textWithoutAt && !/^[a-zA-Z0-9_.-]+$/.test(textWithoutAt)) {
+      return;
+    }
+
     const formatted = formatSocialLink(rawValue);
     setValue(formatted);
   };
@@ -65,10 +73,13 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
           <h3>
             {typeLink}
           </h3>
-          <DeleteButton
-            onClick={handleDelete}
-            textButton={'Удалить'}
-          />
+          {
+            <DeleteButton
+              onClick={handleDelete}
+              textButton={'Удалить'}
+            />
+          }
+
         </div>
       </Modal.SpecialBlock>
 
@@ -91,7 +102,7 @@ export function LinkModal({ isOpen, onClose, onSubmit, onDelete, firstValue = ''
           />
           <FilledButton
             onClick={handleSubmit}
-            disabled={ firstValue === value}
+            disabled={firstValue === value}
             textButton={'Сохранить изменения'}
           />
         </div>

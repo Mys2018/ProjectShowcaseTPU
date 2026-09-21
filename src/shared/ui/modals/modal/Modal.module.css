@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 100;
+  z-index: 1000;
 }
 
 .content {
@@ -26,6 +26,10 @@
   padding: 0;
   box-shadow: none;
   gap: 8px;
+}
+
+.grey100 {
+  background: var(--color-gray-100);
 }
 
 .header {
@@ -58,4 +62,11 @@
   width: 100%;
   justify-content: end;
   gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .content {
+    width: 90%;
+  }
+
 }

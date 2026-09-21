@@ -3,11 +3,22 @@ import styles from './CheckpointsBlock.module.css'
 import {PlusButton} from "@/shared/ui/elements/buttons/plus-button/PlusButton.tsx";
 import EditIcon from '@/shared/ui/icons/pencil.svg?react';
 import TrashIcon from '@/shared/ui/icons/trash.svg?react';
+import { mapDateToLocalString, parseDeadline } from "@/shared";
+
+const displayDeadline = (deadline: string) => {
+  if (!deadline) return '';
+  const parsed = parseDeadline(deadline);
+  if (parsed && !isNaN(parsed.getTime())) {
+    return mapDateToLocalString(parsed, { digitsOnly: true });
+  }
+  return deadline;
+};
 
 export interface ExtendedProjectCheckpoint {
   title: string
   deadline: string
-  isImmutable?: boolean;
+  isBase?: boolean
+  customIndex?: number
 }
 
 interface CheckpointsBlockProps {
@@ -23,41 +34,45 @@ export const CheckpointsBlock = ({checkpoints, addCheckpoint, onEditCheckpoint, 
     <div className={clsx(styles.checkpointsBlock, isBlink && 'blink-1')}>
       <div className={styles.checkpointsList}>
         {
-          checkpoints.map((checkpoint, index) => (
-            <div key={index} className={styles.checkpoint}>
+          checkpoints.map((checkpoint, index) => {
+            const isCustom = !checkpoint.isBase;
+            const targetIdx = checkpoint.customIndex ?? index;
 
-              <div className={styles.circle}>
-                {index + 1}
-              </div>
+            return (
+              <div key={index} className={styles.checkpoint}>
+                <div className={styles.circle}>
+                  {index + 1}
+                </div>
 
-              <div className={clsx(styles.content, !checkpoint.isImmutable ? styles.mutable : '')}>
-                <div className={styles.card}>
-                  <div className={styles.textContainer}>
-                    <p>
-                      {checkpoint.title}
-                    </p>
-                    <p>
-                      {checkpoint.deadline}
-                    </p>
-                  </div>
-                  {!checkpoint.isImmutable && (
-                    <div className={styles.actions}>
-                      {onEditCheckpoint && (
-                        <button type="button" className={styles.actionBtn} onClick={() => onEditCheckpoint(index)}>
-                          <EditIcon className={styles.icon}/>
-                        </button>
-                      )}
-                      {onDeleteCheckpoint && (
-                        <button type="button" className={styles.actionBtn} onClick={() => onDeleteCheckpoint(index)}>
-                          <TrashIcon className={styles.icon}/>
-                        </button>
-                      )}
+                <div className={clsx(styles.content, isCustom ? styles.mutable : '')}>
+                  <div className={styles.card}>
+                    <div className={styles.textContainer}>
+                      <p>
+                        {checkpoint.title}
+                      </p>
+                      <p>
+                        {displayDeadline(checkpoint.deadline)}
+                      </p>
                     </div>
-                  )}
+                    {isCustom && (
+                      <div className={styles.actions}>
+                        {onEditCheckpoint && (
+                          <button type="button" className={styles.actionBtn} onClick={() => onEditCheckpoint(targetIdx)}>
+                            <EditIcon className={styles.icon}/>
+                          </button>
+                        )}
+                        {onDeleteCheckpoint && (
+                          <button type="button" className={styles.actionBtn} onClick={() => onDeleteCheckpoint(targetIdx)}>
+                            <TrashIcon className={styles.icon}/>
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         }
       </div>
 

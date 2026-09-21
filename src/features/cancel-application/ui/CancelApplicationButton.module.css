@@ -1,0 +1,11 @@
+.button {
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+
+	transition: opacity .1s;
+
+  &.pending {
+		opacity: 0.6;
+    cursor: wait;
+  }
+}

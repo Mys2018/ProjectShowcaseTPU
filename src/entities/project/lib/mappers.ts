@@ -1,15 +1,20 @@
 import type { ProjectDto, ProjectCardData } from '../model/types'
+import { mapStringToDate } from '@/shared'
 
 export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
   return {
     id: dto.id,
     type: dto.type || 'Case',
 
-    tags: dto.tags.map(t => ({ id: t.groupId, name: t.tagName, groupId: t.groupId })) ?? [],
+    tags: dto.tags.map(t => ({ id: t.tagId, name: t.tagName, groupId: t.groupId })) ?? [],
     primaryTag: { id: dto.primaryTag.tagId, name: dto.primaryTag.tagName, groupId: dto.primaryTag.groupId },
 
     ownerId: dto.ownerId,
-    partnerId: dto.partnerId,
+    partner: {
+      id: dto.partner.projectPartnerId,
+      name: dto.partner.name,
+      profilePicture: dto.partner.profilePicture ?? ''
+    },
     status: dto.status,
     meta: {
       title: dto.meta?.title || '',
@@ -17,33 +22,48 @@ export const mapProjectDtoToEntity = (dto: ProjectDto): ProjectCardData => {
     },
 
     checkpoints: {
-      id: dto.checkpoints.id || '',
-      title: dto.checkpoints.name || '',
-      checkpoints: dto.checkpoints.checkpoints.map(c => {
-        const [year, month, day] = c.deadline.split('-').map(Number)
-        const deadline = new Date(year, month - 1, day)
-        return { title: c.title, deadline: deadline }
-      })
+      id: dto.checkpoints?.id || '',
+      title: dto.checkpoints?.name || '',
+      checkpoints: [
+        ...(dto.checkpoints?.checkpoints || []),
+        ...(dto.customCheckpoints || [])
+      ]
+        .map(c => ({
+          title: c.title,
+          deadline: mapStringToDate(c.deadline)
+        }))
+        .sort((a, b) => a.deadline.getTime() - b.deadline.getTime())
     },
 
     roles: (dto.roles || []).map(r => ({
       roleId: r.roleId,
+      roleTypeId: r.roleType?.id,
       placesCount: r.placesCount,
       minPlacesCount: r.minPlacesCount,
       places: r.places?.length || 0,
+      // ID занявших место: по ним считается «я в команде». Раньше здесь терялся весь массив.
+      placeUserIds: r.places ?? [],
       meta: {
         name: r.roleType?.name || 'Без названия',
         description: r.meta?.description || ''
       },
-      skills: (r.skills || []).map(s => ({
-        skillId: s.skillId,
-        skillName: s.skillName
-      }))
+      skills: r.skills,
+      relevance: r.relevance
     })),
 
     prdMeta: dto.prdMeta,
+    isLiked: dto.isLikedByMe ?? false,
+    // TODO: заглушка под отзывы, пока их нет в API
+    hasMyReview: (dto as { hasMyReview?: boolean }).hasMyReview ?? false,
+
+    liked: dto.isLikedByMe ?? false,
 
     extended: dto.tags?.some(t => t.tagId === 'ml' || t.tagId === 'fintech'),
-    brandColor: dto.id === '8201' ? '28be46' : undefined
+    brandColor: dto.id === '8201' ? '28be46' : undefined,
+
+    repository: dto.repository,
+    taskTracker: dto.taskTracker,
+    designEnvironment: dto.designEnvironment || dto.otherPlatforms,
+    otherPlatforms: dto.otherPlatforms || dto.designEnvironment
   }
 }

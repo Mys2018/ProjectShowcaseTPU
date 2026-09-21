@@ -5,36 +5,35 @@ import { LinkContainer } from "@/shared/ui/small-widgets/link-block/LinkContaine
 import clsx from "clsx";
 import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
 import { ProjectPrd } from "@/shared/ui/project-prd/ProjectPrd.tsx";
-import { FreeCompetencies } from "@/shared/ui/small-widgets/free-competencies/FreeCompetencies.tsx";
+import { FreeCompetencies } from "@/widgets/free-competencies/FreeCompetencies.tsx";
 import { ProjectTeam } from "@/shared/ui/small-widgets/project-team/ProjectTeam.tsx";
 import ShareIcon from '@/shared/ui/icons/share.svg?react';
 import IdIcon from '@/shared/ui/icons/id.svg?react';
-import BackIcon from '@/shared/ui/icons/back.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react'
 import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
+import { useProjectTeam } from "@/entities/project";
+import { getPublicProjectStatus } from "@/entities/project";
 // TODO
-import { mapDateToLocalString } from "@/shared";
 import { useUserById } from "@/entities/user";
-import { useNavigate } from "react-router-dom";
-import { ProjectStatusLabel } from "@/shared/constants/project-status-label/ProjectStatusLabel.tsx";
+import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
-import { usePageTitle, usePreviousPageTitle } from "@/shared/model";
+import { usePlatformFinder } from "@/entities/platforms";
+import { useMemo } from "react";
+import { BackLink } from "@/shared/ui/back-link";
+import { ROUTES } from "@/shared";
+import { copyToClipboard } from "@/shared/lib";
 
 interface ProjectPageProps {
   project: ProjectCardData
 }
 
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
-  usePageTitle('проекту');
-  const backTitle = usePreviousPageTitle('Назад к списку проектов');
-
-  const navigate = useNavigate();
-
   // TODO
-  const { data: owner } = useUserById(
-    project?.ownerId?.toString() || ''
-  )
+  const { data: owner } = useUserById(project.ownerId)
+  const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
+  const [isIdCopied, setIsIdCopied] = useState(false)
+  const [isLinkCopied, setIsLinkCopied] = useState(false)
 
   const leftWidgetsRef = useRef<HTMLDivElement>(null);
   const projectsInfoRef = useRef<HTMLElement>(null);
@@ -65,28 +64,68 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     return resizeObserver.disconnect()
   }, [project]);
 
-  const teamMock = [
-    { name: 'Фадеев', role: 'Backend', avatarSrc: '' },
-    { name: 'Яра', role: 'Frontend', avatarSrc: '' }
-  ];
+  const { platformsData, findPlatformName } = usePlatformFinder();
 
-  const linksMock = [
-    { title: 'Репозиторий', service: 'GitHub', link: 'https://github.com' }
-  ];
+  const links = useMemo(() => {
+    const result: { title: string; link: string; service: string }[] = [];
 
+    const getServiceName = (item: { platformId: string; name?: string }) => {
+      const found = findPlatformName(item.platformId);
+      if (found && found !== 'Unknown') return found;
+      return item.name || 'Платформа';
+    };
+
+    if (project.repository) {
+      project.repository.forEach(item => {
+        result.push({ title: 'Репозиторий', service: getServiceName(item), link: item.url });
+      });
+    }
+
+    if (project.taskTracker) {
+      project.taskTracker.forEach(item => {
+        result.push({ title: 'Таск-трекер', service: getServiceName(item), link: item.url });
+      });
+    }
+
+    const otherLinks = project.otherPlatforms || project.designEnvironment;
+    if (otherLinks) {
+      otherLinks.forEach(item => {
+        result.push({ title: 'Прочее', service: getServiceName(item), link: item.url });
+      });
+    }
+
+    return result;
+  }, [project, platformsData, findPlatformName]);
+
+  const programmaticScrolls = useRef(new WeakSet<HTMLElement>());
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const target = e.currentTarget;
+
+    if (programmaticScrolls.current.has(target)) {
+      programmaticScrolls.current.delete(target);
+      return;
+    }
+
     const scrollTop = target.scrollTop;
 
     if (leftWidgetsRef.current && target !== leftWidgetsRef.current) {
-      leftWidgetsRef.current.scrollTop = scrollTop;
+      if (leftWidgetsRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(leftWidgetsRef.current);
+        leftWidgetsRef.current.scrollTop = scrollTop;
+      }
     }
     if (projectsInfoRef.current && target !== projectsInfoRef.current) {
-      projectsInfoRef.current.scrollTop = scrollTop;
+      if (projectsInfoRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(projectsInfoRef.current);
+        projectsInfoRef.current.scrollTop = scrollTop;
+      }
     }
     if (rightWidgetsRef.current && target !== rightWidgetsRef.current) {
-      rightWidgetsRef.current.scrollTop = scrollTop;
+      if (rightWidgetsRef.current.scrollTop !== scrollTop) {
+        programmaticScrolls.current.add(rightWidgetsRef.current);
+        rightWidgetsRef.current.scrollTop = scrollTop;
+      }
     }
   };
 
@@ -97,27 +136,26 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   return (
     <main className={styles.main}>
-      <div className={styles.headerLeft} onClick={() => {
-        navigate(-1)
-      }}>
-        <BackIcon className={styles.backIcon} />
-        <p className={styles.back}>{backTitle}</p>
-      </div>
+      <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
 
         <ProfileWidget
+          userId={owner.id}
           last_name={owner.meta.lastName}
           first_name={owner.meta.firstName}
           role="Менеджер данного проекта"
-          avatarSrc=""
+          avatarSrc={owner.profilePicture}
         />
 
         <KeyPoints
-          checkpoints={project.checkpoints?.checkpoints.map(c => ({ title: c.title, deadline: mapDateToLocalString(c.deadline) }))}
+          checkpoints={project.checkpoints?.checkpoints.map(c => ({
+            title: c.title,
+            deadline: c.deadline.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+          }))}
         />
 
-        <LinkContainer links={linksMock} />
+        {links.length > 0 && <LinkContainer links={links} />}
 
       </aside>
 
@@ -156,20 +194,36 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
       <aside className={styles.idBlock}>
 
-        <a className={styles.share} href='#'>
+        <button
+          type="button"
+          className={styles.share}
+          onClick={() => {
+            void copyToClipboard(window.location.href)
+            setIsLinkCopied(true)
+            setTimeout(() => setIsLinkCopied(false), 2000)
+          }}
+        >
           <ShareIcon />
-          Поделиться проектом
-        </a>
+          {isLinkCopied ? 'Ссылка скопирована' : 'Поделиться проектом'}
+        </button>
 
         <PopupMenu
           trigger={<button
             type="button"
             className={styles.moreMenuButton}
+            aria-label="Дополнительно"
           >
             <MoreIcon />
           </button>}
         >
-          <PopupMenu.Row onClick={() => { }} title={'Скопировать ID'}>
+          <PopupMenu.Row
+            onClick={() => {
+              void copyToClipboard(project.id)
+              setIsIdCopied(true)
+              setTimeout(() => setIsIdCopied(false), 2000)
+            }}
+            title={isIdCopied ? 'ID скопирован!' : 'Скопировать ID'}
+          >
             <IdIcon />
           </PopupMenu.Row>
         </PopupMenu>
@@ -179,12 +233,19 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
         <div className={styles.projectStatus}>
           <span className={styles.statusLabel}>Статус:</span>
-          <ProjectStatusLabel status={project.status} />
+          <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
 
-        <FreeCompetencies roles={project.roles} />
+        <FreeCompetencies roles={project.roles} project={project} />
 
-        <ProjectTeam list={teamMock} />
+        <ProjectTeam
+          project={project}
+          list={teamMembers}
+          isLoading={isTeamLoading}
+          openFreeCompetency={() => {
+            rightWidgetsRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
 
       </aside>
     </main>

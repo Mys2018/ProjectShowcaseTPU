@@ -43,49 +43,6 @@
   gap: 24px
 }
 
-.orgAvatarContainer {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: var(--color-gray-50);
-}
-
-.orgAvatar {
-  width: 42px;
-  height: 42px;
-  max-width: 42px;
-  max-height: 42px;
-  border-radius: 50%;
-}
-
-.orgBlock {
-  display: flex;
-  gap: 8px;
-}
-
-.orgInfo {
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  gap: 4px
-}
-
-.orgName {
-  font: var(--OS-16-600);
-  font-weight: 600;
-  font-size: 16px;
-}
-
-.orgSub {
-  font: var(--OS-12-400);
-}
-
 .description {
   font: var(--body-text-platform);
   padding-right: 54px;

@@ -1,0 +1,42 @@
+.list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.checkpoint {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.index {
+	height: 38px;
+	aspect-ratio: 1;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	font: var(--section-title-interface);
+	color: var(--color-gray-600);
+
+	border-radius: 50%;
+	background-color: var(--color-gray-100);
+}
+
+.info {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.title {
+	font: var(--menu-title-platform);
+	color: var(--color-gray-600);
+}
+
+.label {
+	font: var(--OS-14-400);
+	color: var(--color-gray-750);
+}
