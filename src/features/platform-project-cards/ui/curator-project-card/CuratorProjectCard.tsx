@@ -82,6 +82,10 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
       project={project}
       mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
       onClick={() => {
+        if (project.status === 'NeedsRework') {
+          navigate(`${ROUTES.PROJECTS.CREATE}?projectId=${project.id}`)
+          return
+        }
         navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
       }}
       headerSlot={
