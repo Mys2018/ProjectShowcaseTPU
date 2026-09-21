@@ -57,11 +57,12 @@ export const toScoringModel = ({ sprints, gradings, team, today, viewerId }: Sco
         })
       }
       const row = rows.get(student.studentId)!
-      // weekNumber может быть и 1/2 внутри спринта, и сквозным: 1/2 кладём по номеру
-      // (недели может не хватать — человек пришёл в середине), иначе по порядку.
+      // weekNumber может быть и 1/2 внутри спринта, и сквозным (3/4, 5/6…) — остаток от деления
+      // даёт слот в обоих случаях. По порядку класть нельзя: у пришедшего в середине спринта
+      // есть только вторая неделя, и она встала бы в первую колонку.
       const weeks = [...(student.weeks ?? [])].sort((a, b) => a.weekNumber - b.weekNumber)
       weeks.slice(0, WEEKS_PER_SPRINT).forEach((week, i) => {
-        const slot = week.weekNumber >= 1 && week.weekNumber <= WEEKS_PER_SPRINT ? week.weekNumber - 1 : i
+        const slot = week.weekNumber >= 1 ? (week.weekNumber - 1) % WEEKS_PER_SPRINT : i
         row.hours[sprintIndex * WEEKS_PER_SPRINT + slot] = week.hours ?? null
         row.weeks[sprintIndex * WEEKS_PER_SPRINT + slot] = { weekNumber: week.weekNumber, state: week.state }
       })
