@@ -5,10 +5,11 @@ import styles from './ProjectModerationPage.module.css'
 import { getSortedProjects } from './lib/getSortedProjects'
 import { ProjectModeration } from '@/widgets/project-moderation'
 import {
-  MiniProjectCard,
   NoProjectsFallback,
+  ProjectCardVertical,
   ProjectModerationStatus,
   useProjects,
+  type ProjectCardData,
 } from '@/entities/project'
 import { ProjectSkeleton, TextSkeleton } from '@/shared'
 
@@ -28,14 +29,22 @@ export function ProjectModerationPage() {
     }
   }, [searchParams, location.state])
 
-  const activeProjectId = (selectedProjectId && projects.some((p) => p.id === selectedProjectId))
-    ? selectedProjectId
-    : (projects[0]?.id || null)
+  const canProjectBeChosen = (project: ProjectCardData) =>
+    project.status === 'Pending' || project.status === 'NeedsRework'
 
-  const activeProject = projects.find((p) => p.id === activeProjectId) || null
+  const selectedProject = selectedProjectId ? projects.find(p => p.id === selectedProjectId) : null
+  const activeProject =
+    (selectedProject && canProjectBeChosen(selectedProject) ? selectedProject : null) ??
+    projects.find(canProjectBeChosen) ??
+    null
+
+  const activeProjectId = activeProject?.id ?? null
 
   const handleSelectProject = (projectId: string) => {
-    setSelectedProjectId(projectId)
+    const project = projects.find(p => p.id === projectId)
+    if (project && canProjectBeChosen(project)) {
+      setSelectedProjectId(projectId)
+    }
   }
 
   return (
@@ -44,20 +53,18 @@ export function ProjectModerationPage() {
         {isLoading
           ? Array.from({ length: 4 }, (_, i) => <ProjectSkeleton className={styles.skeleton} key={i} />)
           : projects.map(project => (
-              <div
+              <ProjectCardVertical
                 key={project.id}
                 className={clsx(
-                  styles.projectItem,
-                  project.id === activeProjectId && styles.projectItemActive
+                  styles.project,
+                  canProjectBeChosen(project) && styles.pointer,
+                  project.id === activeProjectId && styles.active
                 )}
+                project={project}
                 onClick={() => handleSelectProject(project.id)}
-              >
-                <MiniProjectCard
-                  project={project}
-                  type='moderation'
-                  headerSlot={<ProjectModerationStatus status={project.status} />}
-                />
-              </div>
+                small
+                headerSlot={<ProjectModerationStatus status={project.status} className={styles.status} />}
+              />
             ))}
       </aside>
       <main className={styles.content}>
