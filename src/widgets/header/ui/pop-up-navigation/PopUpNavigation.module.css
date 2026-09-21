@@ -3,6 +3,8 @@
   padding: 0;
   gap: 16px;
 
+  max-height: calc(100dvh - 96px);
+
   min-width: 216px;
 
   &.extended {
@@ -11,19 +13,29 @@
 
   &.mobile {
     position: fixed;
-    top: var(--header-mobile-h);
+    top: 0;
     left: 0;
 
     width: 100vw;
-    height: calc(100dvh - var(--header-mobile-h));
+    height: 100dvh;
+    max-height: none;
 
-    padding: 24px 32px;
+    border: none;
+    border-radius: 0;
+
+    padding: 24px 20px 12px;
     gap: 32px;
 
     & .header,
     & .body,
     & .footer {
       padding: 0;
+    }
+
+    & .body {
+      min-height: 0;
+      flex: 1;
+      overflow-y: auto;
     }
 
     & .header {
@@ -49,6 +61,10 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
 
   padding-inline: 12px;
 }
