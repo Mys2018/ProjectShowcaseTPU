@@ -8,13 +8,15 @@ interface ProjectReviewCommentProps {
   className?: string
 }
 
-export function ProjectReviewComment({ comment, label = 'Ваш комментарий от 2 сентября', className }: ProjectReviewCommentProps) {
+export function ProjectReviewComment({ comment, label, className }: ProjectReviewCommentProps) {
   return (
     <Section className={clsx(styles.comment, className)}>
-      <div className={styles.title}>
-        <MessageIcon className={styles.icon} />
-        <p className={styles.label}>{label}</p> {/* TODO мок */}
-      </div>
+      {label && (
+        <div className={styles.title}>
+          <MessageIcon className={styles.icon} />
+          <p className={styles.label}>{label}</p> {/* TODO мок */}
+        </div>
+      )}
       <p className={styles.label}>{comment}</p>
     </Section>
   )
