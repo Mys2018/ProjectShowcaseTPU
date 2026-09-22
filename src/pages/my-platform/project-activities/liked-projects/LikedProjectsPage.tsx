@@ -1,6 +1,7 @@
 import styles from './LikedProjectsPage.module.css'
 import { ProjectsGrid } from '@/widgets/projects-grid'
 import { NoProjectsFallback } from '@/entities/project'
+import MyLikes from '@/shared/assets/no_liked_projects.svg?react'
 
 export function LikedProjectsPage() {
   return (
@@ -12,6 +13,7 @@ export function LikedProjectsPage() {
           <NoProjectsFallback
             title='Понравившихся проектов пока нет'
             description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
+            image={<MyLikes/>}
           />
         }
       />

@@ -17,16 +17,17 @@ import {
 } from '@/entities/project'
 import { Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, useMe, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
-import { buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, ROUTES } from '@/shared'
+import {buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, OutlineButton, ROUTES} from '@/shared'
 import { useModalStore } from '@/shared/model'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
   competencyId?: string
   className?: string
+  studentId?: number
 }
 
-export function StudentParticipatingProjectCard({ project, competencyId, className }: StudentParticipatingProjectCardProps) {
+export function StudentParticipatingProjectCard({ project, competencyId, className, studentId }: StudentParticipatingProjectCardProps) {
   const { data: curator } = useUserById(project?.ownerId)
   const { data: team = [] } = useProjectTeam(project?.id, Boolean(project?.id))
   const { data: timesheetSummary } = useProjectTimesheetSummary(project?.id, Boolean(project?.id))
@@ -38,12 +39,15 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
   if (!project) return null
 
   const myUserId = me?.id ? Number(me.id) : undefined
-  const placedRole = myUserId
-    ? project.roles?.find(r => r.placeUserIds?.includes(myUserId))?.meta?.name
+  const effectiveUserId = studentId ?? myUserId
+  const isMyCard = !studentId || studentId === myUserId
+
+  const placedRole = effectiveUserId
+    ? project.roles?.find(r => r.placeUserIds?.includes(effectiveUserId))?.meta?.name
     : undefined
   const roleForCompetency = project.roles?.find(r => r.roleTypeId === competencyId || r.roleId === competencyId)
   const targetCompetency = competencies?.find(c => c.id === competencyId || (roleForCompetency && c.id === roleForCompetency.roleTypeId))
-  const memberRole = myUserId ? getMemberRoleName(myUserId, project) : undefined
+  const memberRole = effectiveUserId ? getMemberRoleName(effectiveUserId, project) : undefined
   const validMemberRole = memberRole && !isPseudoRole(memberRole) ? memberRole : undefined
 
   const rawRoleName =
@@ -56,13 +60,11 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
 
   const roleName = isPseudoRole(rawRoleName) ? '' : rawRoleName
 
-  const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints.checkpoints)
+  const { opening: openingDate, closure: closureDate } = getProjectDates(project.checkpoints?.checkpoints || [])
 
   const isClosed = project.status === 'Completed' || project.status === 'NotImplemented' || project.status === 'Archived'
 
-  const studentHours = getStudentProjectHours(timesheetSummary, me?.id)
-  // Часы идут по спринтам — таблица есть только у проектов в работе и в архиве
-  const hasHoursTable = project.status === 'InProgress' || isClosed
+  const studentHours = getStudentProjectHours(timesheetSummary, effectiveUserId)
 
   const openHoursTable = (e: React.MouseEvent) => {
     // вся карточка — ссылка на проект, клик по кнопке не должен туда уводить
@@ -123,8 +125,8 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
                     strokeColor="grey"
                   />
                 }
-                firstName={curator.meta.firstName}
-                lastName={curator.meta.lastName}
+                firstName={curator.meta?.firstName || ''}
+                lastName={curator.meta?.lastName || ''}
                 nameTextStyle="bodySmall"
                 nameSubtextStyle="OS-12-350"
                 nameStyle="normal"
@@ -144,24 +146,36 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
             </div>
           )}
           <div className={styles.summary}>
-            <Link className={styles.link} to={buildRoute.project(project.id)}>
-              Перейти к проекту <ChevronRightIcon />
-            </Link>
-
-            <div className={clsx(styles.results, isClosed && styles.closed)}>
-              <p className={styles.points}>
-                {isClosed && <span className={styles.preface}>Ваш результат:</span>}
-                <span className={styles.score}>
+            {
+              !studentId && <Link className={styles.link} to={buildRoute.project(project.id)}>
+                Перейти к проекту <ChevronRightIcon />
+              </Link>
+            }
+            {
+              !studentId ? (<div className={clsx(styles.results, isClosed && styles.closed)}>
+                <p className={styles.points}>
+                  {isClosed && <span className={styles.preface}>{isMyCard ? 'Ваш результат:' : 'Результат:'}</span>}
+                  <span className={styles.score}>
                   <span className={styles.strong}>{studentHours}</span>
-                  {getScoreWord(studentHours)}
+                    {getScoreWord(studentHours)}
                 </span>
-              </p>
-              {hasHoursTable && (
-                <button type="button" className={styles.sheetButton} onClick={openHoursTable}>
-                  Посмотреть таблицу
-                </button>
-              )}
-            </div>
+                </p>
+                  <button type="button" className={styles.sheetButton} onClick={openHoursTable}>
+                    Посмотреть таблицу
+                  </button>
+              </div>) : (
+                <div className={styles.resultsLabel}>
+                  <p>Результат:</p>
+                  <p><strong>{studentHours}</strong> баллов</p>
+                </div>
+
+              )
+            }
+            {
+              studentId && <OutlineButton
+                textButton={'Посмотреть проект'}
+              />
+            }
           </div>
         </div>
       }

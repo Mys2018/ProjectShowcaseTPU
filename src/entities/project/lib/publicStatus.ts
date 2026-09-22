@@ -2,10 +2,10 @@ import type { ProjectCardData, ProjectStatus } from '../model/types'
 
 /** Есть ли в роли хотя бы одно незанятое место. Занято оно мной или кем-то — не важно. */
 export const hasFreePlace = (role: ProjectCardData['roles'][number]) =>
-  role.placesCount - role.placeUserIds.length > 0
+  role.placesCount - (role.placeUserIds?.length ?? 0) > 0
 
 /** Остались ли в проекте компетенции, на которые вообще можно податься. */
-export const hasFreePlaces = (project: ProjectCardData) => project.roles.some(hasFreePlace)
+export const hasFreePlaces = (project: ProjectCardData) => (project.roles || []).some(hasFreePlace)
 
 /**
  * Сквозной публичный статус проекта — тот, что показывается и на ПК, и в панели.

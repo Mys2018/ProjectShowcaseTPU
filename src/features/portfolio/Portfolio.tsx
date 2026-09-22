@@ -1,9 +1,9 @@
 import styles from './Portfolio.module.css'
 import BackIcon from '@/shared/ui/icons/back.svg?react';
 import {useEffect, useState} from "react";
-import blankPictureSrc from '@/shared/assets/blank_photo.jpg'
 import {useUpdateProfileMeta} from "@/entities/user/api/queries.ts";
 import {normalizeExternalUrl} from "@/shared/lib";
+import PortfolioSrc from '@/shared/assets/3d/Portfolio.png'
 
 type PortfolioProps = {
   firstValue: string;
@@ -114,7 +114,7 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
             </p>
           )}
         </div>
-        {readonly && <img className={styles.image} src={blankPictureSrc} alt={"Картинка портфолио"}/>}
+        {readonly && <img className={styles.image} src={PortfolioSrc} alt={"Картинка портфолио"}/>}
       </div>
     </div>
   )

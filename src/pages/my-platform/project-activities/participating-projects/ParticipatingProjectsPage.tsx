@@ -7,6 +7,7 @@ import { useMe } from '@/entities/user'
 import { CompletedProjects, NoProjectsFallback, useParticipatingProjects } from '@/entities/project'
 import {useNavigate} from "react-router-dom";
 import {ProjectSkeleton, ROUTES} from "@/shared";
+import NoActiveProject from '@/shared/assets/no_active_project.svg?react'
 
 export function ParticipatingProjectsPage() {
   const { data, isLoading } = useParticipatingProjects({ limit: 100 })
@@ -45,6 +46,7 @@ export function ParticipatingProjectsPage() {
               title='Активного проекта пока нет'
               description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
               buttonType={"green"}
+              image={<NoActiveProject/>}
               buttonText={'Выбрать проект'}
               onClick={() => {
                 navigate(ROUTES.PROJECTS.BASE)

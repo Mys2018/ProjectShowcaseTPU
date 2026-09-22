@@ -251,3 +251,18 @@
 		outline-offset: 2px;
 	}
 }
+
+.resultsLabel {
+	display: flex;
+	gap: 4px;
+}
+
+.resultsLabel p:nth-child(1) {
+	font: var(--inter-12-300);
+	color: var(--color-gray-500);
+}
+
+.resultsLabel p:nth-child(2) {
+	font: var(--inter-12-300);
+	color: var(--color-brand-green);
+}

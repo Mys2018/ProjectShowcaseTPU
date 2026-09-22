@@ -4,8 +4,14 @@ import { getFilteredApplications } from '../lib/getFilteredApplications'
 import { StudentApplicationProjectCard } from '@/widgets/student-project-card'
 import { useApplications } from '@/entities/application'
 import { NoProjectsFallback, CompletedProjects } from "@/entities/project"
-import { BlankPhoto, CrossIcon, ROUTES } from '@/shared'
+
+
 import { useNavigate } from "react-router-dom";
+import MyApplications from '@/shared/assets/no_applications.svg?react'
+import {BlankPhoto, ROUTES} from "@/shared";
+import {ClosingBanner} from "@/shared/ui/closing-banner";
+
+
 
 
 export function MyApplicationsPage() {
@@ -22,26 +28,18 @@ export function MyApplicationsPage() {
 
   return (
     <div className={styles.container}>
-      {isBannerVisible && (
-        <div className={styles.banner}>
-          <button className={styles.closeButton} onClick={() => setIsBannerVisible(false)}>
-            <CrossIcon />
-          </button>
 
-          <BlankPhoto className={styles.blank} />
-          <div className={styles.description}>
-            <h3 className={styles.heading}>Ваши заявки скоро посмотрят</h3>
-            <p className={styles.paragraph}>
-              Дождитесь окончания набора, чтобы наставники смогли приступить к рассмотрению откликов. А пока есть время, вы можете ещё найти
-              интересные проекты для подачи заявок.
-            </p>
-          </div>
-          <div className={styles.timer}>
-            <p className={styles.paragraph}>Рассмотрение начнётся через</p>
-            <div className={styles.badge}>7 дней {/* TODO количество дней до начала рассмотрения */}</div>
-          </div>
-        </div>
-      )}
+      <ClosingBanner
+        backgroundClass={styles.banner}
+        title={'Ваши заявки скоро посмотрят'}
+        description={'Дождитесь окончания набора, чтобы наставники смогли приступить к рассмотрению откликов. А пока есть время, вы можете ещё найти интересные проекты для подачи заявок.'}
+        isBannerVisible={isBannerVisible}
+        setIsBannerVisible={() => setIsBannerVisible(false)}
+        image={<BlankPhoto/>}
+        timerText={'Рассмотрение начнётся через'}
+        timerValue={'67'}
+      />
+
       <div className={styles.active}>
         <h3 className={styles.title}>Мои отклики</h3>
         <div className={styles.list}>
@@ -55,6 +53,7 @@ export function MyApplicationsPage() {
               title='Откликов пока нет'
               description='Переходите в каталог проектов, выбирайте интересующие и успевайте подать заявки до конца набора!'
               buttonText={'Выбрать проект'}
+              image={<MyApplications/>}
               buttonType={'green'}
               onClick={() => {
                 navigate(ROUTES.PROJECTS.BASE)

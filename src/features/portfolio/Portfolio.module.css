@@ -7,11 +7,14 @@
   border-radius: 20px;
 
   position: relative;
+  overflow: hidden;
 }
 
 .container h3 {
   font: var(--section-title-interface);
   color: white;
+  z-index: 2;
+
 }
 
 .body {
@@ -27,6 +30,7 @@
   font: var(--body-small-platform);
   color: var(--color-gray-500);
   padding-right: 24px;
+
 }
 
 .body label{
@@ -39,6 +43,7 @@
   border-radius: 16px;
   height: fit-content;
 
+
 }
 
 .validContainer{
@@ -47,6 +52,7 @@
   flex-grow: 1;
   flex-direction: column;
   gap: 10px;
+  z-index: 2;
 }
 
 .input {
@@ -110,17 +116,13 @@
 }
 
 .image {
-  width: 410px;
-  height: calc(100% - 11px * 2);
-
   position: absolute;
-  top: 11px;
-  right: 11px;
+  top: 0;
+  right: 64px;
 
   border-radius: 16px;
 
-  object-fit: cover;
-  object-position: center;
+  width: 400px;
 
 }
 
@@ -143,6 +145,8 @@
   }
 
   .image {
-    display: none;
+    z-index: 1;
+    left: 207px;
+    top: -53px;
   }
 }

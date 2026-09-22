@@ -198,7 +198,7 @@ export interface GetProjectsQueryParams {
   status?: string[];
   tagId?: string[];
   roleTypeId?: string[];
-  userId?: number[];
+  userId?: number[] | number;
   managerId?: number[];
   sort?: 'relevance' | 'created_asc' | 'created_desc';
   offset?: number;

@@ -94,6 +94,23 @@
   flex-shrink: 0;
 }
 
+.projectsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.projectsTitle {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .see {
   display: flex;
   gap: 5px;

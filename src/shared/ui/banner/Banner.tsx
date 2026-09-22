@@ -1,6 +1,9 @@
 import clsx from 'clsx'
 import type { ReactElement, ReactNode } from 'react'
 import styles from './Banner.module.css'
+import StudentMain from '@/shared/assets/3d/Student_main.png'
+import ModeratorMain from '@/shared/assets/3d/Moderator_main.png'
+import MentorMain from '@/shared/assets/3d/Mentor_main.png'
 
 interface BannerProps {
   title: string
@@ -14,6 +17,20 @@ interface BannerProps {
   backgroundUrl?: string
   className?: string
   children?: ReactElement
+
+  role?: string
+}
+
+const getImage = (role: string ) => {
+  switch (role) {
+    case 'Student':
+      return <img className={styles.student} src={StudentMain} alt="Баннер студента" />
+    case 'Curator':
+      return <img className={styles.curator} src={MentorMain} alt="Баннер ментора" />
+    case 'Moderator':
+      return <img className={styles.moderator} src={ModeratorMain} alt="Баннер модератора" />
+  }
+  return null
 }
 
 /**
@@ -22,11 +39,12 @@ interface BannerProps {
  @param description Описание, показывается только если передан mainSlot
  @param labelText Показывается перед badgeText если mainSlot не передан
  */
-export function Banner({ title, description, mainSlot, badgeText, labelText, backgroundUrl, className, children }: BannerProps) {
+export function Banner({ title, description, mainSlot, badgeText, labelText, backgroundUrl, className, children, role }: BannerProps) {
   const isExtended = mainSlot !== undefined
   return (
     <div className={clsx(styles.banner, className)} style={{ background: backgroundUrl }}>
       <div className={clsx(styles.hero, isExtended && styles.extended)}>
+        {getImage(role!)}
         <div className={styles.intro}>
           <div className={styles.info}>
             <h3 className={styles.title}>{title}</h3>
@@ -39,7 +57,10 @@ export function Banner({ title, description, mainSlot, badgeText, labelText, bac
           {badgeText && <div className={clsx(styles.badge, isExtended && styles.extended)}>{badgeText}</div>}
         </div>
       </div>
-      {children}
+      <div className={clsx(styles.children)}>
+        {children}
+      </div>
+
     </div>
   )
 }
