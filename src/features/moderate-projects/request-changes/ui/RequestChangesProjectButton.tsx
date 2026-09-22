@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import styles from './RequestChangesProjectButton.module.css'
-import { useRequestChangesOnProject } from '../api/mutations'
+import { useSetProjectStatus } from '@/entities/project'
 import { BigTextField, FilledButton, Modal, OutlineButton } from '@/shared'
 
 interface RequestChangesProjectButtonProps {
@@ -8,10 +8,23 @@ interface RequestChangesProjectButtonProps {
 }
 
 export function RequestChangesProjectButton({ projectId }: RequestChangesProjectButtonProps) {
-  const { mutate: requestChanges, isPending } = useRequestChangesOnProject()
+  const { mutate: setProjectStatus, isPending } = useSetProjectStatus()
   const [comment, setComment] = useState('')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const requestChanges = useCallback(
+    (comment: string) =>
+      setProjectStatus(
+        { projectId, status: 'NeedsRework', comment },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false)
+            setComment('')
+          }
+        }
+      ),
+    [setProjectStatus, projectId]
+  )
 
   return (
     <>
@@ -23,12 +36,12 @@ export function RequestChangesProjectButton({ projectId }: RequestChangesProject
             Наставник увидит комментарий и отправит проект на повторную проверку после внесения корректировок.
           </p>
         </div>
-          <BigTextField
-            placeholder='Замечания по оформлению и другие корректировки'
-            maxLength={1500}
-            value={comment}
-            onChange={e => setComment(e.target.value)}
-          />
+        <BigTextField
+          placeholder='Замечания по оформлению и другие корректировки'
+          maxLength={1500}
+          value={comment}
+          onChange={e => setComment(e.target.value)}
+        />
         <div className={styles.actions}>
           <button className={styles.cancel} onClick={() => setIsModalOpen(false)}>
             Отмена
@@ -36,12 +49,7 @@ export function RequestChangesProjectButton({ projectId }: RequestChangesProject
           <FilledButton
             textButton='Отправить на доработку'
             disabled={comment.trim().length === 0 || isPending}
-            onClick={() => requestChanges({ id: projectId, comment: comment }, {
-              onSuccess: () => {
-                setIsModalOpen(false)
-                setComment('')
-              }
-            })}
+            onClick={() => requestChanges(comment)}
           />
         </div>
       </Modal>
