@@ -1,11 +1,11 @@
-import styles from './InfoTooltip.module.css'
-import QuestionIcon from '@/shared/ui/icons/question.svg?react';
-import HelpIcon from '@/shared/ui/icons/help_icons.svg?react';
-import ImportantIcon from '@/shared/ui/icons/important.svg?react';
-import BulbIcon from '@/shared/ui/icons/bulb.svg?react';
 import React, { useState, useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import clsx from "clsx";
+import BulbIcon from '../icons/bulb.svg?react';
+import HelpIcon from '../icons/help_icons.svg?react';
+import ImportantIcon from '../icons/important.svg?react';
+import QuestionIcon from '../icons/question.svg?react';
+import styles from './InfoTooltip.module.css';
 
 type SizeTooltip = 'small' | 'large'
 type Pointer = 'topLeft' | 'bottomLeft' | 'topRight' | 'bottomRight'
@@ -27,6 +27,8 @@ interface InfoTooltipProps {
 
   greenButtonText?: string;
   onClickGreenButtonText?: () => void;
+
+  image?: string;
 }
 
 const THEME_MAP: Record<SizeTooltip, {
@@ -62,9 +64,9 @@ const getIconByType = (type: string, classNames: string) => {
     case 'help':
       return <HelpIcon className={classNames} />;
     case 'bulb':
-      return <BulbIcon className={classNames} />
+      return <BulbIcon className={classNames} />;
   }
-}
+};
 
 export const InfoTooltip = ({
   children,
@@ -77,10 +79,12 @@ export const InfoTooltip = ({
   pointer,
   type,
   greenButtonText,
-  onClickGreenButtonText
+  onClickGreenButtonText,
+  image
 }: InfoTooltipProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [placement, setPlacement] = useState<'top' | 'bottom'>('bottom');
   const [coords, setCoords] = useState<{ top: number; left: number }>({ top: -9999, left: -9999 });
 
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -104,6 +108,7 @@ export const InfoTooltip = ({
 
     let top = 0;
     let left = 0;
+    let currentPlacement: 'top' | 'bottom' = 'bottom';
 
     // Вертикальное позиционирование
     if (pointer.startsWith('top')) {
@@ -112,8 +117,10 @@ export const InfoTooltip = ({
 
       if (!fitsBelow && fitsAbove) {
         top = rect.top - GAP - popupHeight;
+        currentPlacement = 'top';
       } else {
         top = rect.bottom + GAP;
+        currentPlacement = 'bottom';
       }
     } else {
       const fitsAbove = rect.top - GAP - popupHeight >= VIEWPORT_PADDING;
@@ -121,8 +128,10 @@ export const InfoTooltip = ({
 
       if (!fitsAbove && fitsBelow) {
         top = rect.bottom + GAP;
+        currentPlacement = 'bottom';
       } else {
         top = rect.top - GAP - popupHeight;
+        currentPlacement = 'top';
       }
     }
 
@@ -146,6 +155,7 @@ export const InfoTooltip = ({
     const maxTop = Math.max(minTop, window.innerHeight - popupHeight - VIEWPORT_PADDING);
     top = Math.min(Math.max(minTop, top), maxTop);
 
+    setPlacement(currentPlacement);
     setCoords(prev => (prev.top === top && prev.left === left ? prev : { top, left }));
   }, [pointer, size, type]);
 
@@ -207,7 +217,13 @@ export const InfoTooltip = ({
       clearTimeout(fadeTimeoutRef.current);
       fadeTimeoutRef.current = null;
     }
-    setIsMounted(true);
+
+    if (!isMounted) {
+      setIsMounted(true);
+    } else {
+      updateCoords();
+      setIsVisible(true);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -219,7 +235,7 @@ export const InfoTooltip = ({
       fadeTimeoutRef.current = setTimeout(() => {
         setIsMounted(false);
       }, 200);
-    }, 120);
+    }, 180);
   };
 
   return (
@@ -239,6 +255,7 @@ export const InfoTooltip = ({
               styles.tooltip,
               s.tooltipBg,
               styles[pointer],
+              placement === 'bottom' ? styles.placedBelow : styles.placedAbove,
               isVisible && styles.visible
             )}
             style={{
@@ -253,6 +270,9 @@ export const InfoTooltip = ({
                 {title}
               </p>
             )}
+
+            {image && <img className={styles.img} src={image} alt="Картинка" />}
+
             {body.map((block, index) => (
               <div key={index} className={styles.block}>
                 {block.subtitle && (

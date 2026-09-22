@@ -83,6 +83,7 @@ export function MyPlatformBanner({ children }: { children?: ReactElement }) {
           mainSlot={
             <FilledButton className={styles.button} textButton='Выбрать проекты' onClick={() => void navigate(ROUTES.PROJECTS.BASE)} />
           }
+          role={'Student'}
         >
           {children}
         </Banner>
@@ -100,6 +101,7 @@ export function MyPlatformBanner({ children }: { children?: ReactElement }) {
               onClick={() => void navigate(ROUTES.PROJECTS.CREATE)}
             />
           }
+          role={'Curator'}
         >
           {children}
         </Banner>
@@ -115,6 +117,7 @@ export function MyPlatformBanner({ children }: { children?: ReactElement }) {
               проектам.
             </Callout>
           }
+          role={'Moderator'}
         >
           {children}
         </Banner>

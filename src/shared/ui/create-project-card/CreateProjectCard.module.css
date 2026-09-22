@@ -33,6 +33,11 @@
 
   height: 100px;
 
+  overflow: hidden;
+}
+
+.img {
+  width: 100%;
 }
 
 .study {

@@ -1,16 +1,20 @@
 import styles from './CreateProjectCard.module.css'
 import {ProjectCardData} from './data.ts'
 import {typeProjectsLabel} from "@/shared/constants/type-project-label/typeProjectsLabel.tsx";
-import ImageIcon from '@/shared/ui/icons/image.svg?react'
 import clsx from "clsx";
 import {SmallGreenButton} from "@/shared/ui/elements/buttons";
+import EduPrewSrc from '@/shared/assets/3d/Educational_Preview.png'
+import CasePrewSrc from '@/shared/assets/3d/Сase_Preview.png'
+import RealPrewSrc from '@/shared/assets/3d/Real_Preview.png'
+
+type ProjectType = 'Case' | 'Real' | 'Study'
 
 type CreateProjectCardProps = {
-  type: 'Case' | 'Real' | 'Study',
+  type: ProjectType,
   onClick?: () => void
 };
 
-const getClass = (type: "Case" | "Real" | "Study" | undefined) => {
+const getClass = (type: ProjectType) => {
   switch (type) {
     case 'Real':
       return styles.real;
@@ -18,6 +22,19 @@ const getClass = (type: "Case" | "Real" | "Study" | undefined) => {
       return styles.study;
     case 'Case':
       return styles.case;
+    default:
+      return '';
+  }
+}
+
+const getImgSrc = (type: ProjectType) => {
+  switch (type) {
+    case 'Real':
+      return RealPrewSrc;
+    case 'Study':
+      return EduPrewSrc;
+    case 'Case':
+      return CasePrewSrc;
     default:
       return '';
   }
@@ -37,11 +54,11 @@ export function CreateProjectCard({type, onClick}: CreateProjectCardProps) {
           </p>
         </div>
 
-        <div className={clsx(styles.image, getClass(card?.type))}>
-          <ImageIcon className={getClass(card?.type)}/>
+        <div className={clsx(styles.image, getClass(type))}>
+          <img className={styles.img} src={getImgSrc(type)} alt='Обложка типа'/>
         </div>
 
-        <p className={clsx(styles.title, getClass(card?.type))}>
+        <p className={clsx(styles.title, getClass(type))}>
           {card?.description}
         </p>
 

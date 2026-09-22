@@ -3,6 +3,7 @@ import TpuPoint from '@/shared/ui/icons/tpuPoint.svg?react'
 import { InfoTooltip } from '@/shared'
 import type { ClosingDiscipline } from './model/types'
 import styles from './YourPointsWidget.module.css'
+import ShopTooltipeSrc from '@/shared/assets/3d/Shop_Tooltipe.png'
 
 type YourPointsWidgetProps = {
   disciplines?: ClosingDiscipline[]
@@ -44,15 +45,16 @@ export const YourPointsWidget = ({ disciplines, tpuPoints }: YourPointsWidgetPro
             )}
           </ul>
           <InfoTooltip
-            title='Заголовок тултипа'
+            title='Обменивай баллы на мерч!'
             body={[
               {
-                text: ['Информация о закрытии дисциплин']
+                text: ['После закрытия дисциплин оставшиеся баллы конвертируются в валюту магазина, которую можно тратить на мерч и цифровые товары. Копи больше валюты и забирай топ вещи ТПУ!']
               }
             ]}
-            size={'small'}
+            size={'large'}
+            image={ShopTooltipeSrc}
             pointer={'topRight'}
-            importantText={'Важно тут!'}
+            importantText={'Магазин будет доступен в летнем обновлении'}
             link={'sdfsdsdsds'}
             className={styles.infoTooltip}
             iconClassName={styles.infoIconTooltip}

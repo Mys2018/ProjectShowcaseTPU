@@ -6,6 +6,18 @@
 
   padding: 54px 24px 24px;
 
+  & .imageWrapper,
+  & .image {
+    max-width: 200px;
+    max-height: 200px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   & .content {
     display: flex;
     flex-direction: column;

@@ -9,10 +9,8 @@ import Pencil from '@/shared/ui/icons/pencil.svg?react';
 import MoreIcon from '@/shared/ui/icons/more.svg?react';
 import CopyIcon from '@/shared/ui/icons/copyCompetency.svg?react';
 import DeleteIcon from '@/shared/ui/icons/fillDelete.svg?react';
-import EmptyStarIcon from '@/shared/ui/icons/empty_star.svg?react';
 // import compStyles from '@/features/my-competencies/ui/MyCompetencies.module.css';
-import { useModalStore } from '@/shared/model';
-import AddUserIcon from '@/shared/ui/icons/addUser.svg?react';
+
 import {PopupMenu} from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import {Checkbox} from "@/shared";
 
@@ -29,19 +27,10 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
   
   const isEditing = popoverOpen;
 
-  const { openModal } = useModalStore();
 
   // const [mockIsPublished, setMockIsPublished] = useState(false);
 
   // const mockIsPublished = false
-  const [invitedUser, setInvitedUser] = useState<{ id: number; name: string } | null>(null);
-
-  const inviteUser = (roleName: string) => {
-    openModal('INVITE_USER', {
-      roleName: roleName,
-      onInvite: (user: { id: number; name: string }) => setInvitedUser(user),
-    });
-  }
 
   return (
     <form.Field name={`roles[${index}]`} mode="value">
@@ -124,12 +113,6 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                   <PopupMenu.Row onClick={handleRemoveRole} title={'Удалить компетенцию'}>
                     <DeleteIcon/>
                   </PopupMenu.Row>
-                  {
-                    !invitedUser &&
-                    <PopupMenu.Row onClick={() => inviteUser(roleName)} title={'Пригласить пользователя'}>
-                      <AddUserIcon/>
-                    </PopupMenu.Row>
-                  }
                 </PopupMenu>
               </div>
             </div>
@@ -168,15 +151,6 @@ export function ProjectRoleCard({ form, index, globalSkills, isBlink }: ProjectR
                               <div key={skill.id} className={`${styles.competency} ${isEditing ? styles.editing : ''}`}>
                                 <div className={styles.featContainer}>
                                   {skill.skillName}
-                                  {
-                                    isEditing &&
-                                    <>
-                                      <button className={styles.featButton}>
-                                        <EmptyStarIcon className={styles.starIcon}/>
-                                      </button>
-                                    </>
-                                  }
-
                                 </div>
 
                                 {isEditing && (

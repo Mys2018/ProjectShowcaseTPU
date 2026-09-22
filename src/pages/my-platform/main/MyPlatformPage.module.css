@@ -109,7 +109,7 @@
 }
 
 .projects {
-  padding-top: 68px; /* 76px - grid gap */
+  padding-top: 64px;
   padding-inline: var(--paddingInline);
   padding-bottom: var(--paddingBottom);
 

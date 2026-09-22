@@ -57,35 +57,36 @@ export default function Header() {
           <div className={styles.center}>
             <SwitchWorkSpace />
           </div>
-          <div className={styles.right}>
-            <div className={styles.separator}/>
-            <div className={styles.buttonContainer}>
-              <button
-                className={clsx(styles.iconButton, styles.heart)}
-                aria-label="Понравившиеся проекты"
-                onClick={() => void navigate(ROUTES.ACTIVITY.FAVORITES)}
-              >
-                <HeartIcon/>
-              </button>
-              <button
-                className={clsx(styles.iconButton, styles.bell)}
-                aria-label="Уведомления"
-                onClick={() => {
-                  navigate(ROUTES.NOTIFICATION.BASE)
-                }}
-              >
-                {
-                  activeInvites && activeInvites.length > 0 ? <BellNotiIcon/> : <BellIcon/>
-                }
 
-              </button>
-            </div>
-            {
-              status !== 'authenticated' && status !== 'loading' ?
-                <EnterButton/> :
+          {
+            status !== 'authenticated' && status !== 'loading' ?
+              <EnterButton/> : <div className={styles.right}>
+                <div className={styles.separator}/>
+                <div className={styles.buttonContainer}>
+                  <button
+                    className={clsx(styles.iconButton, styles.heart)}
+                    aria-label="Понравившиеся проекты"
+                    onClick={() => void navigate(ROUTES.ACTIVITY.FAVORITES)}
+                  >
+                    <HeartIcon/>
+                  </button>
+                  <button
+                    className={clsx(styles.iconButton, styles.bell)}
+                    aria-label="Уведомления"
+                    onClick={() => {
+                      navigate(ROUTES.NOTIFICATION.BASE)
+                    }}
+                  >
+                    {
+                      activeInvites && activeInvites.length > 0 ? <BellNotiIcon/> : <BellIcon/>
+                    }
+
+                  </button>
+                </div>
                 <PopUpNavigation />
-            }
-          </div>
+              </div>
+
+          }
         </div>
       </header>
       <div className={styles.switchWrap}>
