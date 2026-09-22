@@ -18,6 +18,7 @@ import {
 import { Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, useMe, useUserById } from '@/entities/user'
 import { getSortedTags, TagBadgeList } from '@/entities/tag'
 import { buildRoute, CalendarIcon, ChevronRightIcon, mapDateToLocalString, ROUTES } from '@/shared'
+import { useModalStore } from '@/shared/model'
 
 interface StudentParticipatingProjectCardProps {
   project: ProjectCardData
@@ -32,6 +33,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
   const navigate = useNavigate()
+  const openModal = useModalStore(state => state.openModal)
 
   if (!project) return null
 
@@ -59,6 +61,20 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
   const isClosed = project.status === 'Completed' || project.status === 'NotImplemented' || project.status === 'Archived'
 
   const studentHours = getStudentProjectHours(timesheetSummary, me?.id)
+  // Часы идут по спринтам — таблица есть только у проектов в работе и в архиве
+  const hasHoursTable = project.status === 'InProgress' || isClosed
+
+  const openHoursTable = (e: React.MouseEvent) => {
+    // вся карточка — ссылка на проект, клик по кнопке не должен туда уводить
+    e.stopPropagation()
+    openModal('MY_PROJECT_HOURS', {
+      projectId: project.id,
+      title: project.meta.title,
+      // компетенция — та же, что в карточке: по месту, которое я занимаю в роли проекта
+      competency: { id: '', name: roleName },
+      deadline: closureDate
+    })
+  }
 
   return (
     <ProjectCardHorizontal
@@ -133,13 +149,18 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
             </Link>
 
             <div className={clsx(styles.results, isClosed && styles.closed)}>
-              <p className={styles.label}>
-                <span className={styles.preface}>{isClosed && 'Ваш результат'}</span>
-                <span className={styles.strong}>{studentHours}</span> {getScoreWord(studentHours)}
+              <p className={styles.points}>
+                {isClosed && <span className={styles.preface}>Ваш результат:</span>}
+                <span className={styles.score}>
+                  <span className={styles.strong}>{studentHours}</span>
+                  {getScoreWord(studentHours)}
+                </span>
               </p>
-              {/* <button type='button' className={styles.sheetButton}>
-                Показать таблицу
-              </button> */}
+              {hasHoursTable && (
+                <button type="button" className={styles.sheetButton} onClick={openHoursTable}>
+                  Посмотреть таблицу
+                </button>
+              )}
             </div>
           </div>
         </div>

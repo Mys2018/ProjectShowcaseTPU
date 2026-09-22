@@ -1,4 +1,10 @@
 /* Цветов ниже нет в variables.css — взяты из макета. */
+/* таблица + полоса прокрутки под ней — одной ширины */
+.frame {
+  width: fit-content;
+  max-width: 100%;
+}
+
 .wrap {
   --sc-current-bg: #E9F9E9;
   --sc-result-bg: #DADEF6;
@@ -20,6 +26,11 @@
 
 .scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* область фокусируется ради листания стрелками — рамка фокуса тут не нужна */
+.scroll:focus {
+  outline: none;
 }
 
 /* Мышью таблица листается перетаскиванием (см. ScoringTable.tsx). */

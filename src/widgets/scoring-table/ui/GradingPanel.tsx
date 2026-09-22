@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useBlocker } from 'react-router-dom'
 import clsx from 'clsx'
 import styles from './GradingPanel.module.css'
@@ -20,7 +20,7 @@ import {
 } from '../model/grading'
 import { useSubmitSprintHours, type SprintHoursBatch } from '@/entities/project'
 import { Avatar, TeamUserCard } from '@/entities/user'
-import { CompetencyIcon, isPseudoRole } from '@/entities/competency'
+import { CompetencyIcon } from '@/entities/competency'
 import { getDaysUntil, getPluralDays, parseDeadline } from '@/shared'
 import { useModalStore } from '@/shared/model'
 import { GreyButton, OutlineButton } from '@/shared/ui/elements/buttons'
@@ -34,6 +34,8 @@ import PendingIcon from '@/shared/ui/icons/round-status-pending.svg?react'
 interface GradingPanelProps {
   projectId: string
   title: string
+  /** Пришли кнопкой «Оценить работу участника»: строку этого студента прокрутить и подсветить. */
+  highlightStudentId?: string
 }
 
 const STATUS_ICONS: Record<RowStatus, typeof DoneIcon> = {
@@ -72,8 +74,16 @@ const withoutKey = (draft: Draft, key: string): Draft => {
  * Оценка участников: часы по неделям выбранного спринта. Ключ `projectId` на
  * компоненте сбрасывает черновик при смене проекта.
  */
-export function GradingPanel({ projectId, title }: GradingPanelProps) {
+export function GradingPanel({ projectId, title, highlightStudentId }: GradingPanelProps) {
   const { data, isLoading, isError } = useProjectScoring(projectId)
+  const [highlighted, setHighlighted] = useState(highlightStudentId)
+  const highlightRef = useRef<HTMLDivElement>(null)
+  const hasData = Boolean(data)
+
+  // Строки появляются после загрузки — тогда и подводим к нужной
+  useEffect(() => {
+    highlightRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  }, [hasData])
   const submit = useSubmitSprintHours(projectId)
   const [pickedSprint, setPickedSprint] = useState<number | null>(null)
   const [draft, setDraft] = useState<Draft>({})
@@ -174,7 +184,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
         <h2 className={styles.title}>Оценка участников «{title}»</h2>
         <div className={styles.meta}>
           <div className={styles.metaItem}>
-            <p className={styles.label}>Текущий этап</p>
+            <p className={styles.label}>Текущий этап:</p>
             {currentSprint >= 0 ? (
               <p className={styles.stage}>
                 <span className={styles.sprintName}>Спринт {currentSprint + 1}</span>
@@ -186,7 +196,7 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
             )}
           </div>
           <div className={styles.metaItem}>
-            <p className={styles.label}>Дедлайн</p>
+            <p className={styles.label}>Дедлайн:</p>
             <p className={styles.deadline}>
               <span className={styles.weekName}>
                 {deadline ? parseDeadline(deadline)?.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }) : '—'}
@@ -263,18 +273,25 @@ export function GradingPanel({ projectId, title }: GradingPanelProps) {
             const StatusIcon = STATUS_ICONS[status]
 
             return (
-              <div key={student.id} className={styles.row}>
-                <div className={clsx(styles.grid, styles.card)}>
+              <div
+                key={student.id}
+                ref={student.id === highlighted ? highlightRef : undefined}
+                className={styles.row}
+              >
+                <div
+                  className={clsx(styles.grid, styles.card, student.id === highlighted && styles.highlight)}
+                  // подсветка отыграла один раз — снимаем, чтобы не повторялась при перерисовках
+                  onAnimationEnd={() => student.id === highlighted && setHighlighted(undefined)}
+                >
                   <TeamUserCard
                     userId={student.id}
                     firstName={student.firstName}
                     lastName={student.lastName}
                     nameSuffix={student.isViewer && <span className={styles.you}>(Вы)</span>}
-                    roles={student.role && !isPseudoRole(student.role) ? [student.role] : undefined}
+                    // нет места в роли — строки компетенции нет совсем, а не «?» без подписи
+                    roles={student.role ? [student.role] : []}
                     rolesIcon={
-                      student.role && !isPseudoRole(student.role) ? (
-                        <CompetencyIcon role={student.role} className={styles.roleIcon} />
-                      ) : undefined
+                      student.competency && <CompetencyIcon competency={student.competency} className={styles.roleIcon} />
                     }
                     nameStyle="normal"
                     nameTextStyle="bodyText"

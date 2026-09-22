@@ -1,0 +1,378 @@
+/* Цвета ниже, которых нет в variables.css, взяты из макета — те же, что у большой таблицы. */
+.popup {
+  --mh-current-bg: #E9F9E9;
+
+  box-sizing: border-box;
+  align-self: center;
+  width: 559px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 24px;
+
+  background: var(--color-white);
+  box-shadow: 0 8px 26.2px 6px rgb(14 28 82 / 0.12);
+  border-radius: 20px;
+}
+
+/* глобальный `*` ставит ALS Sirius каждому элементу — наследуем шрифт явно */
+.popup :where(span, strong, dt, dd, button) {
+  font: inherit;
+}
+
+/* фокус на самом попапе нужен только скринридеру — рамка не нужна */
+.popup:focus {
+  outline: none;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* ── Шапка ─────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  margin: 0;
+  font: 600 20px/1.3 var(--font-inter);
+  color: var(--color-gray-900);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.label {
+  font: 300 12px/1 var(--font-inter);
+  color: var(--color-gray-500);
+}
+
+/* строка значения — высотой с иконку компетенции, чтобы все три значения стояли на одной линии */
+.value {
+  display: flex;
+  align-items: center;
+  min-height: 16px;
+  margin: 0;
+
+  font: var(--widget-title-platform);
+  color: var(--color-gray-600);
+  white-space: nowrap;
+}
+
+.competency {
+  gap: 6px;
+}
+
+.competencyIcon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.competencyName {
+  min-width: 0;
+  font: 350 12px/1.1 var(--font-open-sans);
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Часы ──────────────────────────────────────────────────────────── */
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.subhead {
+  margin: 0;
+  font: 700 15px/1.25 var(--font-ALS);
+  color: var(--color-gray-650);
+}
+
+.state {
+  margin: 0;
+  padding: 24px 0;
+  font: var(--inter-13-400);
+  color: var(--color-gray-500);
+  text-align: center;
+}
+
+.wrap {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-100);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Скроллится без видимой полосы, мышью — перетаскиванием (useDragScroll) */
+.scroll {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* область фокусируется ради листания стрелками — рамка фокуса тут не нужна */
+.scroll:focus {
+  outline: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .scroll {
+    cursor: grab;
+  }
+}
+
+.scroll[data-dragging] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Разделители — только справа и снизу, внешний контур даёт .wrap.
+   :where() обнуляет специфичность, чтобы классы ячеек ниже могли переопределять. */
+.table :where(th, td) {
+  box-sizing: border-box;
+  min-width: 50px;
+  /* высоту строки задаёт height ячейки (32/28/32 как в макете), текст центрируется сам */
+  padding: 0 12px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-right: 1px solid var(--color-gray-100);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.table :where(tr > :last-child) {
+  border-right: none;
+}
+
+.table :where(tbody tr:last-child > *) {
+  border-bottom: none;
+}
+
+.sprint {
+  height: 32px;
+  background: var(--color-gray-50);
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+}
+
+.sprintInner {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  gap: 8px;
+}
+
+.clock {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.sprintCurrent {
+  background: var(--color-brand-green);
+  border-right-color: var(--color-brand-green);
+  color: var(--color-white);
+}
+
+.week {
+  height: 28px;
+  background: var(--color-gray-50);
+  font: 300 12px/1 var(--font-inter);
+  color: var(--color-gray-500);
+}
+
+.score {
+  height: 32px;
+  font: 600 13px/1.25 var(--font-open-sans);
+  font-feature-settings: 'pnum' on, 'lnum' on;
+  color: var(--color-gray-600);
+}
+
+.current {
+  background: var(--mh-current-bg);
+  color: var(--color-brand-green);
+}
+
+/* прочерк: студента тогда ещё не было в проекте — серый и в текущей неделе */
+.absent {
+  color: var(--color-gray-250);
+}
+
+/* ── Подпись под таблицей ──────────────────────────────────────────── */
+
+.note {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 10px;
+
+  font: var(--inter-11-300);
+  color: var(--color-gray-500);
+}
+
+.dispute {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.disputeWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.disputeButton {
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: default;
+}
+
+/* Функции ещё нет — по наведению или фокусу тёмная подсказка над ссылкой.
+   Подсказка стоит рядом с кнопкой, а не внутри: иначе её текст попал бы в название кнопки.
+   Прижата к правому краю: ссылка стоит у правой кромки попапа. */
+.soon {
+  position: absolute;
+  right: -8px;
+  bottom: calc(100% + 10px);
+  z-index: 1;
+  padding: 8px 12px;
+
+  font: 400 13px/1.25 var(--font-inter);
+  color: var(--color-white);
+  white-space: nowrap;
+  text-decoration: none;
+
+  background: var(--color-gray-900);
+  border-radius: 8px;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  pointer-events: none;
+}
+
+/* хвостик вниз — над серединой ссылки */
+.soon::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 50px;
+  border: 6px solid transparent;
+  border-top-color: var(--color-gray-900);
+}
+
+.disputeButton:hover + .soon,
+.disputeButton:focus + .soon {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+/* ── Низ ───────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.total {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 16px;
+
+  font: 300 12px/1 var(--font-inter);
+  color: var(--color-white);
+  background: var(--color-brand-violet);
+  border-radius: 12px;
+}
+
+.totalValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.totalNumber {
+  font: var(--inter-13-600);
+}
+
+.close {
+  padding: 0;
+  background: none;
+  border: none;
+
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--color-gray-650);
+}
+
+.disputeButton:focus-visible,
+.close:focus-visible {
+  outline: 2px solid var(--color-brand-violet);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Телефон: попап почти во всю ширину, отступы как у остальных модалок */
+@media (max-width: 600px) {
+  .popup {
+    padding: 20px 16px;
+    gap: 24px;
+  }
+
+  .content {
+    gap: 28px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+}

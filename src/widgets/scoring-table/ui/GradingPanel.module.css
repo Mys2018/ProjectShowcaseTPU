@@ -107,6 +107,10 @@
 
 .sheet svg {
   align-self: center;
+  /* рисунок иконки (12.5px) выше заглавных и свисает под строку — поднимаем,
+     чтобы его середина совпала с серединой текста */
+  position: relative;
+  top: -1.5px;
 }
 
 /* ── Таблица часов ───────────────────────────────────────────────── */
@@ -180,9 +184,41 @@
 }
 
 .card {
+  position: relative;
   height: 72px;
   background: var(--color-white);
   border-radius: 16px;
+}
+
+/* Пришли кнопкой «Оценить работу участника»: жёлтая рамка поверх карточки студента.
+   Тайминги сняты с экспорта анимации из Figma: пауза 0.4 с (страница открылась,
+   строка доехала до центра), 0.27 с проявляется, 0.33 с держится, 0.27 с гаснет. */
+.highlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+
+  background: rgb(255 182 0 / 0.03);
+  border: 1px solid var(--color-yellow);
+  border-radius: 16px;
+  pointer-events: none;
+
+  animation: highlight 0.87s ease-in-out 0.4s both;
+}
+
+@keyframes highlight {
+  0% { opacity: 0; }
+  31% { opacity: 1; }
+  69% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* без движения — просто показать рамку на то же время */
+@media (prefers-reduced-motion: reduce) {
+  .highlight::after {
+    animation-timing-function: step-end;
+  }
 }
 
 .avatar {
@@ -314,8 +350,8 @@
   justify-content: center;
   align-items: baseline;
   gap: 2px;
-  /* макетные 4/7 визуально задирают число вверх — опускаем пару «число + ч» по центру */
-  padding: 6px 0 5px;
+  /* по 5px сверху и снизу — пара «число + ч» ровно по центру ячейки */
+  padding: 5px 0;
 
   background: var(--color-white);
   border: 1px solid var(--tone);
@@ -336,10 +372,11 @@
 .input {
   /* ширина под три цифры и всегда одна — «ч» не должна ездить за числом */
   width: 26px;
-  height: 19px;
+  /* ровно высота ячейки без паддингов 5/5 и рамки: 32 − 10 − 2 */
+  height: 20px;
   padding: 0;
 
-  font: 400 15px/19px var(--font-open-sans);
+  font: 400 15px/20px var(--font-open-sans);
   color: var(--color-gray-900);
   text-align: center;
   caret-color: var(--color-brand-violet);

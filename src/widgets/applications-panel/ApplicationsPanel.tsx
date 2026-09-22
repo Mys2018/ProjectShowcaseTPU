@@ -135,11 +135,15 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     [createInvitationMutation]
   )
 
-  const handleScoreMember = useCallback(() => {
-    navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
-      state: { projectId: project.id }
-    })
-  }, [navigate, project.id])
+  // На вкладку оценки этого проекта; studentId — чтобы там подсветить строку участника
+  const handleScoreMember = useCallback(
+    (user: UserCard) => {
+      void navigate(`${ROUTES.MANAGE.BASE}?projectId=${project.id}#grades`, {
+        state: { projectId: project.id, studentId: String(user.userId) }
+      })
+    },
+    [navigate, project.id]
+  )
 
   const handleRemoveMember = useCallback(
     (user: UserCard) => {
@@ -317,7 +321,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                     occurrenceIndex={role.occurrenceIndex}
                     totalOccurrences={role.totalOccurrences}
                     onRemove={() => handleRemoveMember(item.user)}
-                    onScore={handleScoreMember}
+                    onScore={() => handleScoreMember(item.user)}
                   />
                 )
               })}
@@ -337,7 +341,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
                     index={occupiedRoleItems.length + idx}
                     name={userRole || undefined}
                     onRemove={() => handleRemoveMember(user)}
-                    onScore={handleScoreMember}
+                    onScore={() => handleScoreMember(user)}
                   />
                 )
               })}

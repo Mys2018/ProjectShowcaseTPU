@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {AvatarUploadModal} from "@/widgets/profile-header/ui/AvatarUploadModal.tsx";
+import { MyHoursModal } from "@/widgets/scoring-table";
 import { SelectCompetencyModal } from '@/features/my-competencies/ui/modal-competency/SelectCompetencyModal.tsx'
 import {SelectProjectLinksModal} from "@/features/create-project/ui/components/select-project-links-modal/SelectProjectLinksModal.tsx";
 import {InviteUserModal} from "@/features/create-project/ui/components/invite-user-modal/InviteUserModal.tsx";
@@ -26,6 +27,7 @@ const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   START_MODAL: StartModal,
   BLOCKED_GRADING: BlockedGradingModal,
   COMPLAINT_MODAL: ComplaintModal,
+  MY_PROJECT_HOURS: MyHoursModal,
 }
 
 
