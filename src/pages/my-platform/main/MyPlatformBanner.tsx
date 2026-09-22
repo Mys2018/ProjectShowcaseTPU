@@ -57,7 +57,7 @@ const getBannerInfo = (
         badgeText: (
           <>
             <span className={styles.light}>Защита через</span>{' '}
-            {getDayPlural((checkpoints[checkpoints.length - 1].deadline.getTime() - new Date().getTime()) / 1000 / 3600 / 24)}
+            {getDayPlural(Math.ceil((checkpoints[checkpoints.length - 1].deadline.getTime() - new Date().getTime()) / 1000 / 3600 / 24))}
           </>
         )
       }
@@ -71,9 +71,8 @@ export function MyPlatformBanner({ children }: { children?: ReactElement }) {
   const preferredRoleType = usePreferencesStore(s => s.preferredRoleType)
   const { data: currentCheckpoint } = useCurrentCheckpoints()
   const checkpoints = currentCheckpoint?.checkpoints
-  const isRecruiting = checkpoints && checkpoints[0].deadline.getTime() < new Date().getTime()
+  const isRecruiting = checkpoints && checkpoints[0].deadline.getTime() > new Date().getTime()
   const isEnded = checkpoints && checkpoints[checkpoints.length - 1].deadline.getTime() < new Date().getTime()
-
   switch (preferredRoleType) {
     case 'Student':
       return (
