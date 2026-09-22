@@ -17,24 +17,30 @@
   overflow-y: auto;
   box-sizing: border-box;
 
+  & .project {
+    flex-shrink: 0;
+    cursor: default;
+
+    &.pointer {
+      cursor: pointer;
+    }
+
+    &.active {
+      cursor: default;
+      border: 1px solid var(--color-brand-green);
+    }
+
+    & .status {
+      height: 100%;
+      margin-left: auto;
+    }
+  }
+
   & .skeleton {
-    height: 160px;
+    aspect-ratio: 1;
     border-radius: 20px;
     flex-shrink: 0;
   }
-}
-
-.projectItem {
-  cursor: pointer;
-  border-radius: 20px;
-  transition: box-shadow 0.15s ease;
-  width: 100%;
-  flex-shrink: 0;
-}
-
-.projectItemActive {
-  box-shadow: 0 0 0 2px var(--color-brand-green);
-  border-radius: 20px;
 }
 
 .content {

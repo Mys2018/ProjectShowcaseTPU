@@ -1,8 +1,13 @@
 /* eslint-disable fsd/no-cross-slice-dependency */
 /* eslint-disable fsd/forbidden-imports */
 import type { DraftProgress, ProjectDraftResponse } from '../model/types'
-import { calculateProjectWizardProgress, type CreateProjectFormValues } from '@/features/create-project'
+import {
+  calculateProjectWizardProgress,
+  type CreateProjectFormValues,
+  type WizardProgress,
+} from '@/features/create-project'
 import type { ProjectCardData, ProjectFormat, PrdMeta } from '@/entities/project'
+import { mapDateToBackendString } from '@/shared'
 
 export const mapDraftToProjectCardData = (
   draft: ProjectDraftResponse | Partial<CreateProjectFormValues> | null | undefined
@@ -73,6 +78,58 @@ export const mapDraftToProjectCardData = (
     isLiked: false,
     liked: false,
     hasMyReview: false,
+  }
+}
+
+export const mapProjectToDraftValues = (
+  project: ProjectCardData,
+): Partial<CreateProjectFormValues> & { currentStep: number; highestStep: number; progress: WizardProgress } => {
+  const values = {
+    type: project.type,
+    partnerId: project.partner.id,
+    meta: project.meta,
+    roles: project.roles.map(role => ({
+      roleTypeId: role.roleTypeId ?? role.roleId,
+      placesCount: role.placesCount,
+      minPlacesCount: role.minPlacesCount,
+      meta: role.meta,
+      skills: role.skills.map(skill => ({ id: skill.skillId, skillName: skill.skillName })),
+    })),
+    primaryTag: project.primaryTag.id,
+    tags: project.tags.map(tag => tag.id),
+    checkpoints: project.checkpoints.id,
+    // Проект приходит со слитым списком (базовая группа + custom), поэтому после
+    // слияния каждый пункт встречается дважды. Дубли нарушают уникальность на
+    // бэкенде при PATCH — отдаём строго по одному экземпляру.
+    customCheckpoints: project.checkpoints.checkpoints
+      .map(checkpoint => ({
+        title: checkpoint.title,
+        deadline: mapDateToBackendString(checkpoint.deadline),
+      }))
+      .filter((c, index, all) => all.findIndex((x) => x.title === c.title && x.deadline === c.deadline) === index),
+    links: [
+      ...(project.repository ?? []).map(link => ({ platformId: link.platformId, name: link.name, category: 'Repository', link: link.url })),
+      ...(project.taskTracker ?? []).map(link => ({ platformId: link.platformId, name: link.name, category: 'TaskTracker', link: link.url })),
+      ...[...(project.otherPlatforms ?? []), ...(project.designEnvironment ?? [])].map(link => ({
+        platformId: link.platformId,
+        name: link.name,
+        category: 'OtherPlatforms',
+        link: link.url,
+      })),
+    ],
+    prdMeta: project.prdMeta,
+    extraFieldsForAll: {
+      partnerName: project.partner.name,
+      primaryTagName: project.primaryTag.name,
+      tags: project.tags.map(tag => tag.name),
+    },
+  } as unknown as Partial<CreateProjectFormValues>
+
+  return {
+    ...values,
+    currentStep: 1,
+    highestStep: 5,
+    progress: calculateProjectWizardProgress(values),
   }
 }
 

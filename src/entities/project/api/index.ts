@@ -1,5 +1,6 @@
 export { projectKeys as projectQueryKeys } from './queryKeys'
 export { projectApi } from './requests'
+export { useUpdateProject } from './mutations'
 export {
   useProjects,
   useProjectDetails,

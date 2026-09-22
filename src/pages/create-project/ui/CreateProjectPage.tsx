@@ -11,9 +11,14 @@ import {
   type CreateProjectFormValues,
   type WizardProgress,
 } from '@/features/create-project';
-import { useCreateProject } from '@/entities/project/api/queries';
+import { useCreateProject, useProjectDetails, useSetProjectStatus } from '@/entities/project/api/queries';
+import { mapProjectToDraftValues } from '@/entities/draft';
 import type { CreateProjectRequestType, PrdMeta } from '@/entities/project/model/types';
-import { getProjectFormatTranslation } from '@/entities/project';
+import {
+  getProjectFormatTranslation,
+  useProjectReview,
+  useUpdateProject,
+} from '@/entities/project';
 
 import { usePartners } from '@/entities/partner/api/queries';
 import { CreateProjectProgressWidget } from "@/shared/ui/create-project-progress-widget/CreateProjectProgressWidget.tsx";
@@ -37,9 +42,18 @@ interface CreateProjectWizardFormProps {
     highestStep?: number;
     progress?: WizardProgress;
   }) | null;
+  restoreValues?: (Partial<CreateProjectFormValues> & {
+    currentStep?: number;
+    highestStep?: number;
+    progress?: WizardProgress;
+  }) | null;
+  isDraftLoading?: boolean;
+  editProjectId?: string | null;
+  editOwnerId?: number | null;
+  editOriginalRoles?: { roleId: string; roleTypeId?: string }[];
 }
 
-function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWizardFormProps) {
+function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isDraftLoading, editProjectId, editOwnerId, editOriginalRoles }: CreateProjectWizardFormProps) {
   const navigate = useNavigate();
   const initialType = (initialDraft?.type as CreateProjectRequestType) || 'Study';
 
@@ -53,20 +67,57 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWiz
   const { data: partnersList = [] } = usePartners();
   const mappedPartners = partnersList.map(p => ({ value: p.id, verbose: p.name }));
 
-  const { mutate: createProject, isPending } = useCreateProject();
+  const { mutate: createProject, isPending: isCreatePending } = useCreateProject();
+  const { mutate: updateProject, isPending: isUpdatePending } = useUpdateProject();
+  const { mutate: setProjectStatus, isPending: isStatusPending } = useSetProjectStatus();
+  const isPending = isCreatePending || isUpdatePending || isStatusPending;
+  const { data: review, isLoading: isReviewLoading } = useProjectReview(editProjectId ?? '', Boolean(editProjectId));
 
   const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
     defaultValues: initialDraft ?? {
       type: selectedType,
     } as Partial<CreateProjectFormValues>,
+    restoreValues,
+    isDraftLoading,
     onSubmit: (values) => {
-      createProject(values, {
-        onSuccess: () => {
-          // Delete draft after successful publish
-          deleteDraftMutation();
-          navigate(-1);
-        },
-      });
+      const handleSuccess = () => {
+        // Delete draft after successful publish
+        deleteDraftMutation();
+        navigate(-1);
+      };
+
+      if (editProjectId) {
+        const { meta, ...rest } = values;
+        // RoleUpdateDto: id существующей роли обязателен, иначе бэкенд пытается
+        // создать новую с тем же roleTypeId → уникальный ключ (project, roleType)
+        // нарушается → CONFLICT. Привязываем форму к существующим ролям проекта.
+        const originalRoles = editOriginalRoles ?? [];
+        const updateRoles = values.roles.map((role) => {
+          const originalRole = originalRoles.find((r) => r.roleTypeId === role.roleTypeId);
+          return originalRole ? { ...role, roleId: originalRole.roleId } : role;
+        });
+        updateProject({
+          projectId: editProjectId,
+          payload: {
+            ...rest,
+            roles: updateRoles,
+            ownerId: editOwnerId ?? values.ownerId,
+            title: meta?.title ?? '',
+            description: meta?.description ?? '',
+          },
+        }, {
+          onSuccess: () => {
+            // Доработка отправлена — возвращаем проект на модерацию.
+            // Только после смены статуса уходим назад, иначе проект
+            // останется в NeedsRework и «потеряется».
+            setProjectStatus({ projectId: editProjectId, status: 'Pending' }, {
+              onSuccess: handleSuccess,
+            });
+          },
+        });
+      } else {
+        createProject(values, { onSuccess: handleSuccess });
+      }
     },
   });
 
@@ -251,7 +302,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWiz
       <main className={styles.mainContent}>
         <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
 
-        <h1 className={styles.title}>Новый проект</h1>
+        <h1 className={styles.title}>{editProjectId ? 'Редактирование проекта' : 'Новый проект'}</h1>
 
         <section className={styles.body}>
           <div className={styles.description}>
@@ -279,15 +330,21 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWiz
       <main className={styles.mainContent}>
         <div
           className={styles.headerLeft}
-          onClick={() => setPageStep('type-select')}
+          onClick={() => {
+            if (editProjectId) {
+              navigate(-1);
+            } else {
+              setPageStep('type-select');
+            }
+          }}
         >
           <BackIcon />
           {/* Шаг мастера, а не страница, поэтому мимо словаря — но подпись
               по тому же правилу: стрелка плюс название, куда ведёт. */}
-          <p>Выбор типа проекта</p>
+          <p>{editProjectId ? 'Моя платформа' : 'Выбор типа проекта'}</p>
         </div>
 
-        <h1 className={styles.title}>Новый проект — «{typeLabel}»</h1>
+        <h1 className={styles.title}>{editProjectId ? 'Редактирование проекта' : 'Новый проект'} — «{typeLabel}»</h1>
 
         <section className={styles.saveStatusContainer}>
           {saveStatus !== 'idle' && getSaveStatus(saveStatus)}
@@ -314,6 +371,9 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft }: CreateProjectWiz
             isPending={isPending}
             onSubmit={handleSubmit}
             onDeleteDraft={handleDeleteDraft}
+            isEditMode={Boolean(editProjectId)}
+            review={review}
+            isReviewLoading={isReviewLoading}
             partners={mappedPartners}
             currentStep={currentStep}
             nextStep={nextStep}
@@ -332,9 +392,11 @@ export function CreateProjectPage() {
   const { data: me, isLoading: isMeLoading } = useMe();
   const [searchParams] = useSearchParams();
   const isDraftMode = searchParams.get('draft') === 'true';
+  const editProjectId = searchParams.get('projectId');
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
   const { data: draftData, isLoading: isDraftLoading } = useProjectDraft();
+  const { data: projectData, isLoading: isProjectLoading } = useProjectDetails(editProjectId ?? '');
 
   if (isMeLoading) {
     return (
@@ -356,7 +418,23 @@ export function CreateProjectPage() {
     return <DesktopOnlyStub />;
   }
 
-  if (isDraftMode && isDraftLoading) {
+  if (editProjectId && isProjectLoading) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Загрузка проекта...</p>
+      </main>
+    );
+  }
+
+  if (editProjectId && !projectData) {
+    return (
+      <main className={styles.mainContent}>
+        <p>Проект не найден</p>
+      </main>
+    );
+  }
+
+  if (isDraftMode && !editProjectId && isDraftLoading) {
     return (
       <main className={styles.mainContent}>
         <p>Загрузка черновика...</p>
@@ -364,7 +442,7 @@ export function CreateProjectPage() {
     );
   }
 
-  const draftPayload = isDraftMode && draftData?.data
+  const draftPayload = isDraftMode && !editProjectId && draftData?.data
     ? (draftData.data as Partial<CreateProjectFormValues> & {
         currentStep?: number;
         highestStep?: number;
@@ -372,11 +450,18 @@ export function CreateProjectPage() {
       })
     : null;
 
+  const restoreValues = editProjectId && projectData ? mapProjectToDraftValues(projectData) : null;
+
   return (
     <CreateProjectWizardForm
-      key={isDraftMode ? 'draft' : 'new'}
-      isDraftMode={isDraftMode}
+      key={editProjectId ?? (isDraftMode ? 'draft' : 'new')}
+      isDraftMode={Boolean(editProjectId) || isDraftMode}
       initialDraft={draftPayload}
+      restoreValues={restoreValues}
+      isDraftLoading={editProjectId ? isProjectLoading : isDraftLoading}
+      editProjectId={editProjectId}
+      editOwnerId={projectData?.ownerId ?? null}
+      editOriginalRoles={projectData?.roles ?? []}
     />
   );
 }

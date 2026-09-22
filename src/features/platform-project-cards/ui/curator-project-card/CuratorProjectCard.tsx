@@ -10,7 +10,8 @@ import {
   getPublicProjectStatus,
   useProjectTeam,
   useProjectGrading,
-  useSetProjectStatus
+  useSetProjectStatus,
+  useProjectReview
 } from "@/entities/project";
 import { PartnerRow, PartnerRowSkeleton } from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
@@ -42,6 +43,8 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
     offset: 0,
     limit: 1
   })
+
+  const { data: projectReview = '' } = useProjectReview(project.id, project.status === 'Rejected')
 
   const navigate = useNavigate();
   const setStatusMutation = useSetProjectStatus();
@@ -82,7 +85,13 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
       project={project}
       mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
       onClick={() => {
-        navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
+        if (project.status === 'NeedsRework') {
+          navigate(`${ROUTES.PROJECTS.CREATE}?projectId=${project.id}`)
+          return
+        }
+        if (project.status !== 'Rejected') {
+          navigate(`${ROUTES.PROJECTS.BASE}/${project.id}`)
+        }
       }}
       headerSlot={
         <div className={styles.header}>
@@ -92,7 +101,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
           <div className={styles.statusContainer}>
             <ProjectPublicStatusLabel status={publicStatus} />
-            <ProjectInnerStatus status={project.status} />
+            <ProjectInnerStatus status={project.status} tooltipText={`Комментарий модератора : ${projectReview}`} />
           </div>
         </div>
       }

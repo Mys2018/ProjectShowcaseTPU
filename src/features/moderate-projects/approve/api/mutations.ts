@@ -10,6 +10,7 @@ export const useApproveProject = () => {
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.list(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.managedList(), exact: false })
       queryClient.invalidateQueries({ queryKey: projectQueryKeys.review(id) })
+      queryClient.invalidateQueries({ queryKey: projectQueryKeys.details(id) })
     }
   })
 }
