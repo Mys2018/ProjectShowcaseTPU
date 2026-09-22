@@ -11,6 +11,7 @@ export type InnerStatuses = 'published' | 'changes' | 'moderation' | 'report'
 
 interface ProjectInnerStatusProps {
   status: ProjectStatus;
+  tooltipText?: string
   children?: React.ReactNode;
 }
 
@@ -57,13 +58,13 @@ const STATUS_MAP: Record<ProjectStatus, InnerStatuses> = {
   Archived: 'published'
 }
 
-export const ProjectInnerStatus = ({ status, children }: ProjectInnerStatusProps) => {
+export const ProjectInnerStatus = ({ status, tooltipText, children }: ProjectInnerStatusProps) => {
   const innerStatus: InnerStatuses = STATUS_MAP[status];
-  const { icon, tooltipText } = getStatusData(innerStatus);
+  const { icon, tooltipText: fallbackTooltipText } = getStatusData(innerStatus);
 
   return (
     <InfoTooltip
-      body={[{ text: [tooltipText] }]}
+      body={[{ text: [tooltipText ?? fallbackTooltipText] }]}
       size="large"
       pointer="topRight"
 
