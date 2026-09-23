@@ -32,12 +32,6 @@
       padding: 0;
     }
 
-    & .body {
-      min-height: 0;
-      flex: 1;
-      overflow-y: auto;
-    }
-
     & .header {
       background-color: transparent;
     }
@@ -65,6 +59,7 @@
   min-height: 0;
   flex: 1;
   overflow-y: auto;
+  overscroll-behavior: contain;
 
   padding-inline: 12px;
 }
@@ -183,9 +178,14 @@
   }
 
   & .actions {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
+
+    & :last-child {
+      justify-self: end;
+    }
 
     & .button {
       display: flex;
