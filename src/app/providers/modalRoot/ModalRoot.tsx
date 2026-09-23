@@ -19,6 +19,7 @@ const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   LINK_UPDATE: LinkModal,
   CONFIRM_SAVE: ConfirmModal,
   CONFIRM_CANCEL: ConfirmModal,
+  CONFIRM_ARCHIVE: ConfirmModal,
   ADD_CHECKPOINT: AddCheckpointsModal,
   ADD_LINK: LinkModal,
   SELECT_PROJECT_LINKS: SelectProjectLinksModal,

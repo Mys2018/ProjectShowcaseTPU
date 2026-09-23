@@ -11,6 +11,7 @@ import { getProjectFormatTranslation } from '@/entities/project';
 
 import { InfoTooltip } from "@/shared";
 import {EditProjectType} from "@/shared/ui/edit-project-type";
+import {TooltipsText} from "@/shared/constants";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -61,17 +62,11 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields, onEditTyp
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.nameProjects.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.nameProjects.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
             type={'bulb'}
           />
@@ -99,17 +94,11 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields, onEditTyp
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.shortDescriptionProjects.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.shortDescriptionProjects.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
             type={'bulb'}
           />

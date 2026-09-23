@@ -126,6 +126,7 @@
   .headerLeft {
     padding: 16px 20px 0;
     height: auto;
+    display: none;
   }
 
   .pageTitle {
@@ -167,5 +168,19 @@
   .profile {
     /* panel-space */
     padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .pageTitle {
+    padding-bottom: 18px;
+  }
+
+  .see p {
+    display: none;
+  }
+
+  .see {
+    position: absolute;
+    top: 76px;
+    right: 0;
   }
 }

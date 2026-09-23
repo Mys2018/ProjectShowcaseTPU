@@ -1,5 +1,5 @@
 import styles from './ProfileWidget.module.css';
-import { InfoTooltip } from '@/shared';
+// import { InfoTooltip } from '@/shared';
 import {Avatar, TeamUserCard} from "@/entities/user";
 
 interface ProfileWidgetProps {
@@ -36,24 +36,24 @@ export const ProfileWidget = ({ userId, first_name, last_name, role, avatarSrc, 
       />
 
 
-      <InfoTooltip
-        title="Заголовок тултипа"
-        body={
-          [
-            {
-              text: [
-                'Бла бла',
-              ]
-            },
-          ]
-        }
-        size={'small'}
-        pointer={'topRight'}
-        importantText={'Важно тут!'}
-        link={'sdfsdsdsds'}
-        className={styles.questionIcon}
-        type={'help'}
-      />
+      {/*<InfoTooltip*/}
+      {/*  title="Заголовок тултипа"*/}
+      {/*  body={*/}
+      {/*    [*/}
+      {/*      {*/}
+      {/*        text: [*/}
+      {/*          'Бла бла',*/}
+      {/*        ]*/}
+      {/*      },*/}
+      {/*    ]*/}
+      {/*  }*/}
+      {/*  size={'small'}*/}
+      {/*  pointer={'topRight'}*/}
+      {/*  importantText={'Важно тут!'}*/}
+      {/*  link={'sdfsdsdsds'}*/}
+      {/*  className={styles.questionIcon}*/}
+      {/*  type={'help'}*/}
+      {/*/>*/}
     </div>
   )
 }

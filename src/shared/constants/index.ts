@@ -1,0 +1,1 @@
+export { TooltipsText } from './tooltipsText.ts'
