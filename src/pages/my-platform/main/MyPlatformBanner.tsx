@@ -2,26 +2,8 @@ import type { ReactElement, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './MyPlatformPage.module.css'
 import { usePreferencesStore } from '@/entities/user'
-import { useCurrentCheckpoints, type Checkpoint } from '@/entities/checkpoint'
-import { assertNever, Banner, Callout, FilledButton, ROUTES } from '@/shared'
-
-const getDayPlural = (count: number) => {
-  if (count < 0) return '0 дней'
-
-  const mod10 = count % 10
-  const mod100 = count % 100
-
-  if (mod100 >= 11 && mod100 <= 19) {
-    return `${count} дней`
-  }
-  if (mod10 === 1) {
-    return `${count} день`
-  }
-  if (mod10 >= 2 && mod10 <= 4) {
-    return `${count} дня`
-  }
-  return `${count} дней`
-}
+import { useCurrentCheckpoints, getDaysUntilCheckpoint, type Checkpoint } from '@/entities/checkpoint'
+import { assertNever, Banner, Callout, FilledButton, ROUTES, formatDaysLeft } from '@/shared'
 
 const getBannerInfo = (
   status: 'recruiting' | 'in-progress' | 'ended',
@@ -40,8 +22,7 @@ const getBannerInfo = (
         description: 'Выбирай проекты, подавай отклики и прокачивай навыки',
         badgeText: (
           <>
-            <span className={styles.light}>Осталось</span>{' '}
-            {getDayPlural(Math.ceil((checkpoints[0].deadline.getTime() - new Date().getTime()) / 1000 / 3600 / 24))}
+            <span className={styles.light}>Осталось</span> {formatDaysLeft(getDaysUntilCheckpoint(checkpoints[0]) ?? 0)}
           </>
         )
       }
@@ -57,7 +38,7 @@ const getBannerInfo = (
         badgeText: (
           <>
             <span className={styles.light}>Защита через</span>{' '}
-            {getDayPlural((checkpoints[checkpoints.length - 1].deadline.getTime() - new Date().getTime()) / 1000 / 3600 / 24)}
+            {formatDaysLeft(getDaysUntilCheckpoint(checkpoints[checkpoints.length - 1]) ?? 0)}
           </>
         )
       }
