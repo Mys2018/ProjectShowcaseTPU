@@ -65,7 +65,7 @@ export const ProjectInnerStatus = ({className, status, children }: ProjectInnerS
 
   return (
     <InfoTooltip
-      body={[{ text: [tooltipText ?? fallbackTooltipText] }]}
+      body={[{ text: [tooltipText] }]}
       size="large"
       pointer="topRight"
 
