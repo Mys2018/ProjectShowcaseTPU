@@ -266,3 +266,13 @@
 	font: var(--inter-12-300);
 	color: var(--color-brand-green);
 }
+
+@media (max-width: 768px) {
+	.summary {
+		flex-direction: column;
+	}
+
+	.link {
+		display: none;
+	}
+}

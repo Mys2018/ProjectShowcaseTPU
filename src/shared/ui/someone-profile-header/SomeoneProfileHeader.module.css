@@ -304,13 +304,20 @@
   }
 
   .linkBody:not(.special) p {
-    display: none;
     box-sizing: border-box;
   }
 
   .linkBody:not(.special) .shareLogo {
     display: none;
     box-sizing: border-box;
+  }
+
+  .linkList {
+    flex-direction: column;
+  }
+
+  .linkBody {
+    width: 100%;
   }
 }
 /* Отклик на «Связаться»: блок чуть уменьшается и возвращается. */
