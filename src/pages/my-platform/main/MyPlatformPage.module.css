@@ -173,6 +173,7 @@
 }
 
 @media (min-width: 768px) {
+
   .userRow {
     grid-column: 1;
     grid-row: 1;
@@ -244,7 +245,7 @@
   }
 
   .projects {
-    padding-top: 34px; /* 52px - grid gap */
+    padding-top: 0;
   }
 
   .cover {

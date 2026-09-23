@@ -47,3 +47,18 @@
 .empty {
   color: var(--color-gray-350) !important;
 }
+
+@media(max-width: 768px) {
+
+  .headerSlot {
+    align-items: center;
+  }
+
+  .headerSlot p {
+    background-color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font: var(--field-title-small-interface);
+    color: var(--color-gray-900)
+  }
+}

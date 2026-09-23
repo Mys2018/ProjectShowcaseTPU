@@ -101,7 +101,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
           <div className={styles.statusContainer}>
             <ProjectPublicStatusLabel status={publicStatus} />
-            <ProjectInnerStatus status={project.status} tooltipText={`Комментарий модератора : ${projectReview}`} />
+            <ProjectInnerStatus className={styles.innerStatus} status={project.status} tooltipText={`Комментарий модератора : ${projectReview}`} />
           </div>
         </div>
       }

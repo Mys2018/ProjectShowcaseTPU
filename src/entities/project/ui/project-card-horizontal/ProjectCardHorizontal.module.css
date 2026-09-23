@@ -19,6 +19,13 @@
   width: 72px;
 }
 
+.coverMobile {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .content {
   flex-grow: 1;
 
@@ -138,4 +145,40 @@
 
 .footer {
   margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+
+  .card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .cover {
+    display: none;
+  }
+
+  .coverMobile {
+    flex-shrink: 0;
+    height: 66px;
+
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+
+    padding: 16px 16px 24px;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+  }
 }

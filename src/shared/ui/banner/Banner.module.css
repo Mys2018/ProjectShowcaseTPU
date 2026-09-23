@@ -8,6 +8,7 @@
 
 	color: var(--color-white);
   background-color: var(--color-gray-350);
+	overflow: hidden;
 }
 
 .hero {
@@ -30,7 +31,7 @@
 	flex-direction: column;
 	align-items: start;
 	gap: 24px;
-	z-index: 2;
+	z-index: 3;
 
   & .info {
 		display: flex;
@@ -82,7 +83,7 @@
 }
 
 .children {
-	z-index: 2;
+	z-index: 3;
 }
 
 .student {
@@ -120,6 +121,7 @@
 		flex-direction: column;
 		align-items: stretch;
 		gap: 16px;
+		z-index: 3;
 	}
 
 	.intro {
@@ -131,6 +133,7 @@
 
 		& .action {
 			order: 3;
+			z-index: 3;
 		}
 	}
 
@@ -142,5 +145,23 @@
 			padding: 3px 5px;
 			border-radius: 5px;
 		}
+	}
+
+	.student {
+		opacity: 0.5;
+		top: 120px;
+		right: -320px;
+	}
+
+	.curator {
+		opacity: 0.5;
+		top: 80px;
+		right: -210px;
+	}
+
+	.moderator {
+		opacity: 0.5;
+		top: 80px;
+		right: -210px;
 	}
 }

@@ -68,3 +68,14 @@
   gap: 24px;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+
+  .statusContainer {
+    gap: 0
+  }
+
+  .innerStatus {
+    display: none;
+  }
+}

@@ -31,6 +31,9 @@ export function ProjectCardHorizontal({
   return (
     <div className={clsx(styles.card, onClick && styles.clickable, className)} onClick={onClick}>
       <ProjectCardHeader className={styles.cover} label={primaryTag.name} rotated />
+      <ProjectCardHeader className={styles.coverMobile} label={primaryTag.name}>
+        {headerSlot}
+      </ProjectCardHeader>
       <div className={styles.content}>
         {headerSlot && <div className={styles.header}>{headerSlot}</div>}
         <div className={styles.main}>
