@@ -104,7 +104,7 @@ export function PopUpNavigation() {
       ) : (
         <UserRowSkeleton className={styles.header} />
       )}
-      <div className={styles.body}>
+      <div className={styles.body} data-chrome-ignore="true">
         {switchableRoles.map(role => {
           const section = getRoleSection(role.type)
           return (
