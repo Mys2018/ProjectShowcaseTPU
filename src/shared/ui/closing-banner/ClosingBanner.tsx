@@ -32,7 +32,7 @@ export const ClosingBanner = ({title, backgroundClass, description,  isBannerVis
     if (!image) return null
 
     if (typeof image === 'string') {
-      return <img className={styles.image} src={image} alt={title || 'Иллюстрация'} />
+      return <img className={styles.image} src={image} alt={title || 'Иллюстрация'} loading="lazy" decoding="async" />
     }
 
     if (typeof image === 'function') {

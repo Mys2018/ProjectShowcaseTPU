@@ -23,7 +23,7 @@ export function UserRow({ user, className, children, ...props }: UserRowProps) {
 
   return (
     <div className={`${styles.container} ${className ?? ''}`} onClick={handleRowClick} {...props} >
-      <img className={styles.avatar} src={user.profilePicture} alt='Фото профиля' />
+      <img className={styles.avatar} src={user.profilePicture} alt='Фото профиля' loading="lazy" decoding="async" />
       <div className={styles.info}>
         <h2 className={styles.name}>{user.meta.name}</h2>
         <p className={styles.competencies}>{competenciesNames.join(", ")}</p>

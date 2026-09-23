@@ -9,7 +9,7 @@ import VkLogo from '@/shared/ui/icons/vk.svg?react'
 import CopyLogo from '@/shared/ui/icons/copy.svg?react'
 import OpenLogo from '@/shared/ui/icons/open.svg?react'
 import MailLogo from '@/shared/ui/icons/email.svg?react'
-import MoreLogo from '@/shared/ui/icons/more.svg?react'
+// import MoreLogo from '@/shared/ui/icons/more.svg?react'
 import {Avatar} from "@/entities/user/ui/avatar/Avatar.tsx";
 
 import STUDENT_src from '@/shared/assets/svg/STUDENT.svg'
@@ -34,27 +34,26 @@ const getLogo = (type: linkType | undefined) => {
 export const CONTACTS_ANCHOR_ID = 'profile-contacts'
 
 type SomeoneProfileHeaderProps = {
-  onClickSee?: () => void,
   user: User;
   links: Messengers;
   /** Короткая подсветка блока контактов после нажатия «Связаться». */
   highlight?: boolean;
 }
 
-export function SomeoneProfileHeader({onClickSee, user, links, highlight }: SomeoneProfileHeaderProps) {
+export function SomeoneProfileHeader({user, links, highlight }: SomeoneProfileHeaderProps) {
   return (
     <div className={styles.container}>
 
-      <img className={styles.backgroundPicture} src={STUDENT_src} alt={'Фон карточки пользователя'}/>
+      <img className={styles.backgroundPicture} src={STUDENT_src} alt={'Фон карточки пользователя'} loading="lazy" decoding="async" />
 
       <div className={styles.mobileHeader}>
         <p className={styles.titleMobile}>
           Профиль студентика
         </p>
 
-        <button className={styles.seeMobile} onClick={onClickSee}>
-          <MoreLogo/>
-        </button>
+        {/*<button className={styles.seeMobile} onClick={onClickSee}>*/}
+        {/*  <MoreLogo/>*/}
+        {/*</button>*/}
       </div>
 
       <div className={styles.header}>

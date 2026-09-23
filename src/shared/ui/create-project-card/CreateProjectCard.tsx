@@ -55,7 +55,7 @@ export function CreateProjectCard({type, onClick}: CreateProjectCardProps) {
         </div>
 
         <div className={clsx(styles.image, getClass(type))}>
-          <img className={styles.img} src={getImgSrc(type)} alt='Обложка типа'/>
+          <img className={styles.img} src={getImgSrc(type)} alt='Обложка типа' loading="lazy" decoding="async" />
         </div>
 
         <p className={clsx(styles.title, getClass(type))}>

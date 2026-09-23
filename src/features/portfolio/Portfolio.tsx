@@ -114,7 +114,7 @@ export function Portfolio({ readonly, firstValue }: PortfolioProps) {
             </p>
           )}
         </div>
-        {readonly && <img className={styles.image} src={PortfolioSrc} alt={"Картинка портфолио"}/>}
+        {readonly && <img className={styles.image} src={PortfolioSrc} alt={"Картинка портфолио"} loading="lazy" decoding="async" />}
       </div>
     </div>
   )

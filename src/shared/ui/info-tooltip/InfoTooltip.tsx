@@ -271,7 +271,7 @@ export const InfoTooltip = ({
               </p>
             )}
 
-            {image && <img className={styles.img} src={image} alt="Картинка" />}
+            {image && <img className={styles.img} src={image} alt="Картинка" loading="lazy" decoding="async" />}
 
             {body.map((block, index) => (
               <div key={index} className={styles.block}>
