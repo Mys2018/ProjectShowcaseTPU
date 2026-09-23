@@ -18,7 +18,7 @@ export default function ProjectCardExtended({ project }: Props) {
   return (
     <div className={`${styles.cardBody}`} style={brandColor ? { '--accent': brandColor.startsWith('#') ? brandColor : `#${brandColor}` } as React.CSSProperties : undefined}>
       <div className={styles.accentBody}>
-        <img className={styles.pattern} src={Pattern} alt='Узор' />
+        <img className={styles.pattern} src={Pattern} alt='Узор' loading="lazy" decoding="async" />
 
         <div className={`${styles.header} ${styles[primaryTag.id]}`}>
           <div className={styles.tags}>
@@ -45,7 +45,7 @@ export default function ProjectCardExtended({ project }: Props) {
 
             <div className={styles.org}>
               {partner.profilePicture ? (
-                <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name} />
+                <img className={styles.orgAvatar} src={partner.profilePicture} alt={partner.name} loading="lazy" decoding="async" />
               ) : (
                 <div className={styles.orgAvatar}>{partner.name.at(0)}</div>
               )}

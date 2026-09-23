@@ -72,7 +72,7 @@ export const Avatar = ({picture, className, label, userId, onClick, onClickEditB
     <div className={clsx(styles.avatarContainer, className, getStrokeColor(strokeColor))} style={sizeStyle} onClick={handleClick}>
       {
         picture ?
-          <img className={clsx(styles.avatar)} src={picture} alt="Аватар студента" /> :
+          <img className={clsx(styles.avatar)} src={picture} alt="Аватар студента" loading="lazy" decoding="async" /> :
           <div className={styles.avatar}>
             {
               getFallbackAvatar(fallbackType)

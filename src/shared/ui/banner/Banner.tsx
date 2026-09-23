@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import type { ReactElement, ReactNode } from 'react'
+import StudentMain from '../../assets/3d/Student_main.png'
+import ModeratorMain from '../../assets/3d/Moderator_main.png'
+import MentorMain from '../../assets/3d/Mentor_main.png'
 import styles from './Banner.module.css'
-import StudentMain from '@/shared/assets/3d/Student_main.png'
-import ModeratorMain from '@/shared/assets/3d/Moderator_main.png'
-import MentorMain from '@/shared/assets/3d/Mentor_main.png'
 
 interface BannerProps {
   title: string
@@ -24,11 +24,11 @@ interface BannerProps {
 const getImage = (role: string ) => {
   switch (role) {
     case 'Student':
-      return <img className={styles.student} src={StudentMain} alt="Баннер студента" />
+      return <img className={styles.student} src={StudentMain} alt="Баннер студента" loading="lazy" decoding="async" />
     case 'Curator':
-      return <img className={styles.curator} src={MentorMain} alt="Баннер ментора" />
+      return <img className={styles.curator} src={MentorMain} alt="Баннер ментора" loading="lazy" decoding="async" />
     case 'Moderator':
-      return <img className={styles.moderator} src={ModeratorMain} alt="Баннер модератора" />
+      return <img className={styles.moderator} src={ModeratorMain} alt="Баннер модератора" loading="lazy" decoding="async" />
   }
   return null
 }

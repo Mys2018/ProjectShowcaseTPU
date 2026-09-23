@@ -48,7 +48,7 @@ export function NoProjectsFallback({
 
     // 1. Строка: URL или импорт пути к картинке (png/jpg/webp/svg)
     if (typeof image === 'string') {
-      return <img className={styles.image} src={image} alt={title || 'Иллюстрация'} />
+      return <img className={styles.image} src={image} alt={title || 'Иллюстрация'} loading="lazy" decoding="async" />
     }
 
     // 2. React-компонент, переданный по ссылке: image={NoProjectsSVG}
