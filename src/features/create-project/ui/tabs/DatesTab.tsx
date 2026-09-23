@@ -6,6 +6,7 @@ import { RequirementList } from "../components/requirement-list/RequirementList.
 import { EmptyStateBlock, InfoTooltip, mapDateToBackendString, useModalStore } from "@/shared";
 import type { Platform } from "@/entities/platforms/model/types.ts";
 import { useCurrentCheckpoints } from "@/entities/checkpoint";
+import {TooltipsText} from "@/shared/constants";
 
 interface TabProps {
   form: CreateProjectForm;
@@ -38,17 +39,12 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Ключевые точки проекта"
-            body={[
-              {
-                text: [
-                  'Базовые этапы фиксированы для учебного процесса. Ментор может добавлять собственные промежуточные точки контроля.',
-                ],
-              },
-            ]}
-            size={'small'}
+            title={TooltipsText.checkpoints.title}
+            body={
+             TooltipsText.checkpoints.body
+            }
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно!'}
             type={'bulb'}
           />
         </h4>
@@ -163,20 +159,12 @@ export const DatesTab = ({ form, stepErrors, blinkFields }: TabProps) => {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.resources.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.resources.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>

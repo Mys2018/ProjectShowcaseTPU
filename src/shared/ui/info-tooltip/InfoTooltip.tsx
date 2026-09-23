@@ -235,7 +235,45 @@ export const InfoTooltip = ({
       fadeTimeoutRef.current = setTimeout(() => {
         setIsMounted(false);
       }, 200);
-    }, 180);
+    }, 300);
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    if (fadeTimeoutRef.current) {
+      clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
+    }
+
+    if (!isMounted || !isVisible) {
+      if (!isMounted) {
+        setIsMounted(true);
+      } else {
+        updateCoords();
+        setIsVisible(true);
+      }
+    } else {
+      setIsVisible(false);
+      fadeTimeoutRef.current = setTimeout(() => {
+        setIsMounted(false);
+      }, 200);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape' && isVisible) {
+      setIsVisible(false);
+      fadeTimeoutRef.current = setTimeout(() => {
+        setIsMounted(false);
+      }, 200);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick(e as unknown as React.MouseEvent);
+    }
   };
 
   return (
@@ -244,6 +282,11 @@ export const InfoTooltip = ({
       className={clsx(styles.tooltipBody, className)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-expanded={isVisible}
     >
       {type ? getIconByType(type, iconClassName || '') : children}
 
@@ -264,6 +307,7 @@ export const InfoTooltip = ({
             }}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={(e) => e.stopPropagation()}
           >
             {title && (
               <p className={clsx(styles.title, s.title)}>
@@ -300,7 +344,14 @@ export const InfoTooltip = ({
             )}
 
             {greenButtonText && onClickGreenButtonText && (
-              <button className={styles.greenButton} onClick={onClickGreenButtonText}>
+              <button
+                type="button"
+                className={styles.greenButton}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClickGreenButtonText();
+                }}
+              >
                 {greenButtonText}
               </button>
             )}

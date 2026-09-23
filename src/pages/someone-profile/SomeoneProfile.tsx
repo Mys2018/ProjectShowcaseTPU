@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useMediaQuery } from 'usehooks-ts'
 import styles from './SomeoneProfile.module.css'
 import { StudentParticipatingProjectCard } from "@/widgets/student-project-card";
@@ -14,7 +14,6 @@ import { MOBILE_BREAKPOINT, useMobileChrome } from "@/shared/lib";
 import { ProjectSkeleton, ROUTES } from "@/shared";
 
 export function SomeoneProfile() {
-  const navigate = useNavigate();
   const params = useParams<{ id: string }>()
   const uid = Number(params.id)
   const isValidId = Boolean(uid) && !Number.isNaN(uid)
@@ -124,7 +123,7 @@ export function SomeoneProfile() {
       {/*</section>*/}
 
       <section className={styles.profile}>
-        <SomeoneProfileHeader user={user} links={user.meta.messengers} highlight={highlight} onClickSee={() => void navigate(`/profile/${user.id}`)} />
+        <SomeoneProfileHeader user={user} links={user.meta.messengers} highlight={highlight} />
         <div className={styles.body}>
           {isProjectsLoading ? (
             <div className={styles.projectsSection}>

@@ -3,6 +3,7 @@ export type ModalType =
   'LINK_UPDATE' |
   'CONFIRM_SAVE' |
   'CONFIRM_CANCEL' |
+  'CONFIRM_ARCHIVE' |
   'ADD_CHECKPOINT' |
   'ADD_LINK' |
   'SELECT_PROJECT_LINKS' |

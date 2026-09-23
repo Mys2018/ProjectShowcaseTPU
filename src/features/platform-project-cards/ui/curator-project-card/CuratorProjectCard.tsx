@@ -29,6 +29,7 @@ interface CuratorProjectCardProps {
 
 export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   const openModal = useModalStore(state => state.openModal);
+  const closeModal = useModalStore(state => state.closeModal);
   const partner = project?.partner
 
   const isProjectInProgress = project?.status === 'InProgress';
@@ -51,7 +52,19 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
 
   const handleArchive = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    setStatusMutation.mutate({ projectId: project.id, status: 'NotImplemented' });
+    openModal('CONFIRM_ARCHIVE', {
+      title: 'Архивировать проект?',
+      description: 'Это действие необратимо. Вы уверены, что хотите архивировать данный проект?',
+      confirmText: 'Да',
+      cancelText: 'Нет',
+      onConfirm: () => {
+        closeModal();
+        setStatusMutation.mutate({ projectId: project.id, status: 'NotImplemented' });
+      },
+      onDecline: () => {
+        closeModal();
+      }
+    });
   };
 
   const applicationCount = applicationsData?.total ?? 0

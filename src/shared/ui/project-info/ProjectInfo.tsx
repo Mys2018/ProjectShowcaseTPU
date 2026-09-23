@@ -1,5 +1,5 @@
 import styles from './ProjectInfo.module.css'
-import {InfoTooltip} from "..";
+// import {InfoTooltip} from "..";
 import { typeProjectsLabel, getProjectTagBackground, type ProjectCardData } from '@/entities/project';
 import { PartnerRow } from '@/entities/partner';
 
@@ -31,26 +31,26 @@ export const ProjectInfo = ({ data }: ProjectInfoProps) => {
           </div>
         </div>
         <div className={styles.format}>
-
-          <InfoTooltip
-            title="Заголовок тултипа"
-            body={
-              [
-                {
-                  text: [
-                    'Можно пробовать с минимальными навыками: главное — желание учиться и открывать для себя новые скиллы. Мы тебя ждём!',
-                  ]
-                },
-              ]
-            }
-            size={'small'}
-            pointer={'topRight'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
-            className={styles.questionIcon}
-          >
-            {typeProjectsLabel(data.type)}
-          </InfoTooltip>
+          {typeProjectsLabel(data.type)}
+          {/*<InfoTooltip*/}
+          {/*  title="Заголовок тултипа"*/}
+          {/*  body={*/}
+          {/*    [*/}
+          {/*      {*/}
+          {/*        text: [*/}
+          {/*          'Можно пробовать с минимальными навыками: главное — желание учиться и открывать для себя новые скиллы. Мы тебя ждём!',*/}
+          {/*        ]*/}
+          {/*      },*/}
+          {/*    ]*/}
+          {/*  }*/}
+          {/*  size={'small'}*/}
+          {/*  pointer={'topRight'}*/}
+          {/*  importantText={'Важно тут!'}*/}
+          {/*  link={'sdfsdsdsds'}*/}
+          {/*  className={styles.questionIcon}*/}
+          {/*>*/}
+          {/*  {typeProjectsLabel(data.type)}*/}
+          {/*</InfoTooltip>*/}
 
           {/* TODO move to widget -> add like button (features/like-project) */}
         </div>

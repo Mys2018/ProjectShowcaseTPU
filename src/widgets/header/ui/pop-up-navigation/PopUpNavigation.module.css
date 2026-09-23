@@ -74,12 +74,15 @@
   overscroll-behavior: contain;
 
   padding-inline: 12px;
+
+  z-index: 2000;
 }
 
 .section {
   display: flex;
   flex-direction: column;
   gap: 16px;
+
 
   & .head {
     padding: 5px 8px;

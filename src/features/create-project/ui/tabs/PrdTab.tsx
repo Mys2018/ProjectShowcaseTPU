@@ -5,6 +5,7 @@ import styles from './Tabs.module.css'
 import { BigTextFieldForm } from '@/shared/ui/fields/text-field/TextField.tsx';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
 import { InfoTooltip } from "@/shared";
+import {TooltipsText} from "@/shared/constants";
 
 interface PrdFieldProps {
   form: CreateProjectForm;
@@ -51,20 +52,12 @@ function StudyPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.prerequisites.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.prerequisites.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -88,20 +81,12 @@ function StudyPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.projectGoals.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.projectGoals.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -126,20 +111,12 @@ function StudyPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.keyRequirements.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.projectGoals.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -167,20 +144,12 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.prerequisites.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.prerequisites.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -205,20 +174,12 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.targetAuditory.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.targetAuditory.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -231,20 +192,12 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.projectGoals.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              [...TooltipsText.projectGoals.body]
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -270,20 +223,12 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.functionalRequirements.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.functionalRequirements.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -305,20 +250,12 @@ function CasePrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.problemStatement.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.problemStatement.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -351,20 +288,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.prerequisites.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.prerequisites.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -388,20 +317,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.productVision.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.productVision.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -425,20 +346,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.targetAuditory.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.targetAuditory.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -451,20 +364,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.projectGoals.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              [...TooltipsText.projectGoals.body, ...TooltipsText.businessGoal.body]
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -504,20 +409,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.functionalRequirements.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              [...TooltipsText.keyRequirements.body, ...TooltipsText.functionalRequirements.body, ...TooltipsText.nonFunctionalRequirements.body]
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -561,20 +458,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.problemStatement.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              [...TooltipsText.problemStatement.body, ...TooltipsText.businessMetrics.body]
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
@@ -610,20 +499,12 @@ function RealPrdFields({ form, stepErrors, blinkFields }: PrdFieldProps) {
           <InfoTooltip
             className={styles.tooltip}
             iconClassName={styles.tooltipIcon}
-            title="Заголовок тултипа"
+            title={TooltipsText.projectPlan.title}
             body={
-              [
-                {
-                  text: [
-                    'Бла бла',
-                  ]
-                },
-              ]
+              TooltipsText.projectPlan.body
             }
-            size={'small'}
+            size={'large'}
             pointer={'topLeft'}
-            importantText={'Важно тут!'}
-            link={'sdfsdsdsds'}
             type={'bulb'}
           />
         </h4>
