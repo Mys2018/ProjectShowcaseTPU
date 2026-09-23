@@ -1,3 +1,5 @@
+import { createPortal } from 'react-dom'
+import { useState } from 'react'
 import clsx from 'clsx'
 import { useMediaQuery } from 'usehooks-ts'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -74,21 +76,21 @@ export function PopUpNavigation() {
 
   const isExtended = switchableRoles.some(role => role.type !== 'Student')
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+  const [open, setOpen] = useState(false)
 
-  return (
-    <PopupMenu
-      popupClassName={clsx(styles.popUp, isExtended && styles.extended, isMobile && styles.mobile)}
-      trigger={
-        <Avatar
-          picture={me?.profilePicture}
-          label={getAvatarRoleInfo(me?.roles)?.label}
-          labelColor={'black'}
-          fallbackType={getAvatarRoleInfo(me?.roles)?.fallback || 'user'}
-          size={isMobile ? '36px' : '48px'}
-          strokeColor={'grad'}
-        />
-      }
-    >
+  const trigger = (
+    <Avatar
+      picture={me?.profilePicture}
+      label={getAvatarRoleInfo(me?.roles)?.label}
+      labelColor={'black'}
+      fallbackType={getAvatarRoleInfo(me?.roles)?.fallback || 'user'}
+      size={isMobile ? '36px' : '48px'}
+      strokeColor={'grad'}
+    />
+  )
+
+  const content = (
+    <>
       {me ? (
         <Link to={ROUTES.PROFILE.BASE} className={clsx(styles.link, styles.header)}>
           <TeamUserCard
@@ -104,7 +106,7 @@ export function PopUpNavigation() {
       ) : (
         <UserRowSkeleton className={styles.header} />
       )}
-      <div className={styles.body}>
+      <div className={styles.body} data-chrome-ignore="true">
         {switchableRoles.map(role => {
           const section = getRoleSection(role.type)
           return (
@@ -169,8 +171,7 @@ export function PopUpNavigation() {
             <p className={styles.label}>Помощь</p>
           </button>
           {isMobile && (
-            <button className={styles.exitButton} onClick={() => document.body.click()}>
-              {/* костыль (нужно чтоб popup принимал isOpen) */}
+            <button className={styles.exitButton} onClick={() => setOpen(false)}>
               <ChevronRightIcon className={styles.icon} />
             </button>
           )}
@@ -179,6 +180,35 @@ export function PopUpNavigation() {
           </button>
         </div>
       </div>
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <>
+        <div className={styles.trigger} onClick={() => setOpen(v => !v)}>
+          {trigger}
+        </div>
+        {open &&
+          createPortal(
+            <div
+              className={clsx(styles.popUp, isExtended && styles.extended, styles.mobile)}
+              onClick={() => setOpen(false)}
+            >
+              {content}
+            </div>,
+            document.body
+          )}
+      </>
+    )
+  }
+
+  return (
+    <PopupMenu
+      popupClassName={clsx(styles.popUp, isExtended && styles.extended)}
+      trigger={trigger}
+    >
+      {content}
     </PopupMenu>
   )
 }
