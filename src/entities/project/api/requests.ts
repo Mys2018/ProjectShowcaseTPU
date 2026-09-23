@@ -93,6 +93,10 @@ export const projectApi = {
     return data.projectId
   },
 
+  updateProject: async (projectId: string, payload: Record<string, unknown>): Promise<void> => {
+    await api.patch(ENDPOINTS.PROJECT_BY_ID(projectId), payload)
+  },
+
   likeProject: async (projectId: string): Promise<void> => {
     await api.post(ENDPOINTS.LIKE_PROJECT(projectId))
   },
@@ -130,11 +134,7 @@ export const projectApi = {
     return data.comment ?? ''
   },
 
-  setProjectModerationReview: async (projectId: string, payload: { verdict: ProjectStatus; comment?: string }): Promise<void> => {
-    await api.post(ENDPOINTS.PROJECT_REVIEW(projectId), payload)
-  },
-
-  setProjectStatus: async (projectId: string, status: ProjectStatus | string): Promise<void> => {
-    await api.post(ENDPOINTS.PROJECT_SET_STATUS(projectId, status))
+  setProjectStatus: async (projectId: string, status: ProjectStatus | string, body: { comment?: string }): Promise<void> => {
+    await api.post(ENDPOINTS.PROJECT_SET_STATUS(projectId, status), body)
   }
 }

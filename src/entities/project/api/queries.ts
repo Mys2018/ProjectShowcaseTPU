@@ -189,8 +189,8 @@ export const useRemoveTeamMember = () => {
 export const useSetProjectStatus = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ projectId, status }: { projectId: string; status: ProjectStatus | string }) =>
-      projectApi.setProjectStatus(projectId, status),
+    mutationFn: ({ projectId, status, comment }: { projectId: string; status: ProjectStatus | string, comment?: string }) =>
+      projectApi.setProjectStatus(projectId, status, { comment }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: projectKeys.all })
     }

@@ -15,6 +15,7 @@ export interface ConfirmModalProps {
   onConfirm: () => void;
   onDecline: () => void;
   children?: ReactElement
+  mainSlot?: ReactElement
   className?: string
 }
 
@@ -28,6 +29,7 @@ export const ConfirmModal = ({
   onConfirm,
   onDecline,
   className,
+  mainSlot,
   children
 }: ConfirmModalProps) => {
   return (
@@ -40,6 +42,7 @@ export const ConfirmModal = ({
             {description && <p className={styles.description}>{description}</p>}
           </div>
 
+          {mainSlot}
           
           <div className={styles.actions}>
             <GreyButton

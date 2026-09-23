@@ -1,4 +1,5 @@
-import { useApproveProject } from '../api/mutations'
+import { useCallback } from 'react'
+import { useSetProjectStatus } from '@/entities/project'
 import { FilledButton } from '@/shared'
 
 interface ApproveProjectButtonProps {
@@ -6,6 +7,7 @@ interface ApproveProjectButtonProps {
 }
 
 export function ApproveProjectButton({ projectId }: ApproveProjectButtonProps) {
-  const { mutate: approve, isPending } = useApproveProject()
-  return <FilledButton textButton='Опубликовать проект' disabled={isPending} onClick={() => approve(projectId)} />
+  const { mutate: setProjectStatus, isPending } = useSetProjectStatus()
+  const approve = useCallback(() => setProjectStatus({ projectId, status: 'Recruiting' }), [projectId])
+  return <FilledButton textButton='Опубликовать проект' disabled={isPending} onClick={approve} />
 }

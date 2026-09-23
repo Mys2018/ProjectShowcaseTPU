@@ -11,6 +11,7 @@ export type InnerStatuses = 'published' | 'changes' | 'moderation' | 'report'
 
 interface ProjectInnerStatusProps {
   status: ProjectStatus;
+  tooltipText?: string
   children?: React.ReactNode;
   className?: string;
 }
@@ -64,7 +65,7 @@ export const ProjectInnerStatus = ({className, status, children }: ProjectInnerS
 
   return (
     <InfoTooltip
-      body={[{ text: [tooltipText] }]}
+      body={[{ text: [tooltipText ?? fallbackTooltipText] }]}
       size="large"
       pointer="topRight"
 
