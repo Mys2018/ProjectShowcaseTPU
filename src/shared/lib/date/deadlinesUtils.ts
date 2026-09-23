@@ -36,3 +36,8 @@ export const getPluralDays = (count: number): string => {
   if (n1 === 1) return 'день';
   return 'дней';
 }
+
+export const formatDaysLeft = (count: number): string => {
+  if (count < 0) return '0 дней'
+  return `${count} ${getPluralDays(count)}`
+}
