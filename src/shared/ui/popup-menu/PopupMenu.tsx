@@ -7,17 +7,26 @@ interface PopupMenuProps {
   trigger: ReactNode,
   children: ReactNode,
   popupClassName?: string,
+  open?: boolean,
+  onOpenChange?: (open: boolean) => void,
+  closeOnClick?: boolean,
 }
 
-export const PopupMenu = ({trigger, children, popupClassName}: PopupMenuProps) => {
-  const [open, setOpen] = useState(false);
+export const PopupMenu = ({trigger, children, popupClassName, open: controlledOpen, onOpenChange, closeOnClick = true}: PopupMenuProps) => {
+  const isControlled = controlledOpen !== undefined;
+  const [innerOpen, setInnerOpen] = useState(false);
+  const open = isControlled ? controlledOpen : innerOpen;
+  const setOpen = (v: boolean) => {
+    if (isControlled) onOpenChange?.(v);
+    else setInnerOpen(v);
+  };
   const ref = useRef<HTMLDivElement>(null);
   useClickOutside(ref, () => setOpen(false), open);
 
   return (
     <div ref={ref} className={styles.container}>
-      <div className={styles.triggerWrapper} onClick={() => setOpen(v => !v)}>{trigger}</div>
-      {open && <div className={clsx(styles.dropdownMenu, popupClassName) } onClick={() => setOpen(false)}>{children}</div>}
+      <div className={styles.triggerWrapper} onClick={() => setOpen(!open)}>{trigger}</div>
+      {open && <div className={clsx(styles.dropdownMenu, popupClassName)} onClick={() => closeOnClick && setOpen(false)}>{children}</div>}
     </div>
   )
 }
