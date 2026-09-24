@@ -177,6 +177,10 @@ export function useMobileChrome(enabled = true, resetKey?: string): MobileChrome
       const el = e.target
       if (!(el instanceof HTMLElement)) return
 
+      // Внутренний скролл попапа — не скролл страницы. Хром за ним не прячем,
+      // иначе хедер уезжает под открытый попап и снизу остаётся гап.
+      if (el.closest('[data-chrome-ignore]')) return
+
       if (el !== scroller) {
         // новый контейнер берём в работу, только если он реально скроллится, —
         // так отсекаются мелкие внутренние списки и дропдауны

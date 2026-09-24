@@ -28,7 +28,7 @@ import {
   type ClosingDiscipline,
   type FloatingTabItem
 } from '@/shared'
-import { ComplaintBlock } from "@/shared/ui/complaint-block";
+import { ComplaintBlock } from '@/shared/ui/complaint-block'
 
 export function MyPlatformPage() {
   const { data: me } = useMe()
@@ -45,13 +45,13 @@ export function MyPlatformPage() {
 
   const disciplines: ClosingDiscipline[] = activeProject
     ? [
-      {
-        // title: activeProject.meta?.title || 'УИРС',
-        title: 'УИРС',
-        currentProgress: activeProjectHours,
-        maxProgress: 36
-      }
-    ]
+        {
+          // title: activeProject.meta?.title || 'УИРС',
+          title: 'УИРС',
+          currentProgress: activeProjectHours,
+          maxProgress: 36
+        }
+      ]
     : []
 
   const switchableRoles = getSwitchableRoles(me ? me.roles : [])
@@ -85,7 +85,6 @@ export function MyPlatformPage() {
     let rowTop = 0
     let rowBottom = 0
 
-    let rowBottomInContent = 0
     let heroBottomInContent = 0
 
     const measure = () => {
@@ -95,13 +94,12 @@ export function MyPlatformPage() {
       const scrollerRect = scroller.getBoundingClientRect()
       const sideRect = side.getBoundingClientRect()
 
-      sideBaseTop = sideRect.top - scrollerRect.top + scroller.scrollTop
+      sideBaseTop = sideRect.top - scrollerRect.top
       sideHeight = side.offsetHeight
       viewportPaddingTop = Number(window.getComputedStyle(scroller).paddingTop.slice(0, -2))
 
       if (row) {
         const rowRect = row.getBoundingClientRect()
-        rowBottomInContent = rowRect.bottom + scroller.scrollTop
         rowTop = rowRect.top
         rowBottom = rowRect.bottom
       }
@@ -123,6 +121,7 @@ export function MyPlatformPage() {
       const viewportHeight = scroller.clientHeight
       const stopAt = sideBaseTop + sideHeight - viewportHeight
 
+      console.log(sideBaseTop, sideHeight, viewportHeight)
       if (stopAt <= 0) {
         side.style.top = `${rowBottom - rowTop + 8}px`
         return
@@ -139,16 +138,11 @@ export function MyPlatformPage() {
     const updateCovers = () => {
       if (!scroller) return
 
-      const rowBottomViewport = rowBottomInContent + 8
+      const rowBottomViewport = rowBottom + 8
       const heroBottomViewport = heroBottomInContent - scroller.scrollTop + 36
 
-      const mobileHeroBottom = heroBottomInContent
-        ? heroBottomInContent - scroller.scrollTop + 18
-        : 468 - scroller.scrollTop
-      const stopAt =
-        window.innerWidth > 768
-          ? Math.max(heroBottomViewport, rowBottomViewport)
-          : Math.max(0, mobileHeroBottom)
+      const mobileHeroBottom = heroBottomInContent ? heroBottomInContent - scroller.scrollTop + 18 : 468 - scroller.scrollTop
+      const stopAt = window.innerWidth > 768 ? Math.max(heroBottomViewport, rowBottomViewport) : Math.max(0, mobileHeroBottom)
 
       if (coverFixed) coverFixed.style.setProperty('--fixedCoverHeight', `${rowBottom + 8}px`)
       if (cover) cover.style.setProperty('--scrollableCoverHeight', `${stopAt}px`)
@@ -172,8 +166,10 @@ export function MyPlatformPage() {
     }
 
     const onResize = () => {
-      measure()
-      updateAll()
+      requestAnimationFrame(() => {
+        measure()
+        updateAll()
+      })
     }
 
     onResize()
@@ -213,7 +209,7 @@ export function MyPlatformPage() {
         <span className={clsx(styles.cover, styles.shaped)} ref={coverShapedRef} />
         <div className={styles.side} ref={sideRef}>
           <YourPointsWidget tpuPoints={scoresData?.totalScore ?? 0} disciplines={disciplines} />
-          <ComplaintBlock onClick={() => { }} />
+          <ComplaintBlock onClick={() => {}} />
         </div>
 
         <div className={styles.userRow} ref={userRowRef}>
