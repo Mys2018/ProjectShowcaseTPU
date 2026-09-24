@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { useMediaQuery } from 'usehooks-ts'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -14,7 +14,7 @@ import {
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
-import { assertNever, ChevronRightIcon, MOBILE_BREAKPOINT, PopupMenu, QuestionIcon, ROUTES } from '@/shared'
+import { assertNever, ChevronRightIcon, MOBILE_BREAKPOINT, PopupMenu, QuestionIcon, ROUTES, useModalStore } from '@/shared'
 
 type RoleSection = {
   id: string
@@ -68,6 +68,8 @@ const getRoleSection = (roleType: UserSwitchableRole['type']): RoleSection => {
 }
 
 export function PopUpNavigation() {
+  const openModal = useModalStore(s => s.openModal)
+
   const location = useLocation()
   const { mutate: logout, isPending: isLogoutPending } = useLogout()
 
@@ -77,6 +79,10 @@ export function PopUpNavigation() {
   const isExtended = switchableRoles.some(role => role.type !== 'Student')
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname, location.hash])
 
   const trigger = (
     <Avatar
@@ -106,7 +112,7 @@ export function PopUpNavigation() {
       ) : (
         <UserRowSkeleton className={styles.header} />
       )}
-      <div className={styles.body} data-chrome-ignore="true">
+      <div className={styles.body} data-chrome-ignore='true'>
         {switchableRoles.map(role => {
           const section = getRoleSection(role.type)
           return (
@@ -166,7 +172,7 @@ export function PopUpNavigation() {
       <div className={styles.footer}>
         <span className={styles.divider} />
         <div className={styles.actions}>
-          <button className={styles.button}>
+          <button className={styles.button} onClick={() => openModal('COMPLAINT_MODAL')}>
             <QuestionIcon className={styles.icon} />
             <p className={styles.label}>Помощь</p>
           </button>
@@ -190,15 +196,7 @@ export function PopUpNavigation() {
           {trigger}
         </div>
         {open &&
-          createPortal(
-            <div
-              className={clsx(styles.popUp, isExtended && styles.extended, styles.mobile)}
-              onClick={() => setOpen(false)}
-            >
-              {content}
-            </div>,
-            document.body
-          )}
+          createPortal(<div className={clsx(styles.popUp, isExtended && styles.extended, styles.mobile)}>{content}</div>, document.body)}
       </>
     )
   }
@@ -207,6 +205,9 @@ export function PopUpNavigation() {
     <PopupMenu
       popupClassName={clsx(styles.popUp, isExtended && styles.extended)}
       trigger={trigger}
+      open={open}
+      onOpenChange={setOpen}
+      closeOnClick={false}
     >
       {content}
     </PopupMenu>
