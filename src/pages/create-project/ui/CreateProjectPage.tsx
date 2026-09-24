@@ -73,6 +73,27 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
   const isPending = isCreatePending || isUpdatePending || isStatusPending;
   const { data: review, isLoading: isReviewLoading } = useProjectReview(editProjectId ?? '', Boolean(editProjectId));
 
+  // --- Auto-save logic ---
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previousValuesRef = useRef<string>('');
+  const saveStatusRef = useRef<StatusType | 'idle'>('idle');
+  // После publish/delete autosave больше нельзя: cleanup подписки иначе
+  // флашит последний payload и воскрешает только что удалённый черновик.
+  const draftDiscardedRef = useRef(false);
+
+  const discardDraftAndLeave = useCallback(() => {
+    draftDiscardedRef.current = true;
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+      autoSaveTimerRef.current = null;
+    }
+    deleteDraftMutation(undefined, {
+      onSettled: () => {
+        navigate(-1);
+      },
+    });
+  }, [deleteDraftMutation, navigate]);
+
   const { form, stepErrors, currentStep, highestStep, nextStep, prevStep, setStep, blinkFields, setBlinkFields } = useProjectWizard({
     defaultValues: initialDraft ?? {
       type: selectedType,
@@ -80,12 +101,6 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
     restoreValues,
     isDraftLoading,
     onSubmit: (values) => {
-      const handleSuccess = () => {
-        // Delete draft after successful publish
-        deleteDraftMutation();
-        navigate(-1);
-      };
-
       if (editProjectId) {
         const { meta, ...rest } = values;
         // RoleUpdateDto: id существующей роли обязателен, иначе бэкенд пытается
@@ -111,20 +126,15 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
             // Только после смены статуса уходим назад, иначе проект
             // останется в NeedsRework и «потеряется».
             setProjectStatus({ projectId: editProjectId, status: 'Pending' }, {
-              onSuccess: handleSuccess,
+              onSuccess: discardDraftAndLeave,
             });
           },
         });
       } else {
-        createProject(values, { onSuccess: handleSuccess });
+        createProject(values, { onSuccess: discardDraftAndLeave });
       }
     },
   });
-
-  // --- Auto-save logic ---
-  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const previousValuesRef = useRef<string>('');
-  const saveStatusRef = useRef<StatusType | 'idle'>('idle');
 
   // Initialize previousValuesRef on mount with initial draft payload
   useEffect(() => {
@@ -144,6 +154,8 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
   }, [form, currentStep, highestStep]);
 
   const performAutoSave = useCallback(() => {
+    if (draftDiscardedRef.current) return;
+
     const { form: curForm, currentStep: curStep, highestStep: curHighest } = latestDataRef.current;
 
     const currentValues = curForm.state.values;
@@ -158,12 +170,14 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
 
     saveDraft(draftPayload, {
       onSuccess: () => {
+        if (draftDiscardedRef.current) return;
         previousValuesRef.current = serialized;
         setSaveStatus('saving');
         // Reset to idle after 2 seconds
         setTimeout(() => setSaveStatus('idle'), 2000);
       },
       onError: (error) => {
+        if (draftDiscardedRef.current) return;
         // Прошлый payload не считаем сохранённым — иначе retry ниже
         // увидит «ничего не изменилось» и не отправит ничего.
         previousValuesRef.current = '';
@@ -184,6 +198,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
     if (pageStep !== 'fill') return;
 
     const subscription = form.store.subscribe(() => {
+      if (draftDiscardedRef.current) return;
       // Clear previous timer
       if (autoSaveTimerRef.current) {
         clearTimeout(autoSaveTimerRef.current);
@@ -198,8 +213,12 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
     return () => {
       if (autoSaveTimerRef.current) {
         clearTimeout(autoSaveTimerRef.current);
-        // Незавершённый debounce не выбрасываем: флашим последнее изменение
-        performAutoSave();
+        autoSaveTimerRef.current = null;
+        // Незавершённый debounce не выбрасываем: флашим последнее изменение.
+        // После publish/delete флашить нельзя — иначе черновик воскреснет.
+        if (!draftDiscardedRef.current) {
+          performAutoSave();
+        }
       }
       if (typeof subscription === 'function') {
         (subscription as () => void)();
@@ -211,7 +230,7 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
 
   // Save on step change
   useEffect(() => {
-    if (pageStep !== 'fill') return;
+    if (pageStep !== 'fill' || draftDiscardedRef.current) return;
 
     if (autoSaveTimerRef.current) {
       clearTimeout(autoSaveTimerRef.current);

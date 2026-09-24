@@ -55,6 +55,15 @@
   gap: 12px;
 }
 
+.emptyActive {
+  font: var(--inter-13-400);
+  color: var(--color-gray-500);
+  margin: 0;
+  padding: 24px;
+  background-color: var(--color-white);
+  border-radius: 20px;
+}
+
 .banner {
   background-color: white !important;
   order: 0;

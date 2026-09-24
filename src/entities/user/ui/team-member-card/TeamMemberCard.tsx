@@ -58,6 +58,21 @@ export const TeamMemberCard = ({
       ? totalOccurrences > 1
       : occurrenceIndex !== undefined && occurrenceIndex !== 1;
 
+  // Навыки из полного профиля участника (не требуемые навыки роли проекта).
+  const userSkillNames = Array.from(
+    new Set(
+      (user_full?.meta.skills ?? []).flatMap((competence) =>
+        (competence.skills ?? []).map((s) => s.skillName).filter(Boolean)
+      )
+    )
+  )
+  const userSubtitle =
+    userSkillNames.length > 0
+      ? userSkillNames
+      : cleanRole
+        ? [cleanRole]
+        : undefined
+
   return (
     <div className={clsx(styles.cardWrapper, className)}>
       {title && (
@@ -89,19 +104,19 @@ export const TeamMemberCard = ({
             avatar={
               <Avatar
                 userId={user.userId}
-                picture={user.profilePicture}
-                fallbackType={getAvatarRoleInfo(user.roles)?.fallback || 'user'}
+                picture={user_full?.profilePicture || user.profilePicture}
+                fallbackType={getAvatarRoleInfo(user_full?.roles ?? user.roles)?.fallback || 'user'}
                 size="48px"
                 strokeColor="grey"
               />
             }
-            firstName={user.meta.firstName}
-            lastName={user.meta.lastName}
+            firstName={user_full?.meta.firstName || user.meta.firstName}
+            lastName={user_full?.meta.lastName || user.meta.lastName}
             nameTextStyle="bodyText"
             nameSubtextStyle="OS-12-350"
             nameStyle="normal"
             course={user_full?.grade}
-            competency={cleanRole}
+            roles={userSubtitle}
           />
           <div className={styles.buttonContainer}>
             <InfoTooltip body={[

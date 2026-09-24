@@ -25,7 +25,8 @@
 
 @media (max-width: 768px) {
   .content {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
     gap: 6px;
   }
 }
@@ -36,6 +37,7 @@
   display: flex;
   position: relative;
   flex-direction: column;
+  justify-content: space-between;
   padding: 20px 16px 16px 16px;
   gap: 16px;
   background-color: var(--color-gray-750);

@@ -5,8 +5,36 @@ import GreenLike from '@/shared/ui/icons/green_round_like.svg?react'
 import { Modal } from '@/shared/ui/modals/modal/Modal.tsx'
 import { FilledButton } from '@/shared/ui/elements/buttons'
 import { BigTextField } from '@/shared/ui/fields/text-field/TextField.tsx'
+import { Faq, type FaqItem } from '@/shared/ui/faq'
 import { useFileComplaint } from '@/entities/complaint'
 import { useMe } from '@/entities/user'
+
+const COMPLAINT_FAQ_ITEMS: FaqItem[] = [
+  {
+    id: 'when-to-write',
+    question: 'Когда стоит писать в поддержку?',
+    answer:
+      'Если на платформе произошла ошибка, данные отображаются неверно, вы не можете выполнить нужное действие или столкнулись с нарушением правил.',
+  },
+  {
+    id: 'what-to-describe',
+    question: 'Что указать в описании проблемы?',
+    answer:
+      'Кратко опишите, что произошло, на какой странице, какие шаги вы уже пробовали и что ожидали увидеть. Чем конкретнее описание, тем быстрее мы сможем помочь.',
+  },
+  {
+    id: 'response-time',
+    question: 'Как быстро ответят на обращение?',
+    answer:
+      'Обычно обращения рассматриваются в рабочие дни. Если понадобится уточнение, мы свяжемся с вами по контактам из профиля.',
+  },
+  {
+    id: 'privacy',
+    question: 'Кто увидит моё обращение?',
+    answer:
+      'Обращение доступно только команде модерации и поддержки. Другие пользователи платформы его не видят.',
+  },
+]
 
 export interface ComplaintModalProps {
   isOpen: boolean
@@ -69,6 +97,12 @@ export const ComplaintModal = ({
             <Modal.Header title={'Столкнулись с проблемой?'}/>
 
             <div className={styles.body}>
+              <Faq
+                items={COMPLAINT_FAQ_ITEMS}
+                className={styles.faq}
+                itemClassName={styles.faqItem}
+              />
+
               <BigTextField
                 className={styles.textArea}
                 value={reason}
@@ -81,7 +115,7 @@ export const ComplaintModal = ({
                   Не удалось отправить обращение. Пожалуйста, попробуйте позже.
                 </p>
               )}
-              <div>
+              <div className={styles.submitRow}>
                 <FilledButton
                   textButton={isPending ? 'Отправка...' : 'Отправить'}
                   onClick={handleSubmit}

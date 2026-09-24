@@ -8,6 +8,25 @@ export const hasFreePlace = (role: ProjectCardData['roles'][number]) =>
 export const hasFreePlaces = (project: ProjectCardData) => (project.roles || []).some(hasFreePlace)
 
 /**
+ * Активное участие студента: проект ещё «в ходу», а не в терминальном статусе.
+ * NotImplemented / Completed / Archived / Rejected не показываем в блоке активных
+ * и не учитываем в лимите «уже в другом проекте».
+ */
+export const isActiveParticipatingProject = (
+  project: Pick<ProjectCardData, 'status'> | { status: ProjectStatus }
+): boolean => {
+  const { status } = project
+  return (
+    status === 'InProgress' ||
+    status === 'Recruiting' ||
+    status === 'RecruitmentCompleted' ||
+    status === 'Pending' ||
+    status === 'NeedsRework' ||
+    (status as string) === 'Active'
+  )
+}
+
+/**
  * Сквозной публичный статус проекта — тот, что показывается и на ПК, и в панели.
  *
  * Три статуса набора приходят не из API, а выводятся (по макету дизайнера):

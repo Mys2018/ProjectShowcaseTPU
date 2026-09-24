@@ -18,10 +18,11 @@ export const ApplicationsAndTeam = () => {
     }
   }, [searchParams, location.state])
 
-  const projectList = projects?.projects || []
+  // Только проекты на этапе набора — архив/завершённые/в работе сюда не попадают.
+  const projectList = (projects?.projects || []).filter((p) => p.status === 'Recruiting')
   const activeProjectId = (selectedProjectId && projectList.some((p) => p.id === selectedProjectId))
     ? selectedProjectId
-    : (selectedProjectId && projectList.length === 0 ? selectedProjectId : (projectList[0]?.id || null))
+    : (projectList[0]?.id || null)
   const selectedProject = projectList.find((p) => p.id === activeProjectId) || null
 
   const handleSelectProject = (projectId: string) => {

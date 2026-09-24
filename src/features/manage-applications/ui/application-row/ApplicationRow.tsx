@@ -36,12 +36,34 @@ export const ApplicationRow = ({ application, isPending, onAccept, onReject }: A
       })()
     : ''
 
+  // В подписи строки нужны именно навыки (Docker, Figma…), не названия компетенций (QA).
+  // meta.skills = CompetenceDto[] → у каждой competence свой список skillName.
+  const skillNames = Array.from(
+    new Set(
+      (user.meta.skills ?? []).flatMap((competence) =>
+        (competence.skills ?? []).map((s) => s.skillName).filter(Boolean)
+      )
+    )
+  )
+  // Если у пользователя ещё нет навыков в профиле — fallback на названия компетенций.
+  const subtitleLabels =
+    skillNames.length > 0
+      ? skillNames
+      : (user.competencies ?? []).filter(Boolean)
+
   return (
     <div className={styles.row}>
       <div className={styles.userInfo} onClick={handleAvatarClick}>
         <TeamUserCard
+          userId={application.studentID}
+          onClick={(e) => {
+            e.stopPropagation()
+            handleAvatarClick()
+          }}
           avatar={
             <Avatar
+              userId={application.studentID}
+              picture={user.profilePicture}
               fallbackType={getAvatarRoleInfo(user.roles)?.fallback || 'user'}
               size={"48px"}
               strokeColor={"grey"}
@@ -53,7 +75,7 @@ export const ApplicationRow = ({ application, isPending, onAccept, onReject }: A
           nameSubtextStyle={'OS-12-350'}
           nameStyle={'normal'}
           course={user.grade}
-          roles={user.competencies}
+          roles={subtitleLabels}
         />
       </div>
 

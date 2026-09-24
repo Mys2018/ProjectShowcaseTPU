@@ -5,7 +5,7 @@ import { queryKeys } from "./queryKeys";
 export const useSkills = () => {
 	return useQuery({
     queryKey: queryKeys.all,
-    queryFn: getSkills,
+    queryFn: () => getSkills(),
     staleTime: 6000
   })
 }

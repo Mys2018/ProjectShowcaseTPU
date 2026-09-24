@@ -14,7 +14,12 @@ import {
   UserRowSkeleton,
   type UserSwitchableRole
 } from '@/entities/user'
-import { getStudentProjectHours, useParticipatingProjects, useProjectTimesheetSummary } from '@/entities/project'
+import {
+  getStudentProjectHours,
+  isActiveParticipatingProject,
+  useParticipatingProjects,
+  useProjectTimesheetSummary
+} from '@/entities/project'
 import {
   FloatingTabs,
   StagesWidget,
@@ -30,8 +35,10 @@ export function MyPlatformPage() {
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
   const { data: scoresData } = useMyScores(Boolean(me?.id))
-  const { data: participatingData } = useParticipatingProjects({ limit: 10 }, Boolean(me?.id))
-  const activeProject = participatingData?.projects?.[0]
+  const { data: participatingData } = useParticipatingProjects({ limit: 100 }, Boolean(me?.id))
+  // Архив / NotImplemented / Completed / Rejected не считаются активными —
+  // только «живые» проекты попадают в баллы и ощущение «есть активный проект».
+  const activeProject = (participatingData?.projects ?? []).find(isActiveParticipatingProject)
   const { data: timesheetSummary } = useProjectTimesheetSummary(activeProject?.id, Boolean(activeProject?.id))
 
   const activeProjectHours = getStudentProjectHours(timesheetSummary, me?.id)

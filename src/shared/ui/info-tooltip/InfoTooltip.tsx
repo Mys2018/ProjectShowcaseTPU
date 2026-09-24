@@ -239,6 +239,20 @@ export const InfoTooltip = ({
   };
 
   const handleClick = (e: React.MouseEvent) => {
+    // Если кликнули по активной кнопке/ссылке внутри children — не перехватываем:
+    // иначе «Откликнуться» только открывает тултип и не отправляет заявку.
+    const target = e.target as HTMLElement | null
+    const childInteractive = target?.closest?.(
+      'button:not(:disabled), a[href], input:not(:disabled), textarea:not(:disabled), select:not(:disabled)'
+    ) as HTMLElement | null
+    if (
+      childInteractive &&
+      triggerRef.current?.contains(childInteractive) &&
+      childInteractive !== e.currentTarget
+    ) {
+      return
+    }
+
     e.stopPropagation();
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);

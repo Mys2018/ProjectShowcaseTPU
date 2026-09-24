@@ -1,4 +1,8 @@
-import { getProjectDates, type ProjectCardData } from '@/entities/project'
+import {
+  getProjectDates,
+  isActiveParticipatingProject,
+  type ProjectCardData,
+} from '@/entities/project'
 import type { User } from '@/entities/user'
 
 type ProjectInfo = {
@@ -33,14 +37,8 @@ export const getFilteredProjects = (projects: ProjectCardData[], student: User, 
   const studyStartYear = student.grade ? new Date().getFullYear() - Number(student.grade) + (isAutumnHalf ? 1 : 2) : null
 
   projects.forEach(project => {
-    const { status } = project
-    const isActive =
-      status === 'InProgress' ||
-      status === 'Recruiting' ||
-      status === 'RecruitmentCompleted' ||
-      (status as string) === 'Active'
-
-    if (isActive) {
+    // NotImplemented / Completed / Archived / Rejected — не активные.
+    if (isActiveParticipatingProject(project)) {
       const competencyId = findCompetenceId(project, student.id)
       activeProjects.push({ project, competencyId })
     } else if (studyStartYear) {

@@ -104,13 +104,20 @@ export const TeamUserCard = ({
     navigate(buildRoute.profileById(String(userId)));
   } : undefined);
 
-  const displayRoles = competency ? [competency] : roles;
-  const rolesText = displayRoles && displayRoles.length > 0 && (
+  const displayRoles = (() => {
+    if (competency == null || competency === '') return roles
+    return Array.isArray(competency) ? competency : [competency]
+  })()?.filter(Boolean)
+
+  const hasCourse = course !== undefined && course !== null && course !== ''
+  const hasRoles = Boolean(displayRoles && displayRoles.length > 0)
+
+  const rolesText = hasRoles && (
     <p
-      className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}
-      title={displayRoles.join(',  ')}
+      className={clsx(styles.text, styles.rolesText, getTeamUserCardSubtextStyle(nameSubtextStyle))}
+      title={displayRoles!.join(', ')}
     >
-      {displayRoles.join(', ')}
+      {displayRoles!.join(', ')}
     </p>
   );
 
@@ -130,13 +137,13 @@ export const TeamUserCard = ({
               {anotherText}
             </p>
           }
-          {course && (
-            <p className={clsx(styles.text, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
+          {hasCourse && (
+            <p className={clsx(styles.text, styles.course, getTeamUserCardSubtextStyle(nameSubtextStyle))}>
               {course} курс
             </p>
           )}
-          {(course && displayRoles && displayRoles.length > 0) && (
-            <div className={styles.verticalSeparator} />
+          {hasCourse && hasRoles && (
+            <div className={styles.verticalSeparator} aria-hidden />
           )}
           {rolesText && (
             rolesIcon ? (

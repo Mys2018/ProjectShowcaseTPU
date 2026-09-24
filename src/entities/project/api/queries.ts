@@ -109,6 +109,9 @@ export const useDeleteDraft = () => {
   return useMutation({
     mutationFn: () => projectApi.deleteDraft(),
     onSuccess: () => {
+      // Сразу чистим кэш: иначе виджет куратора успевает показать старый
+      // черновик до refetch, а autosave мог бы снова его поднять.
+      queryClient.setQueryData(projectKeys.draft(), null)
       queryClient.invalidateQueries({ queryKey: projectKeys.draft() })
     }
   })

@@ -13,7 +13,8 @@ import {
   useLikedProjects,
   useManagedProjects,
   useProjects,
-  hasFreePlaces
+  hasFreePlaces,
+  isActiveParticipatingProject,
 } from '@/entities/project'
 import {
   useApplications,
@@ -93,14 +94,10 @@ const getStagesData = (roleType: UserSwitchableRole['type'], counts: StagesCount
         }
       ]
     case 'Moderator':
+      // Жалобы пока не реализованы — карточку moderator-requests не показываем.
       return [
         {
           type: 'moderator-projects',
-          count: counts.pending,
-          snippet: counts.moderatorSnippet
-        },
-        {
-          type: 'moderator-requests',
           count: counts.pending,
           snippet: counts.moderatorSnippet
         }
@@ -201,8 +198,13 @@ export const StagesWidget = () => {
     isCurator
   )
 
+  // Архив/NotImplemented/Completed/Rejected не входят ни в счётчик проектов,
+  // ни в выборку заявок — только «живые» managed-проекты куратора.
   const managedProjectsList = useMemo(
-    () => (isCurator ? managedData?.projects ?? [] : []),
+    () =>
+      isCurator
+        ? (managedData?.projects ?? []).filter(isActiveParticipatingProject)
+        : [],
     [isCurator, managedData?.projects]
   )
 
@@ -222,14 +224,14 @@ export const StagesWidget = () => {
   if (!roleType) return null
 
   // Student metrics & snippets
-  const participatingCount = participatingData?.total ?? participatingData?.projects?.length ?? 0
+  // total с API может включать архив — для «есть активный» смотрим только живые.
   const participatingProjects = participatingData?.projects ?? []
-  const activeParticipatingCount = participatingProjects.filter(
-    p => p.status === 'InProgress' || p.status === 'Recruiting' || p.status === 'RecruitmentCompleted' || (p.status as string) === 'Active'
-  ).length
+  const activeParticipatingProjects = participatingProjects.filter(isActiveParticipatingProject)
+  const participatingCount = activeParticipatingProjects.length
+  const activeParticipatingCount = participatingCount
 
   let participatingSnippet: string
-  if (participatingCount === 0) {
+  if ((participatingData?.projects?.length ?? 0) === 0) {
     participatingSnippet = 'нет завершённых'
   } else if (activeParticipatingCount > 0) {
     participatingSnippet = `${activeParticipatingCount} ${pluralizeWord(activeParticipatingCount, 'активный', 'активных', 'активных')}`
@@ -266,8 +268,9 @@ export const StagesWidget = () => {
     likedSnippet = `${actualLikedCount} ${pluralizeWord(actualLikedCount, 'актуален', 'актуальны', 'актуальных')}`
   }
 
-  // Curator metrics & snippets
-  const managedCount = managedData?.total ?? managedData?.projects?.length ?? 0
+  // Curator metrics & snippets — только активные managed-проекты.
+  const allManagedCount = managedData?.projects?.length ?? 0
+  const managedCount = managedProjectsList.length
   const recruitingManagedCount = managedProjectsList.filter(
     p => p.status === 'Recruiting' || (p.status === 'RecruitmentCompleted' && hasFreePlaces(p))
   ).length
@@ -279,8 +282,10 @@ export const StagesWidget = () => {
   ).length
 
   let managedSnippet: string
-  if (managedCount === 0) {
+  if (allManagedCount === 0) {
     managedSnippet = 'нет созданных'
+  } else if (managedCount === 0) {
+    managedSnippet = 'все завершены'
   } else if (recruitingManagedCount > 0 || inProgressManagedCount > 0) {
     const parts: string[] = []
     if (recruitingManagedCount > 0) parts.push(`${recruitingManagedCount} в наборе`)
@@ -292,6 +297,7 @@ export const StagesWidget = () => {
     managedSnippet = 'все завершены'
   }
 
+  // Заявки только с активных проектов (applicationQueries уже только по ним).
   const curatorApplicationsCount = applicationQueries.reduce((sum, query) => {
     const activeApps = (query.data?.applications ?? []).filter(
       app => app.status === 'pending'

@@ -1,6 +1,14 @@
 import styles from './ProjectTeam.module.css'
-import {Avatar, getAvatarRoleInfo, getMemberRoleName, TeamUserCard, type UserCard, useMe} from '@/entities/user'
-import  { type ProjectCardData } from '@/entities/project'
+import {
+  Avatar,
+  getAvatarRoleInfo,
+  getMemberRoleName,
+  TeamUserCard,
+  type UserCard,
+  useMe,
+  useUserById,
+} from '@/entities/user'
+import { type ProjectCardData } from '@/entities/project'
 import CheckIcon from '@/shared/ui/icons/check.svg?react'
 
 type ProjectTeamProps = {
@@ -8,6 +16,46 @@ type ProjectTeamProps = {
   list: UserCard[]
   openFreeCompetency?: () => void
   isLoading?: boolean
+}
+
+/** Строка участника: UserCard с /team без grade — курс берём из полного профиля. */
+const ProjectTeamMemberRow = ({
+  item,
+  project,
+}: {
+  item: UserCard
+  project?: ProjectCardData
+}) => {
+  const { data: fullUser } = useUserById(item.userId)
+  const course = fullUser?.grade ?? item.grade
+  const roleName = getMemberRoleName(item.userId, project)
+
+  return (
+    <li className={styles.item}>
+      <p className={styles.role}>{roleName}</p>
+      <div className={styles.info}>
+        <TeamUserCard
+          userId={item.userId}
+          avatar={
+            <Avatar
+              userId={item.userId}
+              picture={fullUser?.profilePicture || item.profilePicture}
+              fallbackType={getAvatarRoleInfo(fullUser?.roles ?? item.roles)?.fallback || 'user'}
+              size={'36px'}
+              strokeColor={'grey'}
+            />
+          }
+          firstName={fullUser?.meta.firstName || item.meta.firstName}
+          lastName={fullUser?.meta.lastName || item.meta.lastName}
+          nameTextStyle={'OS-12-500'}
+          nameSubtextStyle={'OS-10-400'}
+          nameStyle={'normal'}
+          course={course}
+        />
+      </div>
+      <CheckIcon className={styles.checkIcon} />
+    </li>
+  )
 }
 
 export const ProjectTeam = (props: ProjectTeamProps) => {
@@ -45,34 +93,13 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
           <div className={styles.empty}>Команда пока формируется</div>
         ) : (
           <ul className={styles.teamList}>
-            {props.list.map((item, i) => {
-              return (
-                <li key={item.userId ?? i} className={styles.item}>
-                  <p className={styles.role}>
-                    {getMemberRoleName(item.userId, props.project)}
-                  </p>
-                  <div className={styles.info}>
-                    <TeamUserCard
-                      userId={item.userId}
-                      avatar={<Avatar
-                        userId={item.userId}
-                        picture={item.profilePicture}
-                        fallbackType={getAvatarRoleInfo(item.roles)?.fallback || 'user'}
-                        size={'36px'}
-                        strokeColor={'grey'}/>
-                    }
-                      firstName={item.meta.firstName}
-                      lastName={item.meta.lastName}
-                      nameTextStyle={"OS-12-500"}
-                      nameSubtextStyle={"OS-10-400"}
-                      nameStyle={"normal"}
-                      course={item.grade}
-                    />
-                  </div>
-                  <CheckIcon className={styles.checkIcon} />
-                </li>
-              )
-            })}
+            {props.list.map((item, i) => (
+              <ProjectTeamMemberRow
+                key={item.userId ?? i}
+                item={item}
+                project={props.project}
+              />
+            ))}
           </ul>
         )}
         {canShowAddBlock && (
@@ -87,5 +114,5 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}

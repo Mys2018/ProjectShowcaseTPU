@@ -1,0 +1,75 @@
+/* Базовая раскладка FAQ. Визуал донастраивается снаружи через className. */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px;
+  border-radius: 16px;
+  background-color: var(--color-brand-green);
+}
+
+.body p {
+  font: var(--field-title-big-interface);
+  color: white;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+
+.item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  color: white;
+}
+
+.question {
+  flex: 1;
+  min-width: 0;
+  color: white;
+  font: var(--subhead-interface)
+}
+
+.icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconInner path {
+  fill: white;
+}
+
+.answer {
+  width: 100%;
+  font: var(--body-small-platform);
+  color: white;
+}
+
+.separator {
+  width: 100%;
+  height: 1px;
+  border-radius: 1px;
+  background-color: white;
+  opacity: 0.25;
+}

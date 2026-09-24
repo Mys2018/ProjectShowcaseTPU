@@ -27,6 +27,7 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields, onEditTyp
   const allTags = tagGroups.flatMap(group =>
     group.tags.map(t => ({ label: t.name, value: t.id }))
   );
+  const knownTagIds = new Set(allTags.map((t) => t.value));
 
   const getErrorMessage = (error: unknown): string | undefined => {
     if (typeof error === 'string') return error;
@@ -162,20 +163,22 @@ export function MainInfoTab({ form, stepErrors, partners, blinkFields, onEditTyp
           <form.Field name="tags">
             {(field) => {
               const availableExtraTags = allTags.filter(t => t.value !== primaryTag);
+              // Не даём устаревшим id из черновика считаться выбранными
+              const selectedIds = (field.state.value || []).filter((id) => knownTagIds.has(id));
 
               return (
                 <div className={styles.tagGroup} id="field-tags">
                   <span className={styles.tagGroupLabel}>Дополнительные теги</span>
                   <div className={styles.tagBadgeRow}>
                     {availableExtraTags.map((tag) => {
-                      const isSelected = (field.state.value || []).includes(tag.value);
+                      const isSelected = selectedIds.includes(tag.value);
                       return (
                         <button
                           key={tag.value}
                           type="button"
                           className={clsx(styles.tagBadge, isSelected && styles.tagBadgeActive, blinkFields.includes('Основной тег') && 'blink-1')}
                           onClick={() => {
-                            const current = field.state.value || [];
+                            const current = selectedIds;
                             field.handleChange(
                               isSelected
                                 ? current.filter((t) => t !== tag.value)
