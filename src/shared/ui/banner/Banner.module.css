@@ -91,7 +91,7 @@
 	width: 620px;
 	top: 0;
 	right: 140px;
-	z-index: 1;
+	z-index:0;
 }
 
 .curator {
@@ -151,17 +151,24 @@
 		opacity: 0.5;
 		top: 120px;
 		right: -320px;
+		z-index: 1;
 	}
 
 	.curator {
 		opacity: 0.5;
 		top: 80px;
 		right: -210px;
+		z-index: 1;
 	}
 
 	.moderator {
 		opacity: 0.5;
 		top: 80px;
 		right: -210px;
+		z-index: 1;
+	}
+
+	.children {
+		z-index: 3;
 	}
 }

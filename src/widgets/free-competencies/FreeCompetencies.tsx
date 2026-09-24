@@ -9,6 +9,7 @@ import {
   projectQueryKeys,
   useProjectTeam,
   useParticipatingProjects,
+  isActiveParticipatingProject,
   isProjectCourseEligible,
   getCourseRestrictionText,
   type ProjectCardData
@@ -119,7 +120,11 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   }, [myApplications])
 
   const totalActiveApplicationsCount = allActiveApplications.length
-  const isGlobalLimitReached = totalActiveApplicationsCount >= MAX_GLOBAL_APPLICATIONS
+  const remainingGlobalApplications = Math.max(
+    0,
+    MAX_GLOBAL_APPLICATIONS - totalActiveApplicationsCount
+  )
+  const isGlobalLimitReached = remainingGlobalApplications <= 0
 
   // Компетенции, которые уже заняты пользователем
   const myOccupiedRoleIds = useMemo(() => {
@@ -136,11 +141,20 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     return Array.from(new Set([...fromApps, ...fromPlaces, ...fromTeamRoles]))
   }, [currentApplications, myUserId, roles, teamMembers])
 
-  // Пользователя уже приняли в один из проектов (в текущий или любой другой)
+  // Уже приняли в *активный* проект: NotImplemented/Completed/Archived/Rejected
+  // место «активного» участия не занимают — иначе нельзя откликнуться снова.
+  const isAcceptedInOtherActiveProject = (participatingProjects?.projects ?? [])
+    .filter(isActiveParticipatingProject)
+    .some((p) => !project?.id || String(p.id) !== String(project.id))
+
+  const isAcceptedInCurrentProject = myOccupiedRoleIds.length > 0
+
+  // Блокировка новых откликов из-за чужого активного проекта (не текущего).
+  // Участие в текущем проекте не показываем как «уже есть активный» — там свои UX-состояния.
+  const isBlockedByActiveProject = isAcceptedInOtherActiveProject
+
   const isAcceptedInAnyProject =
-    (participatingProjects?.projects?.length ?? 0) > 0 ||
-    (participatingProjects?.total ?? 0) > 0 ||
-    myOccupiedRoleIds.length > 0
+    isAcceptedInOtherActiveProject || isAcceptedInCurrentProject
 
   // Компетенции, которые отмечаются галочкой (занятые + отправленные на рассмотрение + выбранные)
   const displaySelected = useMemo(() => {
@@ -167,6 +181,14 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
 
   const isProjectNotRecruiting = !!(project && project.status !== 'Recruiting' && project.status !== 'RecruitmentCompleted')
 
+  // Сколько компетенций можно ещё выбрать в этом отклике:
+  // min(слоты в проекте, оставшийся глобальный лимит pending-заявок).
+  const remainingProjectSlots = Math.max(0, MAX_PROJECT_SELECTIONS - pendingApplications.length)
+  const maxSelectableNow = Math.max(
+    0,
+    Math.min(remainingProjectSlots, remainingGlobalApplications)
+  )
+
   // Нельзя подавать заявки, если:
   // - курс студента не подходит для типа проекта (!isCourseEligible)
   // - человека уже приняли в один проект (isAcceptedInAnyProject)
@@ -179,6 +201,23 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
     !isGlobalLimitReached &&
     !isProjectNotRecruiting &&
     visibleRoles.length > 0
+    && maxSelectableNow > 0
+
+  const applicationsRemainingLabel = (() => {
+    if (remainingGlobalApplications <= 0) {
+      return `Лимит откликов исчерпан (${MAX_GLOBAL_APPLICATIONS} из ${MAX_GLOBAL_APPLICATIONS})`
+    }
+    if (remainingGlobalApplications === 1) {
+      return 'Можно отправить ещё 1 отклик'
+    }
+    if (remainingGlobalApplications >= 2 && remainingGlobalApplications <= 4) {
+      return `Можно отправить ещё ${remainingGlobalApplications} отклика`
+    }
+    return `Можно отправить ещё ${remainingGlobalApplications} откликов`
+  })()
+
+  const activeProjectRestrictionText = 'У вас уже есть активный проект'
+  const globalLimitRestrictionText = `Лимит откликов исчерпан (${totalActiveApplicationsCount} из ${MAX_GLOBAL_APPLICATIONS})`
 
   const toggleFeedBack = async () => {
     if (isBatchPending) return;
@@ -234,11 +273,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
         return prevState.filter(id => id !== roleId);
       }
 
-      const availableSlotsInProject = MAX_PROJECT_SELECTIONS - pendingApplications.length;
-      const availableSlotsGlobal = MAX_GLOBAL_APPLICATIONS - totalActiveApplicationsCount;
-      const maxCanSelect = Math.max(0, Math.min(availableSlotsInProject, availableSlotsGlobal));
-
-      if (prevState.length >= maxCanSelect) {
+      if (prevState.length >= maxSelectableNow) {
         return prevState;
       }
 
@@ -247,8 +282,7 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
   }
 
   const isMaxSelected =
-    (selectedCompetencies.length + pendingApplications.length >= MAX_PROJECT_SELECTIONS) ||
-    (totalActiveApplicationsCount + selectedCompetencies.length >= MAX_GLOBAL_APPLICATIONS);
+    selectedCompetencies.length >= maxSelectableNow && maxSelectableNow >= 0
 
   // Если свободных компетенций нет, полностью скрываем блок
   if (visibleRoles.length === 0) {
@@ -283,23 +317,23 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
                   <p className={styles.role}>
                     {role.meta.name}
                   </p>
-                  {!isDimmed && (
-                    <div className={styles.tooltipWrapper} onClick={(e) => e.stopPropagation()}>
-                      <InfoTooltip
-                        className={styles.tooltip}
-                        iconClassName={styles.tooltipIcon}
-                        title="Заголовок тултипа"
-                        body={[
-                          {
-                            text: ['Бла бла']
-                          }
-                        ]}
-                        size={'small'}
-                        pointer={'topRight'}
-                        type={'help'}
-                      />
-                    </div>
-                  )}
+                  {/*{!isDimmed && (*/}
+                  {/*  <div className={styles.tooltipWrapper} onClick={(e) => e.stopPropagation()}>*/}
+                  {/*    <InfoTooltip*/}
+                  {/*      className={styles.tooltip}*/}
+                  {/*      iconClassName={styles.tooltipIcon}*/}
+                  {/*      title="Заголовок тултипа"*/}
+                  {/*      body={[*/}
+                  {/*        {*/}
+                  {/*          text: ['Бла бла']*/}
+                  {/*        }*/}
+                  {/*      ]}*/}
+                  {/*      size={'small'}*/}
+                  {/*      pointer={'topRight'}*/}
+                  {/*      type={'help'}*/}
+                  {/*    />*/}
+                  {/*  </div>*/}
+                  {/*)}*/}
                 </div>
 
                 {role.skills.length !== 0 ? (
@@ -354,7 +388,13 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
         })}
       </div>
 
-      {(canApply || isAppliedToProject || !isCourseEligible) && (
+      {(
+        canApply ||
+        isAppliedToProject ||
+        !isCourseEligible ||
+        isBlockedByActiveProject ||
+        isGlobalLimitReached
+      ) && (
         <div className={styles.footer}>
           {isAppliedToProject ? (
             <FeedBackButton
@@ -363,17 +403,42 @@ export const FreeCompetencies = ({ roles, project }: FreeCompetenciesProps) => {
               disabled={isBatchPending}
             />
           ) : !isCourseEligible ? (
+            // Study: 1–2, Real: 3–4, Case: 1–4 — текст из getCourseRestrictionText
             <div className={styles.courseRestricted}>
               {courseRestrictionText}
+            </div>
+          ) : isBlockedByActiveProject ? (
+            <div className={styles.courseRestricted}>
+              {activeProjectRestrictionText}
+            </div>
+          ) : isGlobalLimitReached ? (
+            <div className={styles.courseRestricted}>
+              {globalLimitRestrictionText}
             </div>
           ) : canApply ? (
             status === 'authenticated' ? (
               isProfileFilled ? (
-                <FeedBackButton
-                  isActiveFeedBack={false}
-                  toggleFeedBack={() => void toggleFeedBack()}
-                  disabled={selectedCompetencies.length === 0 || isBatchPending}
-                />
+                // Других тултипов на кнопке нет (гость/профиль уже заняли слот) —
+                // сюда кладём предупреждение про оставшиеся отклики.
+                <InfoTooltip
+                  body={[
+                    {
+                      text: [
+                        maxSelectableNow < remainingGlobalApplications
+                          ? `${applicationsRemainingLabel}. В этом проекте можно выбрать до ${maxSelectableNow}.`
+                          : applicationsRemainingLabel,
+                      ],
+                    },
+                  ]}
+                  size="small"
+                  pointer="topRight"
+                >
+                  <FeedBackButton
+                    isActiveFeedBack={false}
+                    toggleFeedBack={() => void toggleFeedBack()}
+                    disabled={selectedCompetencies.length === 0 || isBatchPending}
+                  />
+                </InfoTooltip>
               ) : (
                 <InfoTooltip
                   title="Заполните профиль для отлика на проект"

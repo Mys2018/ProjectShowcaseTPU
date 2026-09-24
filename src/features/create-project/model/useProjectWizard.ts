@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
 import { getCurrentCheckpoints } from '@/entities/checkpoint';
 import { useMe } from '@/entities/user';
+import { useTags } from '@/entities/tag';
 import { isSafeExternalUrl } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
@@ -203,6 +204,7 @@ const STUDY_DEFAULTS = {
 
 export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDraftLoading }: UseProjectWizardProps) => {
   const { data: me } = useMe();
+  const { data: tagGroups = [] } = useTags();
 
   const initialSource = defaultValues ?? restoreValues ?? null;
   const initialStep = (typeof initialSource?.currentStep === 'number' && initialSource.currentStep >= 1)
@@ -250,6 +252,21 @@ export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDra
     defaultValues: stableDefaultValuesRef.current,
 
     onSubmit: async ({ value }) => {
+      // Справочник тегов может обновиться (id удалили) — в payload только существующие.
+      // Иначе бэкенд отвечает NOT_FOUND по tag_id на create/update.
+      const knownTagIds = new Set(
+        tagGroups.flatMap((group) => group.tags.map((tag) => tag.id))
+      )
+      const primaryTagId =
+        value.primaryTag && knownTagIds.has(value.primaryTag) ? value.primaryTag : ''
+      const tagIds = Array.from(
+        new Set((value.tags || []).filter((id) => knownTagIds.has(id) && id !== primaryTagId))
+      )
+
+      if (!primaryTagId) {
+        throw new Error('Выберите актуальный основной тег — сохранённый больше не существует')
+      }
+
       const payload: CreateProjectDto = {
         type: value.type,
         ownerId: me ? Number(me.id) : 0,
@@ -260,8 +277,8 @@ export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDra
           deadline: c.deadline
         })),
         meta: value.meta,
-        primaryTagId: value.primaryTag,
-        tagIds: value.tags?.length ? value.tags : [],
+        primaryTagId,
+        tagIds,
         prdMeta: value.prdMeta,
         roles: value.roles.map(role => ({
           roleTypeId: role.roleTypeId,
@@ -280,10 +297,45 @@ export const useProjectWizard = ({ onSubmit, defaultValues, restoreValues, isDra
           .map(l => ({ platformId: l.platformId, name: l.name, url: l.link }))
       } as CreateProjectDto;
 
-      console.log('payload:', payload)
       await onSubmit(payload);
     },
   });
+
+  // Черновик/редактирование могут хранить tag id, которых уже нет в /tags.
+  // Чистим форму, чтобы устаревшие id не уезжали в API и не торчали как «выбранные».
+  useEffect(() => {
+    if (!tagGroups.length) return
+
+    const knownTags = tagGroups.flatMap((group) => group.tags)
+    const knownIds = new Set(knownTags.map((tag) => tag.id))
+    const knownById = new Map(knownTags.map((tag) => [tag.id, tag]))
+
+    const currentPrimary = form.state.values.primaryTag || ''
+    const currentTags = form.state.values.tags || []
+    const nextPrimary = knownIds.has(currentPrimary) ? currentPrimary : ''
+    const nextTags = currentTags.filter((id) => knownIds.has(id) && id !== nextPrimary)
+
+    const primaryChanged = nextPrimary !== currentPrimary
+    const tagsChanged =
+      nextTags.length !== currentTags.length || nextTags.some((id, i) => id !== currentTags[i])
+
+    if (!primaryChanged && !tagsChanged) return
+
+    if (primaryChanged) {
+      form.setFieldValue('primaryTag', nextPrimary)
+      form.setFieldValue(
+        'extraFieldsForAll.primaryTagName',
+        nextPrimary ? knownById.get(nextPrimary)?.name || '' : ''
+      )
+    }
+    if (tagsChanged) {
+      form.setFieldValue('tags', nextTags)
+      form.setFieldValue(
+        'extraFieldsForAll.tags',
+        nextTags.map((id) => knownById.get(id)?.name || id)
+      )
+    }
+  }, [tagGroups, form])
 
   useEffect(() => {
     if (!restoreValues || hasRestoredRef.current) {

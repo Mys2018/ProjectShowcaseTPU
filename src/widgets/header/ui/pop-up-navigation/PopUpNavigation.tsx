@@ -55,8 +55,8 @@ const getRoleSection = (roleType: UserSwitchableRole['type']): RoleSection => {
         id: 'moderation',
         title: 'Модерация',
         subSections: [
-          { title: 'Модерация проектов', route: ROUTES.MODERATION.PROJECTS },
-          { title: 'Входящие жалобы', route: ROUTES.MODERATION.COMPLAINTS }
+          // Жалобы пока не реализованы — пункт не показываем.
+          { title: 'Модерация проектов', route: ROUTES.MODERATION.PROJECTS }
         ]
       }
 

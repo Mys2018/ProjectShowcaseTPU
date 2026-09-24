@@ -2,41 +2,49 @@ import { type User, type UserBase, type UserBaseDto, type UserDto, type UserRole
 import { ROLE_WEIGHTS } from '../config/constants'
 import { userIconUrl } from '@/shared'
 
-const mapRoles = (dto: UserDto['roles']): UserRole[] => {
-  return Object.entries(dto).map(([key, value]) => {
+const mapRoles = (roles: UserDto['roles'] | undefined): UserRole[] => {
+  if (!roles || typeof roles !== 'object') return []
+  return Object.entries(roles).map(([key, value]) => {
     const type = key as keyof UserDto['roles']
     return {
       type: type,
       weight: ROLE_WEIGHTS[type],
-      ...value
+      ...(value && typeof value === 'object' ? value : {})
     } as UserRole
   })
 }
 
+const parseGrade = (value: string | number | undefined | null): number | undefined => {
+  if (value === undefined || value === null || value === '') return undefined
+  const n = Number(value)
+  return Number.isFinite(n) ? n : undefined
+}
+
 export const mapUserDto = (dto: UserDto): User => {
-  const grade = dto.grade || dto.roles?.Student?.course
+  // Курс студента лежит в roles.Student.course (см. StudentUseCase в api.yaml)
+  const grade = parseGrade(dto.grade ?? dto.roles?.Student?.course)
   const group = dto.group || dto.roles?.Student?.meta?.group
-  const competencies = dto.meta.skills?.map(s => s.roleTypeName).filter(Boolean) || []
-  const computedName = [dto.meta.firstName, dto.meta.lastName, dto.meta.patronym].filter(Boolean).join(' ').trim()
+  const competencies = dto.meta?.skills?.map(s => s.roleTypeName).filter(Boolean) || []
+  const computedName = [dto.meta?.firstName, dto.meta?.lastName, dto.meta?.patronym].filter(Boolean).join(' ').trim()
 
   return {
     id: String(dto.userId),
     email: dto.email,
     profilePicture: dto.profilePicture || userIconUrl,
     group,
-    grade: grade ? Number(grade) : undefined,
+    grade,
     competencies,
     meta: {
       name: computedName || dto.email,
-      firstName: dto.meta.firstName,
-      lastName: dto.meta.lastName,
-      patronym: dto.meta.patronym,
-      bio: dto.meta.bio,
-      interests: dto.meta.interests || '',
-      skills: dto.meta.skills || [],
-      experience: dto.meta.experience,
-      messengers: dto.meta.messengers,
-      portfolioLink: dto.meta.portfolioLink || ''
+      firstName: dto.meta?.firstName,
+      lastName: dto.meta?.lastName,
+      patronym: dto.meta?.patronym,
+      bio: dto.meta?.bio,
+      interests: dto.meta?.interests || '',
+      skills: dto.meta?.skills || [],
+      experience: dto.meta?.experience,
+      messengers: dto.meta?.messengers,
+      portfolioLink: dto.meta?.portfolioLink || ''
     },
     roles: mapRoles(dto.roles),
     capabilities: dto.capabilities || []

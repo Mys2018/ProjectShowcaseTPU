@@ -34,9 +34,9 @@ export function ProjectActivitiesTabs({ className }: ProjectActivitiesTabsProps)
           { label: 'Оценка участников', value: ROUTES.MANAGE.GRADES }
         ]
       case 'Moderator':
+        // Жалобы пока не реализованы — вкладку не показываем.
         return [
-          { label: 'Модерация проектов', value: ROUTES.MODERATION.PROJECTS },
-          { label: 'Входящие жалобы', value: ROUTES.MODERATION.COMPLAINTS }
+          { label: 'Модерация проектов', value: ROUTES.MODERATION.PROJECTS }
         ]
       case null:
         return []

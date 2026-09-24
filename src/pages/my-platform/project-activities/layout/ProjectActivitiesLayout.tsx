@@ -11,7 +11,6 @@ import { ProjectModerationPage } from '../project-moderation/ProjectModerationPa
 import { ProjectActivitiesTabs } from '@/widgets/project-activities-tabs'
 import { BackLink } from '@/shared/ui/back-link'
 import { ROUTES } from '@/shared'
-import {ReportsModeration} from "@/pages/my-platform/project-activities/reports-moderation/ReportsModeration.tsx";
 
 export function ProjectActivitiesLayout() {
   const location = useLocation()
@@ -52,7 +51,9 @@ export function ProjectActivitiesLayout() {
       case ROUTES.MODERATION.PROJECTS:
         return <ProjectModerationPage />
       case ROUTES.MODERATION.COMPLAINTS:
-        return <ReportsModeration/>
+        // Жалобы пока не реализованы — уводим на модерацию проектов.
+        navigate(ROUTES.MODERATION.PROJECTS, { replace: true })
+        return <ProjectModerationPage />
       default:
         return location.hash
     }

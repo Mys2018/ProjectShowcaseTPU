@@ -11,11 +11,20 @@
     z-index: 9999;
 }
 
-/* Расширенная зона наведения вокруг маленьких иконок */
+/* Расширенная зона наведения вокруг маленьких иконок.
+   pointer-events: none — иначе ::after перекрывает children (кнопки)
+   и клик до них не доходит, срабатывает только toggle тултипа. */
 .tooltipBody::after {
     content: '';
     position: absolute;
     inset: -10px;
+    pointer-events: none;
+}
+
+/* Disabled-кнопка не диспатчит click и не бабблит его родителю.
+   Пропускаем hit-test на родителя, чтобы тултип (гость/профиль) открывался. */
+.tooltipBody :is(button, [role='button']):disabled {
+    pointer-events: none;
 }
 
 /* Предотвращает потерю hover при прохождении мыши через прозрачные области векторной иконки */

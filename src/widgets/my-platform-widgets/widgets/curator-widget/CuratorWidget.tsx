@@ -2,7 +2,7 @@ import { useState } from "react";
 import styles from './CuratorWidget.module.css';
 import { CuratorProjectCard, DraftProjectCard } from '@/features/platform-project-cards';
 import { useProjectDraft } from '@/entities/draft';
-import { useCuratedProjects } from "@/entities/project";
+import { isActiveParticipatingProject, useCuratedProjects } from "@/entities/project";
 import { ProjectSkeleton } from "@/shared";
 import GradingReminder from '@/shared/assets/3d/Grading_Reminder.png';
 import { ClosingBanner } from "@/shared/ui/closing-banner";
@@ -12,6 +12,9 @@ export const CuratorWidget = () => {
   const { data: draft, isLoading: draftProjectLoading } = useProjectDraft()
   const { data: curatorData, isLoading: curatedProjectLoading } = useCuratedProjects()
   const [isBannerVisible, setIsBannerVisible] = useState<boolean>(true)
+
+  // Архив / NotImplemented / Completed / Rejected — только в истории, не в активных.
+  const activeProjects = (curatorData?.projects ?? []).filter(isActiveParticipatingProject)
 
   return (
     <section className={styles.bodyContainer}>
@@ -53,9 +56,13 @@ export const CuratorWidget = () => {
                 <ProjectSkeleton className={styles.skeleton}/>
               </>
 
-            ) : (curatorData && curatorData.projects.map((project) => (
-              <CuratorProjectCard key={project.id} project={project}/>
-            )))
+            ) : activeProjects.length > 0 ? (
+              activeProjects.map((project) => (
+                <CuratorProjectCard key={project.id} project={project}/>
+              ))
+            ) : (
+              <p className={styles.emptyActive}>Активных проектов сейчас нет</p>
+            )
           }
         </div>
       </div>

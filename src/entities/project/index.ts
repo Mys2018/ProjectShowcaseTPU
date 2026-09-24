@@ -10,7 +10,12 @@ export { getProjectDates } from './lib/getProjectDates'
 export { PROJECT_FORMATS } from './model/constants'
 export { getProjectPlural, getScorePlural, getScoreWord } from './lib/plurals'
 export { getProjectTagBackground } from './lib/getProjectTagBackground'
-export { getPublicProjectStatus, hasFreePlaces, hasFreePlace } from './lib/publicStatus'
+export {
+  getPublicProjectStatus,
+  hasFreePlaces,
+  hasFreePlace,
+  isActiveParticipatingProject,
+} from './lib/publicStatus'
 export { useIsInOtherProject, useProjectLimitReached } from './model/participation'
 export { useProjectGrading, type ProjectGradingResult } from './model/useProjectGrading'
 export { getStudentProjectHours } from './lib/timesheet'
