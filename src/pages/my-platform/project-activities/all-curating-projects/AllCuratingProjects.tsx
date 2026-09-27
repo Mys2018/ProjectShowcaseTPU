@@ -47,13 +47,17 @@ export const AllCuratingProjects = () => {
 
       <CompletedProjects
         title={'Завершенные проекты'}
-        isEmpty={!hasCompletedProjects}
+        isEmpty={!curatedProjectLoading && !hasCompletedProjects}
         emptyTitle={'В 2026 году вы не управляли проектами'}
         emptySubtitle={'Создавайте проекты и управляйте командами. Все завершенные проекты будут храниться здесь вместе с результатами и статистикой.'}
       >
-        {completedProjects.map((project) => (
-          <CuratorProjectCard key={project.id} project={project} />
-        ))}
+        {curatedProjectLoading ? (
+          <ProjectSkeleton className={styles.skeleton} />
+        ) : (
+          completedProjects.map((project) => (
+            <CuratorProjectCard key={project.id} project={project} />
+          ))
+        )}
       </CompletedProjects>
     </div>
   )

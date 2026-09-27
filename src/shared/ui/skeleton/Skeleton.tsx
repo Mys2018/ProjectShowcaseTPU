@@ -1,17 +1,15 @@
-import s1 from './ImageSkeleton.module.css'
-import s2 from '../Skeleton.module.css'
+import s from './Skeleton.module.css'
 import clsx from 'clsx'
 import type { CSSProperties, HTMLAttributes } from 'react'
 
-export interface ImageSkeletonProps extends HTMLAttributes<HTMLDivElement> {
+export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
   filled?: boolean
-  className?: string
   width?: string | number
   height?: string | number
   borderRadius?: string | number
 }
 
-export function ImageSkeleton({
+export function Skeleton({
   filled,
   className,
   width,
@@ -19,7 +17,7 @@ export function ImageSkeleton({
   borderRadius,
   style,
   ...props
-}: ImageSkeletonProps) {
+}: SkeletonProps) {
   const inlineStyle: CSSProperties = {
     ...style,
     ...(width !== undefined ? { width } : {}),
@@ -30,7 +28,7 @@ export function ImageSkeleton({
   return (
     <div
       aria-hidden="true"
-      className={clsx(s2.skeleton, filled && s2.filled, s1.image, className)}
+      className={clsx(s.skeleton, filled && s.filled, className)}
       style={inlineStyle}
       {...props}
     />

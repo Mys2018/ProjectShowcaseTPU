@@ -14,7 +14,7 @@ import {
 import { ProjectSkeleton, TextSkeleton } from '@/shared'
 
 export function ProjectModerationPage() {
-  const { data, isLoading } = useProjects({ sort: 'created_desc' })
+  const { data, isLoading, isError } = useProjects({ sort: 'created_desc' })
   const projects = data ? getSortedProjects(data.projects) : []
 
   const [searchParams] = useSearchParams()
@@ -68,12 +68,16 @@ export function ProjectModerationPage() {
       </aside>
       <main className={styles.content}>
         {isLoading ? (
+          <div className={styles.skeleton} aria-busy="true">
+            <TextSkeleton />
+            <TextSkeleton />
+            <ProjectSkeleton className={styles.project} />
+            <TextSkeleton />
+            <ProjectSkeleton className={styles.project} />
+          </div>
+        ) : isError ? (
           <div className={styles.skeleton}>
-            <TextSkeleton />
-            <TextSkeleton />
-            <ProjectSkeleton className={styles.project} />
-            <TextSkeleton />
-            <ProjectSkeleton className={styles.project} />
+            <p>Не удалось загрузить проекты на модерацию</p>
           </div>
         ) : activeProject ? (
           <ProjectModeration project={activeProject} />

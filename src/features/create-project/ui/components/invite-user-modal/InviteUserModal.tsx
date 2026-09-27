@@ -11,6 +11,7 @@ import CrossIcon from '@/shared/ui/icons/cross.svg?react';
 import { InviteActionButton, type InviteActionButtonType } from "@/shared/ui/elements/buttons";
 import { SmallSearchField } from "@/shared/ui/small-search-field";
 import { useDebounce } from "@/shared/lib";
+import { ImageSkeleton, Skeleton, TextSkeleton } from "@/shared";
 
 interface InviteUserModalProps {
   isOpen: boolean;
@@ -114,7 +115,23 @@ export const InviteUserModal = ({
       {hasSearch && (
         <div className={styles.bottomBlock}>
           {isSearching && filteredUsers.length === 0 ? (
-            <p className={styles.emptyState}>Поиск пользователей...</p>
+            <div className={styles.scrollContainer} aria-busy="true">
+              {[1, 2, 3].map((i) => (
+                <div key={i} aria-hidden="true" style={{ width: '100%' }}>
+                  <div className={styles.userCard}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <ImageSkeleton width="48px" height="48px" borderRadius="50%" />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <TextSkeleton width="140px" height="16px" />
+                        <TextSkeleton width="90px" height="12px" />
+                      </div>
+                    </div>
+                    <Skeleton width="100px" height="34px" borderRadius="6px" />
+                  </div>
+                  {i < 3 && <div className={styles.divider} />}
+                </div>
+              ))}
+            </div>
           ) : filteredUsers.length > 0 ? (
             <div className={styles.scrollContainer}>
               {filteredUsers.map((user, index) => {

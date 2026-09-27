@@ -6,12 +6,14 @@ import { isActiveParticipatingProject, useCuratedProjects } from "@/entities/pro
 import { ProjectSkeleton } from "@/shared";
 import GradingReminder from '@/shared/assets/3d/Grading_Reminder.png';
 import { ClosingBanner } from "@/shared/ui/closing-banner";
+import { useModalStore } from "@/shared/model";
 
 export const CuratorWidget = () => {
 
   const { data: draft, isLoading: draftProjectLoading } = useProjectDraft()
   const { data: curatorData, isLoading: curatedProjectLoading } = useCuratedProjects()
   const [isBannerVisible, setIsBannerVisible] = useState<boolean>(true)
+  const openModal = useModalStore((state) => state.openModal)
 
   // Архив / NotImplemented / Completed / Rejected — только в истории, не в активных.
   const activeProjects = (curatorData?.projects ?? []).filter(isActiveParticipatingProject)
@@ -26,7 +28,7 @@ export const CuratorWidget = () => {
         isBannerVisible={isBannerVisible}
         setIsBannerVisible={() => setIsBannerVisible(false)}
         image={GradingReminder}
-        greenClickableLabelFun={() => {} }
+        greenClickableLabelFun={() => openModal('GRADING_INFO')}
         greenClickableLabelText={'Узнать подробнее'}
       />
       {

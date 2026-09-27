@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styles from './SelectCompetencyModal.module.css';
 import { useSkillsStore } from '@/features/my-competencies';
 import { useCompetencies } from '@/entities/competency';
-import { Checkbox, ModalFooter, Modal } from '@/shared';
+import { Checkbox, ModalFooter, Modal, Skeleton, TextSkeleton } from '@/shared';
 
 interface SelectCompetencyModalProps {
   isOpen: boolean;
@@ -65,9 +65,23 @@ export const SelectCompetencyModal = ({ isOpen, onClose, maxCount, initialSelect
 
       <Modal.Body>
         {isLoading ? (
-          <p style={{ color: 'var(--color-gray-500)', textAlign: 'center', padding: '20px 0' }}>
-            Загрузка компетенций...
-          </p>
+          <div className={styles.list} aria-busy="true">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                aria-hidden="true"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px',
+                }}
+              >
+                <Skeleton width="18px" height="18px" borderRadius="4px" />
+                <TextSkeleton width={`${40 + (i % 3) * 20}%`} height="16px" />
+              </div>
+            ))}
+          </div>
         ) : availableCompetencies.length > 0 ? (
           <div className={styles.list}>
             {availableCompetencies.map((competency) => {

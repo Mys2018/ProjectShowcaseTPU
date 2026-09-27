@@ -91,7 +91,7 @@ export function StudentParticipatingProjectCard({ project, competencyId, classNa
           <ProjectPublicStatusLabel status={getPublicProjectStatus(project)} />
         </div>
       }
-      mainSlot={<PartnerRow partner={project.partner} />}
+      mainSlot={project.partner ? <PartnerRow partner={project.partner} /> : undefined}
       sideSlot={
         <div className={styles.sideSlot}>
           <div className={styles.headerSide}>

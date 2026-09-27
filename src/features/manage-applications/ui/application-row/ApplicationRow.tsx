@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import styles from './ApplicationRow.module.css'
-import { Avatar, getAvatarRoleInfo, TeamUserCard, useUserById } from '@/entities/user'
+import { Avatar, getAvatarRoleInfo, TeamUserCard, useUserById, UserRowSkeleton } from '@/entities/user'
 import type { Application } from '@/entities/application'
 import { buildRoute } from '@/shared/config/routes'
 import { SmallRejectButton, SmallAcceptButton, mapDateToLocalString } from '@/shared'
@@ -15,12 +15,28 @@ interface ApplicationRowProps {
 
 export const ApplicationRow = ({ application, isPending, onAccept, onReject }: ApplicationRowProps) => {
   const navigate = useNavigate()
-  const { data: user, isLoading } = useUserById(application.studentID)
+  const { data: user, isLoading, isError } = useUserById(application.studentID)
 
-  if (isLoading || !user) {
+  const formattedDate = application.createdAt
+    ? (() => {
+        const d = new Date(application.createdAt)
+        return isNaN(d.getTime()) ? '' : mapDateToLocalString(d, { time: true })
+      })()
+    : ''
+
+  if (isLoading) {
     return (
-      <div className={styles.row}>
-        <p className={styles.loadingText}>Загрузка...</p>
+      <div className={styles.row} aria-busy="true">
+        <div className={styles.userInfo}>
+          <UserRowSkeleton />
+        </div>
+        <div className={styles.actions}>
+          {formattedDate && <p className={styles.date}>{formattedDate}</p>}
+          <div className={styles.buttonRow}>
+            <SmallRejectButton textButton={'Отклонить'} onClick={() => {}} disabled />
+            <SmallAcceptButton textButton={'Принять'} onClick={() => {}} disabled />
+          </div>
+        </div>
       </div>
     )
   }
@@ -29,12 +45,30 @@ export const ApplicationRow = ({ application, isPending, onAccept, onReject }: A
     navigate(buildRoute.profileById(String(application.studentID)))
   }
 
-  const formattedDate = application.createdAt
-    ? (() => {
-        const d = new Date(application.createdAt)
-        return isNaN(d.getTime()) ? '' : mapDateToLocalString(d, { time: true })
-      })()
-    : ''
+  if (!user || isError) {
+    return (
+      <div className={styles.row}>
+        <div className={styles.userInfo}>
+          <p className={styles.userName}>Студент #{application.studentID}</p>
+        </div>
+        <div className={styles.actions}>
+          {formattedDate && <p className={styles.date}>{formattedDate}</p>}
+          <div className={styles.buttonRow}>
+            <SmallRejectButton
+              textButton={'Отклонить'}
+              onClick={() => onReject(application.applicationID)}
+              disabled={isPending}
+            />
+            <SmallAcceptButton
+              textButton={'Принять'}
+              onClick={() => onAccept(application.applicationID)}
+              disabled={isPending}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // В подписи строки нужны именно навыки (Docker, Figma…), не названия компетенций (QA).
   // meta.skills = CompetenceDto[] → у каждой competence свой список skillName.

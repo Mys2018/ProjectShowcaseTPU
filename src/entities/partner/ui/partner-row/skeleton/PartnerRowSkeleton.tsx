@@ -10,7 +10,7 @@ interface PartnerRowSkeletonProps {
 
 export function PartnerRowSkeleton({ clickable, className }: PartnerRowSkeletonProps) {
   return (
-    <div className={clsx(styles.partner, clickable && styles.clickable, className)}>
+    <div className={clsx(styles.partner, clickable && styles.clickable, className)} aria-hidden="true">
       <ImageSkeleton className={styles.picture} />
       <div className={s.info}>
         <TextSkeleton rows={2} />

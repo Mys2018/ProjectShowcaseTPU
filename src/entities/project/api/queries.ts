@@ -84,11 +84,12 @@ export const useCreateProject = () => {
   })
 }
 
-export const useProjectDraft = () => {
+export const useProjectDraft = (enabled = true) => {
   return useQuery({
     queryKey: projectKeys.draft(),
     queryFn: () => projectApi.getDraft(),
-    retry: false
+    retry: false,
+    enabled
   })
 }
 

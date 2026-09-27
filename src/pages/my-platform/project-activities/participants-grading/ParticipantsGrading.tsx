@@ -5,10 +5,11 @@ import clsx from 'clsx'
 import styles from '../applications-and-team/ApplicationsAndTeam.module.css'
 import { GradingPanel } from '@/widgets/scoring-table'
 import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
-import {EmptyBlanking} from "@/shared/ui/empty-blanking";
+import { EmptyBlanking } from "@/shared/ui/empty-blanking";
+import { ProjectSkeleton } from "@/shared";
 
 export const ParticipantsGrading = () => {
-  const { data } = useCuratedProjects({ limit: 100 })
+  const { data, isLoading } = useCuratedProjects({ limit: 100 })
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const [searchParams] = useSearchParams()
   const location = useLocation()
@@ -29,19 +30,30 @@ export const ParticipantsGrading = () => {
   return (
     <>
       <aside className={styles.projects}>
-        {projects.map(project => (
-          <div
-            key={project.id}
-            className={clsx(styles.projectItem, project.id === selected?.id && styles.projectItemActive)}
-            onClick={() => setSelectedProjectId(project.id)}
-          >
-            <MiniProjectCard project={project} type="rating" />
-          </div>
-        ))}
+        {isLoading ? (
+          <>
+            <ProjectSkeleton style={{ minHeight: 90, borderRadius: 20 }} />
+            <ProjectSkeleton style={{ minHeight: 90, borderRadius: 20 }} />
+          </>
+        ) : (
+          projects.map(project => (
+            <div
+              key={project.id}
+              className={clsx(styles.projectItem, project.id === selected?.id && styles.projectItemActive)}
+              onClick={() => setSelectedProjectId(project.id)}
+            >
+              <MiniProjectCard project={project} type="rating" />
+            </div>
+          ))
+        )}
       </aside>
 
       <main className={styles.main}>
-        {selected ? (
+        {isLoading ? (
+          <div aria-busy="true" style={{ width: '100%' }}>
+            <ProjectSkeleton style={{ width: '100%', height: 420, borderRadius: 24 }} />
+          </div>
+        ) : selected ? (
           <GradingPanel
             key={selected.id}
             projectId={selected.id}

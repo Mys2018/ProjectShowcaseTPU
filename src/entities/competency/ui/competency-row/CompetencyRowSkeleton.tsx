@@ -8,7 +8,7 @@ interface CompetencyRowSkeletonProps {
 
 export function CompetencyRowSkeleton({ className }: CompetencyRowSkeletonProps) {
   return (
-    <div className={clsx(styles.competency, className)}>
+    <div className={clsx(styles.competency, className)} aria-hidden="true">
       <ImageSkeleton className={styles.icon} />
       <TextSkeleton className={styles.label} />
     </div>

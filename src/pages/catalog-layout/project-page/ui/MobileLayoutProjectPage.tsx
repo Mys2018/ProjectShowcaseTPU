@@ -8,8 +8,7 @@ import { useApplications } from "@/entities/application";
 import { type ProjectCardData, typeProjectsLabel, useProjectTeam } from "@/entities/project";
 import { getPublicProjectStatus } from "@/entities/project";
 import { usePlatformFinder } from "@/entities/platforms";
-import { useIsProfileFilled } from "@/entities/user";
-import { useUserById } from "@/entities/user";
+import { useIsProfileFilled, useUserById, UserRowSkeleton } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { FloatingPanel } from "@/shared/ui/floating-panel";
 import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
@@ -95,10 +94,6 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }));
   }, [project.checkpoints]);
 
-  if (!owner) {
-    return null
-  }
-
   return (
     <main className={styles.main} >
 
@@ -171,13 +166,17 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
               </div>
             ) : (
               <>
-                <ProfileWidget
-                  userId={owner.id}
-                  last_name={owner?.meta?.lastName ?? ''}
-                  first_name={owner?.meta?.firstName ?? ''}
-                  role="Менеджер данного проекта"
-                  avatarSrc={owner?.profilePicture}
-                />
+                {owner ? (
+                  <ProfileWidget
+                    userId={owner.id}
+                    last_name={owner?.meta?.lastName ?? ''}
+                    first_name={owner?.meta?.firstName ?? ''}
+                    role="Менеджер данного проекта"
+                    avatarSrc={owner?.profilePicture}
+                  />
+                ) : (
+                  <UserRowSkeleton />
+                )}
                 <ProjectTeam
                   project={project}
                   list={teamMembers}

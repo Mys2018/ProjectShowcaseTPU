@@ -1,0 +1,78 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 6px 0;
+}
+
+.mainTitle {
+  font: var(--section-title-interface);
+  color: var(--color-brand-black);
+  margin-bottom: 12px;
+}
+
+.leadText {
+  font: var(--body-text-platform);
+  color: var(--color-gray-900);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font: var(--field-title-big-interface);
+  color: var(--color-brand-black);
+}
+
+.blackText {
+  font-weight: 550;
+}
+
+.warningTitle {
+  color: var(--color-red);
+}
+
+.sectionText {
+  font: var(--OS-15-400);
+}
+
+.tabLink {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.greenHighlight {
+  color: var(--color-brand-green);
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.closeBtn {
+  font: var(--inter-13-600);
+  color: var(--color-gray-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.closeBtn:hover {
+  color: var(--color-gray-750);
+  opacity: 0.8;
+}

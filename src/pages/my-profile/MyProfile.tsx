@@ -13,12 +13,13 @@ import { useProfileEditStore, useModalStore } from '@/shared/model';
 import { BackLink } from '@/shared/ui/back-link';
 import { ROUTES } from '@/shared';
 
+import { MyProfileSkeleton } from './ui/MyProfileSkeleton';
+
 export const MyProfile = () => {
   const navigate = useNavigate();
-  const { data: user } = useMe();
+  const { data: user, isLoading, isError } = useMe();
   const { activeEditBlock, hasUnsavedChanges, setActiveEditBlock, setHasUnsavedChanges } = useProfileEditStore();
   const { openModal, closeModal } = useModalStore();
-
 
   useEffect(() => {
     return () => {
@@ -55,8 +56,22 @@ export const MyProfile = () => {
     }
   }, [blocker, openModal, closeModal, setActiveEditBlock, setHasUnsavedChanges]);
 
-  if (!user || user.id === 'loading...') {
-    return null;
+  if (isLoading || (!user && !isError)) {
+    return <MyProfileSkeleton />;
+  }
+
+  if (isError || !user) {
+    return (
+      <div className={styles.mainContent}>
+        <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
+        <section className={styles.pageTitle}>
+          <h2>Мой профиль</h2>
+        </section>
+        <section className={styles.profile}>
+          <p style={{ padding: 24, color: 'var(--color-gray-600)' }}>Не удалось загрузить данные профиля</p>
+        </section>
+      </div>
+    );
   }
 
   return (

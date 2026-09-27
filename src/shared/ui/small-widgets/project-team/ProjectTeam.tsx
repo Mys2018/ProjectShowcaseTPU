@@ -10,6 +10,7 @@ import {
 } from '@/entities/user'
 import { type ProjectCardData } from '@/entities/project'
 import CheckIcon from '@/shared/ui/icons/check.svg?react'
+import { ImageSkeleton, TextSkeleton } from '@/shared'
 
 type ProjectTeamProps = {
   project?: ProjectCardData
@@ -88,7 +89,20 @@ export const ProjectTeam = (props: ProjectTeamProps) => {
 
       <div className={styles.listWrap}>
         {props.isLoading ? (
-          <div className={styles.empty}>Загрузка участников...</div>
+          <ul className={styles.teamList} aria-busy="true">
+            {[1, 2].map((i) => (
+              <li key={i} className={styles.item} aria-hidden="true">
+                <TextSkeleton width="45%" height="16px" />
+                <div className={styles.info}>
+                  <ImageSkeleton width="36px" height="36px" borderRadius="50%" />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
+                    <TextSkeleton width="70%" height="12px" />
+                    <TextSkeleton width="40%" height="10px" />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : props.list.length === 0 ? (
           <div className={styles.empty}>Команда пока формируется</div>
         ) : (

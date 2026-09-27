@@ -23,7 +23,7 @@ interface StudentApplicationProjectCardProps {
 
 export function StudentApplicationProjectCard({ application, className }: StudentApplicationProjectCardProps) {
   const { data: project } = useProjectDetails(application.projectId)
-  const { data: curator } = useUserById(project?.ownerId, Boolean(project?.ownerId))
+  const { data: curator, isLoading: isCuratorLoading } = useUserById(project?.ownerId, Boolean(project?.ownerId))
   const { data: team = [] } = useProjectTeam(project?.id ?? '', Boolean(project?.id))
   const { data: competencies } = useCompetencies()
   const { data: me } = useMe()
@@ -80,7 +80,7 @@ export function StudentApplicationProjectCard({ application, className }: Studen
           </div>
         ) : undefined
       }
-      mainSlot={<PartnerRow partner={project.partner} />}
+      mainSlot={project.partner ? <PartnerRow partner={project.partner} /> : undefined}
       sideSlot={
         <div className={styles.sideSlot}>
           <div className={styles.headerSide}>
@@ -121,15 +121,15 @@ export function StudentApplicationProjectCard({ application, className }: Studen
                 nameSubtextStyle="OS-12-350"
               />
             </div>
-          ) : (
-            <div className={styles.block}>
+          ) : isCuratorLoading && project?.ownerId ? (
+            <div className={styles.block} aria-busy="true">
               <p>Наставник:</p>
-              <div className={clsx(styles.userRow, styles.skeleton)}>
+              <div className={clsx(styles.userRow, styles.skeleton)} aria-hidden="true">
                 <ImageSkeleton className={styles.image} />
                 <TextSkeleton className={styles.name} />
               </div>
             </div>
-          )}
+          ) : null}
           {!isExtended && (
             <>
               {statusBadge}

@@ -7,17 +7,17 @@ import { MyCompetenciesList } from "@/features/my-competencies";
 import { Portfolio } from "@/features/portfolio/Portfolio.tsx";
 import { useMe, useUserById } from "@/entities/user";
 import { useParticipatingProjects, useProjects, type ProjectCardData } from "@/entities/project";
-import { CONTACTS_ANCHOR_ID, SomeoneProfileHeader } from "@/shared/ui/someone-profile-header/SomeoneProfileHeader.tsx";
+import { CONTACTS_ANCHOR_ID, SomeoneProfileHeader, SomeoneProfileHeaderSkeleton } from "@/shared/ui/someone-profile-header";
 import { FloatingPanel } from "@/shared/ui/floating-panel";
 import { BackLink } from "@/shared/ui/back-link";
 import { MOBILE_BREAKPOINT, useMobileChrome } from "@/shared/lib";
-import { ProjectSkeleton, ROUTES } from "@/shared";
+import { ImageSkeleton, ProjectSkeleton, ROUTES, TextSkeleton } from "@/shared";
 
 export function SomeoneProfile() {
   const params = useParams<{ id: string }>()
   const uid = Number(params.id)
   const isValidId = Boolean(uid) && !Number.isNaN(uid)
-  const { data: user } = useUserById(uid)
+  const { data: user, isLoading: isUserLoading, isError: isUserError } = useUserById(uid)
   const { data: me } = useMe()
   const isMyProfile = Boolean(me?.id && Number(me.id) === uid)
 
@@ -45,6 +45,11 @@ export function SomeoneProfile() {
       if (!items) return
       for (const p of items) {
         if (!seen.has(p.id)) {
+          // Исключаем нереализованные проекты
+          if (p.status === 'NotImplemented') {
+            continue
+          }
+
           // Убеждаемся, что студент участвует именно как участник роли
           const isParticipant =
             isMyProfile ||
@@ -95,8 +100,54 @@ export function SomeoneProfile() {
     if (timer.current) clearTimeout(timer.current)
   }, [])
 
-  if (!user) {
-    return null;
+  if (isValidId && (isUserLoading || (!user && !isUserError))) {
+    return (
+      <div className={styles.mainContent} aria-busy="true" aria-label="Загрузка профиля">
+        <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
+
+        <section className={styles.title}>
+          Профиль студентика
+        </section>
+
+        <section className={styles.profile}>
+          <SomeoneProfileHeaderSkeleton />
+          <div className={styles.body}>
+            <div className={styles.projectsSection}>
+              <h3 className={styles.projectsTitle}>Проекты</h3>
+              <div className={styles.list}>
+                <ProjectSkeleton />
+                <ProjectSkeleton />
+              </div>
+            </div>
+            <div style={{ background: 'var(--color-gray-50)', padding: 24, borderRadius: 20 }}>
+              <TextSkeleton rows={1} style={{ width: 140, height: 24, marginBottom: 16 }} />
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                <ImageSkeleton style={{ width: 100, height: 32, borderRadius: 16 }} />
+                <ImageSkeleton style={{ width: 120, height: 32, borderRadius: 16 }} />
+              </div>
+            </div>
+            <div style={{ background: 'var(--color-gray-50)', padding: 24, borderRadius: 20 }}>
+              <TextSkeleton rows={1} style={{ width: 110, height: 24, marginBottom: 16 }} />
+              <TextSkeleton rows={1} style={{ width: '60%', height: 36 }} />
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (!isValidId || isUserError || !user) {
+    return (
+      <div className={styles.mainContent}>
+        <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
+        <section className={styles.title}>
+          Профиль студентика
+        </section>
+        <section className={styles.profile}>
+          <p style={{ padding: 24, color: 'var(--color-gray-600)' }}>Пользователь не найден</p>
+        </section>
+      </div>
+    );
   }
 
   return (

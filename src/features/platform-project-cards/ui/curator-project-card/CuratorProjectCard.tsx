@@ -13,7 +13,7 @@ import {
   useSetProjectStatus,
   useProjectReview
 } from "@/entities/project";
-import { PartnerRow, PartnerRowSkeleton } from "@/entities/partner";
+import { PartnerRow } from "@/entities/partner";
 import { TagBadgeList } from "@/entities/tag";
 import { PlatformBadgeSmall } from "@/entities/platforms";
 import { ApplicationBlock, useApplications } from "@/entities/application";
@@ -96,7 +96,7 @@ export const CuratorProjectCard = ({ project }: CuratorProjectCardProps) => {
   return (
     <ProjectCardHorizontal
       project={project}
-      mainSlot={partner ? <PartnerRow partner={partner} /> : <PartnerRowSkeleton />}
+      mainSlot={partner ? <PartnerRow partner={partner} /> : undefined}
       onClick={() => {
         if (project.status === 'NeedsRework') {
           navigate(`${ROUTES.PROJECTS.CREATE}?projectId=${project.id}`)

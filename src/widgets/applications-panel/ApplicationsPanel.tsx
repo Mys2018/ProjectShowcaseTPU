@@ -12,9 +12,10 @@ import {
   type Application,
 } from '@/entities/application'
 import { projectQueryKeys, type ProjectCardData, useProjectTeam, useRemoveTeamMember, useProjects } from '@/entities/project'
-import { TeamMemberCard, type UserCard } from "@/entities/user";
+import { TeamMemberCard, type UserCard, UserRowSkeleton } from "@/entities/user";
 import { isPseudoRole } from '@/entities/competency';
-import { ROUTES } from '@/shared'
+import { ImageSkeleton, ROUTES } from '@/shared'
+import { useModalStore } from '@/shared/model'
 
 interface ApplicationsPanelProps {
   project: ProjectCardData
@@ -73,6 +74,7 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
 
   const navigate = useNavigate()
   const removeTeamMemberMutation = useRemoveTeamMember()
+  const { openModal, closeModal } = useModalStore()
 
   // Одобрение/отклонение меняет состав команды и занятые места, приглашение —
   // тоже: списки participating/applied и деталь проекта (team, roles) обязаны
@@ -147,14 +149,22 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
 
   const handleRemoveMember = useCallback(
     (user: UserCard) => {
-      removeTeamMemberMutation.mutate(
-        { projectId: project.id, userId: user.userId },
-        {
-          onSuccess: invalidateApplicationScope,
-        }
-      )
+      openModal('EXCLUDE_PARTICIPANT', {
+        onConfirm: () => {
+          closeModal()
+          removeTeamMemberMutation.mutate(
+            { projectId: project.id, userId: user.userId },
+            {
+              onSuccess: invalidateApplicationScope,
+            }
+          )
+        },
+        onDecline: () => {
+          closeModal()
+        },
+      })
     },
-    [removeTeamMemberMutation, project.id, invalidateApplicationScope]
+    [openModal, closeModal, removeTeamMemberMutation, project.id, invalidateApplicationScope]
   )
 
   // Map applications to roles by roleID (не показываем отклики людей, у которых уже есть проект)
@@ -240,16 +250,6 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     return team.filter((u) => !project.roles.some((r) => r.placeUserIds?.includes(u.userId)))
   }, [team, project.roles])
 
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <p>Загрузка откликов...</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className={styles.container}>
       <div className={styles.bigBlock}>
@@ -258,7 +258,14 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
           <p>Открытые компетенции с входящими заявками от участников</p>
         </div>
 
-        {openRoles.length === 0 ? (
+        {isLoading ? (
+          <div className={styles.competencyList} aria-busy="true">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <ImageSkeleton style={{ height: 120, borderRadius: 16 }} />
+              <ImageSkeleton style={{ height: 120, borderRadius: 16 }} />
+            </div>
+          </div>
+        ) : openRoles.length === 0 ? (
           <div className={styles.emptyState}>
             <p>В проекте нет открытых компетенций</p>
           </div>
@@ -301,7 +308,12 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
           <p>Утверждённый состав участников, реализующих проект</p>
         </div>
         <div className={styles.competencyList}>
-          {occupiedRoleItems.length > 0 || unassignedTeamMembers.length > 0 ? (
+          {isLoading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }} aria-busy="true">
+              <UserRowSkeleton />
+              <UserRowSkeleton />
+            </div>
+          ) : occupiedRoleItems.length > 0 || unassignedTeamMembers.length > 0 ? (
             <>
               {occupiedRoleItems.map((item, index) => {
                 const role = item.role
@@ -357,3 +369,4 @@ export const ApplicationsPanel = ({ project }: ApplicationsPanelProps) => {
     </div>
   )
 }
+

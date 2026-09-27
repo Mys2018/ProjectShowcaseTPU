@@ -7,15 +7,18 @@ import {
   updateApplicationStatus,
   applicationKeys,
 } from '@/entities/application'
-import { projectQueryKeys } from '@/entities/project'
-import { InviteRow } from '@/entities/application/ui'
+import {NoProjectsFallback, projectQueryKeys} from '@/entities/project'
+import { InviteRow, InviteRowSkeleton } from '@/entities/application/ui'
 import { ROUTES } from '@/shared'
 import { BackLink } from '@/shared/ui/back-link'
+import NoNotif from '@/shared/assets/No_Invites_state.svg?react'
+import {useNavigate} from "react-router-dom";
 
 export const NotificationsPage = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
-  const { data: invites } = useApplications({
+  const { data: invites, isLoading, isError } = useApplications({
     mode: 'AsStudent',
     type: 'Invitation',
     offset: 0,
@@ -81,29 +84,55 @@ export const NotificationsPage = () => {
 
         <section className={styles.body}>
           <h3>Приглашения в проект</h3>
-          {
-            invites && invites.applications.length > 0 ? <div className={styles.inviteList}>
-              {
-                applications.length > 0 && (
-                  applications.map((application, index) => (
-                    <Fragment key={application.applicationID}>
-                      <InviteRow
-                        application={application}
-                        isPending={pendingApplicationId === application.applicationID}
-                        onApprove={(id) => handleApprove(id, application.projectId)}
-                        onReject={(id) => handleReject(id, application.projectId)}
-                      />
-                      {index < applications.length - 1 && (
-                        <div className={styles.horizontalSeparator} />
-                      )}
-                    </Fragment>
-                  ))
-                )
-              }
-            </div> : <div className={styles.emptyMain}>
-              <p>Еще нет приглашений</p>
+          {isLoading ? (
+            <div className={styles.inviteList} aria-busy="true">
+              <InviteRowSkeleton />
+              <div className={styles.horizontalSeparator} />
+              <InviteRowSkeleton />
+              <div className={styles.horizontalSeparator} />
+              <InviteRowSkeleton />
             </div>
-          }
+          ) : isError ? (
+            <NoProjectsFallback
+              className={styles.noState}
+              title='Приглашений пока нет'
+              description='Вы получите уведомление, если вас пригласят в проект,  а пока можете подать отклики самостоятельно'
+              buttonType={"green"}
+              image={<NoNotif/>}
+              buttonText={'Выбрать проект'}
+              onClick={() => {
+                navigate(ROUTES.PROJECTS.BASE)
+              }}
+            />
+          ) : applications.length > 0 ? (
+            <div className={styles.inviteList}>
+              {applications.map((application, index) => (
+                <Fragment key={application.applicationID}>
+                  <InviteRow
+                    application={application}
+                    isPending={pendingApplicationId === application.applicationID}
+                    onApprove={(id) => handleApprove(id, application.projectId)}
+                    onReject={(id) => handleReject(id, application.projectId)}
+                  />
+                  {index < applications.length - 1 && (
+                    <div className={styles.horizontalSeparator} />
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          ) : (
+            <NoProjectsFallback
+              className={styles.noState}
+              title='Приглашений пока нет'
+              description='Вы получите уведомление, если вас пригласят в проект,  а пока можете подать отклики самостоятельно'
+              buttonType={"green"}
+              image={<NoNotif/>}
+              buttonText={'Выбрать проект'}
+              onClick={() => {
+                navigate(ROUTES.PROJECTS.BASE)
+              }}
+            />
+          )}
         </section>
       </main>
     </div>

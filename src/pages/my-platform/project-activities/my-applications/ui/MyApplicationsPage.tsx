@@ -7,11 +7,11 @@ import { useApplications } from '@/entities/application'
 import { useCurrentCheckpoints, getDaysUntilCheckpoint, isCheckpointPassed } from '@/entities/checkpoint'
 import { NoProjectsFallback, CompletedProjects } from '@/entities/project'
 import MyApplications from '@/shared/assets/no_applications.svg?react'
-import { BlankPhoto, ROUTES } from '@/shared'
+import { BlankPhoto, ProjectSkeleton, ROUTES } from '@/shared'
 import { ClosingBanner } from '@/shared/ui/closing-banner'
 
 export function MyApplicationsPage() {
-  const { data } = useApplications({ mode: 'AsStudent', type: 'Application', offset: 0, limit: 100 })
+  const { data, isLoading, isError } = useApplications({ mode: 'AsStudent', type: 'Application', offset: 0, limit: 100 })
   const { data: currentCheckpoint } = useCurrentCheckpoints()
   const navigate = useNavigate()
   const applications = data?.applications || []
@@ -46,7 +46,14 @@ export function MyApplicationsPage() {
       <div className={styles.active}>
         <h3 className={styles.title}>Мои отклики</h3>
         <div className={styles.list}>
-          {hasActiveApplications ? (
+          {isLoading ? (
+            <>
+              <ProjectSkeleton style={{ minHeight: 220, borderRadius: 20 }} />
+              <ProjectSkeleton style={{ minHeight: 220, borderRadius: 20 }} />
+            </>
+          ) : isError ? (
+            <p className={styles.empty}>Не удалось загрузить отклики</p>
+          ) : hasActiveApplications ? (
             activeApplications.map(application => (
               <StudentApplicationProjectCard key={application.applicationID} application={application} />
             ))
@@ -67,13 +74,17 @@ export function MyApplicationsPage() {
       </div>
       <CompletedProjects
         title='История откликов'
-        isEmpty={!hasArchivedApplications}
+        isEmpty={!isLoading && !hasArchivedApplications}
         emptyTitle={`У вас ещё не было откликов в ${thisYear} году`}
         emptySubtitle='Выбирайте подходящие проекты из каталога. Все проекты, на которые вы подали заявки, будут храниться здесь.'
       >
-        {archivedApplications.map(application => (
-          <StudentApplicationProjectCard key={application.applicationID} application={application} />
-        ))}
+        {isLoading ? (
+          <ProjectSkeleton style={{ minHeight: 180, borderRadius: 20 }} />
+        ) : (
+          archivedApplications.map(application => (
+            <StudentApplicationProjectCard key={application.applicationID} application={application} />
+          ))
+        )}
       </CompletedProjects>
     </div>
   )
