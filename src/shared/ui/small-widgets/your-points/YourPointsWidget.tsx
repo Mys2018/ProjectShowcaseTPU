@@ -1,16 +1,18 @@
 import GoIcon from '@/shared/ui/icons/go.svg?react'
 import TpuPoint from '@/shared/ui/icons/tpuPoint.svg?react'
-import { InfoTooltip } from '@/shared'
+import { InfoTooltip, TextSkeleton } from '@/shared'
 import type { ClosingDiscipline } from './model/types'
 import styles from './YourPointsWidget.module.css'
 import ShopTooltipeSrc from '@/shared/assets/3d/Shop_Tooltipe.png'
 
 type YourPointsWidgetProps = {
   disciplines?: ClosingDiscipline[]
-  tpuPoints: number
+  isDisciplinesLoading?: boolean
+  tpuPoints?: number
+  isPointsLoading?: boolean
 }
 
-export const YourPointsWidget = ({ disciplines, tpuPoints }: YourPointsWidgetProps) => {
+export const YourPointsWidget = ({ disciplines, isDisciplinesLoading, tpuPoints, isPointsLoading }: YourPointsWidgetProps) => {
   return (
     <div className={styles.mainContainer}>
       <p className={styles.mainTitle}>Ваши баллы</p>
@@ -20,7 +22,17 @@ export const YourPointsWidget = ({ disciplines, tpuPoints }: YourPointsWidgetPro
         <div className={styles.container}>
           <p className={styles.title}>Закрытие дисциплин</p>
           <ul className={styles.disciplinesList}>
-            {disciplines && disciplines.length > 0 ? (
+            {isDisciplinesLoading ? (
+              <li className={styles.disciplineItem} aria-busy="true">
+                <TextSkeleton rows={1} style={{ width: 60, height: 16 }} />
+                <div className={styles.progressContainer}>
+                  <div className={styles.progressBar}>
+                    <span className={styles.progressFill} style={{ width: '0%' }} />
+                  </div>
+                  <TextSkeleton rows={1} style={{ width: 45, height: 14 }} />
+                </div>
+              </li>
+            ) : disciplines && disciplines.length > 0 ? (
               disciplines.map(discipline => (
                 <li key={discipline.title} className={styles.disciplineItem}>
                   <span className={styles.disciplineName}>{discipline.title}</span>
@@ -72,7 +84,11 @@ export const YourPointsWidget = ({ disciplines, tpuPoints }: YourPointsWidgetPro
             </div>
           </div>
           <div className={styles.pointContainer}>
-            {tpuPoints}
+            {isPointsLoading || tpuPoints === undefined ? (
+              <TextSkeleton rows={1} style={{ width: 28, height: 18 }} />
+            ) : (
+              tpuPoints
+            )}
             <TpuPoint />
           </div>
         </div>

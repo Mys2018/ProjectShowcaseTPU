@@ -3,9 +3,10 @@ import { useLocation, useSearchParams } from 'react-router-dom'
 import styles from './ApplicationsAndTeam.module.css'
 import { ApplicationsPanel } from '@/features/manage-applications'
 import { MiniProjectCard, useCuratedProjects } from '@/entities/project'
+import { ProjectSkeleton } from '@/shared'
 
 export const ApplicationsAndTeam = () => {
-  const { data: projects } = useCuratedProjects({ limit: 100 })
+  const { data: projects, isLoading: isProjectsLoading } = useCuratedProjects({ limit: 100 })
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const queryProjectId = searchParams.get('projectId') || (location.state as { projectId?: string } | null)?.projectId
@@ -33,23 +34,34 @@ export const ApplicationsAndTeam = () => {
   return (
     <>
       <aside className={styles.projects}>
-        {projectList.map((project) => (
-          <div
-            key={project.id}
-            className={`${styles.projectItem} ${project.id === activeProjectId ? styles.projectItemActive : ''}`}
-            onClick={() => handleSelectProject(project.id)}
-          >
-            <MiniProjectCard project={project} type={'applications'} />
-          </div>
-        ))}
+        {isProjectsLoading ? (
+          <>
+            <ProjectSkeleton style={{ minHeight: 90, borderRadius: 20 }} />
+            <ProjectSkeleton style={{ minHeight: 90, borderRadius: 20 }} />
+          </>
+        ) : (
+          projectList.map((project) => (
+            <div
+              key={project.id}
+              className={`${styles.projectItem} ${project.id === activeProjectId ? styles.projectItemActive : ''}`}
+              onClick={() => handleSelectProject(project.id)}
+            >
+              <MiniProjectCard project={project} type={'applications'} />
+            </div>
+          ))
+        )}
       </aside>
 
       <main className={styles.main}>
-        {selectedProject ? (
+        {isProjectsLoading ? (
+          <div className={styles.emptyMain} aria-busy="true">
+            <ProjectSkeleton style={{ width: '100%', height: 300, borderRadius: 20 }} />
+          </div>
+        ) : selectedProject ? (
           <ApplicationsPanel project={selectedProject} />
         ) : (
           <div className={styles.emptyMain}>
-            <p>Выберите проект для управления откликами</p>
+            <p>{projectList.length === 0 ? 'Нет проектов на этапе набора' : 'Выберите проект для управления откликами'}</p>
           </div>
         )}
       </main>

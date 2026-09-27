@@ -8,7 +8,7 @@ interface UserRowSkeletonProps {
 
 export function UserRowSkeleton({ className }: UserRowSkeletonProps) {
   return (
-    <div className={clsx(styles.container, className)}>
+    <div className={clsx(styles.container, className)} aria-hidden="true">
       <ImageSkeleton className={styles.avatar} />
       <div className={clsx(styles.info, styles.skeleton)}>
         <TextSkeleton rows={2} />

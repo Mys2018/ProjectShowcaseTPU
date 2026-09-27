@@ -7,7 +7,7 @@ import { useMyProjectHours } from '../model/useMyProjectHours'
 import { HScrollbar } from './HScrollbar'
 import { getScoreWord } from '@/entities/project'
 import { CompetencyIcon, type Competency } from '@/entities/competency'
-import { mapDateToLocalString } from '@/shared'
+import { mapDateToLocalString, TextSkeleton } from '@/shared'
 import { Modal } from '@/shared/ui/modals/modal/Modal'
 import ClockIcon from '@/shared/ui/icons/round-clock.svg?react'
 
@@ -156,7 +156,14 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
             <h3 className={styles.subhead}>Ваши часы в проекте</h3>
 
             {isLoading ? (
-              <p className={styles.state}>Загружаем часы…</p>
+              <div aria-busy="true" style={{ padding: '12px 0' }}>
+                <TextSkeleton rows={1} style={{ width: 120, height: 20, marginBottom: 12 }} />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} style={{ flex: 1, height: 60, background: 'var(--color-gray-100)', borderRadius: 12 }} />
+                  ))}
+                </div>
+              </div>
             ) : isError || !data ? (
               <p className={styles.state}>Не удалось загрузить часы</p>
             ) : weekCount === 0 ? (
@@ -254,8 +261,14 @@ export function MyHoursModal({ isOpen, onClose, projectId, title, competency, de
           <p className={styles.total}>
             Общий результат:
             <span className={styles.totalValue}>
-              <strong className={styles.totalNumber}>{total ?? '—'}</strong>
-              {total !== undefined && getScoreWord(total)}
+              {isLoading ? (
+                <TextSkeleton rows={1} style={{ width: 40, height: 20, display: 'inline-block' }} />
+              ) : (
+                <>
+                  <strong className={styles.totalNumber}>{total ?? '—'}</strong>
+                  {total !== undefined && getScoreWord(total)}
+                </>
+              )}
             </span>
           </p>
           <button type="button" className={styles.close} onClick={onClose}>

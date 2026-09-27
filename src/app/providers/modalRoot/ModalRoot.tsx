@@ -13,6 +13,8 @@ import {AddCheckpointsModal} from "@/shared/ui/modals/add-checkpoints-modal/AddC
 import {StartModal} from "@/shared/ui/modals/start-modal";
 import { BlockedGradingModal } from "@/shared/ui/modals/blocked-grading-modal";
 import { ComplaintModal } from "@/shared/ui/modals/complaint-modal";
+import { ExcludeParticipantModal } from "@/shared/ui/modals/exclude-participant-modal";
+import { GradingInfoModal } from "@/shared/ui/modals/grading-info-modal";
 
 const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   COMPETENCY_CHOICE: SelectCompetencyModal,
@@ -29,6 +31,10 @@ const MODAL_COMPONENTS : Record<NonNullable<ModalType>, React.ElementType> = {
   BLOCKED_GRADING: BlockedGradingModal,
   COMPLAINT_MODAL: ComplaintModal,
   MY_PROJECT_HOURS: MyHoursModal,
+  EXCLUDE_PARTICIPANT: ExcludeParticipantModal,
+  CONFIRM_EXCLUDE_PARTICIPANT: ExcludeParticipantModal,
+  GRADING_INFO: GradingInfoModal,
+  PARTICIPANTS_GRADING_INFO: GradingInfoModal,
 }
 
 

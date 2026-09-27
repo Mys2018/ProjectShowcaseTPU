@@ -2,6 +2,7 @@ import { Modal } from '@/shared/ui/modals/modal/Modal.tsx';
 import { useEffect, useState, useMemo } from 'react';
 import { Checkbox } from '@/shared/ui/fields/checkbox/Checkbox.tsx';
 import { ModalFooter } from '@/shared/ui/modals/modal-footer/ModalFooter.tsx';
+import { Skeleton, TextSkeleton } from '@/shared';
 import styles from './SelectProjectLinksModal.module.css';
 import {usePlatforms} from "@/entities/platforms/api/queries.ts";
 import type {Category, Platform} from "@/entities/platforms/model/types.ts";
@@ -104,9 +105,29 @@ export const SelectProjectLinksModal = ({ isOpen, onClose, maxCount = 5, initial
 
       <Modal.Body>
         {isLoading ? (
-          <p className={styles.statusMessage}>
-            Загрузка сервисов...
-          </p>
+          <div className={styles.list} aria-busy="true">
+            {[1, 2].map((g) => (
+              <div key={g} className={styles.group} aria-hidden="true">
+                <TextSkeleton width="30%" height="16px" />
+                <div className={styles.groupLinks}>
+                  {[1, 2].map((c) => (
+                    <div
+                      key={c}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px',
+                      }}
+                    >
+                      <Skeleton width="18px" height="18px" borderRadius="4px" />
+                      <TextSkeleton width={`${35 + (c % 2) * 25}%`} height="16px" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         ) : isError ? (
           <p className={styles.statusError}>
             Не удалось загрузить список сервисов

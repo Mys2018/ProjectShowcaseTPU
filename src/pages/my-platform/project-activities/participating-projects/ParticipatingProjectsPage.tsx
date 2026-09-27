@@ -71,13 +71,17 @@ export function ParticipatingProjectsPage() {
             ))}
           </div>
         }
-        isEmpty={!hasArchivedProjects}
+        isEmpty={!(isLoading || isMeLoading) && !hasArchivedProjects}
         emptyTitle={`На ${selectedArchiveGrade} курсе вы не участвовали в проектах`}
         emptySubtitle="Выбирайте подходящие проекты из каталога. Все проекты, в которых вы участвовали, будут храниться здесь вместе со статистикой."
       >
-        {archivedProjects.map(({ project, competencyId }) => (
-          <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
-        ))}
+        {isLoading || isMeLoading ? (
+          <ProjectSkeleton />
+        ) : (
+          archivedProjects.map(({ project, competencyId }) => (
+            <StudentParticipatingProjectCard key={project.id} project={project} competencyId={competencyId} />
+          ))
+        )}
       </CompletedProjects>
     </div>
   )

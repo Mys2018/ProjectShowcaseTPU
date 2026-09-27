@@ -52,7 +52,7 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
 
   if (isLoading) {
     return (
-      <div className={styles.body}>
+      <div className={styles.body} aria-busy="true">
         {Array.from({ length: 16 }, (_, i) => (
           <ProjectSkeleton key={i} className={styles.skeleton} />
         ))}
@@ -123,10 +123,12 @@ export default function ProjectsGrid({ type = 'all', filters = false, emptyFallb
             }
             bodySlot={<CompetencyBadgeList competencies={competencies} />}
             footerSlot={
-              <div className={styles.footer}>
-                <span className={styles.divider} />
-                <PartnerRow partner={project.partner} />
-              </div>
+              project.partner ? (
+                <div className={styles.footer}>
+                  <span className={styles.divider} />
+                  <PartnerRow partner={project.partner} />
+                </div>
+              ) : undefined
             }
           />
         )

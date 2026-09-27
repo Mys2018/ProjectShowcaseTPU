@@ -7,7 +7,9 @@ interface UserGroupSkeletonProps {
 }
 
 export function UserGroupSkeleton({ className }: UserGroupSkeletonProps) {
-  return <div className={clsx(styles.users, className)}>
-		{Array.from({length: 4}, (_, i) => <ImageSkeleton key={i} className={styles.avatar} filled />)}
-	</div>
+  return (
+    <div className={clsx(styles.users, className)} aria-hidden="true">
+      {Array.from({length: 4}, (_, i) => <ImageSkeleton key={i} className={styles.avatar} filled />)}
+    </div>
+  )
 }

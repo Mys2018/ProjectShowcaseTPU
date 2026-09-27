@@ -131,6 +131,7 @@
   --OS-14-500: 500 14px/1 var(--font-open-sans);
   --OS-13-400: 400 13px/1 var(--font-open-sans);
   --OS-15-700: 700 15px/1 var(--font-open-sans);
+  --OS-15-400: 400 15px/1.5 var(--font-open-sans);
   /*Чет не работает вариация, поэтому пока жирное*/
   --OS-12-550: 550 12px/1 var(--font-open-sans);
   --OS-16-600: 600 16px/1 var(--font-open-sans);

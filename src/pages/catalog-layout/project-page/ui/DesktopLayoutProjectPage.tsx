@@ -14,8 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ProjectCardData } from "@/entities/project";
 import { useProjectTeam } from "@/entities/project";
 import { getPublicProjectStatus } from "@/entities/project";
-// TODO
-import { useUserById } from "@/entities/user";
+import { useUserById, UserRowSkeleton } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { usePlatformFinder } from "@/entities/platforms";
@@ -129,24 +128,23 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }
   };
 
-  // TODO
-  if (!owner) {
-    return null;
-  }
-
   return (
     <main className={styles.main}>
       <BackLink fallback={ROUTES.PROJECTS.RECRUITMENT} className={styles.headerLeft} />
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
 
-        <ProfileWidget
-          userId={owner.id}
-          last_name={owner.meta.lastName}
-          first_name={owner.meta.firstName}
-          role="Менеджер данного проекта"
-          avatarSrc={owner.profilePicture}
-        />
+        {owner ? (
+          <ProfileWidget
+            userId={owner.id}
+            last_name={owner.meta.lastName}
+            first_name={owner.meta.firstName}
+            role="Менеджер данного проекта"
+            avatarSrc={owner.profilePicture}
+          />
+        ) : (
+          <UserRowSkeleton />
+        )}
 
         <KeyPoints
           checkpoints={project.checkpoints?.checkpoints.map(c => ({

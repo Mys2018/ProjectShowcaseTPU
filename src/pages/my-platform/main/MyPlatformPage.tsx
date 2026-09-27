@@ -34,13 +34,14 @@ export function MyPlatformPage() {
   const { data: me } = useMe()
   const { preferredRoleType, setPreferredRoleType } = usePreferencesStore()
 
-  const { data: scoresData } = useMyScores(Boolean(me?.id))
-  const { data: participatingData } = useParticipatingProjects({ limit: 100 }, Boolean(me?.id))
+  const { data: scoresData, isLoading: isScoresLoading } = useMyScores(Boolean(me?.id))
+  const { data: participatingData, isLoading: isParticipatingLoading } = useParticipatingProjects({ limit: 100 }, Boolean(me?.id))
   // Архив / NotImplemented / Completed / Rejected не считаются активными —
   // только «живые» проекты попадают в баллы и ощущение «есть активный проект».
   const activeProject = (participatingData?.projects ?? []).find(isActiveParticipatingProject)
-  const { data: timesheetSummary } = useProjectTimesheetSummary(activeProject?.id, Boolean(activeProject?.id))
+  const { data: timesheetSummary, isLoading: isTimesheetLoading } = useProjectTimesheetSummary(activeProject?.id, Boolean(activeProject?.id))
 
+  const isDisciplinesLoading = isParticipatingLoading || (Boolean(activeProject?.id) && isTimesheetLoading)
   const activeProjectHours = getStudentProjectHours(timesheetSummary, me?.id)
 
   const disciplines: ClosingDiscipline[] = activeProject
@@ -208,7 +209,12 @@ export function MyPlatformPage() {
         <span className={clsx(styles.cover, styles.fixed)} ref={coverFixedRef} />
         <span className={clsx(styles.cover, styles.shaped)} ref={coverShapedRef} />
         <div className={styles.side} ref={sideRef}>
-          <YourPointsWidget tpuPoints={scoresData?.totalScore ?? 0} disciplines={disciplines} />
+          <YourPointsWidget
+            tpuPoints={scoresData?.totalScore}
+            isPointsLoading={isScoresLoading}
+            disciplines={disciplines}
+            isDisciplinesLoading={isDisciplinesLoading}
+          />
           <ComplaintBlock onClick={() => {}} />
         </div>
 

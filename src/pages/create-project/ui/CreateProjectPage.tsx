@@ -407,6 +407,8 @@ function CreateProjectWizardForm({ isDraftMode, initialDraft, restoreValues, isD
   );
 }
 
+import { CreateProjectSkeleton } from './CreateProjectSkeleton';
+
 export function CreateProjectPage() {
   const { data: me, isLoading: isMeLoading } = useMe();
   const [searchParams] = useSearchParams();
@@ -414,15 +416,18 @@ export function CreateProjectPage() {
   const editProjectId = searchParams.get('projectId');
   const isMobile = useMediaQuery(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
 
-  const { data: draftData, isLoading: isDraftLoading } = useProjectDraft();
-  const { data: projectData, isLoading: isProjectLoading } = useProjectDetails(editProjectId ?? '');
+  const isDraftNeeded = isDraftMode && !editProjectId;
+  const { data: draftData, isLoading: isDraftLoading } = useProjectDraft(isDraftNeeded);
+  const { data: projectData, isLoading: isProjectLoading, isError: isProjectError } = useProjectDetails(editProjectId ?? '');
+
+  // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
+  // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.
+  if (isMobile) {
+    return <DesktopOnlyStub />;
+  }
 
   if (isMeLoading) {
-    return (
-      <main className={styles.mainContent}>
-        <p>Загрузка...</p>
-      </main>
-    );
+    return <CreateProjectSkeleton />;
   }
 
   const isCurator = me?.roles?.some((role) => role.type === 'Curator');
@@ -431,34 +436,24 @@ export function CreateProjectPage() {
     return null;
   }
 
-  // Мобильным страница не показывается: конструктор слишком тяжёл для узкого
-  // экрана. Заглушка по макету — после всех хуков, чтобы не ломать rules of hooks.
-  if (isMobile) {
-    return <DesktopOnlyStub />;
-  }
-
   if (editProjectId && isProjectLoading) {
+    return <CreateProjectSkeleton title="Редактирование проекта" />;
+  }
+
+  if (editProjectId && (isProjectError || !projectData)) {
     return (
-      <main className={styles.mainContent}>
-        <p>Загрузка проекта...</p>
-      </main>
+      <div className={styles.formPageWrapper}>
+        <main className={styles.mainContent}>
+          <BackLink fallback={ROUTES.MAIN} className={styles.headerLeft} />
+          <h1 className={styles.title}>Редактирование проекта</h1>
+          <p style={{ padding: '24px 16px', color: 'var(--color-gray-600)' }}>Проект не найден</p>
+        </main>
+      </div>
     );
   }
 
-  if (editProjectId && !projectData) {
-    return (
-      <main className={styles.mainContent}>
-        <p>Проект не найден</p>
-      </main>
-    );
-  }
-
-  if (isDraftMode && !editProjectId && isDraftLoading) {
-    return (
-      <main className={styles.mainContent}>
-        <p>Загрузка черновика...</p>
-      </main>
-    );
+  if (isDraftNeeded && isDraftLoading) {
+    return <CreateProjectSkeleton title="Новый проект" />;
   }
 
   const draftPayload = isDraftMode && !editProjectId && draftData?.data

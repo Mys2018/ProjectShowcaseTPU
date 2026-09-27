@@ -4,6 +4,7 @@ import {useProjectDetails} from '@/entities/project/api/queries';
 import {MOBILE_BREAKPOINT} from "@/shared/lib";
 import {MobileLayoutProjectPage} from "@/pages/catalog-layout/project-page/ui/MobileLayoutProjectPage.tsx";
 import {DesktopLayoutProjectPage} from "@/pages/catalog-layout/project-page/ui/DesktopLayoutProjectPage.tsx";
+import {ProjectPageSkeleton} from "@/pages/catalog-layout/project-page/ui/ProjectPageSkeleton.tsx";
 
 export function ProjectPage() {
   // Один брейкпоинт с шапкой и панелью: иначе на 769-1199 показывался бы десктопный
@@ -13,8 +14,7 @@ export function ProjectPage() {
   const { id } = useParams<{ id: string }>();
   const { data: project, isLoading, isError } = useProjectDetails(id || '');
 
-
-  if (isLoading) return <div style={{ padding: 40 }}>Загрузка проекта...</div>;
+  if (isLoading) return <ProjectPageSkeleton isMobile={isMobile} />;
   if (isError || !project) return <div style={{ padding: 40 }}>Проект не найден</div>;
 
   return (

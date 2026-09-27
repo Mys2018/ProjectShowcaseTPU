@@ -19,9 +19,9 @@ import {
   type RowStatus
 } from '../model/grading'
 import { useSubmitSprintHours, type SprintHoursBatch } from '@/entities/project'
-import { Avatar, TeamUserCard } from '@/entities/user'
+import { Avatar, TeamUserCard, UserRowSkeleton } from '@/entities/user'
 import { CompetencyIcon } from '@/entities/competency'
-import { getDaysUntil, getPluralDays, parseDeadline } from '@/shared'
+import { getDaysUntil, getPluralDays, parseDeadline, ImageSkeleton, TextSkeleton } from '@/shared'
 import { useModalStore } from '@/shared/model'
 import { GreyButton, OutlineButton } from '@/shared/ui/elements/buttons'
 import LockIcon from '@/shared/ui/icons/lock-small.svg?react'
@@ -115,7 +115,76 @@ export function GradingPanel({ projectId, title, highlightStudentId }: GradingPa
     })
   }, [blocker, openModal, closeModal])
 
-  if (isLoading) return <p className={styles.state}>Загружаем часы…</p>
+  if (isLoading) {
+    return (
+      <div className={styles.panel} aria-busy="true" aria-label="Загрузка часов">
+        <section className={styles.summary}>
+          <h2 className={styles.title}>Оценка участников «{title}»</h2>
+          <div className={styles.meta}>
+            <div className={styles.metaItem}>
+              <p className={styles.label}>Текущий этап:</p>
+              <TextSkeleton rows={1} style={{ width: 140, height: 18 }} />
+            </div>
+            <div className={styles.metaItem}>
+              <p className={styles.label}>Дедлайн:</p>
+              <TextSkeleton rows={1} style={{ width: 120, height: 18 }} />
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.board}>
+          <div className={styles.rows}>
+            <div className={styles.row}>
+              <div className={clsx(styles.grid, styles.head)}>
+                <span>Студент</span>
+                <span className={styles.center}>Неделя 1</span>
+                <span className={styles.center}>Неделя 2</span>
+                <span className={styles.center}>Неделя 3</span>
+                <span className={styles.center}>Неделя 4</span>
+                <span className={styles.spacer} />
+                <span className={styles.statusHead}>Статус</span>
+              </div>
+              <span className={clsx(styles.resultHead, styles.head)}>Общий результат</span>
+            </div>
+
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className={styles.row}>
+                <div className={clsx(styles.grid, styles.card)}>
+                  <UserRowSkeleton />
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <div key={j} className={styles.center}>
+                      <ImageSkeleton style={{ width: 56, height: 36, borderRadius: 10 }} />
+                    </div>
+                  ))}
+                  <span className={styles.spacer} />
+                  <span className={styles.status}>
+                    <ImageSkeleton style={{ width: 20, height: 20, borderRadius: '50%' }} />
+                  </span>
+                </div>
+                <span className={clsx(styles.card, styles.result)}>
+                  <TextSkeleton rows={1} style={{ width: 45 }} />
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <footer className={styles.footer}>
+            <nav className={styles.sprints} aria-label="Спринты">
+              <span className={styles.label}>Спринты:</span>
+              <div className={styles.pages}>
+                <button type="button" className={clsx(styles.page, styles.pageSelected)} disabled>1</button>
+                <button type="button" className={styles.page} disabled>2</button>
+              </div>
+            </nav>
+            <div className={styles.actions}>
+              <OutlineButton textButton="Сохранить результат" className={styles.save} disabled />
+            </div>
+          </footer>
+        </section>
+      </div>
+    )
+  }
+
   if (isError || !data) return <p className={styles.state}>Не удалось загрузить часы</p>
   if (data.sprints.length === 0) return <p className={styles.state}>Спринтов пока нет</p>
 
