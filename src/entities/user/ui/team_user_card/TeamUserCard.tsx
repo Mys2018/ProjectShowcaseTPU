@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { buildRoute } from "@/shared/config/routes";
 import { useModalStore } from "@/shared/model";
+import { useAuthStore } from "../../model/store/useAuthStore";
 
 type TeamUserCardTextStyle = 'ALS' | 'bodyText' | 'OS-12-500' | 'bodySmall'
 type TeamUserCardSubtextStyle = 'OS-10-400' | 'OS-12-350'
@@ -97,8 +98,10 @@ export const TeamUserCard = ({
   rolesIcon
 }: TeamUserCardProps) => {
   const navigate = useNavigate();
+  // Профили доступны только после входа: гостя такой переход увёл бы в каталог.
+  const isAuthenticated = useAuthStore((state) => state.status === 'authenticated');
 
-  const handleClick = onClick ?? (userId ? (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = onClick ?? (userId && isAuthenticated ? (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     useModalStore.getState().closeModal();
     navigate(buildRoute.profileById(String(userId)));

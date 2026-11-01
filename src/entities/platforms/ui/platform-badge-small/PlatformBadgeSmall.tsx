@@ -1,6 +1,6 @@
 import styles from './PlatformBadgeSmall.module.css'
 import OpenIcon from '@/shared/ui/icons/open.svg?react'
-import { isSafeExternalUrl } from '@/shared/lib'
+import { getPlatformLinkLabel, isSafeExternalUrl } from '@/shared/lib'
 
 interface PlatformBadgeSmallProps {
   link: string,
@@ -19,7 +19,7 @@ export const PlatformBadgeSmall = ({link, platformName}: PlatformBadgeSmallProps
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
     >
-      {platformName}
+      {getPlatformLinkLabel(platformName, link)}
       <OpenIcon/>
     </a>
   )

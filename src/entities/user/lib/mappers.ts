@@ -2,8 +2,10 @@ import { type User, type UserBase, type UserBaseDto, type UserDto, type UserRole
 import { ROLE_WEIGHTS } from '../config/constants'
 import { userIconUrl } from '@/shared'
 
+// email, roles и capabilities бэкенд может скрыть в зависимости от роли
+// запрашивающего, поэтому их отсутствие в ответе — штатный случай.
 const mapRoles = (dto: UserDto['roles']): UserRole[] => {
-  return Object.entries(dto).map(([key, value]) => {
+  return Object.entries(dto ?? {}).map(([key, value]) => {
     const type = key as keyof UserDto['roles']
     return {
       type: type,
@@ -21,7 +23,7 @@ export const mapUserDto = (dto: UserDto): User => {
 
   return {
     id: String(dto.userId),
-    email: dto.email,
+    email: dto.email ?? '',
     profilePicture: dto.profilePicture || userIconUrl,
     group,
     grade: grade ? Number(grade) : undefined,

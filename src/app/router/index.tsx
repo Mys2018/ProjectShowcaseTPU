@@ -63,6 +63,10 @@ export const router = createBrowserRouter([
               {
                 path: ROUTES.PROJECTS.CREATE,
                 element: <CreateProjectPage />
+              },
+              {
+                path: ROUTES.PROFILE.BY_ID,
+                element: <SomeoneProfile />
               }
             ]
           },
@@ -91,10 +95,6 @@ export const router = createBrowserRouter([
           {
             path: ROUTES.PROFILE.BASE,
             element: <MyProfile />
-          },
-          {
-            path: ROUTES.PROFILE.BY_ID,
-            element: <SomeoneProfile />
           },
           {
             path: ROUTES.NOTIFICATION.BASE,

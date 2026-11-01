@@ -15,7 +15,7 @@ import type { ProjectCardData } from "@/entities/project";
 import { useProjectTeam } from "@/entities/project";
 import { getPublicProjectStatus } from "@/entities/project";
 // TODO
-import { useUserById } from "@/entities/user";
+import { useAuthStore, useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { PopupMenu } from "@/shared/ui/popup-menu/PopupMenu.tsx";
 import { usePlatformFinder } from "@/entities/platforms";
@@ -30,7 +30,8 @@ interface ProjectPageProps {
 
 export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
   // TODO
-  const { data: owner } = useUserById(project.ownerId)
+  const authStatus = useAuthStore((state) => state.status)
+  const { data: owner, isLoading: isOwnerLoading } = useUserById(project.ownerId)
   const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
   const [isIdCopied, setIsIdCopied] = useState(false)
   const [isLinkCopied, setIsLinkCopied] = useState(false)
@@ -129,8 +130,8 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }
   };
 
-  // TODO
-  if (!owner) {
+  // Гостю данные менеджера недоступны: страница проекта открывается без них.
+  if (authStatus === 'idle' || authStatus === 'loading' || isOwnerLoading) {
     return null;
   }
 
@@ -140,13 +141,15 @@ export const DesktopLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
       <aside className={styles.leftWidgets} ref={leftWidgetsRef} onScroll={handleScroll}>
 
-        <ProfileWidget
-          userId={owner.id}
-          last_name={owner.meta.lastName}
-          first_name={owner.meta.firstName}
-          role="Менеджер данного проекта"
-          avatarSrc={owner.profilePicture}
-        />
+        {owner && (
+          <ProfileWidget
+            userId={owner.id}
+            last_name={owner.meta.lastName}
+            first_name={owner.meta.firstName}
+            role="Менеджер данного проекта"
+            avatarSrc={owner.profilePicture}
+          />
+        )}
 
         <KeyPoints
           checkpoints={project.checkpoints?.checkpoints.map(c => ({

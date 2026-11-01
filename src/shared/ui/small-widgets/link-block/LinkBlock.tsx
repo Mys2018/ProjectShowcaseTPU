@@ -1,7 +1,7 @@
 import OpenIcon from '../../icons/open.svg?react';
 
 import styles from './LinkBlock.module.css';
-import { isSafeExternalUrl } from '@/shared/lib';
+import { getPlatformLinkLabel, isSafeExternalUrl } from '@/shared/lib';
 
 interface LinkBlockProps {
   title: string,
@@ -23,7 +23,7 @@ export const LinkBlock = ({title, service, link} : LinkBlockProps) => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        <p className={styles.service}>{service}</p>
+        <p className={styles.service}>{getPlatformLinkLabel(service, link)}</p>
         <OpenIcon className={styles.openIcon} />
 
       </a>

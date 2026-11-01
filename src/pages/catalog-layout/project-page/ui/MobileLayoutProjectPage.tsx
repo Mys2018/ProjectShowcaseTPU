@@ -9,7 +9,7 @@ import { type ProjectCardData, typeProjectsLabel, useProjectTeam } from "@/entit
 import { getPublicProjectStatus } from "@/entities/project";
 import { usePlatformFinder } from "@/entities/platforms";
 import { useIsProfileFilled } from "@/entities/user";
-import { useUserById } from "@/entities/user";
+import { useAuthStore, useUserById } from "@/entities/user";
 import { ProjectPublicStatusLabel } from "@/entities/project/ui/project-status-label/ProjectPublicStatusLabel.tsx";
 import { FloatingPanel } from "@/shared/ui/floating-panel";
 import { ProjectInfo } from "@/shared/ui/project-info/ProjectInfo.tsx";
@@ -35,7 +35,8 @@ interface ProjectPageProps {
 export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
 
   // TODO
-  const { data: owner } = useUserById(project.ownerId)
+  const authStatus = useAuthStore((state) => state.status)
+  const { data: owner, isLoading: isOwnerLoading } = useUserById(project.ownerId)
   const { data: teamMembers = [], isLoading: isTeamLoading } = useProjectTeam(project.id)
   const [activeTab, setActiveTab] = useState<'about' | 'team'>('about');
   const [isIdCopied, setIsIdCopied] = useState(false);
@@ -95,7 +96,8 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
     }));
   }, [project.checkpoints]);
 
-  if (!owner) {
+  // Гостю данные менеджера недоступны: страница проекта открывается без них.
+  if (authStatus === 'idle' || authStatus === 'loading' || isOwnerLoading) {
     return null
   }
 
@@ -171,13 +173,15 @@ export const MobileLayoutProjectPage = ({ project }: ProjectPageProps) => {
               </div>
             ) : (
               <>
-                <ProfileWidget
-                  userId={owner.id}
-                  last_name={owner?.meta?.lastName ?? ''}
-                  first_name={owner?.meta?.firstName ?? ''}
-                  role="Менеджер данного проекта"
-                  avatarSrc={owner?.profilePicture}
-                />
+                {owner && (
+                  <ProfileWidget
+                    userId={owner.id}
+                    last_name={owner.meta?.lastName ?? ''}
+                    first_name={owner.meta?.firstName ?? ''}
+                    role="Менеджер данного проекта"
+                    avatarSrc={owner.profilePicture}
+                  />
+                )}
                 <ProjectTeam
                   project={project}
                   list={teamMembers}

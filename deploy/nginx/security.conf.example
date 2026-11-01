@@ -1,0 +1,33 @@
+# Настройки безопасности для server { listen 443 ssl; ... } сайта tpu.community.design.
+# Замечания 3 и 5 из docs/Замечания по безопасности.md. Деплой копирует только dist,
+# поэтому этот файл нужно перенести на сервер вручную и проверить: nginx -t.
+
+# Если в location есть свой add_header, заголовки из server в нём не наследуются.
+# Поэтому заголовки заданы только здесь, а в location add_header не используется.
+add_header Strict-Transport-Security "max-age=31536000" always;
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+# Сначала Report-Only: нарушения видны в консоли браузера, но ничего не блокируется.
+# Если нарушений нет, замените имя заголовка на Content-Security-Policy.
+add_header Content-Security-Policy-Report-Only "default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
+
+# Скрытые файлы, кроме /.well-known/ (нужен для выпуска сертификата).
+location ~ /\.(?!well-known/) {
+    return 404;
+}
+
+# Файлы с расширением отдаются только если существуют: /app.js.map больше не вернёт index.html.
+location ~* \.[a-z0-9]+$ {
+    try_files $uri =404;
+}
+
+# Маршруты приложения.
+location / {
+    try_files $uri /index.html;
+}
+
+# Важно: у действующего location для API должен быть модификатор ^~, иначе
+# правила с регулярными выражениями выше перехватят его запросы:
+# location ^~ /dev/api/ { ... }

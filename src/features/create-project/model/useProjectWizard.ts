@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { PROJECT_LIMITS } from '@/shared/constants/projectLimits';
 import { getCurrentCheckpoints } from '@/entities/checkpoint';
 import { useMe } from '@/entities/user';
-import { isSafeExternalUrl } from '@/shared';
+import { isHttpsUrl, isLinkMatchingPlatform } from '@/shared';
 
 const { prd, lists, audience } = PROJECT_LIMITS;
 
@@ -38,10 +38,13 @@ export const baseProjectSchema = z.object({
       platformId: z.string(),
       name: z.string(),
       category: z.string(),
-      // `.url()` пропускает javascript:/data: — дополнительно требуем http(s)
+      // `.url()` пропускает javascript:/data: — дополнительно требуем https
       link: z.string().min(1, 'Укажите ссылку').url('Укажите корректную ссылку')
-        .refine(isSafeExternalUrl, 'Ссылка должна начинаться с http:// или https://')
-    })
+        .refine(isHttpsUrl, 'Ссылка должна начинаться с https://')
+    }).refine((value) => isLinkMatchingPlatform(value.name, value.link), (value) => ({
+      message: `Ссылка не относится к платформе ${value.name}`,
+      path: ['link'],
+    }))
   ).min(2, 'Выберите хотя бы по одной ссылке из обязательных блоков'),
   meta: z.object({
     title: z.string().min(PROJECT_LIMITS.meta.title.min, `Минимум ${PROJECT_LIMITS.meta.title.min} символов`).max(PROJECT_LIMITS.meta.title.max, `Максимум ${PROJECT_LIMITS.meta.title.max} символов`),

@@ -6,7 +6,7 @@ import fsdPlugin from 'eslint-plugin-fsd-lint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist/**/*.ts', 'dist/**', 'eslint.config.js', '**/*.js']),
+  globalIgnores(['dist/**/*.ts', 'dist/**', 'eslint.config.js', '**/*.js', '**/*.mjs']),
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     plugins: { js },

@@ -90,14 +90,16 @@ export function SomeoneProfileHeader({onClickSee, user, links, highlight }: Some
             <p>
               Контакты
             </p>
-            <div 
-              className={styles.email} 
-              onClick={() => window.location.href = `mailto:${user.email}`}
-            >
-              <MailLogo className={styles.mailLogo}/>
-              {user.email}
-              <OpenLogo className={styles.whiteShareLogo}/>
-            </div>
+            {user.email && (
+              <div
+                className={styles.email}
+                onClick={() => window.location.href = `mailto:${user.email}`}
+              >
+                <MailLogo className={styles.mailLogo}/>
+                {user.email}
+                <OpenLogo className={styles.whiteShareLogo}/>
+              </div>
+            )}
           </div>
           <div className={styles.linkList}>
             {

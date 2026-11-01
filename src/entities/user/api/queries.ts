@@ -4,6 +4,7 @@ import type { AuthStatusResponse, UpdateProfileMetaRequest } from './types'
 import type { AxiosError } from 'axios'
 import { queryKeys } from './queryKeys'
 import { getAuthStatus, getMe, getMyScores, getUserById, getUsers, updateProfileMeta } from './requests'
+import { useAuthStore } from '../model/store/useAuthStore'
 
 export const useAuthStatus = (enabled = true): UseQueryResult<AuthStatusResponse, AxiosError> => {
   return useQuery({
@@ -37,11 +38,15 @@ export const useMyScores = (enabled = true): UseQueryResult<StudentScoreResponse
 }
 
 export const useUserById = (uid?: number, enabled: boolean = true) => {
+  // Данные пользователей доступны только после входа: гость не должен их
+  // запрашивать, а ответ 401 не должен запускать у него рефреш сессии.
+  const isAuthenticated = useAuthStore((state) => state.status === 'authenticated')
+
   return useQuery({
     queryKey: queryKeys.user(uid ?? 0),
     queryFn: () => getUserById(uid!),
     retry: false,
-    enabled: !!uid && enabled,
+    enabled: !!uid && enabled && isAuthenticated,
     // Иначе чужой/свой профиль, открытый однажды, не обновлялся всю сессию.
     staleTime: 5 * 60 * 1000
   })
@@ -53,11 +58,12 @@ export const useSearchUsers = (
 ) => {
   const trimmed = query.trim()
   const enabled = options?.enabled ?? Boolean(trimmed)
+  const isAuthenticated = useAuthStore((state) => state.status === 'authenticated')
 
   return useQuery({
     queryKey: queryKeys.search(trimmed, options?.offset ?? 0, options?.limit ?? 20),
     queryFn: () => getUsers({ query: trimmed, limit: options?.limit ?? 20, offset: options?.offset ?? 0 }),
-    enabled,
+    enabled: enabled && isAuthenticated,
     staleTime: 1000 * 60 * 2,
   })
 }

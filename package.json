@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "type-check": "tsc -p tsconfig.app.json --noEmit",
     "check": "npm run type-check && npm run lint",
+    "check:anonymous-access": "node scripts/check-anonymous-access.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

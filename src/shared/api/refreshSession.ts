@@ -40,10 +40,11 @@ export function getLastRefreshSuccessAt(): number {
 
 /**
  * Окончательная ошибка рефреша: 403 (INVALID_COOKIE) или 422 (SESSION_NOT_FOUND)
- * по api.yaml — сессия мертва, нужен полный ре-логин. Сетевые ошибки и 5xx сюда
- * не попадают, чтобы офлайн/сбой бэкенда не выкидывали пользователя.
+ * по api.yaml, а также 401 — им бэкенд должен отвечать на недействительный токен.
+ * Сессия мертва, нужен полный ре-логин. Сетевые ошибки и 5xx сюда не попадают,
+ * чтобы офлайн/сбой бэкенда не выкидывали пользователя.
  */
 export function isTerminalRefreshFailure(error: unknown): boolean {
   const status = (error as { response?: { status?: number } } | undefined)?.response?.status;
-  return status === 403 || status === 422;
+  return status === 401 || status === 403 || status === 422;
 }
